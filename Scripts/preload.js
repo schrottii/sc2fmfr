@@ -23,6 +23,7 @@ var images =
         goldenScrap: loadImage("Images/Currencies/goldenscrap.png"),
         brick: loadImage("Images/Currencies/brick.png"),
         tire: loadImage("Images/Currencies/tire.png"),
+        fragment: loadImage("Images/Currencies/fragment.png"),
         starSmall: loadImage("Images/star_small.png"),
         mergeToken: loadImage("Images/Currencies/mergetoken.png"),
         container: loadImage("Images/container.png"),
@@ -103,6 +104,7 @@ var images =
                 mergeMastery: loadImage("Images/Scenes/merge_mastery.png"),
                 bricks: loadImage("Images/Scenes/bricks.png"),
                 tires: loadImage("Images/Scenes/tires.png"),
+                fragment: loadImage("Images/Scenes/fragment.png"),
                 skillTree: loadImage("Images/Scenes/skilltree.png")
             },
         solarSystem:

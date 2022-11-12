@@ -3,7 +3,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_GS = 2,
     RESOURCE_MERGE_TOKEN = 3,
     RESOURCE_BRICK = 4,
-    RESOURCE_TIRE = 5;
+    RESOURCE_TIRE = 5,
+    RESOURCE_FRAGMENT = 6;
 
 function applyUpgrade(upg)
 {
@@ -26,6 +27,8 @@ function getUpgradeResource(res)
             return game.bricks.amount;
         case RESOURCE_TIRE:
             return game.tires.amount;
+        case RESOURCE_FRAGMENT:
+            return game.fragment.amount;
         default:
             return null;
     }
@@ -53,6 +56,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_TIRE:
             game.tires.amount = res;
             break;
+        case RESOURCE_FRAGMENT:
+            game.fragment.amount = res;
+            break;
         default:
             break;
     }
@@ -74,6 +80,8 @@ function getResourceImage(res)
             return "$images.brick$";
         case RESOURCE_TIRE:
             return "$images.tire$";
+        case RESOURCE_FRAGMENT:
+            return "$images.fragment$";
         default:
             break;
     }
@@ -126,16 +134,22 @@ class ScrapUpgrade
 
     }
 
+
+
     buy(round)
     {
         let resource = getUpgradeResource(this.resource);
 
-        let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
+        let yohowmuch = new Decimal(this.currentPrice());        
+
+        let canAfford = round ? yohowmuch.round().lte(resource.toFixed(0)) : yohowmuch.round().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford)
         {
             this.onBuy();
-            let p = round ? this.currentPrice().round() : this.currentPrice();
+            let p = round ? yohowmuch.round() : yohowmuch;
+
             resource = resource.sub(p);
+
             if (isNaN(resource)) //is resource negative
             {
                 resource = new Decimal(0);
@@ -369,12 +383,17 @@ class BrickUpgrade extends ScrapUpgrade
     }
 }
 
-class TireUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class TireUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_TIRE;
+    }
+}
+
+class FragmentUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_FRAGMENT;
     }
 }
 

@@ -1,6 +1,6 @@
 var game =
     {
-        scrap: new Decimal(0),
+        scrap: 0,
         scrapThisPrestige: new Decimal(0),
         highestScrapReached: new Decimal(0),
         highestBarrelReached: 0,
@@ -126,7 +126,7 @@ var game =
                                 barrels[i] = new Barrel(level);
                             }
                         },
-                        maxLevel: 5000
+                        maxLevel: 10000
                     }),
                 fasterBarrels: new ScrapUpgrade(
                     level =>
@@ -551,7 +551,27 @@ var game =
                                 }),
                         ]
                     ]
-            },
+    },
+    fragment:
+    {
+        isUnlocked: () => game.highestBarrelReached >= 100,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            scrapBoost: new FragmentUpgrade(
+                level => 100 * Decimal.pow(1.1, level),
+                level => new Decimal(1 + (0.2 * level)).add(0.2 * Math.max(0, level - 25)) .add(0.2 * Math.max(0, level - 50)).add(0.2 * Math.max(0, level - 100)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+            magnetBoost: new FragmentUpgrade(
+                level => 500 * Decimal.pow(1.1, level),
+                level => 1 + (0.1 * level),
+                {
+                    ggetEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+        },
+    },
         skillTree:
             {
                 isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SKILL_TREE,
@@ -611,7 +631,7 @@ var game =
                         [[new Decimal("1e20000"), RESOURCE_TIRE], [new Decimal("1e800"), RESOURCE_SCRAP]],
                         [[new Decimal("1e30000"), RESOURCE_TIRE], [new Decimal("1e1000"), RESOURCE_SCRAP]]
                         ],*/
-                        level => Utils.roundBase(Decimal.pow(1000, level+5), 0),/*
+                        level => Decimal.pow(1000, level).add(1),/*
                         [new Decimal(1e1), new Decimal(1e2), new Decimal(1e3), new Decimal(1e4), new Decimal(1e5), new Decimal(1e10), new Decimal(1e15), new Decimal(1e20), new Decimal(1e25), new Decimal(1e60)],
                         */
                         {
@@ -646,9 +666,15 @@ var game =
 
                         new Milestone("It's musically", 37, "Enable music", () => game.settings.musicOnOff == 1),
                         new Milestone("So I can read my scrap", 38, "Switch to scientific notation", () => game.settings.numberFormatType == 3),
-                        new Milestone("DESTROY THEM!!!", 1, "Fragments when???", () => game.settings.destroyBarrels == 1),
+                        new Milestone("Yeah, but it's 5 mil", 12, "Reach 5,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(5e6)),
                         new Milestone("Magnets & Mayonnaise", 2, () => "Have " + formatNumber(10000) + " Magnets at once", () => game.magnets.gte(10000)),
                         new Milestone("Just a few", 11, "Upgrade the sun a few times", () => game.solarSystem.upgrades.sun.level >= 100),
+
+                        new Milestone("DESTROY THEM!!!", 1, "Enable destroying barrels", () => game.settings.destroyBarrels == 1),
+                        new Milestone("The fanmade currency!", 39, "Reach barrel 100 to unlock Barrel Fragments!", () => game.fragment.isUnlocked()),
+                        new Milestone("Magnets sponsored by Fragments", 8, "Buy a level of More Magnets (Fragment upgrade)", () => game.fragment.upgrades.magnetBoost.level > 0),
+                        new Milestone("One K of F", 39, "Have 1000 fragments at once", () => game.fragment.amount.gte(1000)),
+                        new Milestone("Going for Frank's record", 39, "Have 1e6 fragments at once", () => game.fragment.amount.gte(999999)),
 
                         new Milestone("Who needs\nUpgrades", 13, () => "Get " + formatNumber(1e15) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e15) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
                         new Milestone("M.P. + W2ed", 8, "Have 69.420 magnets at once", () => game.magnets.gte(69420)),
@@ -736,7 +762,7 @@ var game =
                 changeOptionsPage: d =>
                 {
                     game.settings.optionsPage += d;
-                    game.settings.optionsPage = Utils.clamp(game.settings.optionsPage, 0, 1);
+                    game.settings.optionsPage = Utils.clamp(game.settings.optionsPage, 0, 2);
                 },
                 numberFormatType: 0,
                 barrelGalleryPage: 0,
@@ -748,6 +774,7 @@ var game =
                 autoMerge: false,
                 resetConfirmation: true,
                 lowPerformance: false,
-                musicOnOff: false
+                musicOnOff: false,
+                musicSelect: 0
             }
     };

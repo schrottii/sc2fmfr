@@ -84,8 +84,11 @@ function setup()
     document.querySelector("div.absolute button#export").onclick = e => exportGame();
     document.querySelector("div.absolute button#import").onclick = e =>
     {
-        alert("importing game (from text field)...");
-        loadGame(document.querySelector("div.absolute textarea").value);
+        thebool = confirm("Do you really want to import?");
+        if (thebool == true) {
+            alert("importing game (from text field)...");
+            loadGame(document.querySelector("div.absolute textarea").value);
+        }
     };
     document.querySelector("div.absolute button#close").onclick = e => document.querySelector("div.absolute").style.display = "none";
 
@@ -100,6 +103,7 @@ function update()
 
     if (!document.hidden)
     {
+        if (game.scrap == 0) game.scrap = new Decimal(1);
         game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
         game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
         game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
@@ -196,7 +200,8 @@ function getMagnetBaseValue()
     return applyUpgrade(game.goldenScrap.upgrades.magnetBoost)
         .mul(applyUpgrade(game.mergeQuests.upgrades.magnetBoost))
         .mul(game.mergeMastery.prestige.currentMagnetBoost())
-        .mul(applyUpgrade(game.bricks.upgrades.magnetBoost));
+        .mul(applyUpgrade(game.bricks.upgrades.magnetBoost))
+        .mul(applyUpgrade(game.fragment.upgrades.magnetBoost));
 }
 
 function onBarrelMerge(lvl, bx, by)
@@ -233,7 +238,7 @@ function onBarrelMerge(lvl, bx, by)
 
     if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber())
     {
-        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later sus
+        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later
         let amount = getMagnetBaseValue();
         game.remainderMagnets += amount.remainder(1).toNumber();
         let roundAmount = amount.floor();
@@ -479,10 +484,10 @@ function loadGame(saveCode)
         game.settings.resetConfirmation = loadVal(loadObj.settings.resetConfirmation, true);
         game.settings.lowPerformance = loadVal(loadObj.settings.lowPerformance, false);
         game.settings.musicOnOff = loadVal(loadObj.settings.musicOnOff, false);
+        game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
         if (loadObj.goldenScrap !== undefined)
         {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));
-
             if (loadObj.goldenScrap.upgrades !== undefined)
             {
                 Object.keys(loadObj.goldenScrap.upgrades).forEach(k =>
@@ -565,20 +570,31 @@ function loadGame(saveCode)
             }
         }
 
-        if(loadObj.tires !== undefined)
-        {
+        if (loadObj.tires !== undefined) {
             game.tires.amount = loadVal(new Decimal(loadObj.tires.amount), new Decimal(0));
             game.tires.value = loadVal(new Decimal(loadObj.tires.value), new Decimal(1));
-            if(loadObj.tires.upgrades !== undefined)
-            {
-                for(let row = 0; row < loadObj.tires.upgrades.length; row++)
-                {
-                    for(let col = 0; col < loadObj.tires.upgrades[row].length; col++)
-                    {
+            if (loadObj.tires.upgrades !== undefined) {
+                for (let row = 0; row < loadObj.tires.upgrades.length; row++) {
+                    for (let col = 0; col < loadObj.tires.upgrades[row].length; col++) {
                         game.tires.upgrades[row][col].level = loadVal(loadObj.tires.upgrades[row][col].level, 0);
                     }
                 }
             }
+        }
+        if (loadObj.fragment !== undefined) {
+            game.fragment.amount = loadVal(new Decimal(loadObj.fragment.amount), new Decimal(0));
+
+            if (loadObj.fragment.upgrades !== undefined) {
+                Object.keys(loadObj.fragment.upgrades).forEach(k => {
+                    game.fragment.upgrades[k].level = loadVal(loadObj.fragment.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.fragment.amount = new Decimal(1);
+            Object.keys(game.fragment.upgrades).forEach(k => {
+                game.fragment.upgrades[k].level = 0;
+            })
         }
 
         if(loadObj.skillTree !== undefined && loadObj.skillTree.upgrades !== undefined)

@@ -154,7 +154,7 @@ var movingItemFactory =
 {
     fallingMagnet: (value) =>
     {
-        movingItems.push(new FallingItem(images.movingItems.magnet, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 0.2, h * 0.2, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.magnet, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.2 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
         function()
         {
             this.collected = true;
@@ -197,6 +197,17 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.beams.amount = game.beams.amount.add(value);
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+            }))
+    },
+    fallingAeroBeam: (value) => {
+        movingItems.push(new FallingItem(images.movingItems.aerobeam, w * 0.5 + Math.random() * w * 0.2, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 1,
+            function () {
+                this.collected = true;
+                if (game.settings.lowPerformance) {
+                    this.destroy();
+                }
+                game.aerobeams.amount = game.aerobeams.amount.add(value);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     }

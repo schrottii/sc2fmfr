@@ -46,6 +46,7 @@ var images =
         darkscrap: loadImage("Images/Currencies/darkscrap.png"),
         darkfragment: loadImage("Images/Currencies/darkfragment.png"),
         beam: loadImage("Images/Currencies/steelbeam.png"),
+        aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         logos:
             {
                 scrap2: loadImage("Images/scrap2logo.png"),
@@ -99,6 +100,7 @@ var images =
                 fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
                 fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
                 fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
+                moreDarkScrap: loadImage("Images/Upgrades/darkscrapboost.png"),
                 moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
                 moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png"),
                 beamChance: loadImage("Images/Upgrades/beamchance.png"),
@@ -106,6 +108,8 @@ var images =
                 beamStormChance: loadImage("Images/Upgrades/beamstormchance.png"),
                 beamStormValue: loadImage("Images/Upgrades/beamstormvalue.png"),
                 slowerBeams: loadImage("Images/Upgrades/slowerbeams.png"),
+                xplustwo: loadImage("Images/Upgrades/xplustwo.png"),
+                unlockbeamtypes: loadImage("Images/Upgrades/unlockbeamtypes.png"),
             },
         scenes:
             {
@@ -125,6 +129,8 @@ var images =
                 skillTree: loadImage("Images/Scenes/skilltree.png"),
                 steelBeams: loadImage("Images/Scenes/steelbeams.png"),
                 beamboosts: loadImage("Images/Scenes/beamboosts.png"),
+                beamselection: loadImage("Images/Scenes/beamselection.png"),
+                aerobeams: loadImage("Images/Scenes/aerobeams.png"),
             },
         solarSystem:
         {
@@ -151,7 +157,8 @@ var images =
             {
                 magnet: loadImage("Images/MovingItems/magnet.png"),
                 tire: loadImage("Images/MovingItems/tire.png"),
-                beam: loadImage("Images/MovingItems/steelbeam.png")
+                beam: loadImage("Images/MovingItems/steelbeam.png"),
+                aerobeam: loadImage("Images/Currencies/aerobeam.png")
             }
     };
 

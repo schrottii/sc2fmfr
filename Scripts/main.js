@@ -697,26 +697,6 @@ function loadGame(saveCode)
         }
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 
-        if (loadObj.y4Gm41 == undefined) {
-            game.darkscrap.amount = new Decimal(0);
-            Object.keys(game.darkscrap.upgrades).forEach(k => {
-                game.darkscrap.upgrades[k].level = 0;
-            })
-            game.darkfragment.amount = new Decimal(0);
-            Object.keys(game.darkfragment.upgrades).forEach(k => {
-                game.darkfragment.upgrades[k].level = 0;
-            })
-
-            for (var i = loadObj.milestones - 1; i >= 0; i--) {
-                if (loadObj.milestones[i] > 70) {
-                    game.milestones.unlocked.splice(i, 1);
-                }
-            }
-
-
-
-            game.y4Gm41 = "y4G44444H";
-        }
 
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {

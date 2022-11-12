@@ -260,7 +260,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.5b (v2.2)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.6 (v2.3)", w * 0.99, h - w * 0.01);
             }),
         new Scene("Barrels",
             [
@@ -1169,7 +1169,8 @@ var scenes =
                     new UISkillTreePath(0.2, 0.95, 0.2, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.tireBoost),
                     new UISkillTreePath(0.5, 0.95, 0.5, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.magnetUpgBrickSpeed),
                     new UISkillTreePath(0.8, 0.95, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
-                    
+
+                    new UISkillTreePath(0.8, 1.25, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
 
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
@@ -1179,13 +1180,15 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.tireBoost, images.upgrades.tireBoost, "Get more\nxTires per\ncollect", 0.2, 0.95),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed, images.upgrades.brickSpeed, "Magnet\nUpgrade:\nBrick Speed", 0.5, 0.95),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.moreFragments, images.upgrades.moreFragments, "More Fragments", 0.8, 0.95),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.moreFragments, images.upgrades.moreFragments, "More\nFragments", 0.8, 0.95),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost2, images.upgrades.moreScrap2, "More Scrap 2", 0.2, 1.25, colors.table2),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.ezUpgraderQuests, images.ezUpgrade, "EZ Upgrader\nfor Merge\nQuests", 0.5, 1.25, colors.table2),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster Auto Merge", 0.8, 1.25, colors.table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster\nAuto Merge", 0.8, 1.25, colors.table2),
 
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 1.45})
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.tireValue, images.upgrades.tireBoost, "Double\nTire Worth", 0.8, 1.55, colors.table2),
+
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 1.75})
             ],
             function ()
             {

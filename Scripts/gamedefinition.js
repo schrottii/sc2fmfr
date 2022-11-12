@@ -39,9 +39,9 @@ var game =
                             }),
                         gsBoost: new GoldenScrapUpgrade(
                             level => Decimal.pow(1.8, level).mul(200).add(50 * level),
-                            level => new Decimal(1 + 0.2 * (Math.max(10, level)/10) * level),
+                            level => new Decimal(1 + 0.2 * (Math.max(10, level)/10) * level * Math.max(((level/10)-3), 1)),
                             {
-                                maxLevel: 40,
+                                maxLevel: 60,
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "", { namesAfter: 1e9 })
                             })
                     },
@@ -298,7 +298,7 @@ var game =
                     ),
 
                     mythus: new BarrelUpgrade(
-                        level => 3015 + (20 * level),
+                        level => 3010 + (20 * level),
                         level => 20 * level,
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -510,13 +510,13 @@ var game =
                 upgrades:
                     [
                         [ //faster barrels, faster Brick level up, faster Merge Mastery
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(10),
                                 level => new Decimal(1 / (1 + 0.03 * level)),
                                 {
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(100),
                                 level => new Decimal(1 / (1 + 0.01 * level)),
                                 {
@@ -524,7 +524,7 @@ var game =
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1),
                                     afterBuy: () => game.bricks.check()
                                 }),
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(1000),
                                 level => new Decimal(1 / (1 + 0.01 * level)),
                                 {
@@ -534,20 +534,20 @@ var game =
                                 })
                         ],
                         [ //more xTires per collect, Tire chance, faster Merge Quests
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e63),
-                                level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)),
+                                level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).mul(1 + game.skillTree.upgrades.tireValue.level),
                                 {
                                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e66),
                                 level => new Decimal(0.005 * (1 + 0.02 * level)),
                                 {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(2)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e69),
                                 level => new Decimal(1 / (1 + 0.005 * level)), {
                                     maxLevel: 100,
@@ -562,20 +562,20 @@ var game =
                                 }),
                         ],
                         [ //faster falling Magnets, faster Auto Merge, more GS
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1034)),
                                 level => Decimal.pow(0.99, level), {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1134)),
                                 level => Decimal.pow(0.99, level),
                                 {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1234)),
                                 level => new Decimal(1 + 0.1 * level + 0.01 * level * level),
                                 {
@@ -711,11 +711,17 @@ var game =
                             maxLevel: 45
                         }, ["mergeQuestUpgFallingMagnet"]),
 
-                        fasterAutoMerge: new SkillTreeUpgradeFixed([
-                            [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
-                        ], [false, true], {
-                                getEffectDisplay: effectDisplayTemplates.unlock()
-                        }, ["moreFragments"]),
+                    fasterAutoMerge: new SkillTreeUpgradeFixed([
+                        [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
+                    ], [false, true], {
+                        getEffectDisplay: effectDisplayTemplates.unlock()
+                    }, ["moreFragments"]),
+
+                    tireValue: new SkillTreeUpgradeFixed([
+                        [[new Decimal("1e4002"), RESOURCE_BRICK]],
+                    ], [false, true], {
+                        getEffectDisplay: effectDisplayTemplates.unlock()
+                    }, ["fasterAutoMerge"]),
 
                     }
             },

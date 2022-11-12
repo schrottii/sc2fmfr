@@ -59,7 +59,8 @@ class Barrel
                       .mul(game.mergeMastery.getScrapBoost(game.mergeMastery.level))
                       .mul(applyUpgrade(game.bricks.upgrades.scrapBoost))
                       .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost))
-                      //.mul(applyUpgrade(game.skillTree.upgrades.scrapBoost2))
+                      .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost2))
+                      .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
     }
 
     getIncome()

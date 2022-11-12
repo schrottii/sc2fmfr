@@ -560,6 +560,12 @@ class UITireUpgrade extends UIGroup{
     }
 }
 
+class UIFragmentUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.fragment$", y, desc, 0.05, col, isVisible);
+    }
+}
+
 class UISkillTreeUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col)
     {

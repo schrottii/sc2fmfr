@@ -166,6 +166,17 @@ var movingItemFactory =
             currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, {color: "#ffffff", bold: true, size: 0.1, border: h * 0.01}))
         }))
     },
+    fallingGold: (value) => {
+        movingItems.push(new FallingItem(images.goldenScrap, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 0.3 /* Speed */, h * 0.2, w * 0.2,
+            function () {
+                this.collected = true;
+                if (game.settings.lowPerformance) {
+                    this.destroy();
+                }
+                game.goldenScrap.amount = game.goldenScrap.amount.add(value);
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+            }))
+    },
     jumpingTire: value =>
     {
         let dir = Math.random() > 0.5 ? -1 : 1;
@@ -186,6 +197,14 @@ var movingItemFactory =
                 let v = value ? value : Decimal.round(game.tires.value);
                 game.tires.amount = game.tires.amount.add(v);
                 game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
+                if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
+                    movingItemFactory.jumpingTire();
+                    currentScene.popupTexts.push(new PopUpText("Spawned!", this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
+                    if (game.milestones.unlocked.includes(112) == false) {
+                            game.milestones.unlocked.push(112);
+                            GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[112]));
+                    }
+                }
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, {color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005}))
             }))
     },
@@ -208,6 +227,17 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.aerobeams.amount = game.aerobeams.amount.add(value);
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+            }))
+    },
+    fallingAngelBeam: (value) => {
+        movingItems.push(new FallingItem(images.movingItems.angelbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
+            function () {
+                this.collected = true;
+                if (game.settings.lowPerformance) {
+                    this.destroy();
+                }
+                game.angelbeams.amount = game.angelbeams.amount.add(value);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     }

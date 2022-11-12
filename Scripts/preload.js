@@ -13,7 +13,13 @@ function loadImage(path, onload) {
 
 var images =
     {
-        barrels: undefined,
+        barrels1: undefined,
+        barrels2: undefined,
+        barrels3: undefined,
+        barrels4: undefined,
+        barrels5: undefined,
+        barrels6: undefined,
+        barrels7: undefined,
         shadowBarrels: [],
         previewBarrels: [],
         appIcon: loadImage("Images/app-icon.png"),
@@ -48,6 +54,7 @@ var images =
         darkfragment: loadImage("Images/Currencies/darkfragment.png"),
         beam: loadImage("Images/Currencies/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
+        angelbeam: loadImage("Images/Currencies/angelbeam.png"),
         wrench: loadImage("Images/Currencies/wrench.png"),
         scrapyard: loadImage("Images/Scrapyard.png"),
         logos:
@@ -114,6 +121,9 @@ var images =
                 xplustwo: loadImage("Images/Upgrades/xplustwo.png"),
                 unlockbeamtypes: loadImage("Images/Upgrades/unlockbeamtypes.png"),
                 unlockscrapyard: loadImage("Images/Upgrades/unlockscrapyard.png"),
+                aerobeamChance: loadImage("Images/Upgrades/aerobeamchance.png"),
+                angelBeamChance: loadImage("Images/Upgrades/angelbeamchance.png"),
+                angelBeamValue: loadImage("Images/Upgrades/angelbeamvalue.png"),
             },
         scenes:
             {
@@ -135,6 +145,7 @@ var images =
                 beamboosts: loadImage("Images/Scenes/beamboosts.png"),
                 beamselection: loadImage("Images/Scenes/beamselection.png"),
                 aerobeams: loadImage("Images/Scenes/aerobeams.png"),
+                angelbeams: loadImage("Images/Scenes/angelbeams.png"),
                 wrenches: loadImage("Images/Scenes/wrenches.png"),
                 scrapyard: loadImage("Images/Scenes/scrapyard.png"),
             },
@@ -164,7 +175,8 @@ var images =
                 magnet: loadImage("Images/MovingItems/magnet.png"),
                 tire: loadImage("Images/MovingItems/tire.png"),
                 beam: loadImage("Images/MovingItems/steelbeam.png"),
-                aerobeam: loadImage("Images/Currencies/aerobeam.png")
+                aerobeam: loadImage("Images/Currencies/aerobeam.png"),
+                angelbeam: loadImage("Images/Currencies/angelbeam.png")
             }
     };
 
@@ -220,15 +232,17 @@ var cacheCanvasCtx = cacheCanvas.getContext("2d");
 function cacheBarrel(id) {
     let shadowOffset = BARREL_SPRITE_SIZE / 20;
 
-    let x = BARREL_SPRITE_SIZE * (id % Math.floor(images.barrels.width / BARREL_SPRITE_SIZE));
-    let y = BARREL_SPRITE_SIZE * Math.floor(id / Math.floor(images.barrels.width / BARREL_SPRITE_SIZE));
+    let x = BARREL_SPRITE_SIZE * (id % Math.floor(images.barrels1.width / BARREL_SPRITE_SIZE));
+    let y = BARREL_SPRITE_SIZE * Math.floor(id / Math.floor(images.barrels1.width / BARREL_SPRITE_SIZE));
 
     cacheCanvasCtx.clearRect(0, 0, BARREL_SPRITE_SIZE + shadowOffset, BARREL_SPRITE_SIZE + shadowOffset);
 
     cacheCanvas.width = BARREL_SPRITE_SIZE + shadowOffset;
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
-    cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
+
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 570) / 100))) % 7, 1);
+    cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();
     //img.src = cacheCanvas.toDataURL();
@@ -240,7 +254,7 @@ function cacheBarrel(id) {
     cacheCanvasCtx.clearRect(0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset + 1000, 0);
     cacheCanvasCtx.translate(-1000, 0);
-    cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
+    cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     img = new Image();
     //img.src = cacheCanvas.toDataURL();

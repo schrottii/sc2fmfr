@@ -43,6 +43,7 @@ var autoMergeTime = 0;
 var autoConvertTime = 0;
 
 var fallingMagnetTime = 0;
+var gsStormTime = 0;
 
 var deltaTimeOld = Date.now();
 var deltaTimeNew = Date.now();
@@ -198,6 +199,21 @@ function update()
             item.tick(delta);
         }
 
+        if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) {
+            gsStormTime += delta;
+            if (gsStormTime >= 60) {
+                gsStormTime = 0;
+                if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
+                    for (i = 0; i < 20; i++) {
+                        setTimeout(function () { movingItemFactory.fallingGold(game.goldenScrap.getResetAmount() / 35) }, 250 * i);
+                    }
+                }
+                else {
+                    GameNotification.create(new TextNotification("So unlucky", "No storm! :("));
+                }
+            }
+        }
+
         if (game.beams.isUnlocked()) {
             game.beams.time += delta;
 
@@ -216,7 +232,7 @@ function update()
                 }
             }
 
-            // Aero Beams
+            // Aerobeams
             if (game.beams.selected == 1) {
                 if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
@@ -226,6 +242,21 @@ function update()
                     }
                     else {
                         movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                    }
+                    game.beams.time = 0;
+                }
+            }
+
+            // Angel Beams
+            if (game.beams.selected == 2) {
+                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
+                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                            setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
+                        }
+                    }
+                    else {
+                        movingItemFactory.fallingAngelBeam(getAngelBeamValue());
                     }
                     game.beams.time = 0;
                 }
@@ -245,7 +276,10 @@ function update()
 
 function getBeamBaseValue() {
     return applyUpgrade(game.beams.upgrades.beamValue)
-        + (2*applyUpgrade(game.skillTree.upgrades.xplustwo));
+        + (2 * applyUpgrade(game.skillTree.upgrades.xplustwo));
+}
+function getAngelBeamValue() {
+    return applyUpgrade(game.angelbeams.upgrades.beamValue);
 }
 
 function getMagnetBaseValue()
@@ -386,18 +420,22 @@ function setBarrelQuality(idx, fromScene)
     barrelsLoaded = false;
     Scene.loadScene("Loading");
     if (game.dimension == 0) {
-        images.barrels = loadImage("Images/" + ["barrels.png", "barrels_lq.png",
-            "barrels_ulq.png"][idx], () => {
-                barrelsLoaded = true;
-                Scene.loadScene(fromScene ? fromScene : "Barrels");
-            });
+        for (i = 1; i < 8; i++) {
+            images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
+                "barrels" + i + "_ulq.png"][idx], () => {
+                    barrelsLoaded = true;
+                    Scene.loadScene(fromScene ? fromScene : "Barrels");
+                });
+        }
     }
     if (game.dimension == 1) {
-        images.barrels = loadImage("Images/" + ["barrels2.png", "barrels_lq2.png",
-            "barrels_ulq2.png"][idx], () => {
-                barrelsLoaded = true;
-                Scene.loadScene(fromScene ? fromScene : "Barrels");
-            });
+        for (i = 1; i < 8; i++) {
+            images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
+                "barrels" + i + "b_ulq.png"][idx], () => {
+                    barrelsLoaded = true;
+                    Scene.loadScene(fromScene ? fromScene : "Barrels");
+                });
+        }
     }
     BARREL_SPRITE_SIZE = [256, 128, 64][idx];
     images.shadowBarrels = []; //clear barrel cache
@@ -501,27 +539,71 @@ function spawnBarrel()
     }
 }
 
-function maxScrapUpgrades()
-{
-    for (k in game.scrapUpgrades)
-    {
+function maxScrapUpgrades() {
+    for (k in game.scrapUpgrades) {
         let upg = game.scrapUpgrades[k];
-        while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel)
-        {
+        while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
             upg.buy();
         }
     }
 }
 
+function maxSunUpgrades() {
+        let upg = game.solarSystem.upgrades.sun;
+        while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
+            upg.buy();
+        }
+}
+
 function saveGame(exportGame)
 {
-    let saveObj = JSON.parse(JSON.stringify(game)); //clone object
+    const saveObj = JSON.parse(JSON.stringify(game)); //clone object
     saveObj.milestones = saveObj.milestones.unlocked;
     saveObj.barrelLvls = [];
+
+    // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
+    // Reduces save size a bit (~300 chars less, I went from 11060 to 10716)
     for (let i = 0; i < barrels.length; i++)
     {
-        saveObj.barrelLvls[i] = barrels[i] !== undefined ? barrels[i].level : undefined;
+        saveObj.barrelLvls[i] = barrels[i] !== undefined ? Math.ceil(barrels[i].level) : undefined;
     }
+
+    // Added in SC2FMFR 2.1: The save shorter 3000!
+    // It removes the max. levels from most* upgrades in your save code
+    // ...you don't need them in the save code. The game loads them every time anyway.
+    // *afaik only tire upgrades are not affected. they are stored a little bit differently
+    // It's great: I went from 10716 to 9672 (~1k less)   - both together reduce size by ~14%
+    try {
+
+        for (const [key, value] of Object.entries(saveObj)) {
+            if (saveObj[key]["upgrades"] != undefined) { // For normal upgrades
+                for (const [key2, value2] of Object.entries(saveObj[key]["upgrades"])) {
+                    if (saveObj[key]["upgrades"][key2]["maxLevel"] != undefined || saveObj[key]["upgrades"][key2]["maxLevel"] == null) {
+                        delete saveObj[key]["upgrades"][key2].maxLevel;
+                    }
+                }
+            }
+
+            else { // Upgrades such as scrapUpgrades which do not have another upgrades array...
+                for (const [key2, value2] of Object.entries(saveObj[key])) {
+                    if (saveObj[key][key2] != undefined) {
+                        if (saveObj[key][key2]["maxLevel"] != undefined || saveObj[key][key2]["maxLevel"] == null) {
+                            delete saveObj[key][key2].maxLevel;
+                        }
+                    }
+                }
+            
+        
+            }
+        }
+
+    }
+    catch{
+        // for the case your javascript is so old it doesn't have Object.entries...
+        // it will just skip the entire try part and well, not shorten it at all.
+        console.log("Your device might have old JavaScript!");
+    }
+
 
     if (exportGame)
     {
@@ -791,8 +873,13 @@ function loadGame(saveCode)
             game.aerobeams.amount = loadVal(new Decimal(loadObj.aerobeams.amount), new Decimal(0));
 
             if (loadObj.aerobeams.upgrades !== undefined) {
-                Object.keys(loadObj.aerobeams.upgrades).forEach(k => {
-                    game.aerobeams.upgrades[k].level = loadVal(loadObj.aerobeams.upgrades[k].level, 0);
+                Object.keys(game.aerobeams.upgrades).forEach(k => {
+                    if (loadObj.aerobeams.upgrades[k] != undefined) {
+                        game.aerobeams.upgrades[k].level = loadVal(loadObj.aerobeams.upgrades[k].level, 0);
+                    }
+                    else {
+                        game.aerobeams.upgrades[k].level = 0;
+                    }
                 });
             }
         }
@@ -800,6 +887,22 @@ function loadGame(saveCode)
             game.beams.aerobeams = new Decimal(0);
             Object.keys(game.aerobeams.upgrades).forEach(k => {
                 game.aerobeams.upgrades[k].level = 0;
+            })
+        }
+
+        if (loadObj.angelbeams !== undefined) {
+            game.angelbeams.amount = loadVal(new Decimal(loadObj.angelbeams.amount), new Decimal(0));
+
+            if (loadObj.angelbeams.upgrades !== undefined) {
+                Object.keys(loadObj.angelbeams.upgrades).forEach(k => {
+                    game.angelbeams.upgrades[k].level = loadVal(loadObj.angelbeams.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.angelbeams.amount = new Decimal(0);
+            Object.keys(game.angelbeams.upgrades).forEach(k => {
+                game.angelbeams.upgrades[k].level = 0;
             })
         }
 
@@ -821,9 +924,14 @@ function loadGame(saveCode)
 
         if(loadObj.skillTree !== undefined && loadObj.skillTree.upgrades !== undefined)
         {
-            for (let k of Object.keys(loadObj.skillTree.upgrades))
+            for (let k of Object.keys(game.skillTree.upgrades))
             {
-                game.skillTree.upgrades[k].level = loadVal(loadObj.skillTree.upgrades[k].level, 0);
+                if (loadObj.skillTree.upgrades[k] != undefined) {
+                    game.skillTree.upgrades[k].level = loadVal(loadObj.skillTree.upgrades[k].level, 0);
+                }
+                else {
+                    game.skillTree.upgrades[k].level = 0;
+                }
             }
         }
 
@@ -844,8 +952,6 @@ function loadGame(saveCode)
             })
         }
 
-        if (loadObj.skillTree.upgrades.moreFragments == undefined) game.skillTree.upgrades.moreFragments.level = 0;
-        if (loadObj.skillTree.upgrades.fasterAutoMerge == undefined) game.skillTree.upgrades.fasterAutoMerge.level = 0;
 
         if(loadObj.milestones !== undefined)
         {

@@ -10,7 +10,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_DARKFRAGMENT = 9,
     RESOURCE_BEAM = 10,
     RESOURCE_AEROBEAM = 11,
-    RESOURCE_WRENCH = 12;
+    RESOURCE_WRENCH = 12,
+    RESOURCE_ANGELBEAM = 13;
 
 function applyUpgrade(upg)
 {
@@ -47,6 +48,8 @@ function getUpgradeResource(res)
             return game.aerobeams.amount;
         case RESOURCE_WRENCH:
             return game.wrenches.amount;
+        case RESOURCE_ANGELBEAM:
+            return game.angelbeams.amount;
         default:
             return null;
     }
@@ -92,6 +95,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_WRENCH:
             game.wrenches.amount = res;
             break;
+        case RESOURCE_ANGELBEAM:
+            game.angelbeams.amount = res;
+            break;
         default:
             break;
     }
@@ -125,6 +131,8 @@ function getResourceImage(res)
             return "$images.aerobeam$";
         case RESOURCE_WRENCH:
             return "$images.wrench$";
+        case RESOURCE_ANGELBEAM:
+            return "$images.angelbeam$";
         default:
             break;
     }
@@ -179,20 +187,14 @@ class ScrapUpgrade
 
 
 
-    buy(round)
-    {
+    buy(round) {
         let resource = getUpgradeResource(this.resource);
 
-        let yohowmuch = new Decimal(this.currentPrice());        
-
-        let canAfford = round ? yohowmuch.round().lte(resource.toFixed(0)) : yohowmuch.lte(resource);
-        if (this.level < this.getMaxLevel() && canAfford)
-        {
+        let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
+        if (this.level < this.getMaxLevel() && canAfford) {
             this.onBuy();
-            let p = round ? yohowmuch.round() : yohowmuch;
-
+            let p = round ? this.currentPrice().round() : this.currentPrice();
             resource = resource.sub(p);
-
             if (isNaN(resource)) //is resource negative
             {
                 resource = new Decimal(0);
@@ -484,6 +486,12 @@ class WrenchUpgrade extends ScrapUpgrade {
         this.resource = RESOURCE_WRENCH;
     }
 }
+class AngelBeamUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_ANGELBEAM;
+    }
+}
 
 var EarthLevels =
     {
@@ -495,7 +503,8 @@ var EarthLevels =
         UNLOCK_NEPTUNE: 7,
         SKILL_TREE: 8,
         BRICK_3_LEVELS: 9,
-        SECOND_DIMENSION: 10
+        ANGEL_BEAMS: 10,
+        SECOND_DIMENSION: 11
     };
 
 var effectDisplayTemplates =

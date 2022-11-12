@@ -30,6 +30,7 @@ var images =
         buttonEmpty: loadImage("Images/Buttons/button_empty.png"),
         buttonBack: loadImage("Images/Buttons/button_back.png"),
         buttonMaxAll: loadImage("Images/Buttons/maxall.png"),
+        buttonReset: loadImage("Images/Buttons/button_reset.png"),
         scrap2logo: loadImage("Images/scrap2logo.png"),
         gameNotifaction: loadImage("Images/gamenotification.png"),
         clock: loadImage("Images/clock.png"),
@@ -44,6 +45,7 @@ var images =
         locked: loadImage("Images/locked.png"),
         darkscrap: loadImage("Images/Currencies/darkscrap.png"),
         darkfragment: loadImage("Images/Currencies/darkfragment.png"),
+        beam: loadImage("Images/Currencies/steelbeam.png"),
         logos:
             {
                 scrap2: loadImage("Images/scrap2logo.png"),
@@ -96,9 +98,13 @@ var images =
                 tireChance: loadImage("Images/Upgrades/tirechance.png"),
                 fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
                 fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
-            fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
-            moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
-                moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png")
+                fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
+                moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
+                moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png"),
+                beamChance: loadImage("Images/Upgrades/beamchance.png"),
+                beamValue: loadImage("Images/Upgrades/beamvalue.png"),
+                beamStormChance: loadImage("Images/Upgrades/beamstormchance.png"),
+                beamStormValue: loadImage("Images/Upgrades/beamstormvalue.png"),
             },
         scenes:
             {
@@ -115,7 +121,9 @@ var images =
                 tires: loadImage("Images/Scenes/tires.png"),
                 fragment: loadImage("Images/Scenes/fragment.png"),
                 dimension: loadImage("Images/Scenes/dimension.png"),
-                skillTree: loadImage("Images/Scenes/skilltree.png")
+                skillTree: loadImage("Images/Scenes/skilltree.png"),
+                steelBeams: loadImage("Images/Scenes/steelbeams.png"),
+                beamboosts: loadImage("Images/Scenes/beamboosts.png"),
             },
         solarSystem:
         {
@@ -141,7 +149,8 @@ var images =
         movingItems:
             {
                 magnet: loadImage("Images/MovingItems/magnet.png"),
-                tire: loadImage("Images/MovingItems/tire.png")
+                tire: loadImage("Images/MovingItems/tire.png"),
+                beam: loadImage("Images/MovingItems/steelbeam.png")
             }
     };
 

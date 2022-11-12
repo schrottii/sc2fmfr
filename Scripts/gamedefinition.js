@@ -28,7 +28,7 @@ var game =
                                 return new Decimal(m[Math.min(level, m.length - 1)]).mul(Decimal.pow(10, Math.max(0, level - m.length + 1)));
                             },
                             {
-                                maxLevel: 50,
+                                maxLevel: 75,
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(0)
                             }),
                         magnetBoost: new GoldenScrapUpgrade(
@@ -113,6 +113,42 @@ var game =
                     {
                         onBuy: function ()
                         {
+                            trophyMergeCounter = 0;
+                            if (85 in game.milestones.unlocked == false) {
+                                if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
+                                    if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
+                                        game.milestones.unlocked.push(85);
+                                        GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[85]));
+                                    }
+                                }
+                            }
+
+                            if (87 in game.milestones.unlocked == false &! barrels.includes(undefined)) {
+                                if (trophyProgress != 87001) {
+                                    if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[12] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
+                                        if (barrels[0].level == barrels[1].level && barrels[1].level == barrels[2].level && barrels[2].level == barrels[3].level && barrels[3].level == barrels[4].level && barrels[4].level != barrels[5].level && barrels[4].level == barrels[8].level && barrels[8].level == barrels[9].level && barrels[9].level == barrels[10].level && barrels[10].level == barrels[11].level && barrels[11].level == barrels[12].level && barrels[12].level != barrels[13].level && barrels[12].level == barrels[15].level && barrels[15].level == barrels[16].level && barrels[16].level == barrels[19].level) {
+                                            trophyProgress = 87001;
+                                        }
+                                    }
+                                }
+                                else if (trophyProgress == 87001 & !barrels.includes(undefined)) {
+                                    if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
+                                        if (barrels[0].level == barrels[1].level && barrels[1].level == barrels[2].level && barrels[2].level == barrels[3].level && barrels[3].level == barrels[4].level && barrels[4].level != barrels[5].level && barrels[4].level == barrels[7].level && barrels[8].level == barrels[9].level && barrels[9].level == barrels[10].level && barrels[10].level == barrels[11].level && barrels[11].level != barrels[12].level && barrels[14].level != barrels[15].level && barrels[15].level == barrels[16].level && barrels[16].level == barrels[17].level && barrels[16].level == barrels[19].level) {
+                                            game.milestones.unlocked.push(87);
+                                            GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[87]));
+                                            trophyProgress = 0;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (88 in game.milestones.unlocked == false) {
+                                if (barrels[0].level.toFixed(0) == 343 && barrels[3].level.toFixed(0) == 353) {
+                                    game.milestones.unlocked.push(88);
+                                    GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[88]));
+                                }
+                            }
+
                             for (let i = 0; i < barrels.length; i++)
                             {
                                 if (barrels[i] !== undefined && barrels[i].level < applyUpgrade(this).toNumber() + 1)
@@ -120,6 +156,7 @@ var game =
                                     barrels[i] = new Barrel(applyUpgrade(this).toNumber() + 1);
                                 }
                             }
+                            
                         },
                         onLevelDown: function(level)
                         {
@@ -289,10 +326,10 @@ var game =
                     ),
 
                     astro: new GoldenScrapUpgrade(
-                        level => new Decimal(1e30) * (1 + level / 11) * Math.max(1, Math.round((level / 3) - 7)) * Math.max(1, level-11) * Math.max(1, level-25) * (1+level*1.17),
+                        level => new Decimal(1e30) * (1 + level / 11) * Math.max(1, Math.round((level / 3) - 7)) * Math.max(1, level-11) * Math.max(1, level-25) * (1+level*1.17) * (level > 99 ? Math.pow(level-97, 15) : 1),
                         level => 0.02 * level,
                         {
-                            maxLevel: 100,
+                            maxLevel: () => 100 + (game.skillTree.upgrades.higherAstroMax.level > 0 ? 25 : 0),
                             getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                     }
                     ),
@@ -438,7 +475,7 @@ var game =
                             level => Decimal.pow(1.1, level),
                             {
                                 maxLevel: 100000,
-                                getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                                getEffectDisplay: effectDisplayTemplates.numberStandard(1),
                             }),
                         magnetBoost: new BrickUpgrade(level => (Decimal.pow(32, level + Math.pow(0.75 * Math.max(0, level - 50), 1.25))
                                                                        .mul(100e3)).pow(Decimal.pow(1.01, Math.max(0, level - 250))),
@@ -611,14 +648,14 @@ var game =
         upgrades:
         {
             darkScrapBoost: new DarkScrapUpgrade(
-                level => 10 + (level * 13 * Decimal.pow(1.2, level)),
+                level => 50 + (level * 13 * Decimal.pow(1.2, level)),
                 level => 1 + (0.1 * level) * Decimal.pow(1.1, Math.max(0, level - 15)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1),
                     maxLevel: 50
                 }),
             mergeTokenBoost: new DarkScrapUpgrade(
-                level => 100 + (50*level),
+                level => 200 + (50*level),
                 level => 1 + (level/10),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1),
@@ -634,7 +671,7 @@ var game =
         {
             scrapBoost: new DarkFragmentUpgrade(
                 level => 100 * Decimal.pow(1.2, level),
-                level => 1 + (10 * level) * Decimal.pow(1.3, Math.max(0, level - 10)),
+                level => 1 + (17 * level) * Decimal.pow(1.3, Math.max(0, level - 5)),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -645,6 +682,55 @@ var game =
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+        },
+    },
+    beams:
+    {
+        isUnlocked: () => game.highestBarrelReached > 299,
+        amount: new Decimal(0),
+        time: 0,
+        upgrades:
+        {
+            fasterBeams: new BeamUpgrade(
+                level => 5 * (Math.round(level/3)+1),
+                level => 0.25 * level,
+                {
+                    maxLevel: 60,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
+                }),
+            beamValue: new BeamUpgrade(
+                level => 50 * ((level*level) + 1),
+                level => 1 + level,
+                {
+                    maxLevel: 4,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
+                }),
+            beamStormChance: new BeamUpgrade(
+                level => 10 + level,
+                level => 0.1 * level,
+                {
+                    maxLevel: 100,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%")
+                }),
+            beamStormValue: new BeamUpgrade(
+                level => 500 + (100 * level),
+                level => level,
+                {
+                    maxLevel: 5,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                }),
+            moreScrap: new BeamUpgrade(
+                level => 5 + Math.round(level / 10),
+                level => Math.pow(1.1, level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                }),
+            moreMagnets: new BeamUpgrade(
+                level => 10 + Math.round(level / 10),
+                level => Math.pow(1.03, level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
                 }),
         },
     },
@@ -723,6 +809,12 @@ var game =
                         getEffectDisplay: effectDisplayTemplates.unlock()
                     }, ["fasterAutoMerge"]),
 
+                    higherAstroMax: new SkillTreeUpgradeFixed([
+                        [[new Decimal("1e1200"), RESOURCE_SCRAP]],
+                    ], [false, true], {
+                        getEffectDisplay: effectDisplayTemplates.unlock()
+                    }, ["scrapBoost2"]),
+
                     }
             },
         milestones:
@@ -757,8 +849,8 @@ var game =
                         new Milestone("DESTROY THEM!!!", 1, "Enable destroying barrels", () => game.settings.destroyBarrels == 1),
                         new Milestone("The fanmade currency!", 39, "Reach barrel 100 to unlock Barrel Fragments!", () => game.fragment.isUnlocked()),
                         new Milestone("Mags sponsored by Frags", 8, "Buy a level of More Magnets (Fragment upgrade)", () => game.fragment.upgrades.magnetBoost.level > 0),
-                        new Milestone("One K of F", 39, "Have 1000 fragments at once", () => game.fragment.amount.gte(1000)),
-                        new Milestone("4Posupgs", 39, "Have 10000 fragments at once", () => game.fragment.amount.gte(10000)),
+                        new Milestone("One K of F", 48, "Have 1000 fragments at once", () => game.fragment.amount.gte(1000)),
+                        new Milestone("4Posupgs", 50, "Have 10000 fragments at once", () => game.fragment.amount.gte(10000)),
 
                         new Milestone("Who needs\nUpgrades", 13, () => "Get " + formatNumber(1e15) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e15) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
                         new Milestone("M.P. + W2ed", 8, "Have 69.420 magnets at once", () => game.magnets.gte(69420)),
@@ -831,12 +923,23 @@ var game =
                         new Milestone("but cooler", 41, () => "Earn 10k dark fragments", () => game.darkfragment.amount > 9999),
                         new Milestone("Double Tap Double Pain", 41, () => "Earn 100k dark fragments", () => game.darkfragment.amount > 99999),
 
-                        new Milestone("New Dark", 42, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
-                        new Milestone("I've seen them all", 42, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
+                        new Milestone("New Dark", 51, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
+                        new Milestone("I've seen them all", 51, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
                         new Milestone("MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
                         new Milestone("Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
                         new Milestone("I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
-                        
+
+                        new Milestone("1 to 10 in Order", 1, () => "I'm really surprised if you didn't do this just for the achievement\n(Upgrade Better Barrels to confirm)", () => game.dimension == 508050),
+                        new Milestone("Shrove Supremacy", 43, () => "Man complained 'bout my barrel.", () => game.dimension == 508050),
+                        new Milestone("A whole field of 69", 44, () => "BIG NICE\n(Upgrade Better Barrels to confirm)", () => game.dimension == 508050),
+                        new Milestone("Pastaring", 45, () => "Stopastaring\n(Upgrade Better Barrels to confirm)", () => game.dimension == 508050),
+                        new Milestone("Tire at top, in my hand", 46, () => "Collect a tire while having a stack of tires in the top left", () => game.dimension == 508050),
+
+                        new Milestone("Steel Beams!", 47, () => "Unlock Steel Beams", () => game.highestBarrelReached > 299),
+                        new Milestone("Hey there my good old friend!", 47, () => "Catch your first Steel Beam", () => game.beams.amount > 0),
+                        new Milestone("I steal beans", 47, () => "Hoard quite some Steel Beams", () => game.beams.amount > 99),
+                        new Milestone("Bee-ms", 47, () => "Increase the beam frequency a bit", () => game.beams.upgrades.fasterBeams.level > 3),
+                        new Milestone("Worth a LOT", 47, () => "Increase the beam worth to 5", () => game.beams.upgrades.beamValue.level > 3),
                 ],
                 highlighted: 0,
                 tooltip: null,
@@ -885,6 +988,7 @@ var game =
                 resetConfirmation: true,
                 lowPerformance: false,
                 musicOnOff: false,
+                barrelSpawn: true,
                 musicSelect: 0
             }
     };

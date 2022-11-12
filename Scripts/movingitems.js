@@ -173,6 +173,12 @@ var movingItemFactory =
             function()
             {
                 this.collected = true;
+                if (89 in game.milestones.unlocked == false && barrels[0] != undefined) {
+                    if (barrels[0].level.toFixed(0) == 384) {
+                        game.milestones.unlocked.push(89);
+                        GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[89]));
+                    }
+                }
                 if(game.settings.lowPerformance)
                 {
                     this.destroy();
@@ -181,6 +187,17 @@ var movingItemFactory =
                 game.tires.amount = game.tires.amount.add(v);
                 game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, {color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005}))
+            }))
+    },
+    fallingBeam: (value) => {
+        movingItems.push(new FallingItem(images.movingItems.beam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 1.0, h * 0.25, 0,
+            function () {
+                this.collected = true;
+                if (game.settings.lowPerformance) {
+                    this.destroy();
+                }
+                game.beams.amount = game.beams.amount.add(value);
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     }
 };

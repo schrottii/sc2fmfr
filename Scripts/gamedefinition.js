@@ -7,6 +7,7 @@ var game =
         highestMasteryLevel: 0,
         magnets: new Decimal(0),
         remainderMagnets: 0,
+        dimension: 0,
         goldenScrap:
             {
                 amount: new Decimal(0),
@@ -231,11 +232,11 @@ var game =
                             }
                         ),
                         earth: new GoldenScrapUpgrade(
-                            level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25][level]),
+                            level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e40][level]),
                             level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                                "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n3rd Brick Upgrade"][level],
+                                "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n3rd Brick Upgrade", "Second Dimension"][level],
                             {
-                                maxLevel: 9,
+                                maxLevel: 10,
                                 getEffectDisplay: function ()
                                 {
                                     if (this.level === this.maxLevel)
@@ -344,9 +345,9 @@ var game =
                                 maxLevel: () => 50 + applyUpgrade(game.bricks.upgrades.questLevels)
                             }),
                         fallingMagnetValue: new MergeTokenUpgrade(level => new Decimal(15),
-                                level => new Decimal(1 * level), {
+                                level => new Decimal(1 + level), {
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(2),
-                                maxLevel: 8
+                                maxLevel: 15
                             })
                     }
             },
@@ -603,6 +604,50 @@ var game =
                 }),
         },
     },
+    darkscrap:
+    {
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            darkScrapBoost: new DarkScrapUpgrade(
+                level => 10 + (level * 13 * Decimal.pow(1.2, level)),
+                level => 1 + (0.1 * level) * Decimal.pow(1.1, Math.max(0, level - 15)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    maxLevel: 50
+                }),
+            mergeTokenBoost: new DarkScrapUpgrade(
+                level => 100 + (50*level),
+                level => 1 + (level/10),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    maxLevel: 50
+                }),
+        },
+    },
+    darkfragment:
+    {
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            scrapBoost: new DarkFragmentUpgrade(
+                level => 100 * Decimal.pow(1.2, level),
+                level => 1 + (10 * level) * Decimal.pow(1.3, Math.max(0, level - 10)),
+                {
+                    isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+            moreFragments: new DarkFragmentUpgrade(
+                level => 100 * Decimal.pow(1.2, level),
+                level => 1 + (0.2 * level),
+                {
+                    isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+        },
+    },
         skillTree:
             {
                 isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SKILL_TREE,
@@ -663,7 +708,7 @@ var game =
                         level => 1 + (level / 5),
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1),
-                            maxLevel: 35
+                            maxLevel: 45
                         }, ["mergeQuestUpgFallingMagnet"]),
 
                         fasterAutoMerge: new SkillTreeUpgradeFixed([
@@ -767,7 +812,26 @@ var game =
                             .gte(Decimal.pow(8, 1024))),
                         new Milestone("Are we\nthere yet?", 29, () => "Reach " + formatNumber(Decimal.pow(9.999, 1000)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(9.999, 1000)), "red"),
                         new Milestone("Inf.^10", 36, () => "Reach " + formatNumber(Decimal.pow(2, 10240)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 10240)), "#b60045"),
-                    ],
+
+                        new Milestone("Second Dimension", 42, () => "Unlock Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
+                        new Milestone("I'm scared", 42, () => "Enter the Second Dimension", () => game.dimension == 1),
+                        new Milestone("Back on earth", 1, () => "Leave the Second Dimension", () => game.darkscrap.amount > 1),
+                        new Milestone("Dark money???", 40, () => "Earn some dark scrap", () => game.darkscrap.amount > 24),
+                        new Milestone("Fragments from the\n other side", 41, () => "Earn your first dark fragments", () => game.darkfragment.amount > 1),
+
+                        new Milestone("it so slow.", 40, () => "Earn 1000 dark scrap", () => game.darkscrap.amount > 999),
+                        new Milestone("I like Pain", 40, () => "Earn 100k dark scrap", () => game.darkscrap.amount > 99999),
+                        new Milestone("They're like fragments,", 41, () => "Earn 100 dark fragments", () => game.darkfragment.amount > 99),
+                        new Milestone("but cooler", 41, () => "Earn 10k dark fragments", () => game.darkfragment.amount > 9999),
+                        new Milestone("Double Tap Double Pain", 41, () => "Earn 100k dark fragments", () => game.darkfragment.amount > 99999),
+
+                        new Milestone("New Dark", 42, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
+                        new Milestone("I've seen them all", 42, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
+                        new Milestone("MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
+                        new Milestone("Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
+                        new Milestone("I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
+                        
+                ],
                 highlighted: 0,
                 tooltip: null,
                 page: 0,

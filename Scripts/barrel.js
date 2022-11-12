@@ -51,7 +51,7 @@ class Barrel
 
     static getIncomeForLevel(level)
     {
-        return Decimal.pow(3, level).mul(applyUpgrade(game.magnetUpgrades.scrapBoost))
+        return Decimal.pow([3,1.1][game.dimension], level).mul(applyUpgrade(game.magnetUpgrades.scrapBoost))
                       .mul(game.goldenScrap.getBoost())
                       .mul(applyUpgrade(game.goldenScrap.upgrades.scrapBoost))
                       .mul(applyUpgrade(game.solarSystem.upgrades.sun))
@@ -61,6 +61,9 @@ class Barrel
                       .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost))
                       .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost2))
                       .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
+                        .div(1 + (new Decimal(1e100) * game.dimension))
+                        .mul(1 + (game.dimension * applyUpgrade(game.darkfragment.upgrades.scrapBoost)))
+                        .add(1 * game.dimension)
     }
 
     getIncome()

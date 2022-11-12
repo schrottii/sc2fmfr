@@ -11,7 +11,7 @@ var gSplitter = new GraphemeSplitter();
 
 var barrels = [];
 var draggedBarrel;
-var tempDrawnBarrels = []; //barrels drawn below newly merged barrels
+var tempDrawnBarrels = []; // barrels drawn below newly merged barrels
 var lastClickedBarrel = -1;
 var timeSinceLastBarrelClick = 0;
 

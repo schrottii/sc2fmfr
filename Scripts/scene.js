@@ -66,7 +66,7 @@ function playmusic(x = 0) {
         else if (game.settings.musicSelect == 3) {
             setTimeout(repeatmusic, 200000);
         }
-    } //^Wonder what those values are? Duration of the song in ms!
+    } //^Wonder what those values are? Duration of the song in ms! :)
 }
 
 function repeatmusic() {

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Scrap</title>
+        <meta charset="utf-8"/>
+
+        <style>
+            @font-face {
+                font-family: "Work Sans";
+                src: url("Fonts/WorkSans-Medium.ttf");
+                font-weight: 500;
+            }
+
+            @font-face {
+                font-family: "Work Sans";
+                src: url("Fonts/WorkSans-Bold.ttf");
+                font-weight: 700;
+            }
+
+            @font-face {
+                font-family: "Work Sans";
+                src: url("Fonts/WorkSans-Black.ttf");
+                font-weight: 900;
+            }
+
+            @font-face {
+                font-family: "Autumn";
+                src: url("Fonts/AutumnRegular.ttf");
+                font-weight: 900;
+            }
+
+            *, html, body{
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                height: 100%;
+                text-align: center;
+            }
+
+            body{
+                background-color: black;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+
+            canvas#gameCanvas{
+                width: auto;
+                height: 100%;
+            }
+
+            canvas.cache{
+                width: 0;
+                height: 0;
+            }
+
+            div.absolute{
+                position: absolute;
+                display: none;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                padding: 0;
+                margin: 0;
+                z-index: 10;
+                background-color: rgba(0, 0, 0, 0.3);
+            }
+
+            div.absolute > *{
+                transform: translate(-50%, -50%);
+            }
+
+            div.absolute textarea{
+                position: absolute;
+                left: 50vw;
+                top: 25vh;
+                width: 75vw;
+                height: 30vh;
+                text-align: left;
+                background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+                overflow-y: scroll;
+                box-shadow: 1px 1px 0px black;
+                border: none;
+            }
+
+            div.absolute > button{
+                height: 1.5em;
+                position: absolute;
+                font-size: 3vh;
+                background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+                border: none;
+                box-shadow: 1px 1px 0px black;
+                padding: 0.5vh;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="gameCanvas" width="500" height="800"></canvas>
+
+        <div class="absolute">
+            <textarea value="text"></textarea>
+            <button id="export" style="left: 30vw; top: 60vh;">Export</button>
+            <button id="import" style="left: 70vw; top: 60vh;">Import</button>
+            <button id="close" style="left: 50vw; top: 70vh;">Close</button>
+        </div>
+
+        <script src="Scripts/breakinfinity.js"></script>
+        <script src="Scripts/graphemesplitter.js"></script>
+        <script src="Scripts/utils.js"></script>
+        <script src="Scripts/numberformatter.js"></script>
+        <script src="Scripts/preload.js"></script>
+        <script src="Scripts/canvasui.js"></script>
+        <script src="Scripts/gamenotification.js"></script>
+        <script src="Scripts/upgrade.js"></script>
+        <script src="Scripts/mergequest.js"></script>
+        <script src="Scripts/milestone.js"></script>
+        <script src="Scripts/movingitems.js"></script>
+        <script src="Scripts/gamedefinition.js"></script>
+        <script src="Scripts/scene.js"></script>
+        <script src="Scripts/barrel.js"></script>
+        <script src="Scripts/effects.js"></script>
+        <script src="Scripts/main.js"></script>
+    </body>
+</html>

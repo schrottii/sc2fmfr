@@ -2,6 +2,8 @@ var myMusic;
 var isPlaying = 0;
 var hePlayed = 0;
 
+var C = "default";
+
 function playmusic(x = 0) {
     if (game.settings.musicSelect != hePlayed) {
         x = 50;
@@ -240,10 +242,10 @@ var scenes =
         new Scene("Loading",
             [],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
-                ctx.fillStyle = colors.table2;
+                ctx.fillStyle = colors[C].table2;
                 ctx.fillRect(0, h * 0.1, w, h);
 
                 ctx.drawImage(images.appIcon, w * 0.3, h * 0.25, w * 0.4, w * 0.4);
@@ -260,11 +262,11 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.7.1 (v2.4)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.8 (v2.5)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Schrottii's favorite update", w * 0.49, h - w * 0.1);
+                //ctx.fillText("Schrottii's favorite update", w * 0.49, h - w * 0.1);
             }),
         new Scene("Barrels",
             [
@@ -282,7 +284,8 @@ var scenes =
                     quadraticMin: true, anchor: [0, 0.5]
                 }),
                 new UIButton(0.2, 0.97, 0.15, 0.06, images.scenes.barrelGallery, () => Scene.loadScene("BarrelGallery"), { quadraticMin: true }),
-                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.options, () => Scene.loadScene("Options"), {
+                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.steelBeams, () => Scene.loadScene("Beams"), {
+                    isVisible: () => game.beams.isUnlocked(),
                     quadraticMin: true
                 }),
                 new UIButton(0.6, 0.97, 0.15, 0.06, images.scenes.fragment, () => Scene.loadScene("Fragment"),
@@ -306,19 +309,20 @@ var scenes =
 
 
                 new UIButton(0.1, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
-                new UIButton(0.25, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.25, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
+                new UIButton(0.4, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
                 new UIButton(0.55, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
                     {
                         quadratic: true,
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1
                     }),
-                new UICheckbox(0.7, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
+                new UICheckbox(0.85, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
                     isVisible: () => game.highestBarrelReached >= 300,
                     quadratic: true,
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
                 }),
-                new UICheckbox(0.4, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
+                new UICheckbox(0.7, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.milestones.unlocked.includes(6),
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
@@ -354,11 +358,17 @@ var scenes =
                     draggedBarrel.scale = 1.1;
                 }
 
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
                 ctx.lineWidth = 0;
 
-                ctx.fillStyle = colors.bgFront;
+                ctx.fillStyle = colors[C].bgFrontD;
+                ctx.fillRect(0, h * 0.857, w, h * 0.0075);
+                ctx.fillRect(0, h * 0.696, w, h * 0.0075);
+                ctx.fillRect(0, h * 0.098, w, h * 0.0075);
+                ctx.fillRect(0, h * 0.935, w, h * 0.01);
+
+                ctx.fillStyle = colors[C].bgFront;
                 ctx.fillRect(0, 0, w, h * 0.1);
                 ctx.fillRect(0, h * 0.94, w, h * 0.06);
 
@@ -378,9 +388,9 @@ var scenes =
                 ctx.fillText(formatNumber(game.magnets, game.settings.numberFormatType, { namesAfter: 1e9 }), w * 0.85, h * 0.043, w / 3.5);
                 ctx.drawImage(images.magnet, w * 0.9 - h * 0.0275, h * 0.0325, h * 0.055, h * 0.055);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(0, h * 0.7, w, h * 0.08);
-                ctx.fillStyle = colors.table2;
+                ctx.fillStyle = colors[C].table2;
                 ctx.fillRect(0, h * 0.78, w, h * 0.08);
 
                 for (let i = 0, l = barrels.length; i < l; i++) {
@@ -482,16 +492,16 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIMagnetUpgrade(game.magnetUpgrades.scrapBoost, images.upgrades.moreScrap, 0.4, "Get More Scrap"),
-                new UIMagnetUpgrade(game.magnetUpgrades.moreGoldenScrap, images.upgrades.goldenScrapBoost, 0.5, "Get More Golden Scrap", colors.table2),
+                new UIMagnetUpgrade(game.magnetUpgrades.moreGoldenScrap, images.upgrades.goldenScrapBoost, 0.5, "Get More Golden Scrap", colors[C].table2),
                 new UIMagnetUpgrade(game.magnetUpgrades.magnetMergeChance, images.upgrades.magnetChance, 0.6, "Increase the Chance to\nget Magnets by merging"),
                 new UIGroup(
                     [
-                        new UIMagnetUpgrade(game.magnetUpgrades.autoMerger, images.upgrades.fasterAutoMerge, 0.7, "Increase Auto Merge Speed", colors.table2)
+                        new UIMagnetUpgrade(game.magnetUpgrades.autoMerger, images.upgrades.fasterAutoMerge, 0.7, "Increase Auto Merge Speed", colors[C].table2)
                     ], () => game.milestones.achievements[6].isUnlocked()),
-                new UIMagnetUpgrade(game.magnetUpgrades.brickSpeed, images.upgrades.brickSpeed, 0.8, "Less Merges are needed\nto double Brick\nproduction.", colors.table, () => applyUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed)),
+                new UIMagnetUpgrade(game.magnetUpgrades.brickSpeed, images.upgrades.brickSpeed, 0.8, "Less Merges are needed\nto double Brick\nproduction.", colors[C].table, () => applyUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed)),
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 drawCurrencyBar(game.magnets, images.magnet);
@@ -515,14 +525,14 @@ var scenes =
                 new UIText(() => "$images.goldenScrap$" + formatNumber(game.goldenScrap.amount, game.settings.numberFormatType, { namesAfter: 1e10 }) +
                     " → +" + formatPercent(game.goldenScrap.getBoost().sub(1), game.settings.numberFormatType, { namesAfter: 1e10 }), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
                 new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
-                new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.75, "Get More Magnets", colors.table2),
+                new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.75, "Get More Magnets", colors[C].table2),
                 new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.gsBoost, images.upgrades.moreGS, 0.85, "Get More GS"),
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.35, w * 0.9, h * 0.06);
             }),
         new Scene("SecondDimension",
@@ -530,7 +540,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.dimension, () => {
                     if (game.dimension == 0) { //Enter Dimension
-                        if (game.goldenScrap.amount*2 < new Decimal(1e20)*2) {
+                        if (game.goldenScrap.amount * 2 < new Decimal(1e20) * 2) {
                             alert("You need at least " + formatNumber(new Decimal(1e20)) + " Golden Scrap to enter!");
                         }
                         else {
@@ -554,14 +564,14 @@ var scenes =
                     }
                     else if (game.dimension == 1) { //Leave Dimension
                         var currentHighest = calculateCurrentHighest();
-                        var NEED = 7*(Math.log(game.goldenScrap.amount) * Math.LOG10E + 1 | 0);
+                        var NEED = 7 * (Math.log(game.goldenScrap.amount) * Math.LOG10E + 1 | 0);
                         if (Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost)) < NEED) {
                             if (confirm("You have to earn at least " + NEED + " Dark Scrap to leave and earn something!\n" +
                                 "Current: " + Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost)) + "\n" +
                                 "You can leave now, but you will not earn anything. Press OK to leave early.")) {
                                 NEED = -10;
                             }
-                            
+
                         }
                         if (Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost)) >= NEED) {
                             game.dimension = 0;
@@ -598,17 +608,17 @@ var scenes =
                             "Earn: " + (Math.round(calculateCurrentHighest()) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))).toFixed(0);
                     }
                 }, 0.5, 0.2, 0.03, "black"),
-                    
+
                 new UIText(() => "$images.darkscrap$" + formatNumber(game.darkscrap.amount, game.settings.numberFormatType, { namesAfter: 1e10 }), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
 
                 new UIDarkScrapUpgrade(game.darkscrap.upgrades.darkScrapBoost, images.upgrades.moreScrap, 0.65, "Get More Dark Scrap"),
-                new UIDarkScrapUpgrade(game.darkscrap.upgrades.mergeTokenBoost, images.upgrades.moreMergeTokens, 0.75, "Get More Merge Tokens", colors.table2),
+                new UIDarkScrapUpgrade(game.darkscrap.upgrades.mergeTokenBoost, images.upgrades.moreMergeTokens, 0.75, "Get More Merge Tokens", colors[C].table2),
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.35, w * 0.9, h * 0.06);
             }),
         new Scene("Fragment",
@@ -632,17 +642,17 @@ var scenes =
 
                 new UIText(() => "$images.fragment$ Barrel Fragments: " + Math.round(game.fragment.amount), 0.5, 0.3, 0.04, "yellow"),
                 new UIFragmentUpgrade(game.fragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.45, "Get More Scrap"),
-                new UIFragmentUpgrade(game.fragment.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.55, "Get More Magnets", colors.table2),
+                new UIFragmentUpgrade(game.fragment.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.55, "Get More Magnets", colors[C].table2),
 
                 new UIText(() => "$images.darkfragment$ Dark Fragments: " + Math.round(game.darkfragment.amount), 0.5, 0.65, 0.04, "yellow"),
                 new UIDarkFragmentUpgrade(game.darkfragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.75, "Get More Scrap in 2. Dim.", 0, game.darkfragment.isUnlocked),
-                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.moreFragments, images.upgrades.moreFragments, 0.85, "Get More Fragments", colors.table2, game.darkfragment.isUnlocked),
+                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.moreFragments, images.upgrades.moreFragments, 0.85, "Get More Fragments", colors[C].table2, game.darkfragment.isUnlocked),
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
                 ctx.fillRect(w * 0.05, h * 0.638, w * 0.9, h * 0.06);
             }),
@@ -683,11 +693,11 @@ var scenes =
                 })
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 for (let i = 0; i < 4; i++) {
-                    ctx.fillStyle = [colors.table, colors.bg][i % 2];
+                    ctx.fillStyle = [colors[C].table, colors[C].bg][i % 2];
                     ctx.fillRect(0, h * 0.1875 + h * 0.15 * i, w, h * 0.15);
                 }
                 let maxLvl = Math.min(20 * game.settings.barrelGalleryPage + 20, Math.round(Barrel.getMaxLevelBarrel()) + 1);
@@ -714,11 +724,11 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
-                new UIButton(0.9, 0.1, 0.07, 0.07, images.scenes.mergeQuests, () => Scene.loadScene("MergeQuests"), {
+                new UIButton(0.9, 0.2, 0.07, 0.07, images.scenes.mergeQuests, () => Scene.loadScene("MergeQuests"), {
                     quadratic: true,
                     isVisible: game.mergeQuests.isUnlocked
                 }),
-                new UIButton(0.9, 0.2, 0.07, 0.07, images.scenes.mergeMastery, () => Scene.loadScene("MergeMastery"), {
+                new UIButton(0.9, 0.1, 0.07, 0.07, images.scenes.mergeMastery, () => Scene.loadScene("MergeMastery"), {
                     quadratic: true,
                     isVisible: game.mergeMastery.isUnlocked
                 }),
@@ -733,10 +743,6 @@ var scenes =
                 new UIButton(0.9, 0.5, 0.07, 0.07, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
                     quadratic: true,
                     isVisible: game.skillTree.isUnlocked
-                }),
-                new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.steelBeams, () => Scene.loadScene("Beams"), {
-                    quadratic: true,
-                    isVisible: game.beams.isUnlocked
                 }),
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("OuterSolarSystem"), {
                     quadratic: true,
@@ -766,7 +772,7 @@ var scenes =
                 new UIPlanet(0.8, 0.7, "Saturn\nAuto Merge", game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
                 new UIPlanet(0.8, 0.25, "Uranus\nStronger Merge Mastery\nScrap Boost", game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
                 new UIPlanet(0.25, 0.3, "Neptune\nPassive Magnet income", game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
-                
+
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("ThirdSolarSystem"), {
                     quadratic: true,
                     isVisible: () => game.solarSystem.upgrades.neptune.level > 4,
@@ -785,7 +791,7 @@ var scenes =
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
                 new UIPlanet(0.4, 0.6, "Astro\nAuto Convert speed", game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
                 new UIPlanet(0.8, 0.7, "Mythus\nBetter Barrels max.", game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4)
-               ],
+            ],
             function () {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, w, h);
@@ -809,7 +815,7 @@ var scenes =
                     ], () => game.mergeMastery.level > 49)
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
                 let lvl = game.mergeMastery.level;
 
@@ -822,7 +828,7 @@ var scenes =
                 //main
                 ctx.fillStyle = "#000000a0";
                 ctx.fillRect(0, h * 0.32, w, h * 0.05);
-                ctx.fillStyle = colors.bgFront;
+                ctx.fillStyle = colors[C].bgFront;
                 ctx.fillRect(0, h * 0.32, w * (game.mergeMastery.currentMerges / game.mergeMastery.getNeededMerges(lvl)), h * 0.05);
 
                 ctx.fillStyle = "white";
@@ -848,7 +854,7 @@ var scenes =
                 ctx.fillText("Magnets on Level Up", w * 0.3, h * 0.62);
 
                 if (game.mergeMastery.level > 20 || game.mergeMastery.prestige.level > 0) {
-                    ctx.fillStyle = colors.table;
+                    ctx.fillStyle = colors[C].table;
                     ctx.fillRect(w * 0.1, h * 0.65, w * 0.8, h * 0.3);
                     ctx.font = "bold " + (h * 0.07) + "px " + fonts.default;
                     ctx.textAlign = "center";
@@ -860,7 +866,7 @@ var scenes =
                         let nextLvl = game.mergeMastery.prestige.level + Math.max(0, game.mergeMastery.level - 49);
                         let displayNext = nextLvl - game.mergeMastery.prestige.level > 0;
 
-                        ctx.fillStyle = colors.table2;
+                        ctx.fillStyle = colors[C].table2;
                         ctx.fillRect(w * 0.18, h * 0.73, w * 0.64, h * 0.13);
 
                         ctx.fillStyle = "black";
@@ -891,18 +897,18 @@ var scenes =
                 }),
                 new UIButton(0.9, 0.38, 0.05, 0.05, images.buttonMaxAll, () => game.bricks.maxUpgrades(), { quadratic: true, isVisible: () => game.bricks.amount >= (1e100) }),
                 new UIBrickUpgrade(game.bricks.upgrades.scrapBoost, images.upgrades.moreScrap, 0.5, "Get More Scrap"),
-                new UIBrickUpgrade(game.bricks.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.6, "Get More Magnets", colors.table2),
+                new UIBrickUpgrade(game.bricks.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.6, "Get More Magnets", colors[C].table2),
                 new UIBrickUpgrade(game.bricks.upgrades.questLevels, images.upgrades.questLevels, 0.7, "Merge Quest Upgrades\nhave more Levels"),
-                new UIBrickUpgrade(game.bricks.upgrades.brickBoost, images.upgrades.brickBoost, 0.8, "Get More Bricks", colors.table2),
+                new UIBrickUpgrade(game.bricks.upgrades.brickBoost, images.upgrades.brickBoost, 0.8, "Get More Bricks", colors[C].table2),
                 new UIBrickUpgrade(game.bricks.upgrades.questSpeed, images.upgrades.questSpeed, 0.9, "Complete and refresh\nMerge Quests faster")
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 drawCurrencyBar(game.bricks.amount, images.brick, -h * 0.025, 1.2);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(0, h * 0.28, w, h * 0.14);
 
                 ctx.fillStyle = "black";
@@ -912,7 +918,7 @@ var scenes =
 
                 ctx.fillStyle = "rgb(66, 66, 66)";
                 ctx.fillRect(0, h * 0.295, w, h * 0.05);
-                ctx.fillStyle = colors.bgFront;
+                ctx.fillStyle = colors[C].bgFront;
                 ctx.fillRect(0, h * 0.295, w * (game.bricks.currentMergeProgress / game.bricks.mergesPerLevel()), h * 0.05);
                 ctx.fillStyle = "white";
                 ctx.fillText(formatThousands(game.bricks.currentMergeProgress) + " / " + formatThousands(game.bricks.mergesPerLevel()), w * 0.5, h * 0.3);
@@ -929,12 +935,12 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIGroup([
-                    new UIRect(0.5, 0.6, 1, 0.2, colors.table2),
+                    new UIRect(0.5, 0.6, 1, 0.2, colors[C].table2),
                     new UIImage(images.locked, 0.5, 0.58, 0.125, 0.125, { quadratic: true }),
                     new UIText(() => "$images.tire$" + formatNumber(game.tires.milestones[1]), 0.5, 0.67, 0.09, "black", { bold: true, valign: "middle" }),
                 ], () => game.tires.amount.lt(game.tires.milestones[1])),
                 new UIGroup([
-                    new UIRect(0.5, 0.8, 1, 0.2, colors.table),
+                    new UIRect(0.5, 0.8, 1, 0.2, colors[C].table),
                     new UIImage(images.locked, 0.5, 0.78, 0.125, 0.125, { quadratic: true }),
                     new UIText(() => "$images.tire$" + formatNumber(game.tires.milestones[2]), 0.5, 0.87, 0.09, "black", { bold: true, valign: "middle" }),
                 ], () => game.tires.amount.lt(game.tires.milestones[2])),
@@ -944,9 +950,9 @@ var scenes =
                     new UITireUpgrade(game.tires.upgrades[0][2], images.upgrades.fasterMastery, "Faster\nMerge Mastery", 2.5 / 3, 0.4)
                 ]),
                 new UIGroup([
-                    new UITireUpgrade(game.tires.upgrades[1][0], images.upgrades.tireBoost, "Tire Value\nper Collect", 0.5 / 3, 0.6, colors.table2),
-                    new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "Tire Chance\nper Merge", 1.5 / 3, 0.6, colors.table2),
-                    new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, colors.table2)
+                    new UITireUpgrade(game.tires.upgrades[1][0], images.upgrades.tireBoost, "Tire Value\nper Collect", 0.5 / 3, 0.6, colors[C].table2),
+                    new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "Tire Chance\nper Merge", 1.5 / 3, 0.6, colors[C].table2),
+                    new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, colors[C].table2)
                 ], () => game.tires.amount.gt(game.tires.milestones[1])),
                 new UIGroup([
                     new UITireUpgrade(game.tires.upgrades[2][0], images.upgrades.fasterFallingMagnets, "Faster\nFalling Magnets", 0.5 / 3, 0.8),
@@ -955,7 +961,7 @@ var scenes =
                 ], () => game.tires.amount.gt(game.tires.milestones[2]))
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 drawCurrencyBar(game.tires.amount, images.tire, -h * 0.025, 1.2);
@@ -967,7 +973,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
 
                 new UIButton(0.5, 0.97, 0.15, 0.06, images.scenes.beamboosts, () => Scene.loadScene("Beamboosts"), { quadraticMin: true }),
@@ -976,45 +982,45 @@ var scenes =
 
                 new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
                 new UIBeamUpgrade(game.beams.upgrades.fasterBeams, images.upgrades.beamChance, 0.45, "Beams spawn more often"),
-                new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.55, "Beams are worth more", colors.table2),
-
-                new UIBeamUpgrade(game.beams.upgrades.beamStormChance, images.upgrades.beamStormChance, 0.70, "Beam stoms occur more often"),
-                new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.80, "Beams storms are longer", colors.table2),
+                new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.55, "Beams are worth more", colors[C].table2),
+                new UIBeamUpgrade(game.beams.upgrades.slowerBeams, images.upgrades.slowerBeams, 0.65, "Beams fall slower"),
+                new UIBeamUpgrade(game.beams.upgrades.beamStormChance, images.upgrades.beamStormChance, 0.75, "Beam stoms occur more often", colors[C].table2),
+                new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.85, "Beams storms are longer"),
 
             ],
             function () {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
 
-                ctx.fillStyle = colors.bgFront;
+                ctx.fillStyle = colors[C].bgFront;
                 ctx.fillRect(0, h * 0.94, w, h * 0.06);
             }),
         new Scene("Beamboosts",
-                [
-                    new UIText("Steel Beams", 0.5, 0.1, 0.08, "white", {
-                        bold: 900,
-                        borderSize: 0.005,
-                        font: fonts.title
-                    }),
-                    new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
-
-                    new UIText(() => { return "Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + applyUpgrade(game.beams.upgrades.beamValue) + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of a beam storm\noccuring instead of a single beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
-
-                    new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
-                    new UIBeamUpgrade(game.beams.upgrades.moreScrap, images.upgrades.moreScrap, 0.45, "Get more Scrap"),
-                    new UIBeamUpgrade(game.beams.upgrades.moreMagnets, images.upgrades.magnetBoost, 0.55, "Get more Magnets", colors.table2),
-
-                ],
-                function () {
-                    ctx.fillStyle = colors.bg;
-                    ctx.fillRect(0, 0, w, h);
-
-                    ctx.fillStyle = colors.table;
-                    ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
+            [
+                new UIText("Steel Beams", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
                 }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
+
+                new UIText(() => { return "Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + applyUpgrade(game.beams.upgrades.beamValue) + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of a beam storm\noccuring instead of a single beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
+
+                new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIBeamUpgrade(game.beams.upgrades.moreScrap, images.upgrades.moreScrap, 0.45, "Get more Scrap"),
+                new UIBeamUpgrade(game.beams.upgrades.moreMagnets, images.upgrades.magnetBoost, 0.55, "Get more Magnets", colors[C].table2),
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C].bg;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C].table;
+                ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
+            }),
         new Scene("Options",
             [
                 new UIText("Options", 0.5, 0.1, 0.12, "white", {
@@ -1025,12 +1031,12 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
                 new UIGroup([
-                    new UIToggleOption(0.25, "game.settings.barrelShadows", "Toggle Barrel Shadows\n(can slow down Game)", colors.table),
-                    new UIToggleOption(0.35, "game.settings.useCachedBarrels", "Cache some Barrel Images\n(may slow down\nor speed up Game)", colors.bg),
+                    new UIToggleOption(0.25, "game.settings.barrelShadows", "Toggle Barrel Shadows\n(can slow down Game)", colors[C].table),
+                    new UIToggleOption(0.35, "game.settings.useCachedBarrels", "Cache some Barrel Images\n(may slow down\nor speed up Game)", colors[C].bg),
                     new UIOption(0.45, images.options.barrelQuality, () => {
                         game.settings.barrelQuality = (++game.settings.barrelQuality) % 3;
                         setBarrelQuality(game.settings.barrelQuality, "Options");
-                    }, () => "Barrel Quality: " + ["High", "Low", "Ultra Low"][game.settings.barrelQuality], colors.table),
+                    }, () => "Barrel Quality: " + ["High", "Low", "Ultra Low"][game.settings.barrelQuality], colors[C].table),
                     new UIOption(0.55, images.options.numberFormat, () => {
                         game.settings.numberFormatType = (++game.settings.numberFormatType) % NUM_FORMAT_TYPES;
                     }, () => {
@@ -1039,16 +1045,20 @@ var scenes =
                             fmtnmb.push(formatNumber(Decimal.pow(10, i)));
                         }
                         return "Switch Number format\n" + fmtnmb.join(", ");
-                    }, colors.bg)
+                    }, colors[C].bg),
+                    new UIOption(0.65, images.options.barrelQuality, () => {
+                        game.settings.C = (++game.settings.C) % 3;
+                        C = ["default", "darkblue", "dark"][game.settings.C];
+                    }, () => "Theme: " + ["Default light blue", "Dark Blue", "Dark Theme"][game.settings.C], colors[C].table),
                 ], () => game.settings.optionsPage === 0),
                 new UIGroup([
-                    new UIToggleOption(0.25, "game.settings.destroyBarrels", "Double Click Barrels to remove them", colors.table),
-                    new UIToggleOption(0.35, "game.settings.resetConfirmation", "Reset Confirmation", colors.bg),
-                    new UIToggleOption(0.45, "game.settings.lowPerformance", "Low performance Mode", colors.table),
-                    new UIToggleOption(0.55, "game.settings.barrelSpawn", "Barrel Spawn", colors.bg),
+                    new UIToggleOption(0.25, "game.settings.destroyBarrels", "Double Click Barrels to remove them", colors[C].table),
+                    new UIToggleOption(0.35, "game.settings.resetConfirmation", "Reset Confirmation", colors[C].bg),
+                    new UIToggleOption(0.45, "game.settings.lowPerformance", "Low performance Mode", colors[C].table),
+                    new UIToggleOption(0.55, "game.settings.barrelSpawn", "Barrel Spawn", colors[C].bg),
                 ], () => game.settings.optionsPage === 1),
                 new UIGroup([
-                    new UIToggleOption(0.25, "game.settings.musicOnOff", "Music", colors.bg),
+                    new UIToggleOption(0.25, "game.settings.musicOnOff", "Music", colors[C].bg),
                     new UIOption(0.35, images.options.numberFormat, () => {
                         if (game.milestones.unlocked.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
                             game.settings.musicSelect = game.settings.musicSelect + 1;
@@ -1058,7 +1068,7 @@ var scenes =
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                     }, () => "Current: " + ["Newerwave", "Getting It Done", "Spellbound", "Voltaic"][game.settings.musicSelect] + " by Kevin MacLeod"),
-                    new UIOption(0.55, images.scenes.options, () => {
+                    new UIOption(0.45, images.scenes.options, () => {
                         if (confirm("Warning! You are about to reset your Dark Scrap (Upgrades), Dark Fragment (Upgrades) and related achievements. Press cancel if you want to keep them.")) {
                             game.darkscrap.amount = new Decimal(0);
                             Object.keys(game.darkscrap.upgrades).forEach(k => {
@@ -1078,7 +1088,25 @@ var scenes =
                                 }
                             }
                         }
-                    }, "Reset Second Dimension Progress", colors.bg),
+                    }, "Reset Second Dimension Progress", colors[C].bg),
+                    new UIOption(0.55, images.scenes.options, () => {
+                        const removethose = [85, 86, 87, 88, 89];
+                        let removedthose = [];
+                        for (i = 0; i < removethose.length; i++) {
+                            const index = game.milestones.unlocked.indexOf(removethose[i]);
+                            if (index > -1) {
+                                game.milestones.unlocked.splice(index, 1);
+                                removedthose.push(removethose[i]);
+                                i -= 1;
+                            }
+                        }
+                        for (i = 0; i < removedthose.length; i++) {
+                            const index = game.milestones.unlocked.indexOf(removedthose[i]);
+                            if (index == -1) {
+                                game.milestones.unlocked.push(removedthose[i]);
+                            }
+                        }
+                    }, "Optimize savecode", colors[C].bg),
                 ], () => game.settings.optionsPage === 2),
                 new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
@@ -1102,18 +1130,18 @@ var scenes =
             ],
             function ()
             {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(0, h * 0.85, w, h * 0.15);
             }),
         new Scene("MergeQuests",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), {quadratic: true}),
                 new UIMergeTokenUpgrade(game.mergeQuests.upgrades.scrapBoost, images.upgrades.moreScrap, 0.63, "Get More Scrap"),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.goldenScrapBoost, images.upgrades.goldenScrapBoost, 0.73, "Get More Golden Scrap", colors.table2),
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.goldenScrapBoost, images.upgrades.goldenScrapBoost, 0.73, "Get More Golden Scrap", colors[C].table2),
                 new UIMergeTokenUpgrade(game.mergeQuests.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.83, "Get More Magnets"),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, 0.93, "Falling Magnets are\nworth more", colors.table2, () => applyUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet)),
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, 0.93, "Falling Magnets are\nworth more", colors[C].table2, () => applyUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet)),
 
 
                 new UIButton(0.9, 0.105, 0.05, 0.05, images.buttonReset, () => {
@@ -1158,7 +1186,7 @@ var scenes =
             ],
             function ()
             {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 drawCurrencyBar(game.mergeQuests.mergeTokens, images.mergeToken, -h * 0.125);
@@ -1194,7 +1222,7 @@ var scenes =
             ],
             function ()
             {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 let perRow = 5; //achievements per row
@@ -1203,7 +1231,7 @@ var scenes =
                 ctx.font = "bold " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillStyle = "black";
 
-                ctx.fillStyle = colors.table;
+                ctx.fillStyle = colors[C].table;
                 ctx.fillRect(0, h * 0.2, w, w);
                 for (let i = 25 * game.milestones.page; i < Math.min(25 * game.milestones.page + 25, maxTrophies); i++)
                 {
@@ -1275,39 +1303,39 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIScrollContainerY([
-                    new UIRect(0.5, 0.4, 1, 0.4, colors.table),
-                    new UIRect(0.5, 0.7, 1, 0.3, colors.table2),
-                    new UIRect(0.5, 1.0, 1, 0.3, colors.table),
-                    new UIRect(0.5, 1.3, 1, 0.3, colors.table2),
-                    new UIRect(0.5, 1.6, 1, 0.3, colors.table),
+                    new UIRect(0.5, 0.4, 1, 0.4, colors[C].table),
+                    new UIRect(0.5, 0.7, 1, 0.3, colors[C].table2),
+                    new UIRect(0.5, 1.0, 1, 0.3, colors[C].table),
+                    new UIRect(0.5, 1.3, 1, 0.3, colors[C].table2),
+                    new UIRect(0.5, 1.6, 1, 0.3, colors[C].table),
 
-                    new UISkillTreePath(0.5, 0.4, 0.2, 0.65, 0.01, colors.skillTreePath, game.skillTree.upgrades.scrapBoost),
-                    new UISkillTreePath(0.5, 0.4, 0.8, 0.65, 0.01, colors.skillTreePath, game.skillTree.upgrades.scrapBoost),
+                    new UISkillTreePath(0.5, 0.4, 0.2, 0.65, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.scrapBoost),
+                    new UISkillTreePath(0.5, 0.4, 0.8, 0.65, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.scrapBoost),
 
-                    new UISkillTreePath(0.2, 0.65, 0.2, 0.95, 0.01, colors.skillTreePath, game.skillTree.upgrades.brickBoost),
-                    new UISkillTreePath(0.2, 0.65, 0.5, 0.95, 0.01, colors.skillTreePath, [game.skillTree.upgrades.brickBoost, game.skillTree.upgrades.mergeQuestUpgFallingMagnet]),
-                    new UISkillTreePath(0.8, 0.65, 0.5, 0.95, 0.01, colors.skillTreePath, [game.skillTree.upgrades.brickBoost, game.skillTree.upgrades.mergeQuestUpgFallingMagnet]),
-                    new UISkillTreePath(0.8, 0.65, 0.8, 0.95, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
+                    new UISkillTreePath(0.2, 0.65, 0.2, 0.95, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.brickBoost),
+                    new UISkillTreePath(0.2, 0.65, 0.5, 0.95, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.brickBoost, game.skillTree.upgrades.mergeQuestUpgFallingMagnet]),
+                    new UISkillTreePath(0.8, 0.65, 0.5, 0.95, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.brickBoost, game.skillTree.upgrades.mergeQuestUpgFallingMagnet]),
+                    new UISkillTreePath(0.8, 0.65, 0.8, 0.95, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreFragments),
 
-                    new UISkillTreePath(0.2, 0.95, 0.2, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.tireBoost),
-                    new UISkillTreePath(0.5, 0.95, 0.5, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.magnetUpgBrickSpeed),
-                    new UISkillTreePath(0.8, 0.95, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
+                    new UISkillTreePath(0.2, 0.95, 0.2, 1.25, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.tireBoost),
+                    new UISkillTreePath(0.5, 0.95, 0.5, 1.25, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.magnetUpgBrickSpeed),
+                    new UISkillTreePath(0.8, 0.95, 0.8, 1.25, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreFragments),
 
-                    new UISkillTreePath(0.8, 1.25, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
+                    new UISkillTreePath(0.8, 1.25, 0.8, 1.25, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreFragments),
 
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
 
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.brickBoost, images.upgrades.brickBoost, "More Bricks", 0.2, 0.65, colors.table2),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet, images.upgrades.fasterFallingMagnets, "Merge Quests\nUpgrade:\nFalling Magnets", 0.8, 0.65, colors.table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.brickBoost, images.upgrades.brickBoost, "More Bricks", 0.2, 0.65, colors[C].table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet, images.upgrades.fasterFallingMagnets, "Merge Quests\nUpgrade:\nFalling Magnets", 0.8, 0.65, colors[C].table2),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.tireBoost, images.upgrades.tireBoost, "Get more\nxTires per\ncollect", 0.2, 0.95),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed, images.upgrades.brickSpeed, "Magnet\nUpgrade:\nBrick Speed", 0.5, 0.95),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.moreFragments, images.upgrades.moreFragments, "More\nFragments", 0.8, 0.95),
 
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost2, images.upgrades.moreScrap2, "More Scrap 2", 0.2, 1.25, colors.table2),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.ezUpgraderQuests, images.ezUpgrade, "EZ Upgrader\nfor Merge\nQuests", 0.5, 1.25, colors.table2),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster\nAuto Merge", 0.8, 1.25, colors.table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost2, images.upgrades.moreScrap2, "More Scrap 2", 0.2, 1.25, colors[C].table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.ezUpgraderQuests, images.ezUpgrade, "EZ Upgrader\nfor Merge\nQuests", 0.5, 1.25, colors[C].table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster\nAuto Merge", 0.8, 1.25, colors[C].table2),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherAstroMax, images.upgrades.moreFragments, "Increased\nAstro Max.", 0.2, 1.55),
 
@@ -1317,7 +1345,7 @@ var scenes =
             ],
             function ()
             {
-                ctx.fillStyle = colors.bg;
+                ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
             })
     ];

@@ -105,6 +105,7 @@ var images =
                 beamValue: loadImage("Images/Upgrades/beamvalue.png"),
                 beamStormChance: loadImage("Images/Upgrades/beamstormchance.png"),
                 beamStormValue: loadImage("Images/Upgrades/beamstormvalue.png"),
+                slowerBeams: loadImage("Images/Upgrades/slowerbeams.png"),
             },
         scenes:
             {
@@ -154,21 +155,46 @@ var images =
             }
     };
 
-var colors =
+var colors = {
+    default:
     {
         bg: "rgb(153, 197, 255)",
         bgFront: "rgb(0, 99, 230)",
+        bgFrontD: "rgb(0, 79, 170)",
         table: "rgb(122, 180, 255)",
         table2: "rgb(181, 213, 255)",
         scrollTrack: "rgb(0,80,197)",
         scrollTrackbg: "rgb(118,152,203)",
         skillTreePath: "rgb(0,6,214)"
-    };
+    },
+    darkblue:
+    {
+        bg: "rgb(103, 147, 205)",
+        bgFront: "rgb(0, 49, 180)",
+        bgFrontD: "rgb(0, 39, 130)",
+        table: "rgb(72, 130, 205)",
+        table2: "rgb(131, 163, 205)",
+        scrollTrack: "rgb(0,30,147)",
+        scrollTrackbg: "rgb(68,102,153)",
+        skillTreePath: "rgb(0,6,164)"
+    },
+    dark:
+    {
+        bg: "rgb(23, 47, 65)",
+        bgFront: "rgb(0, 29, 60)",
+        bgFrontD: "rgb(0, 19, 30)",
+        table: "rgb(42, 60, 105)",
+        table2: "rgb(32, 50, 95)",
+        scrollTrack: "rgb(0,20,60)",
+        scrollTrackbg: "rgb(40,62,72)",
+        skillTreePath: "rgb(0,6,110)"
+    }
+};
 
 var fonts =
     {
         default: "Work Sans, Arial, sans-serif",
-        title: "Autumn, Arial, sans-serif"
+        title: "Work Sans, Arial, sans-serif"
     };
 
 var cacheCanvas = document.createElement("canvas");

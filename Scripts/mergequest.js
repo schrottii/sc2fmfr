@@ -68,7 +68,7 @@ class MergeQuest
 
     render(ctx, x, y)
     {
-        ctx.fillStyle = colors.table;
+        ctx.fillStyle = colors[C].table;
         ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.12);
 
         if(this.active)
@@ -77,7 +77,7 @@ class MergeQuest
 
             ctx.fillStyle = "#505050";
             ctx.fillRect(x + h * 0.08, y - h * 0.05, w * 0.6, h * 0.05);
-            ctx.fillStyle = colors.bgFront;
+            ctx.fillStyle = colors[C].bgFront;
             ctx.fillRect(x + h * 0.08, y - h * 0.05, w * 0.6 * (this.currentMerges / this.getNeededMerges()), h * 0.05);
 
             ctx.textBaseline = "middle";

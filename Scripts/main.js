@@ -135,7 +135,7 @@ function update()
             if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber())
             {
                 fallingMagnetTime = 0;
-                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul( (game.mergeQuests.upgrades.fallingMagnetValue.level)+1 )));
+                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul((game.mergeQuests.upgrades.fallingMagnetValue.level) + 1).mul(applyUpgrade(game.aerobeams.upgrades.betterFallingMagnets))));
             }
         }
 
@@ -200,16 +200,35 @@ function update()
 
         if (game.beams.isUnlocked()) {
             game.beams.time += delta;
-            if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
-                if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                    for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                        setTimeout(function () { movingItemFactory.fallingBeam(applyUpgrade(game.beams.upgrades.beamValue)) }, 500 * i);
+
+            // Normal Beams
+            if (game.beams.selected == 0) {
+                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
+                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                            setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
+                        }
                     }
+                    else {
+                        movingItemFactory.fallingBeam(getBeamBaseValue());
+                    }
+                    game.beams.time = 0;
                 }
-                else {
-                    movingItemFactory.fallingBeam(applyUpgrade(game.beams.upgrades.beamValue));
+            }
+
+            // Aero Beams
+            if (game.beams.selected == 1) {
+                if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
+                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                            setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
+                        }
+                    }
+                    else {
+                        movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                    }
+                    game.beams.time = 0;
                 }
-                game.beams.time = 0;
             }
         }
     }
@@ -224,6 +243,10 @@ function update()
     requestAnimationFrame(update);
 }
 
+function getBeamBaseValue() {
+    return applyUpgrade(game.beams.upgrades.beamValue)
+        + (2*applyUpgrade(game.skillTree.upgrades.xplustwo));
+}
 
 function getMagnetBaseValue()
 {
@@ -250,7 +273,7 @@ function onBarrelMerge(lvl, bx, by)
     }
 
     if (game.scrapUpgrades.betterBarrels.level == 224) {
-        if (86 in game.milestones.unlocked == false) {
+        if (game.milestones.unlocked.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
                    game.milestones.unlocked.push(86);
@@ -555,6 +578,7 @@ function loadGame(saveCode)
         game.settings.barrelSpawn = loadVal(loadObj.settings.barrelSpawn, true);
         game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
         game.settings.C = loadVal(loadObj.settings.C, 0);
+        game.settings.beamTimer = loadVal(loadObj.settings.beamTimer, false);
 
         C = ["default", "darkblue", "dark"][game.settings.C];
 
@@ -691,6 +715,7 @@ function loadGame(saveCode)
 
         if (loadObj.beams !== undefined) {
             game.beams.amount = loadVal(new Decimal(loadObj.beams.amount), new Decimal(0));
+            game.beams.selected = loadVal(new Decimal(loadObj.beams.selected), 0);
 
             if (loadObj.beams.upgrades !== undefined) {
                 Object.keys(loadObj.beams.upgrades).forEach(k => {
@@ -700,12 +725,29 @@ function loadGame(saveCode)
         }
         else {
             game.beams.amount = new Decimal(0);
+            game.beams.selected = 0;
+
             Object.keys(game.beams.upgrades).forEach(k => {
                 game.beams.upgrades[k].level = 0;
             })
-
-
         }
+
+        if (loadObj.aerobeams !== undefined) {
+            game.aerobeams.amount = loadVal(new Decimal(loadObj.aerobeams.amount), new Decimal(0));
+
+            if (loadObj.aerobeams.upgrades !== undefined) {
+                Object.keys(loadObj.aerobeams.upgrades).forEach(k => {
+                    game.aerobeams.upgrades[k].level = loadVal(loadObj.aerobeams.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.beams.aerobeams = new Decimal(0);
+            Object.keys(game.aerobeams.upgrades).forEach(k => {
+                game.aerobeams.upgrades[k].level = 0;
+            })
+        }
+
         if (loadObj.darkfragment !== undefined) {
             game.darkfragment.amount = loadVal(new Decimal(loadObj.darkfragment.amount), new Decimal(0));
 

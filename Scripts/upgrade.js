@@ -9,6 +9,7 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_DARKSCRAP = 8,
     RESOURCE_DARKFRAGMENT = 9,
     RESOURCE_BEAM = 10;
+    RESOURCE_AEROBEAM = 11;
 
 function applyUpgrade(upg)
 {
@@ -41,6 +42,8 @@ function getUpgradeResource(res)
             return game.darkfragment.amount;
         case RESOURCE_BEAM:
             return game.beams.amount;
+        case RESOURCE_AEROBEAM:
+            return game.aerobeams.amount;
         default:
             return null;
     }
@@ -80,6 +83,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_BEAM:
             game.beams.amount = res;
             break;
+        case RESOURCE_AEROBEAM:
+            game.aerobeams.amount = res;
+            break;
         default:
             break;
     }
@@ -108,7 +114,9 @@ function getResourceImage(res)
         case RESOURCE_DARKFRAGMENT:
             return "$images.darkfragment$";
         case RESOURCE_BEAM:
-            return "$images.steelbeam$";
+            return "$images.beam$";
+        case RESOURCE_AEROBEAM:
+            return "$images.aerobeam$";
         default:
             break;
     }
@@ -340,9 +348,15 @@ class SkillTreeUpgrade extends ScrapUpgrade
         {
             return true;
         }
-        for(let upg of this.deps)
-        {
-            if(upg.level === 0) return false;
+        if (this.deps.upg != undefined) {
+            for (let upg of this.deps) {
+                if (upg.level === 0 || upg.level == undefined) return false;
+            }
+        }
+        else {
+            for (let k of this.deps) {
+                if (game.skillTree.upgrades[k].level === 0) return false;
+            }
         }
         return true;
     }
@@ -448,6 +462,12 @@ class BeamUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_BEAM;
+    }
+}
+class AeroBeamUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_AEROBEAM;
     }
 }
 

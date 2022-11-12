@@ -148,8 +148,8 @@ class TextNotification extends GameNotification {
 
         super.setDefaultFont(ctx);
         ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.45);
-        ctx.textAlign = "left";
+        ctx.textAlign = "center";
         ctx.font = (h * 0.025) + "px " + fonts.default;
-        ctx.fillText(this.title, w / 2 - w * 0.15, this.y - h * 0.03, w * 0.35);
+        ctx.fillText(this.title, w / 2, this.y - h * 0.03, w * 0.35);
     }
 }

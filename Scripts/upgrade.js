@@ -15,7 +15,9 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_REINFORCEDBEAM = 14,
     RESOURCE_GLITCHBEAM = 15,
     RESOURCE_LEGENDARYSCRAP = 16,
-    RESOURCE_STEELMAGNET = 17;
+    RESOURCE_STEELMAGNET = 17,
+    RESOURCE_BLUEBRICK = 18,
+    RESOURCE_MASTERYTOKEN = 19;
 
 function applyUpgrade(upg)
 {
@@ -62,6 +64,10 @@ function getUpgradeResource(res)
             return game.factory.legendaryScrap;
         case RESOURCE_STEELMAGNET:
             return game.factory.steelMagnets;
+        case RESOURCE_BLUEBRICK:
+            return game.factory.blueBricks;
+        case RESOURCE_MASTERYTOKEN:
+            return game.barrelMastery.masteryTokens;
         default:
             return null;
     }
@@ -122,6 +128,12 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_STEELMAGNET:
             game.factory.steelMagnets = res;
             break;
+        case RESOURCE_BLUEBRICK:
+            game.factory.blueBricks = res;
+            break;
+        case RESOURCE_MASTERYTOKEN:
+            game.barrelMastery.masteryTokens = res;
+            break;
         default:
             break;
     }
@@ -145,6 +157,8 @@ function getResourceImage(res)
             return "$images.tire$";
         case RESOURCE_FRAGMENT:
             return "$images.fragment$";
+        case RESOURCE_BARREL:
+            return "$images.scrap$";
         case RESOURCE_DARKSCRAP:
             return "$images.darkscrap$";
         case RESOURCE_DARKFRAGMENT:
@@ -165,6 +179,10 @@ function getResourceImage(res)
             return "$images.legendaryScrap$";
         case RESOURCE_STEELMAGNET:
             return "$images.steelMagnet$";
+        case RESOURCE_BLUEBRICK:
+            return "$images.blueBrick$";
+        case RESOURCE_MASTERYTOKEN:
+            return "$images.masteryToken$";
         default:
             break;
     }
@@ -195,6 +213,10 @@ class ScrapUpgrade
             if (cfg.onLevelDown)
             {
                 this.onLevelDown = cfg.onLevelDown;
+            }
+            if (cfg.isUnlocked)
+            {
+                this.isUnlocked = cfg.isUnlocked;
             }
         }
         this.maxLevel = cfg && cfg.maxLevel ? cfg.maxLevel : Infinity;
@@ -359,7 +381,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gt(resource))
+            if(p[0].gte(resource))
             {
                 return;
             }
@@ -604,6 +626,13 @@ class AutoUpgrade extends ScrapUpgrade {
         this.time = time;
         this.cfg = cfg;
         this.resource = this.currency;
+    }
+}
+
+class MasteryTokenUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_MASTERYTOKEN;
     }
 }
 

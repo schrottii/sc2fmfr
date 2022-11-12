@@ -8,7 +8,7 @@ function formatThousands(n, prec)
     });
 }
 
-var NUM_FORMAT_TYPES = 9;
+var NUM_FORMAT_TYPES = 10;
 function formatNumber(x, type, cfg)
 {
     x = new Decimal(x);
@@ -20,7 +20,7 @@ function formatNumber(x, type, cfg)
         return "NaN";
     }
 
-    if(x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6))
+    if(x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6) && type != 9)
     {
         let prec = cfg && cfg.precision ? cfg.precision : 0;
         return formatThousands(x, prec);
@@ -48,7 +48,7 @@ function formatNumber(x, type, cfg)
     let letters = "~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     let cyrillic = "~абвгдежзийклмнопрстуфхцчшщьюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЮЯ".split("");
     let emojis = ["~", "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😎", "😍", "🥰", "😛", 
-        "😜", "🤑", "😨", "😱", "🥵", "🥶", "🤬", "🤔", "👹", "👺", "👾", "👽", "🙉", "🦮", "🐂", "🐊", "🐬", "🦐", "🎄", "🎨",
+        "😜", "🤑", "😨", "😱", "🥵", "🥶", "🤬", "🤔", "👹", "👺", "👾", "👽", "🙉", "🦮", "🐂", "🐊", "🐬", "🧲", "🎄", "🎨",
         "👕", "🎲", "🎮", "🀄", "🍫", "🍩", "🍰", "🍔", "🔇", "💯"];
 
     let sigDigits = 2 - x.e % 3;
@@ -125,6 +125,10 @@ function formatNumber(x, type, cfg)
             }
             return m + " " + prefixes[Math.floor(newE / 3) % prefixes.length] + quekkas;
         }
+    }
+    if (type === 9) {
+        if (x > 0) return "yes";
+        else return "no";
     }
 }
 

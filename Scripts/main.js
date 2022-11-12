@@ -23,7 +23,7 @@ var movingItems = [];
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
 
-var reinforcedBeamCooldown = 0;
+var FPS = 9999;
 
 var spawnTime =
     {
@@ -109,11 +109,15 @@ function update()
 {
     deltaTimeNew = Date.now();
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
+    if (delta < (1000 / FPS / 1000)) {
+        requestAnimationFrame(update);
+        return false;
+    };
     deltaTimeOld = Date.now();
 
     game.stats.playtime = game.stats.playtime.add(delta);
 
-    if (!document.hidden/* && delta > 0.5*/)
+    if (!document.hidden)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
         game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
@@ -153,11 +157,7 @@ function update()
             {
                 autoMergeTime += delta;
             }
-            if(autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)  )
-            {
-                autoMergeBarrel();
-                autoMergeTime = 0;
-            }
+            tryAutoMerge();
         }
 
         if (game.highestBarrelReached > 299) {
@@ -201,9 +201,27 @@ function update()
                     game.autos[i].time -= delta;
                     if (game.autos[i].time <= 0) {
                         game.autos[i].time = applyUpgrade(game.autos[i]);
-                        let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                        game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
-                        if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) game.factory.tank = game.factory.tank.sub(2);
+                        if (game.autos[i].auto[1] != "all") {
+                            let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
+                            game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
+                            if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) game.factory.tank = game.factory.tank.sub(2);
+                        }
+                        else {
+                            let ls = [];
+                            for (iee in game[game.autos[i].auto[0]].upgrades) {
+                                ls.push(game[game.autos[i].auto[0]].upgrades[iee].level);
+                            }
+                            game[game.autos[i].auto[0]].maxUpgrades();
+
+                            let lsx = 0;
+                            for (iee in game[game.autos[i].auto[0]].upgrades) {
+                                lsx += 1;
+                                if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
+                                    game.factory.tank = game.factory.tank.sub(2);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -246,12 +264,24 @@ function update()
             if (game.beams.selected == 0) {
                 if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                            setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                            }
+                        }
+                        else {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
+                            }
                         }
                     }
                     else {
-                        movingItemFactory.fallingBeam(getBeamBaseValue());
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
+                        }
+                        else {
+                            movingItemFactory.fallingBeam(getBeamBaseValue());
+                        }
                     }
                     game.beams.time = 0;
                 }
@@ -261,14 +291,26 @@ function update()
             if (game.beams.selected == 1) {
                 if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                            setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                            }
+                        }
+                        else {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
+                            }
                         }
                     }
                     else {
-                        movingItemFactory.fallingAeroBeam(getBeamBaseValue());
-                        if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount > new Decimal(1e12) && game.glitchesCollected < 10) {
-                            movingItemFactory.glitchItem(1);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
+                        }
+                        else {
+                            movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                            if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount > new Decimal(1e12) && game.glitchesCollected < 10) {
+                                movingItemFactory.glitchItem(1);
+                            }
                         }
                     }
                     game.beams.time = 0;
@@ -279,43 +321,79 @@ function update()
             if (game.beams.selected == 2) {
                 if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                            setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                            }
+                        }
+                        else {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
+                            }
                         }
                     }
                     else {
-                        movingItemFactory.fallingAngelBeam(getAngelBeamValue());
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
+                        }
+                        else {
+                            movingItemFactory.fallingAngelBeam(getAngelBeamValue());
+                        }
                     }
                     game.beams.time = 0;
                 }
             }
 
             // Reinforced Beams
-            reinforcedBeamCooldown += delta;
+            for(i in movingItems) movingItems[i].cooldown += delta;
             if (game.beams.selected == 3) {
                 if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15 
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                            setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                            }
+                        }
+                        else {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
+                            }
                         }
                     }
                     else {
-                        movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
+                        }
+                        else {
+                            movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                        }
                     }
                     game.beams.time = 0;
                 }
             }
 
-            // Gitch Beams
+            // Glitch Beams
             if (game.beams.selected == 4) {
                 if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15 
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                            setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.ceil(Math.random() * getGlitchBeamValue())) }, 1000 * i);
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                            }
+                        }
+                        else {
+                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.ceil(Math.random() * getGlitchBeamValue())) }, 1000 * i);
+                            }
                         }
                     }
                     else {
-                        movingItemFactory.fallingGlitchBeam(Math.ceil(Math.random() * getGlitchBeamValue()));
+                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
+                        }
+                        else {
+                            movingItemFactory.fallingGlitchBeam(Math.ceil(Math.random() * getGlitchBeamValue()));
+                        }
                     }
                     game.beams.time = 0;
                 }
@@ -373,6 +451,45 @@ function getDarkScrap(level) {
     return Math.round(Math.pow(1.0075, level) * applyUpgrade(game.darkscrap.upgrades.darkScrapBoost));
 }
 
+function getTankSize() {
+    return new Decimal(20 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
+}
+
+function tryAutoMerge() {
+    if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
+        autoMergeBarrel();
+        autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
+        tryAutoMerge();
+    }
+}
+
+var masMerges = [100, 250, 500, 1000, 2500,
+                 5000, 7500, 10000, 15000, 20000, 25000];
+// 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
+
+function calculateMasteryLevel(merges) {
+    if (merges < 25001) {
+        let id = 0;
+        while (merges >= masMerges[id]){
+            id += 1;
+        }
+        return id;
+    }
+    return Math.floor(merges / (25000)) + 10;
+}
+
+function calculateTotalLevels(level) {
+    let am = 0;
+    for (mb in game.barrelMastery.bl) {
+        if (game.barrelMastery.bl[mb] >= level) am += 1;
+    }
+    return Math.min(BARRELS, am);
+}
+
+function getTotalLevels(level) {
+    return game.barrelMastery.levels[level - 1];
+}
+
 function onBarrelMerge(isAuto, lvl, bx, by)
 {
     if (game.mergeQuests.isUnlocked())
@@ -390,6 +507,20 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
     game.totalMerges += 1;
     game.mergesThisPrestige += 1;
+    if (game.barrelMastery.isUnlocked()) {
+        game.barrelMastery.b[lvl % BARRELS] += 1;
+        if (calculateMasteryLevel(game.barrelMastery.b[lvl % BARRELS]) > game.barrelMastery.bl[lvl % BARRELS]) {
+            game.barrelMastery.bl[lvl % BARRELS] += 1;
+
+            for (i = 1; i < 11; i++) {
+                game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
+            }
+
+            game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
+            game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
+            GameNotification.create(new TextNotification("Barrel " + ((lvl % BARRELS)+1) + ": Level " + game.barrelMastery.bl[lvl % BARRELS] + " (+ " + game.barrelMastery.bl[lvl % BARRELS] + " Tokens!)", "Mastery level up!"));
+        }
+    }
     if (isAuto == false) {
         game.selfMerges += 1;
         game.mergesThisPrestige += 2;
@@ -514,7 +645,7 @@ function setBarrelQuality(idx, fromScene)
     barrelsLoaded = false;
     Scene.loadScene("Loading");
     if (game.dimension == 0) {
-        for (i = 1; i < 8; i++) {
+        for (i = 1; i < 9; i++) { // Change these two every time you add new BARRELS files
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
                 "barrels" + i + "_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -523,7 +654,7 @@ function setBarrelQuality(idx, fromScene)
         }
     }
     if (game.dimension == 1) {
-        for (i = 1; i < 8; i++) {
+        for (i = 1; i < 9; i++) {
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
                 "barrels" + i + "b_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -677,6 +808,10 @@ function saveGame(exportGame)
         saveObj.barrelLvls[i] = barrels[i] !== undefined ? Math.round(barrels[i].level) : undefined;
     }
 
+    // It would simply take up way too much space. Better to delete and re-calculate it.
+    delete saveObj.barrelMastery.bl;
+    delete saveObj.barrelMastery.levels;
+
     // Added in SC2FMFR 2.1: The save shortener 3000!
     // It removes the max. levels from most* upgrades in your save code
     // ...you don't need them in the save code. The game loads them every time anyway.
@@ -793,6 +928,7 @@ function loadGame(saveCode)
                 alert("Reset your highest barrel reached successfully!");
             }
             else {
+                console.log(e);
                 alert("An error occured while parsing the save code");
             }
             return;
@@ -1147,6 +1283,7 @@ function loadGame(saveCode)
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
             game.factory.legendaryScrap = loadVal(new Decimal(loadObj.factory.legendaryScrap), new Decimal(0));
             game.factory.steelMagnets = loadVal(new Decimal(loadObj.factory.steelMagnets), new Decimal(0));
+            game.factory.blueBricks = loadVal(new Decimal(loadObj.factory.blueBricks), new Decimal(0));
 
             if (loadObj.factory.upgrades !== undefined) {
                 Object.keys(loadObj.factory.upgrades).forEach(k => {
@@ -1159,6 +1296,7 @@ function loadGame(saveCode)
             game.factory.tank = new Decimal(0);
             game.factory.legendaryScrap = new Decimal(0);
             game.factory.steelMagnets = new Decimal(0);
+            game.factory.blueBricks = new Decimal(0);
 
             Object.keys(game.factory.upgrades).forEach(k => {
                 game.factory.upgrades[k].level = 0;
@@ -1219,6 +1357,29 @@ function loadGame(saveCode)
         if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = "20220721";
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 
+        // Mastery
+        if (loadObj.barrelMastery !== undefined) {
+            game.barrelMastery.b = loadObj.barrelMastery.b;
+            for (i = 0; i < 1000; i++) {
+                game.barrelMastery.bl.push(calculateMasteryLevel(game.barrelMastery.b[i]));
+            }
+            game.barrelMastery.masteryTokens = new Decimal(loadObj.barrelMastery.masteryTokens);
+            for (i = 1; i < 11; i++) {
+                game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
+            }
+            Object.keys(loadObj.barrelMastery.upgrades).forEach(k => {
+                game.barrelMastery.upgrades[k].level = loadVal(loadObj.barrelMastery.upgrades[k].level, 0);
+            });
+        }
+        else {
+            game.barrelMastery.b = [];
+            game.barrelMastery.bl = [];
+            for (i = 0; i < 1000; i++) {
+                game.barrelMastery.b.push(0);
+                game.barrelMastery.bl.push(0);
+            }
+            game.barrelMastery.masteryTokens = new Decimal(0);
+        }
 
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {

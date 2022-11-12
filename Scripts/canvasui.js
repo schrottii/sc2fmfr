@@ -529,7 +529,7 @@ class UIUpgrade2 extends UIGroup {
                         return desc + "\n" + upg.getEffectDisplay();
                     }
                     else {
-                        return "Cooldown: " + Math.round(game.factory.time);
+                        return "Cooldown: " + game.factory.time.toFixed(1);
                     }
                 }, 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" })
             ], isVisible);
@@ -664,6 +664,11 @@ class UIAutoUpgrade extends UIUpgrade3 {
         super(upg, img, getResourceImage(upg.currency), y, desc, 0.05, col, isVisible, true, true);
     }
 }
+class UIMasteryUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.masteryToken$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
 
 class UISkillTreeUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col)
@@ -672,6 +677,18 @@ class UISkillTreeUpgrade extends UIGroup{
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : colors[C].table),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
             new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, "black", {bold: true, valign: "middle"}),
+            new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
+        ], () => upg.isUnlocked());
+    }
+}
+
+class UISkillTreeUpgradeNoBG extends UIGroup{
+    constructor(upg, img, title, x, y, col)
+    {
+        super([
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
+            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());

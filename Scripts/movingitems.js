@@ -250,13 +250,14 @@ var movingItemFactory =
             }))
     },
     fallingReinforcedBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.65 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 if (reinforcedBeamCooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch)/100) {
                     this.progress += 3;
-                    if (game.ms.includes(132) == false) {
-                        game.ms.push(132);
+                    if (game.ms.includes(131) == false) {
+                        game.ms.push(131);
+                        GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[132]));
                     }
                 }
                 else {

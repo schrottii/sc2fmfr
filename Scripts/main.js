@@ -298,7 +298,12 @@ function autoMergeBarrel()
 
 function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
-        game.fragment.amount = game.fragment.amount.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)));
+        if (game.dimension == 0) {
+            game.fragment.amount = game.fragment.amount.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
+        }
+        else if (game.dimension == 1) {
+            game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
+        }
         barrels[19] = undefined;
     }
 }
@@ -307,12 +312,20 @@ function setBarrelQuality(idx, fromScene)
 {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
-    images.barrels = loadImage("Images/" + ["barrels.png", "barrels_lq.png",
-        "barrels_ulq.png"][idx], () =>
-        {
-            barrelsLoaded = true;
-            Scene.loadScene(fromScene ? fromScene : "Barrels");
-        });
+    if (game.dimension == 0) {
+        images.barrels = loadImage("Images/" + ["barrels.png", "barrels_lq.png",
+            "barrels_ulq.png"][idx], () => {
+                barrelsLoaded = true;
+                Scene.loadScene(fromScene ? fromScene : "Barrels");
+            });
+    }
+    if (game.dimension == 1) {
+        images.barrels = loadImage("Images/" + ["barrels2.png", "barrels_lq2.png",
+            "barrels_ulq2.png"][idx], () => {
+                barrelsLoaded = true;
+                Scene.loadScene(fromScene ? fromScene : "Barrels");
+            });
+    }
     BARREL_SPRITE_SIZE = [256, 128, 64][idx];
     images.shadowBarrels = []; //clear barrel cache
     images.previewBarrels = [];
@@ -494,6 +507,7 @@ function loadGame(saveCode)
         game.highestBarrelReached = loadVal(loadObj.highestBarrelReached, 0);
         game.highestMasteryLevel = loadVal(loadObj.highestMasteryLevel, 0);
         game.milestonesUnlocked = loadVal(loadObj.milestonesUnlocked, 0);
+        game.dimension = loadVal(loadObj.dimension, 0);
         game.settings.barrelGalleryPage = loadVal(loadObj.settings.barrelGalleryPage, 0);
         game.settings.barrelShadows = loadVal(loadObj.settings.barrelShadows, false);
         game.settings.useCachedBarrels = loadVal(loadObj.settings.useCachedBarrels, false);
@@ -619,10 +633,37 @@ function loadGame(saveCode)
                 });
             }
         }
+        
+        if (loadObj.darkscrap !== undefined) {
+            game.darkscrap.amount = loadVal(new Decimal(loadObj.darkscrap.amount), new Decimal(0));
+
+            if (loadObj.darkscrap.upgrades !== undefined) {
+                Object.keys(loadObj.darkscrap.upgrades).forEach(k => {
+                    game.darkscrap.upgrades[k].level = loadVal(loadObj.darkscrap.upgrades[k].level, 0);
+                });
+            }
+        }
         else {
-            game.fragment.amount = new Decimal(1);
-            Object.keys(game.fragment.upgrades).forEach(k => {
-                game.fragment.upgrades[k].level = 0;
+            game.darkscrap.amount = new Decimal(0);
+            Object.keys(game.darkscrap.upgrades).forEach(k => {
+                game.darkscrap.upgrades[k].level = 0;
+            })
+            
+
+        }
+        if (loadObj.darkfragment !== undefined) {
+            game.darkfragment.amount = loadVal(new Decimal(loadObj.darkfragment.amount), new Decimal(0));
+
+            if (loadObj.darkfragment.upgrades !== undefined) {
+                Object.keys(loadObj.darkfragment.upgrades).forEach(k => {
+                    game.darkfragment.upgrades[k].level = loadVal(loadObj.darkfragment.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.darkfragment.amount = new Decimal(0);
+            Object.keys(game.darkfragment.upgrades).forEach(k => {
+                game.darkfragment.upgrades[k].level = 0;
             })
         }
 
@@ -633,6 +674,8 @@ function loadGame(saveCode)
                 game.skillTree.upgrades[k].level = loadVal(loadObj.skillTree.upgrades[k].level, 0);
             }
         }
+
+        
 
         if (loadObj.skillTree.upgrades.moreFragments == undefined) game.skillTree.upgrades.moreFragments.level = 0;
         if (loadObj.skillTree.upgrades.fasterAutoMerge == undefined) game.skillTree.upgrades.fasterAutoMerge.level = 0;
@@ -654,6 +697,7 @@ function loadGame(saveCode)
         }
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 
+
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {
             if (loadObj.barrelLvls[i] !== null)
@@ -665,6 +709,8 @@ function loadGame(saveCode)
                 barrels[i] = undefined;
             }
         }
+
+
     }
 }
 

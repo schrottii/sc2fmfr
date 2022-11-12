@@ -7,6 +7,7 @@ var game =
         highestMasteryLevel: 0,
         magnets: new Decimal(0),
         remainderMagnets: 0,
+        dimension: 0,
         goldenScrap:
             {
                 amount: new Decimal(0),
@@ -38,9 +39,9 @@ var game =
                             }),
                         gsBoost: new GoldenScrapUpgrade(
                             level => Decimal.pow(1.8, level).mul(200).add(50 * level),
-                            level => new Decimal(1 + 0.2 * (Math.max(10, level)/10) * level),
+                            level => new Decimal(1 + 0.2 * (Math.max(10, level)/10) * level * Math.max(((level/10)-3), 1)),
                             {
-                                maxLevel: 40,
+                                maxLevel: 60,
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "", { namesAfter: 1e9 })
                             })
                     },
@@ -231,11 +232,11 @@ var game =
                             }
                         ),
                         earth: new GoldenScrapUpgrade(
-                            level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25][level]),
+                            level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e40][level]),
                             level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                                "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n3rd Brick Upgrade"][level],
+                                "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n3rd Brick Upgrade", "Second Dimension"][level],
                             {
-                                maxLevel: 9,
+                                maxLevel: 10,
                                 getEffectDisplay: function ()
                                 {
                                     if (this.level === this.maxLevel)
@@ -297,7 +298,7 @@ var game =
                     ),
 
                     mythus: new BarrelUpgrade(
-                        level => 3015 + (20 * level),
+                        level => 3010 + (20 * level),
                         level => 20 * level,
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -344,9 +345,9 @@ var game =
                                 maxLevel: () => 50 + applyUpgrade(game.bricks.upgrades.questLevels)
                             }),
                         fallingMagnetValue: new MergeTokenUpgrade(level => new Decimal(15),
-                                level => new Decimal(1 * level), {
+                                level => new Decimal(1 + level), {
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(2),
-                                maxLevel: 8
+                                maxLevel: 15
                             })
                     }
             },
@@ -509,13 +510,13 @@ var game =
                 upgrades:
                     [
                         [ //faster barrels, faster Brick level up, faster Merge Mastery
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(10),
                                 level => new Decimal(1 / (1 + 0.03 * level)),
                                 {
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(100),
                                 level => new Decimal(1 / (1 + 0.01 * level)),
                                 {
@@ -523,7 +524,7 @@ var game =
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1),
                                     afterBuy: () => game.bricks.check()
                                 }),
-                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.2) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.15) + game.tires.getLevelBias(level))
                                                             .mul(1000),
                                 level => new Decimal(1 / (1 + 0.01 * level)),
                                 {
@@ -533,20 +534,20 @@ var game =
                                 })
                         ],
                         [ //more xTires per collect, Tire chance, faster Merge Quests
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e63),
-                                level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)),
+                                level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).mul(1 + game.skillTree.upgrades.tireValue.level),
                                 {
                                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e66),
                                 level => new Decimal(0.005 * (1 + 0.02 * level)),
                                 {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(2)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.35) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.25) + game.tires.getLevelBias(level))
                                                             .mul(10e69),
                                 level => new Decimal(1 / (1 + 0.005 * level)), {
                                     maxLevel: 100,
@@ -561,20 +562,20 @@ var game =
                                 }),
                         ],
                         [ //faster falling Magnets, faster Auto Merge, more GS
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1034)),
                                 level => Decimal.pow(0.99, level), {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1134)),
                                 level => Decimal.pow(0.99, level),
                                 {
                                     maxLevel: 50,
                                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                                 }),
-                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.45) + game.tires.getLevelBias(level))
+                            new TireUpgrade(level => Decimal.pow(Math.pow(2, 15), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[2]) / 2, 1.35) + game.tires.getLevelBias(level))
                                                             .mul(Decimal.pow(2, 1234)),
                                 level => new Decimal(1 + 0.1 * level + 0.01 * level * level),
                                 {
@@ -599,6 +600,50 @@ var game =
                 level => 500 * Decimal.pow(1.1, level),
                 level => 1 + (0.2 * level) * Decimal.pow(1.05, Math.max(0, level - 15)),
                 {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+        },
+    },
+    darkscrap:
+    {
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            darkScrapBoost: new DarkScrapUpgrade(
+                level => 10 + (level * 13 * Decimal.pow(1.2, level)),
+                level => 1 + (0.1 * level) * Decimal.pow(1.1, Math.max(0, level - 15)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    maxLevel: 50
+                }),
+            mergeTokenBoost: new DarkScrapUpgrade(
+                level => 100 + (50*level),
+                level => 1 + (level/10),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    maxLevel: 50
+                }),
+        },
+    },
+    darkfragment:
+    {
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            scrapBoost: new DarkFragmentUpgrade(
+                level => 100 * Decimal.pow(1.2, level),
+                level => 1 + (10 * level) * Decimal.pow(1.3, Math.max(0, level - 10)),
+                {
+                    isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                }),
+            moreFragments: new DarkFragmentUpgrade(
+                level => 100 * Decimal.pow(1.2, level),
+                level => 1 + (0.2 * level),
+                {
+                    isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
         },
@@ -663,14 +708,20 @@ var game =
                         level => 1 + (level / 5),
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1),
-                            maxLevel: 35
+                            maxLevel: 45
                         }, ["mergeQuestUpgFallingMagnet"]),
 
-                        fasterAutoMerge: new SkillTreeUpgradeFixed([
-                            [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
-                        ], [false, true], {
-                                getEffectDisplay: effectDisplayTemplates.unlock()
-                        }, ["moreFragments"]),
+                    fasterAutoMerge: new SkillTreeUpgradeFixed([
+                        [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
+                    ], [false, true], {
+                        getEffectDisplay: effectDisplayTemplates.unlock()
+                    }, ["moreFragments"]),
+
+                    tireValue: new SkillTreeUpgradeFixed([
+                        [[new Decimal("1e4002"), RESOURCE_BRICK]],
+                    ], [false, true], {
+                        getEffectDisplay: effectDisplayTemplates.unlock()
+                    }, ["fasterAutoMerge"]),
 
                     }
             },
@@ -767,7 +818,26 @@ var game =
                             .gte(Decimal.pow(8, 1024))),
                         new Milestone("Are we\nthere yet?", 29, () => "Reach " + formatNumber(Decimal.pow(9.999, 1000)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(9.999, 1000)), "red"),
                         new Milestone("Inf.^10", 36, () => "Reach " + formatNumber(Decimal.pow(2, 10240)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 10240)), "#b60045"),
-                    ],
+
+                        new Milestone("Second Dimension", 42, () => "Unlock Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
+                        new Milestone("I'm scared", 42, () => "Enter the Second Dimension", () => game.dimension == 1),
+                        new Milestone("Back on earth", 1, () => "Leave the Second Dimension", () => game.darkscrap.amount > 1),
+                        new Milestone("Dark money???", 40, () => "Earn some dark scrap", () => game.darkscrap.amount > 24),
+                        new Milestone("Fragments from the\n other side", 41, () => "Earn your first dark fragments", () => game.darkfragment.amount > 1),
+
+                        new Milestone("it so slow.", 40, () => "Earn 1000 dark scrap", () => game.darkscrap.amount > 999),
+                        new Milestone("I like Pain", 40, () => "Earn 100k dark scrap", () => game.darkscrap.amount > 99999),
+                        new Milestone("They're like fragments,", 41, () => "Earn 100 dark fragments", () => game.darkfragment.amount > 99),
+                        new Milestone("but cooler", 41, () => "Earn 10k dark fragments", () => game.darkfragment.amount > 9999),
+                        new Milestone("Double Tap Double Pain", 41, () => "Earn 100k dark fragments", () => game.darkfragment.amount > 99999),
+
+                        new Milestone("New Dark", 42, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
+                        new Milestone("I've seen them all", 42, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
+                        new Milestone("MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
+                        new Milestone("Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
+                        new Milestone("I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
+                        
+                ],
                 highlighted: 0,
                 tooltip: null,
                 page: 0,

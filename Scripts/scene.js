@@ -260,7 +260,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.4 (v2.1)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.6 (v2.3)", w * 0.99, h - w * 0.01);
             }),
         new Scene("Barrels",
             [
@@ -270,16 +270,25 @@ var scenes =
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
                     game.scrapUpgrades.fasterBarrels.buy();
                 }, { quadratic: true }),
-                new UIButton(0, 0.97, 0.15, 0.06, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadraticMin: true, anchor: [0, 0.5] }),
+
+
+
+                new UIButton(0, 0.97, 0.15, 0.06, images.scenes.dimension, () => Scene.loadScene("SecondDimension"), {
+                    isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
+                        quadraticMin: true, anchor: [0, 0.5]
+                }),
                 new UIButton(0.2, 0.97, 0.15, 0.06, images.scenes.barrelGallery, () => Scene.loadScene("BarrelGallery"), { quadraticMin: true }),
-                new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
-                    {
-                        isVisible: () => game.highestScrapReached.gte(1e15),
-                        quadraticMin: true
-                    }),
+                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.options, () => Scene.loadScene("Options"), {
+                    quadraticMin: true
+                }),
                 new UIButton(0.6, 0.97, 0.15, 0.06, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
                         isVisible: () => game.highestBarrelReached >= 100,
+                        quadraticMin: true
+                    }),
+                new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
+                    {
+                        isVisible: () => game.highestScrapReached.gte(1e15),
                         quadraticMin: true
                     }),
                 new UIButton(1, 0.97, 0.15, 0.06, images.scenes.solarSystem, () => Scene.loadScene("SolarSystem"),
@@ -290,27 +299,29 @@ var scenes =
                         quadraticMin: true,
                         anchor: [1, 0.5]
                     }),
-                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.options, () => Scene.loadScene("Options"), {
-                    quadraticMin: true
-                }),
-                new UIButton(0.4, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
+
+
+                new UIButton(0.1, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
+                new UIButton(0.25, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.55, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
                     {
                         quadratic: true,
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1
                     }),
-                new UICheckbox(0.55, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
+                new UICheckbox(0.7, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
                     isVisible: () => game.highestBarrelReached >= 300,
                     quadratic: true,
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
                 }),
-                new UICheckbox(0.25, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
+                new UICheckbox(0.4, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.milestones.unlocked.includes(6),
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
                     on: images.checkbox.autoMerge.on,
                 }),
-                new UIButton(0.1, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+
+
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
                 new UIText(() => "Better Barrels (" + game.scrapUpgrades.betterBarrels.level.toFixed(0) + "/" + game.scrapUpgrades.betterBarrels.maxLevel + "):\nBarrels spawn 1 Tier higher", 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
                 new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.125, 0.84, 0.035, "black", { bold: true }),
@@ -405,7 +416,12 @@ var scenes =
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels) {
                             if (game.fragment.isUnlocked() == true) {
-                                game.fragment.amount = game.fragment.amount.add(((barrels[i].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)));
+                                if (game.dimension == 0) {
+                                    game.fragment.amount = game.fragment.amount.add(((barrels[i].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
+                                }
+                                else if (game.dimension == 1) {
+                                    game.darkfragment.amount = game.darkfragment.amount.add(((barrels[i].level / 10)));
+                                }
                             }
                             barrels[i] = undefined;
                             draggedBarrel = undefined;
@@ -503,6 +519,67 @@ var scenes =
                 ctx.fillStyle = colors.table;
                 ctx.fillRect(w * 0.05, h * 0.35, w * 0.9, h * 0.06);
             }),
+        new Scene("SecondDimension",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
+                new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.dimension, () => {
+                    if (game.dimension == 0) { //Enter Dimension
+                        game.dimension = 1;
+
+                        setBarrelQuality(game.settings.barrelQuality);
+                        for (let i = 0; i < barrels.length; i++) {
+                            barrels[i] = undefined;
+                        }
+                        draggedBarrel = undefined;
+
+                        game.scrap = new Decimal(0);
+                        game.scrapThisPrestige = new Decimal(0);
+
+                        for (let upg of Object.keys(game.scrapUpgrades)) {
+                            game.scrapUpgrades[upg].level = 0;
+                        }
+                        game.settings.barrelGalleryPage = 0;
+                        Scene.loadScene("Barrels");
+                    }
+                    else if (game.dimension == 1) { //Leave Dimension
+                        game.dimension = 0;
+
+                        var currentHighest = 0;
+                        for (let i = 0; i < barrels.length; i++) {
+                            if (barrels[i] == undefined) continue;
+                            if (barrels[i].level > currentHighest) currentHighest = barrels[i].level;
+                        }
+                        game.darkscrap.amount = game.darkscrap.amount.add(Math.round(currentHighest)).mul(applyUpgrade(game.darkscrap.upgrades.darkScrapBoost));
+
+                        setBarrelQuality(game.settings.barrelQuality);
+                        for (let i = 0; i < barrels.length; i++) {
+                            barrels[i] = undefined;
+                        }
+                        draggedBarrel = undefined;
+
+                        game.scrap.amount = new Decimal(0);
+                        game.goldenScrap.amount = new Decimal(0);
+                    }
+                }, { quadratic: true }),
+                new UIText("Second Dimension", 0.5, 0.1, 0.1, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIText(() => "Sacrifice your Golden Scrap and enter the Second Dimension\n to get Dark Scrap and Dark Fragments.\n" +
+                    "Click the Button below to enter or leave the Second Dimension.\n\n", 0.5, 0.2, 0.03, "black"),
+                new UIText(() => "$images.darkscrap$" + formatNumber(game.darkscrap.amount, game.settings.numberFormatType, { namesAfter: 1e10 }), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
+
+                new UIDarkScrapUpgrade(game.darkscrap.upgrades.darkScrapBoost, images.upgrades.moreScrap, 0.65, "Get More Dark Scrap"),
+                new UIDarkScrapUpgrade(game.darkscrap.upgrades.mergeTokenBoost, images.upgrades.moreMergeTokens, 0.75, "Get More Merge Tokens", colors.table2),
+            ],
+            function () {
+                ctx.fillStyle = colors.bg;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors.table;
+                ctx.fillRect(w * 0.05, h * 0.35, w * 0.9, h * 0.06);
+            }),
         new Scene("Fragment",
             [
                 new UIText("Barrel Fragments", 0.5, 0.1, 0.08, "white", {
@@ -512,11 +589,23 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
+
+                new UIText(() => {
+                    if (game.dimension == 0) {
+                        return "Fragments can be earned by destroying barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + (((parseInt(game.scrapUpgrades.betterBarrels.level) / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level))) + " fragments."
+                    }
+                    if (game.dimension == 1) {
+                        return "Dark Fragments can be earned by destroying dark barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + (((parseInt(game.scrapUpgrades.betterBarrels.level) / 10))) + " dark fragments."
+                    }
+                }, 0.5, 0.2, 0.03, "black"),
                 
-                new UIText(() => "Fragments can be earned by destroying barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + (((parseInt(game.scrapUpgrades.betterBarrels.level) / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level))) + " fragments.", 0.5, 0.2, 0.03, "black"),
                 new UIText(() => "$images.fragment$ Barrel Fragments: " + Math.round(game.fragment.amount), 0.5, 0.3, 0.04, "yellow"),
-                new UIFragmentUpgrade(game.fragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
-                new UIFragmentUpgrade(game.fragment.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.75, "Get More Magnets", colors.table2),
+                new UIFragmentUpgrade(game.fragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.45, "Get More Scrap"),
+                new UIFragmentUpgrade(game.fragment.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.55, "Get More Magnets", colors.table2),
+
+                new UIText(() => "$images.darkfragment$ Dark Fragments: " + Math.round(game.darkfragment.amount), 0.5, 0.65, 0.04, "yellow"),
+                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.75, "Get More Scrap in Second Dimension"),
+                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.moreFragments, images.upgrades.moreFragments, 0.85, "Get More Fragments", colors.table2),
             ],
             function () {
                 ctx.fillStyle = colors.bg;
@@ -524,6 +613,7 @@ var scenes =
 
                 ctx.fillStyle = colors.table;
                 ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
+                ctx.fillRect(w * 0.05, h * 0.638, w * 0.9, h * 0.06);
             }),
         new Scene("BarrelGallery",
             [
@@ -667,7 +757,7 @@ var scenes =
                 if (!game.settings.lowPerformance) {
                     drawStars(10, 0.3);
                 }
-                ctx.drawImage(images.solarSystem.inner, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
             }),
         new Scene("MergeMastery",
             [
@@ -937,7 +1027,7 @@ var scenes =
                 {
                     if(game.mergeQuests.quests[2].active)
                     {
-                        if (game.mergeQuests.quests[3].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
+                        if (game.mergeQuests.quests[2].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[2].barrelLvl);
                             Scene.loadScene("Barrels");
                         }
@@ -1079,7 +1169,8 @@ var scenes =
                     new UISkillTreePath(0.2, 0.95, 0.2, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.tireBoost),
                     new UISkillTreePath(0.5, 0.95, 0.5, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.magnetUpgBrickSpeed),
                     new UISkillTreePath(0.8, 0.95, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
-                    
+
+                    new UISkillTreePath(0.8, 1.25, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
 
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
@@ -1089,13 +1180,15 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.tireBoost, images.upgrades.tireBoost, "Get more\nxTires per\ncollect", 0.2, 0.95),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed, images.upgrades.brickSpeed, "Magnet\nUpgrade:\nBrick Speed", 0.5, 0.95),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.moreFragments, images.upgrades.moreFragments, "More Fragments", 0.8, 0.95),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.moreFragments, images.upgrades.moreFragments, "More\nFragments", 0.8, 0.95),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost2, images.upgrades.moreScrap2, "More Scrap 2", 0.2, 1.25, colors.table2),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.ezUpgraderQuests, images.ezUpgrade, "EZ Upgrader\nfor Merge\nQuests", 0.5, 1.25, colors.table2),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster Auto Merge", 0.8, 1.25, colors.table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster\nAuto Merge", 0.8, 1.25, colors.table2),
 
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 1.45})
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.tireValue, images.upgrades.tireBoost, "Double\nTire Worth", 0.8, 1.55, colors.table2),
+
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 1.75})
             ],
             function ()
             {

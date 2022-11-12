@@ -5,7 +5,9 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_BRICK = 4,
     RESOURCE_TIRE = 5,
     RESOURCE_FRAGMENT = 6,
-    RESOURCE_BARREL = 7;
+    RESOURCE_BARREL = 7,
+    RESOURCE_DARKSCRAP = 8,
+    RESOURCE_DARKFRAGMENT = 9;
 
 function applyUpgrade(upg)
 {
@@ -32,6 +34,10 @@ function getUpgradeResource(res)
             return game.fragment.amount;
         case RESOURCE_BARREL:
             return new Decimal(game.highestBarrelReached);
+        case RESOURCE_DARKSCRAP:
+            return game.darkscrap.amount;
+        case RESOURCE_DARKFRAGMENT:
+            return game.darkfragment.amount;
         default:
             return null;
     }
@@ -62,6 +68,12 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_FRAGMENT:
             game.fragment.amount = res;
             break;
+        case RESOURCE_DARKSCRAP:
+            game.darkscrap.amount = res;
+            break;
+        case RESOURCE_DARKFRAGMENT:
+            game.darkfragment.amount = res;
+            break;
         default:
             break;
     }
@@ -85,6 +97,10 @@ function getResourceImage(res)
             return "$images.tire$";
         case RESOURCE_FRAGMENT:
             return "$images.fragment$";
+        case RESOURCE_DARKSCRAP:
+            return "$images.darkscrap$";
+        case RESOURCE_DARKFRAGMENT:
+            return "$images.darkfragment$";
         default:
             break;
     }
@@ -408,6 +424,18 @@ class FragmentUpgrade extends ScrapUpgrade {
         this.resource = RESOURCE_FRAGMENT;
     }
 }
+class DarkScrapUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_DARKSCRAP;
+    }
+}
+class DarkFragmentUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_DARKFRAGMENT;
+    }
+}
 
 var EarthLevels =
     {
@@ -418,7 +446,8 @@ var EarthLevels =
         UNLOCK_URANUS: 6,
         UNLOCK_NEPTUNE: 7,
         SKILL_TREE: 8,
-        BRICK_3_LEVELS: 9
+        BRICK_3_LEVELS: 9,
+        SECOND_DIMENSION: 10
     };
 
 var effectDisplayTemplates =

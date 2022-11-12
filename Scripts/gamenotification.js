@@ -111,6 +111,7 @@ class MilestoneNotificaion extends GameNotification
     {
         super("Achievement Unlocked");
         this.title = milestone.title;
+        this.iid = milestone.imageId;
     }
 
     render(ctx)
@@ -118,6 +119,10 @@ class MilestoneNotificaion extends GameNotification
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
+        let iX = 256 * (this.iid % 10);
+        let iY = 256 * Math.floor(this.iid / 10);
+        ctx.drawImage(images.achievements.unlocked, iX, iY, 256, 256, h * 0.04, this.y - h * 0.064, 64, 64);
+
         Barrel.renderBarrel(ctx, 203, w / 2 - w * 0.2, this.y - h * 0.032, h * 0.04);
         ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.45);
         ctx.textAlign = "left";

@@ -184,9 +184,9 @@ var movingItemFactory =
             function()
             {
                 this.collected = true;
-                if (game.milestones.unlocked.includes(89) == false && barrels[0] != undefined) {
+                if (game.ms.includes(89) == false && barrels[0] != undefined) {
                     if (barrels[0].level.toFixed(0) == 384) {
-                        game.milestones.unlocked.push(89);
+                        game.ms.push(89);
                         GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[89]));
                     }
                 }
@@ -197,11 +197,12 @@ var movingItemFactory =
                 let v = value ? value : Decimal.round(game.tires.value);
                 game.tires.amount = game.tires.amount.add(v);
                 game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
+                game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
                     currentScene.popupTexts.push(new PopUpText("Spawned!", this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
-                    if (game.milestones.unlocked.includes(112) == false) {
-                            game.milestones.unlocked.push(112);
+                    if (game.ms.includes(112) == false) {
+                            game.ms.push(112);
                             GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[112]));
                     }
                 }
@@ -216,6 +217,8 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.beams.amount = game.beams.amount.add(value);
+                game.stats.totalbeams = game.stats.totalbeams.add(value);
+                game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     },
@@ -227,6 +230,8 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.aerobeams.amount = game.aerobeams.amount.add(value);
+                game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
+                game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     },
@@ -238,6 +243,8 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.angelbeams.amount = game.angelbeams.amount.add(value);
+                game.stats.totalangelbeams = game.stats.totalangelbeams.add(value);
+                game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     }

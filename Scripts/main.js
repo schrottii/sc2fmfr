@@ -106,6 +106,8 @@ function update()
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
     deltaTimeOld = Date.now();
 
+    game.stats.playtime = game.stats.playtime.add(delta);
+
     if (!document.hidden/* && delta > 0.5*/)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
@@ -313,9 +315,11 @@ function onBarrelMerge(lvl, bx, by)
         if (game.wrenches.isUnlocked()) {
             if (isMobile()) {
                 game.wrenches.amount = game.wrenches.amount.add(1);
+                game.stats.totalwrenches = game.stats.totalwrenches.add(1);
             }
             else {
                 game.wrenches.amount = game.wrenches.amount.add(3);
+                game.stats.totalwrenches = game.stats.totalwrenches.add(3);
             }
 
             // Double Mastery
@@ -327,10 +331,10 @@ function onBarrelMerge(lvl, bx, by)
     }
 
     if (game.scrapUpgrades.betterBarrels.level == 224) {
-        if (game.milestones.unlocked.includes(86) == false) {
+        if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
-                   game.milestones.unlocked.push(86);
+                   game.ms.push(86);
                    GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[86]));
                 }
             }
@@ -407,9 +411,11 @@ function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
         if (game.dimension == 0) {
             game.fragment.amount = game.fragment.amount.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
+            game.stats.totalfragments = game.stats.totalfragments.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
         }
         else if (game.dimension == 1) {
             game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
+            game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[19].level / 10)));
         }
         barrels[19] = undefined;
     }
@@ -558,7 +564,11 @@ function maxSunUpgrades() {
 function saveGame(exportGame)
 {
     const saveObj = JSON.parse(JSON.stringify(game)); //clone object
-    saveObj.milestones = saveObj.milestones.unlocked;
+    if (saveObj.milestones.unlocked != undefined) {
+        if (saveObj.milestones.unlocked.length > 1) {
+            saveObj.ms = saveObj.milestones.unlocked;
+        }
+    }
     saveObj.barrelLvls = [];
 
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
@@ -717,6 +727,26 @@ function loadGame(saveCode)
                     game.goldenScrap.upgrades[k].level = loadVal(loadObj.goldenScrap.upgrades[k].level, 0);
                 });
             }
+        }
+
+        if (loadObj.stats !== undefined) {
+            Object.keys(loadObj.stats).forEach(k => {
+                if (loadObj.stats[k] != undefined) {
+                    game.stats[k] = loadVal(new Decimal(loadObj.stats[k]), new Decimal(0));
+                }
+                else {
+                    game.stats[k] = new Decimal(0);
+                }
+            });
+        }
+        else {
+            if (loadObj.selfMerges.amount != undefined) game.stats.totalwrenches = new Decimal(loadObj.selfMerges.amount);
+            if (loadObj.beams.amount != undefined) game.stats.totalbeams = new Decimal(loadObj.beams.amount);
+            if (loadObj.aerobeams.amount != undefined) game.stats.totalaerobeams = new Decimal(loadObj.aerobeams.amount);
+            if (loadObj.angelbeams.amount != undefined) game.stats.totalangelbeams = new Decimal(loadObj.angelbeams.amount);
+            if (loadObj.darkscrap.amount != undefined) game.stats.totaldarkscrap = new Decimal(loadObj.darkscrap.amount);
+            if (loadObj.fragment.amount != undefined) game.stats.totalfragments = new Decimal(loadObj.fragment.amount);
+            if (loadObj.darkfragment.amount != undefined) game.stats.totaldarkfragments = new Decimal(loadObj.darkfragment.amount);
         }
 
         if (loadObj.scrapUpgrades !== undefined)
@@ -952,21 +982,28 @@ function loadGame(saveCode)
             })
         }
 
-
-        if(loadObj.milestones !== undefined)
-        {
-            if(loadObj.milestones != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/)
-            {
-                if (loadObj.milestones.unlocked != undefined) {
-                    loadObj.milestones = loadObj.milestones.unlocked;
-                }
-                game.milestones.unlocked = loadObj.milestones;
+        
+        if (loadObj.ms !== undefined) {
+            if (loadObj.ms != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/) {
+                game.ms = loadObj.ms;
             }
-            else
-            {
-                game.milestones.unlocked = [];
+            else {
+                game.ms = [];
                 Milestone.check(false);
             }
+        }
+        else if (loadObj.milestones !== undefined) {
+            if (loadObj.milestones.unlocked != undefined) {
+                loadObj.milestones = loadObj.milestones.unlocked;
+                game.ms = loadObj.milestones;
+            }
+            else {
+                game.ms = loadObj.milestones;
+                Milestone.check(false);
+            }
+        }
+        else {
+            game.ms = [];
         }
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 

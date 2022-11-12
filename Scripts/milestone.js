@@ -22,7 +22,7 @@ class Milestone
             {
                 if(createNotifs)
                 {
-                    GameNotification.create(new MilestoneNotificaion(i));
+                    GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[i].id));
                 }
                 game.ms.push(game.milestones.achievements[i].id - 1);
             }

@@ -17,7 +17,11 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_LEGENDARYSCRAP = 16,
     RESOURCE_STEELMAGNET = 17,
     RESOURCE_BLUEBRICK = 18,
-    RESOURCE_MASTERYTOKEN = 19;
+    RESOURCE_MASTERYTOKEN = 19,
+    RESOURCE_PLASTICBAG = 20,
+    RESOURCE_BUCKET = 21,
+    RESOURCE_FISHINGNET = 22,
+    RESOURCE_SCREW = 23;
 
 function applyUpgrade(upg)
 {
@@ -68,6 +72,14 @@ function getUpgradeResource(res)
             return game.factory.blueBricks;
         case RESOURCE_MASTERYTOKEN:
             return game.barrelMastery.masteryTokens;
+        case RESOURCE_PLASTICBAG:
+            return game.plasticBags.amount;
+        case RESOURCE_BUCKET:
+            return game.factory.buckets;
+        case RESOURCE_FISHINGNET:
+            return game.factory.fishingNets;
+        case RESOURCE_SCREW:
+            return game.screws.amount;
         default:
             return null;
     }
@@ -134,6 +146,18 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_MASTERYTOKEN:
             game.barrelMastery.masteryTokens = res;
             break;
+        case RESOURCE_PLASTICBAG:
+            game.plasticBags.amount = res;
+            break;
+        case RESOURCE_BUCKET:
+            game.factory.buckets = res;
+            break;
+        case RESOURCE_FISHINGNET:
+            game.factory.fishingNets = res;
+            break;
+        case RESOURCE_SCREW:
+            game.screws.amount = res;
+            break;
         default:
             break;
     }
@@ -183,6 +207,14 @@ function getResourceImage(res)
             return "$images.blueBrick$";
         case RESOURCE_MASTERYTOKEN:
             return "$images.masteryToken$";
+        case RESOURCE_PLASTICBAG:
+            return "$images.plasticBag$";
+        case RESOURCE_BUCKET:
+            return "$images.bucket$";
+        case RESOURCE_FISHINGNET:
+            return "$images.fishingNet$";
+        case RESOURCE_SCREW:
+            return "$images.screw$";
         default:
             break;
     }
@@ -436,6 +468,7 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
     constructor(prices, effects, cfg, deps)
     {
         super(prices, effects, cfg);
+        this.cfg = cfg;
         this.deps = deps;
     }
 
@@ -445,9 +478,16 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
         {
             return true;
         }
-        for(let k of this.deps)
-        {
-            if(game.skillTree.upgrades[k].level === 0) return false;
+        if (this.cfg.oneDep != true) {
+            for (let k of this.deps) {
+                if (game.skillTree.upgrades[k].level === 0) return false;
+            }
+        }
+        else {
+            for (let k of this.deps) {
+                if (game.skillTree.upgrades[k].level > 0) return true;
+            }
+            return false;
         }
         return true;
     }
@@ -556,6 +596,18 @@ class GlitchBeamUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_GLITCHBEAM;
+    }
+}
+class PlasticBagUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_PLASTICBAG;
+    }
+}
+class ScrewUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_SCREW;
     }
 }
 class FactoryUpgrade extends ScrapUpgrade {

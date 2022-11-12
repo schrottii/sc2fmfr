@@ -21,6 +21,7 @@ var images =
     barrels6: undefined,
     barrels7: undefined,
     barrels8: undefined,
+    barrels9: undefined,
     shadowBarrels: [],
     previewBarrels: [],
     appIcon: loadImage("Images/app-icon.png"),
@@ -69,9 +70,13 @@ var images =
     onoffbutton: loadImage("Images/Buttons/onoff.png"),
     shrine: loadImage("Images/shrinebydec.png"),
     masteryToken: loadImage("Images/Currencies/masterytoken.png"),
+    plasticBag: loadImage("Images/Currencies/plasticbag.png"),
+    bucket: loadImage("Images/Currencies/bucket.png"),
+    fishingNet: loadImage("Images/Currencies/fishingnet.png"),
     masteryIcon: loadImage("Images/mastery.png"),
     convertbutton: loadImage("Images/Buttons/convertbutton.png"),
     multibuybutton: loadImage("Images/Buttons/multibuybutton.png"),
+    screw: loadImage("Images/Currencies/screw.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -98,6 +103,7 @@ var images =
         factorylocked: loadImage("Images/Buildings/factorylocked.png"),
         generator: loadImage("Images/Buildings/generator.png"),
         bluestacks: loadImage("Images/Buildings/autos.png"),
+        collectors: loadImage("Images/Buildings/collectors.png"),
     },
     checkbox:
     {
@@ -163,6 +169,17 @@ var images =
         renewableenergy: loadImage("Images/Upgrades/renewableenergy.png"),
         unlockConverter: loadImage("Images/Upgrades/unlockConverter.png"),
         fourthUpgrades: loadImage("Images/Upgrades/4thupgrades.png"),
+        strongerBarrelTiers: loadImage("Images/Upgrades/barreltiers.png"),
+        strongerMasteryMagnets: loadImage("Images/Upgrades/strongermasterymagnets.png"),
+        strongerMasteryScrap: loadImage("Images/Upgrades/strongermasteryscrap.png"),
+        fasterMaster: loadImage("Images/Upgrades/fastermaster.png"),
+        shorterGSStorms: loadImage("Images/Upgrades/shorterGSStorms.png"),
+        higherNeptuneMax: loadImage("Images/Upgrades/higherneptunemax.png"),
+        unlockAutoCollectors: loadImage("Images/Upgrades/unlockautocollectors.png"),
+        cheaperMythus: loadImage("Images/Upgrades/cheapermythus.png"),
+        doublePlasticBags: loadImage("Images/Upgrades/doubleplasticbags.png"),
+        unlockPlasticBags: loadImage("Images/Upgrades/unlockplasticbags.png"),
+        unlockScrews: loadImage("Images/Upgrades/unlockscrews.png"),
     },
     scenes:
     {
@@ -193,6 +210,8 @@ var images =
         daily: loadImage("Images/Scenes/daily.png"),
         factory: loadImage("Images/Scenes/factory.png"),
         convert: loadImage("Images/Scenes/convertscene.png"),
+        plasticbags: loadImage("Images/Scenes/plasticbags.png"),
+        screws: loadImage("Images/Scenes/screws.png"),
     },
     solarSystem:
     {
@@ -240,6 +259,7 @@ var colors = {
         scrollTrack: "rgb(0,80,197)",
         scrollTrackbg: "rgb(118,152,203)",
         skillTreePath: "rgb(0,6,214)",
+        skillTreePath2: "rgb(0,214,6)",
         text: "rgb(0, 0, 0)"
     },
     darkblue:
@@ -252,6 +272,7 @@ var colors = {
         scrollTrack: "rgb(0,30,147)",
         scrollTrackbg: "rgb(68,102,153)",
         skillTreePath: "rgb(0,6,164)",
+        skillTreePath2: "rgb(0,164,6)",
         text: "rgb(0, 0, 0)"
     },
     dark:
@@ -264,6 +285,7 @@ var colors = {
         scrollTrack: "rgb(0,20,60)",
         scrollTrackbg: "rgb(40,62,72)",
         skillTreePath: "rgb(0,6,110)",
+        skillTreePath2: "rgb(0,110,6)",
         text: "rgb(255, 255, 255)"
     },
     pink:
@@ -276,6 +298,7 @@ var colors = {
         scrollTrack: "rgb(0,20,60)",
         scrollTrackbg: "rgb(40,62,72)",
         skillTreePath: "rgb(0,6,110)",
+        skillTreePath2: "rgb(60,110,6)",
         text: "rgb(0, 0, 0)"
     }
 };

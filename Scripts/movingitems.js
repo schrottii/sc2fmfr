@@ -1,6 +1,6 @@
 class MovingItem
 {
-    constructor(x, y, w, h, img, move, oncollect)
+    constructor(x, y, w, h, img, autoType, move, oncollect)
     {
         this.x = x;
         this.y = y;
@@ -11,6 +11,9 @@ class MovingItem
         this.oncollect = oncollect ? oncollect : this.oncollect;
         this.collected = false;
         this.timeSinceCollect = 0;
+        this.timeSinceSpawn = 0;
+        this.autoTried = false;
+        this.autoType = autoType;
     }
 
     tick(delta)
@@ -18,6 +21,7 @@ class MovingItem
         if(currentScene.name !== "Loading")
         {
             this.render(ctx);
+            this.timeSinceSpawn += delta;
             if(this.mTime == undefined) this.move(delta);
 
             if(this.isHovered() && !this.collected)
@@ -80,18 +84,27 @@ class MovingItem
                 this.y = h * Math.min(Math.random(), 0.6);
             }
         }
+        if (this.timeSinceSpawn >= 1 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(0)) {
+            if (Math.random() * 100 <= applyUpgrade(game.collectors[this.autoType])) {
+                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                game.factory.tank = game.factory.tank.sub(1);
+                this.oncollect();
+            }
+            this.autoTried = true;
+        }
     }
 }
 
 class FallingItem extends MovingItem
 {
-    constructor(img, x, y, w, h, speed, acc, swizzle, oncollect, progress)
+    constructor(img, autoType, x, y, w, h, speed, acc, swizzle, oncollect, progress)
     {
-        super(x, y, w, h, img, undefined, oncollect);
+        super(x, y, w, h, img, autoType, undefined, oncollect);
         this.speed = speed;
         this.acc = acc;
         this.swizzle = swizzle;
         this.progress = progress;
+        this.autoType = autoType;
     }
 
     move(delta)
@@ -124,7 +137,7 @@ class FallingItem extends MovingItem
                 else {
                     if (game.ms.includes(142) == false) {
                         game.ms.push(142);
-                        GameNotification.create(new MilestoneNotificaion(142));
+                        GameNotification.create(new MilestoneNotificaion(143));
                     }
                     this.y = -1;
                     this.acc = 0;
@@ -135,12 +148,13 @@ class FallingItem extends MovingItem
 }
 
 class JumpingItem extends MovingItem{
-    constructor(img, x, y, w, h, xspeed, grav, oncollect)
+    constructor(img, autoType, x, y, w, h, xspeed, grav, oncollect)
     {
-        super(x, y, w,h, img, undefined, oncollect);
+        super(x, y, w, h, img, autoType, undefined, oncollect);
         this.xspeed = xspeed;
         this.grav = grav;
         this.yspeed = 0;
+        this.autoType = autoType;
     }
 
     move(delta)
@@ -172,10 +186,11 @@ class JumpingItem extends MovingItem{
 
 
 class StaticItem extends MovingItem {
-    constructor(img, x, y, w, h, mTime, oncollect) {
-        super(x, y, w, h, img, mTime, oncollect);
+    constructor(img, autoType, x, y, w, h, mTime, oncollect) {
+        super(x, y, w, h, img, autoType, mTime, oncollect);
         this.mTime = mTime;
         this.time = 0;
+        this.autoType = autoType;
     }
 
     move(delta) {
@@ -195,7 +210,7 @@ var movingItemFactory =
 {
     fallingMagnet: (value) =>
     {
-        movingItems.push(new FallingItem(images.movingItems.magnet, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.2 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.magnet, "magnets", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.2 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
         function()
         {
             this.collected = true;
@@ -208,7 +223,7 @@ var movingItemFactory =
         }))
     },
     fallingGold: (value) => {
-        movingItems.push(new FallingItem(images.goldenScrap, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 0.3 /* Speed */, h * 0.2, w * 0.2,
+        movingItems.push(new FallingItem(images.goldenScrap, "gs", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 0.3 /* Speed */, h * 0.2, w * 0.2,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -221,14 +236,14 @@ var movingItemFactory =
     jumpingTire: value =>
     {
         let dir = Math.random() > 0.5 ? -1 : 1;
-        movingItems.push(new JumpingItem(images.movingItems.tire, dir === 1 ? 0 : w, -w * 0.2, h * 0.15, h * 0.15, h * 0.1 * dir * (0.7 + 0.3 * Math.random()), h * 0.75,
+        movingItems.push(new JumpingItem(images.movingItems.tire, "tires", dir === 1 ? 0 : w, -w * 0.2, h * 0.15, h * 0.15, h * 0.1 * dir * (0.7 + 0.3 * Math.random()), h * 0.75,
             function()
             {
                 this.collected = true;
                 if (game.ms.includes(89) == false && barrels[0] != undefined) {
                     if (barrels[0].level.toFixed(0) == 384) {
                         game.ms.push(89);
-                        GameNotification.create(new MilestoneNotificaion(89));
+                        GameNotification.create(new MilestoneNotificaion(90));
                     }
                 }
                 if(game.settings.lowPerformance)
@@ -237,21 +252,27 @@ var movingItemFactory =
                 }
                 let v = value ? value : Decimal.round(game.tires.value);
                 game.tires.amount = game.tires.amount.add(v);
-                game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0])).mul(applyUpgrade(game.aerobeams.upgrades.moreTires));
+                game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
                 game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
+
+                if (game.screws.isUnlocked()) {
+                    game.screws.amount = game.screws.amount.add(1);
+                    game.stats.totalscrews = game.stats.totalscrews.add(1);
+                }
+
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
                     currentScene.popupTexts.push(new PopUpText("Spawned!", this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
                     if (game.ms.includes(112) == false) {
                             game.ms.push(112);
-                            GameNotification.create(new MilestoneNotificaion(112));
+                            GameNotification.create(new MilestoneNotificaion(113));
                     }
                 }
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, {color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005}))
             }))
     },
     fallingBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.beam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.75 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.beam, "beams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.75 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -266,7 +287,7 @@ var movingItemFactory =
             }))
     },
     fallingAeroBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.aerobeam, w * 0.5 + Math.random() * w * 0.2, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.75,
+        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.75,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -281,7 +302,7 @@ var movingItemFactory =
             }))
     },
     fallingAngelBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.angelbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.angelbeam, "angelBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -296,7 +317,7 @@ var movingItemFactory =
             }))
     },
     fallingReinforcedBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
@@ -328,7 +349,7 @@ var movingItemFactory =
             }, 0))
     },
     fallingGlitchBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.glitchbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
+        movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function () {
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
@@ -364,7 +385,7 @@ var movingItemFactory =
             }, 0))
     },
     glitchItem: (value) => {
-        movingItems.push(new StaticItem(images.glitch, w * 0.15 + Math.random() * w * 0.7, h * Math.random(), h * 0.15, h * 0.15, 2 * Math.random(),
+        movingItems.push(new StaticItem(images.glitch, "glitches", w * 0.15 + Math.random() * w * 0.7, h * Math.random(), h * 0.15, h * 0.15, 2 * Math.random(),
             function () {
                 this.collected = true;
                 game.glitchesCollected += 1;
@@ -375,7 +396,7 @@ var movingItemFactory =
             }))
     },
     fallingGoldenBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.goldenBeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.5 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, w * 0.1,
+        movingItems.push(new FallingItem(images.movingItems.goldenBeam, "gold", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.5 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, w * 0.1,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -404,6 +425,20 @@ var movingItemFactory =
                 game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
 
                 game.stats.totalgoldenbeamscollected = game.stats.totalgoldenbeamscollected.add(1);
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+            }))
+    },
+    fallingScrew: (value) => {
+        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.05, h * 0.05, h * 1, h * 0.2, 0,
+            function () {
+                this.collected = true;
+                if (game.settings.lowPerformance) {
+                    this.destroy();
+                }
+
+                game.screws.amount = game.screws.amount.add(value);
+                game.stats.totalscrews = game.stats.totalscrews.add(value);
+                game.stats.totalscrewscollected = game.stats.totalscrewscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     },

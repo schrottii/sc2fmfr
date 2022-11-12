@@ -220,18 +220,18 @@ class UIScrollContainer2D extends UIGroup
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
         if(this.axis.x)
         {
-            ctx.fillStyle = "scrollTrackbg";
+            ctx.fillStyle = colors[C]["scrollTrackbg"];
             ctx.fillRect(nx, ny + nh - w * 0.03, nw, w * 0.03);
-            ctx.fillStyle = "scrollTrack";
+            ctx.fillStyle = colors[C]["scrollTrack"];
             let barHeight = w * (this.w / (this.scrollBounds.xmax + (this.w + this.x) - this.scrollBounds.xmin)); //(this.w + this.x) correct from constructor custombounds
             //we don't need min, just the delta height, scrollX/Y is in the delta => 0 to 1
             ctx.fillRect(nx + (nw - barHeight + barSizeMod) * ((this.scrollX - this.scrollBounds.xmin) / (this.scrollBounds.xmax - this.scrollBounds.xmin)), ny + nh - w * 0.03, barHeight, w * 0.03);
         }
         if(this.axis.y)
         {
-            ctx.fillStyle = "scrollTrackbg";
+            ctx.fillStyle = colors[C]["scrollTrackbg"];
             ctx.fillRect(nx + nw - w * 0.03, ny, w * 0.03, nh);
-            ctx.fillStyle = "scrollTrack";
+            ctx.fillStyle = colors[C]["scrollTrack"];
             let barHeight = h * (this.h / (this.scrollBounds.ymax + (this.h + this.y) - this.scrollBounds.ymin));
             ctx.fillRect(nx + nw - w * 0.03, ny + (nh - barHeight + barSizeMod) * ((this.scrollY - this.scrollBounds.ymin) / (this.scrollBounds.ymax - this.scrollBounds.ymin)), w * 0.03, barHeight);
         }
@@ -291,6 +291,7 @@ class UIButton extends UIElement
 }
 
 function autoToggle(upg) {
+    if (upg.time == "b") return false;
     if (upg.time != false) {
         upg.time = false;
     }
@@ -344,7 +345,7 @@ class UIText extends UIElement
     {
         Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size,
             {
-                color: C == "dark" ? "white" : this.color,
+                color: (C == "dark" && (this.color == "black" || this.color == "#000000")) ? "white" : this.color,
                 halign: this.halign,
                 valign: this.valign,
                 bold: this.bold,
@@ -547,8 +548,8 @@ class UIUpgrade3 extends UIGroup {
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => desc + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
-                new UIText(() => Math.round(upg.time) + "", 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
-                new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 }),
+                new UIText(() => upg.time == "b" ? "" : Math.round(upg.time) + "", 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
+                new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
             ], isVisible);
     }
 }
@@ -654,6 +655,16 @@ class UIGlitchBeamUpgrade extends UIUpgrade {
         super(upg, img, "$images.glitchbeam$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
+class UIPlasticBagUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.plasticBag$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
+class UIScrewUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.screw$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
 class UIFactoryUpgrade extends UIUpgrade2 {
     constructor(upg, img, y, desc, col, isVisible) {
         super(upg, img, "$images.steelMagnet$", y, desc, 0.05, col, isVisible, false, true);
@@ -676,7 +687,7 @@ class UISkillTreeUpgrade extends UIGroup{
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
-            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, "black", {bold: true, valign: "middle"}),
+            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());

@@ -207,6 +207,7 @@ function update()
                             if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
+                                    if(Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
                                 }
                         }
                         else {
@@ -222,6 +223,7 @@ function update()
                                 if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
                                     if(applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
                                     break;
                                 }
                             }
@@ -251,12 +253,17 @@ function update()
             if (gsStormTime >= 60) {
                 gsStormTime = 0;
                 if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
-                    for (i = 0; i < 20; i++) {
-                        setTimeout(function () { movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35)) }, 250 * i);
+                    if (applyUpgrade(game.skillTree.upgrades.shortGSStorms)) {
+                        movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35).mul(20));
+                    }
+                    else {
+                        for (i = 0; i < 20; i++) {
+                            setTimeout(function () { movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35)) }, 250 * i);
+                        }
                     }
                 }
                 else {
-                    GameNotification.create(new TextNotification("So unlucky", "No storm! :("));
+                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification("So unlucky", "No storm! :("));
                 }
             }
         }
@@ -317,7 +324,7 @@ function update()
                         }
                         else {
                             movingItemFactory.fallingAeroBeam(getBeamBaseValue());
-                            if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount > new Decimal(1e12) && game.glitchesCollected < 10) {
+                            if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
                                 movingItemFactory.glitchItem(1);
                             }
                         }
@@ -517,6 +524,37 @@ function getTotalLevels(level) {
     return game.barrelMastery.levels[level - 1];
 }
 
+function saveFile() {
+    if (importType == 0) exportGame(true);
+    else exportCompare();
+
+    var text = document.getElementById("text-area").value;
+    text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+    var blob = new Blob([text], { type: "text/plain" });
+    var anchor = document.createElement("a");
+    anchor.download = "sc2fmfr-code.txt";
+    anchor.href = window.URL.createObjectURL(blob);
+    anchor.target = "_blank";
+    anchor.style.display = "none"; // just to be safe!
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+}
+
+function openFile() {
+    let file = document.getElementById("myFile").files[0];
+
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        let textArea = document.getElementById("text-area");
+        textArea.value = e.target.result;
+    };
+    if (file != undefined) {
+        reader.readAsText(file);
+        loadGame(document.querySelector("div.absolute textarea").value, true);
+    }
+}
+
 function onBarrelMerge(isAuto, lvl, bx, by)
 {
     if (game.mergeQuests.isUnlocked())
@@ -580,7 +618,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
                    game.ms.push(86);
-                   GameNotification.create(new MilestoneNotificaion(86));
+                   GameNotification.create(new MilestoneNotificaion(87));
                 }
             }
     }
@@ -672,7 +710,7 @@ function setBarrelQuality(idx, fromScene)
     barrelsLoaded = false;
     Scene.loadScene("Loading");
     if (game.dimension == 0) {
-        for (i = 1; i < 9; i++) { // Change these two every time you add new BARRELS files
+        for (i = 1; i < 10; i++) { // Change these two every time you add new BARRELS files
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
                 "barrels" + i + "_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -681,7 +719,7 @@ function setBarrelQuality(idx, fromScene)
         }
     }
     if (game.dimension == 1) {
-        for (i = 1; i < 9; i++) {
+        for (i = 1; i < 10; i++) {
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
                 "barrels" + i + "b_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -807,7 +845,24 @@ function maxSunUpgrades() {
         }
 }
 
-function saveGame(exportGame)
+function exportCompare() {
+    let exportCode;
+    exportCode = Object.assign({}, game.stats, {
+        highestMasteryLevel: game.highestMasteryLevel,
+        highestBarrelReached: game.highestBarrelReached,
+        highestScrapReached: game.highestScrapReached,
+        totalAchievements: game.ms.length,
+        selfMerges: game.selfMerges,
+        totalMerges: game.totalMerges
+    });
+
+    exportCode = "tPt3-" + btoa(JSON.stringify(exportCode));
+    document.querySelector("div.absolute textarea").value = exportCode;
+    Utils.copyToClipboard(exportCode);
+    alert("The compare code has  been copied to your clipboard. Paste it into a text file and keep the file safe.");
+}
+
+function saveGame(exportGame, downloaded=false)
 {
     const saveObj = JSON.parse(JSON.stringify(game)); //clone object
     if (saveObj.milestones.unlocked != undefined) {
@@ -880,8 +935,11 @@ function saveGame(exportGame)
     {
         let save = btoa(JSON.stringify(saveObj));
         document.querySelector("div.absolute textarea").value = save;
-        Utils.copyToClipboard(save);
-        alert("The save code has also been copied to your clipboard. Paste it into a text file and keep the file safe.");
+        if (!downloaded) {
+            Utils.copyToClipboard(save);
+            alert("The save code has also been copied to your clipboard. Paste it into a text file and keep the file safe.");
+        }
+        // Still put it into the text area, but not copy to the clipboard, when downloading
     }
     else
     {
@@ -918,7 +976,7 @@ function loadCompare(compareCode) {
     }
 }
 
-function loadGame(saveCode)
+function loadGame(saveCode, isFromFile=false)
 {
     let loadObj;
     if (saveCode !== undefined)
@@ -1305,12 +1363,15 @@ function loadGame(saveCode)
             })
         }
 
+
         if (loadObj.factory !== undefined) {
             game.factory.time = loadVal(loadObj.factory.time, 0);
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
             game.factory.legendaryScrap = loadVal(new Decimal(loadObj.factory.legendaryScrap), new Decimal(0));
             game.factory.steelMagnets = loadVal(new Decimal(loadObj.factory.steelMagnets), new Decimal(0));
             game.factory.blueBricks = loadVal(new Decimal(loadObj.factory.blueBricks), new Decimal(0));
+            game.factory.buckets = loadVal(new Decimal(loadObj.factory.buckets), new Decimal(0));
+            game.factory.fishingNets = loadVal(new Decimal(loadObj.factory.fishingNets), new Decimal(0));
 
             if (loadObj.factory.upgrades !== undefined) {
                 Object.keys(loadObj.factory.upgrades).forEach(k => {
@@ -1324,6 +1385,8 @@ function loadGame(saveCode)
             game.factory.legendaryScrap = new Decimal(0);
             game.factory.steelMagnets = new Decimal(0);
             game.factory.blueBricks = new Decimal(0);
+            game.factory.buckets = new Decimal(0);
+            game.factory.fishingNets = new Decimal(0);
 
             Object.keys(game.factory.upgrades).forEach(k => {
                 game.factory.upgrades[k].level = 0;
@@ -1351,6 +1414,18 @@ function loadGame(saveCode)
             Object.keys(game.autos).forEach(k => {
                 game.autos[k].level = 0;
                 game.autos[k].time = 0;
+            })
+        }
+        if (loadObj.collectors !== undefined) {
+            Object.keys(loadObj.collectors).forEach(k => {
+                game.collectors[k].level = loadVal(loadObj.collectors[k].level, 0);
+                game.collectors[k].time = loadVal(loadObj.collectors[k].time, 0);
+            });
+        }
+        else {
+            Object.keys(game.collectors).forEach(k => {
+                game.collectors[k].level = 0;
+                game.collectors[k].time = 0;
             })
         }
 
@@ -1387,6 +1462,7 @@ function loadGame(saveCode)
         // Mastery
         if (loadObj.barrelMastery !== undefined) {
             game.barrelMastery.b = loadObj.barrelMastery.b;
+            game.barrelMastery.bl = [];
             for (i = 0; i < 1000; i++) {
                 game.barrelMastery.bl.push(calculateMasteryLevel(game.barrelMastery.b[i]));
             }
@@ -1408,6 +1484,40 @@ function loadGame(saveCode)
             game.barrelMastery.masteryTokens = new Decimal(0);
         }
 
+        if (loadObj.plasticBags !== undefined) {
+            game.plasticBags.amount = loadVal(new Decimal(loadObj.plasticBags.amount), new Decimal(0));
+            game.plasticBags.currentResource = loadVal(loadObj.plasticBags.currentResource, RESOURCE_MERGE_TOKEN);
+            game.plasticBags.currentCosts = loadVal(new Decimal(loadObj.plasticBags.currentCosts), new Decimal(100));
+            if (loadObj.plasticBags.upgrades !== undefined) {
+                Object.keys(loadObj.plasticBags.upgrades).forEach(k => {
+                    game.plasticBags.upgrades[k].level = loadVal(loadObj.plasticBags.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.plasticBags.amount = new Decimal(0);
+            game.plasticBags.currentResource = RESOURCE_MERGE_TOKEN;
+            game.plasticBags.currentCosts = new Decimal(100);
+            Object.keys(game.plasticBags.upgrades).forEach(k => {
+                game.plasticBags.upgrades[k].level = 0;
+            })
+        }
+
+        if (loadObj.screws !== undefined) {
+            game.screws.amount = loadVal(new Decimal(loadObj.screws.amount), new Decimal(0));
+            if (loadObj.screws.upgrades !== undefined) {
+                Object.keys(loadObj.screws.upgrades).forEach(k => {
+                    game.screws.upgrades[k].level = loadVal(loadObj.screws.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.screws.amount = new Decimal(0);
+            Object.keys(game.screws.upgrades).forEach(k => {
+                game.screws.upgrades[k].level = 0;
+            })
+        }
+
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
@@ -1422,13 +1532,14 @@ function loadGame(saveCode)
             }
         }
 
+        if (isFromFile) alert("The file has been imported successfully!");
 
     }
 }
 
-function exportGame()
+function exportGame(downloaded=false)
 {
-    saveGame(true);
+    saveGame(true, downloaded);
 }
 
 function importGame()

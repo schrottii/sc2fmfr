@@ -260,7 +260,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.3 (v2.0)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.4 (v2.1)", w * 0.99, h - w * 0.01);
             }),
         new Scene("Barrels",
             [
@@ -569,7 +569,6 @@ var scenes =
                     ctx.fillStyle = [colors.table, colors.bg][i % 2];
                     ctx.fillRect(0, h * 0.1875 + h * 0.15 * i, w, h * 0.15);
                 }
-
                 let maxLvl = Math.min(20 * game.settings.barrelGalleryPage + 20, Math.round(Barrel.getMaxLevelBarrel()) + 1);
                 for (let i = 20 * game.settings.barrelGalleryPage; i < 20 * game.settings.barrelGalleryPage + 20; i++) {
                     let c = i - 20 * game.settings.barrelGalleryPage; //used for coordinates
@@ -641,13 +640,32 @@ var scenes =
                 new UIPlanet(0.4, 0.6, "Cheaper Magnet Upgrades", game.solarSystem.upgrades.jupiter, "$images.mergeToken$", images.solarSystem.jupiter, 0.075, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER),
                 new UIPlanet(0.8, 0.7, "Auto Merge", game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
                 new UIPlanet(0.8, 0.25, "Stronger Merge Mastery\nScrap Boost", game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
-                new UIPlanet(0.25, 0.3, "Passive Magnet income", game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE)
+                new UIPlanet(0.25, 0.3, "Passive Magnet income", game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
+                
+                new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("ThirdSolarSystem"), {
+                    quadratic: true,
+                    isVisible: () => game.solarSystem.upgrades.neptune.level > 4,
+                })
             ],
             function () {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, w, h);
                 if (!game.settings.lowPerformance) {
                     drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.inner, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
+        new Scene("ThirdSolarSystem",
+            [
+                new UIButton(0.1, 0.1, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIPlanet(0.4, 0.6, "Planet Astro", game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.8, 0.7, "Planet Mythus\nBetter Barrels max.", game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4)
+               ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(10, 0.3);
                 }
                 ctx.drawImage(images.solarSystem.inner, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
             }),
@@ -899,24 +917,30 @@ var scenes =
                 {
                     if(game.mergeQuests.quests[0].active)
                     {
-                        game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[0].barrelLvl);
-                        Scene.loadScene("Barrels");
+                        if (game.mergeQuests.quests[0].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
+                            game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[0].barrelLvl);
+                            Scene.loadScene("Barrels");
+                        }
                     }
                 }, {quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests)}),
                 new UIButton(0.84, 0.385, 0.05, 0.05, images.ezUpgrade, () =>
                 {
                     if(game.mergeQuests.quests[1].active)
                     {
-                        game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[1].barrelLvl);
-                        Scene.loadScene("Barrels");
+                        if (game.mergeQuests.quests[1].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
+                            game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[1].barrelLvl);
+                            Scene.loadScene("Barrels");
+                        }
                     }
                 }, {quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests)}),
                 new UIButton(0.84, 0.515, 0.05, 0.05, images.ezUpgrade, () =>
                 {
                     if(game.mergeQuests.quests[2].active)
                     {
-                        game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[2].barrelLvl);
-                        Scene.loadScene("Barrels");
+                        if (game.mergeQuests.quests[3].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
+                            game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[2].barrelLvl);
+                            Scene.loadScene("Barrels");
+                        }
                     }
                 }, {quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests)})
             ],
@@ -1054,6 +1078,7 @@ var scenes =
 
                     new UISkillTreePath(0.2, 0.95, 0.2, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.tireBoost),
                     new UISkillTreePath(0.5, 0.95, 0.5, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.magnetUpgBrickSpeed),
+                    new UISkillTreePath(0.8, 0.95, 0.8, 1.25, 0.01, colors.skillTreePath, game.skillTree.upgrades.moreFragments),
                     
 
 
@@ -1068,6 +1093,8 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost2, images.upgrades.moreScrap2, "More Scrap 2", 0.2, 1.25, colors.table2),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.ezUpgraderQuests, images.ezUpgrade, "EZ Upgrader\nfor Merge\nQuests", 0.5, 1.25, colors.table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterAutoMerge, images.upgrades.brickSpeed, "Faster Auto Merge", 0.8, 1.25, colors.table2),
+
                 ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 1.45})
             ],
             function ()

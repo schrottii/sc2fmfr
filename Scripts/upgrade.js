@@ -4,7 +4,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_MERGE_TOKEN = 3,
     RESOURCE_BRICK = 4,
     RESOURCE_TIRE = 5,
-    RESOURCE_FRAGMENT = 6;
+    RESOURCE_FRAGMENT = 6,
+    RESOURCE_BARREL = 7;
 
 function applyUpgrade(upg)
 {
@@ -29,6 +30,8 @@ function getUpgradeResource(res)
             return game.tires.amount;
         case RESOURCE_FRAGMENT:
             return game.fragment.amount;
+        case RESOURCE_BARREL:
+            return new Decimal(game.highestBarrelReached);
         default:
             return null;
     }
@@ -363,6 +366,14 @@ class GoldenScrapUpgrade extends ScrapUpgrade
     {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_GS;
+    }
+}
+
+
+class BarrelUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_BARREL;
     }
 }
 

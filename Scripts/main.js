@@ -142,7 +142,7 @@ function update()
             {
                 autoMergeTime += delta;
             }
-            if(autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn))
+            if(autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)  )
             {
                 autoMergeBarrel();
                 autoMergeTime = 0;
@@ -153,7 +153,7 @@ function update()
             if (game.settings.autoConvert) {
                 autoConvertTime += delta;
             }
-            if (autoConvertTime >= 3) {
+            if (autoConvertTime >= 3 - applyUpgrade(game.solarSystem.upgrades.astro)) {
                 autoConvertBarrel();
                 autoConvertTime = 0;
             }
@@ -545,6 +545,11 @@ function loadGame(saveCode)
             });
         }
 
+        if (loadObj.solarSystem.upgrades.astro == undefined) {
+            game.solarSystem.upgrades.astro.level = 0;
+            game.solarSystem.upgrades.mythus.level = 0;
+        }
+
         if (loadObj.mergeQuests)
         {
             game.mergeQuests.mergeTokens = loadVal(new Decimal(loadObj.mergeQuests.mergeTokens), new Decimal(0));
@@ -629,11 +634,17 @@ function loadGame(saveCode)
             }
         }
 
+        if (loadObj.skillTree.upgrades.moreFragments == undefined) game.skillTree.upgrades.moreFragments.level = 0;
+        if (loadObj.skillTree.upgrades.fasterAutoMerge == undefined) game.skillTree.upgrades.fasterAutoMerge.level = 0;
+
         if(loadObj.milestones !== undefined)
         {
-            if(loadObj.milestones.achievements !== undefined && loadObj.milestones.achievements.length === game.milestones.achievements.length)
+            if(loadObj.milestones != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/)
             {
-                game.milestones.unlocked = loadObj.milestones.unlocked;
+                if (loadObj.milestones.unlocked != undefined) {
+                    loadObj.milestones = loadObj.milestones.unlocked;
+                }
+                game.milestones.unlocked = loadObj.milestones;
             }
             else
             {
@@ -674,3 +685,8 @@ function importGame()
 onresize = e => resizeCanvas();
 
 setup();
+
+function updateBetterBarrels() {
+    game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
+}
+updateBetterBarrels();

@@ -124,7 +124,9 @@ var images =
                 jupiter: loadImage("Images/SolarSystem/jupiter.png"),
                 saturn: loadImage("Images/SolarSystem/saturn.png"),
                 uranus: loadImage("Images/SolarSystem/uranus.png"),
-                neptune: loadImage("Images/SolarSystem/neptune.png")
+                neptune: loadImage("Images/SolarSystem/neptune.png"),
+                astro: loadImage("Images/SolarSystem/astro.png"),
+                mythus: loadImage("Images/SolarSystem/mythus.png")
             },
         achievements:
             {
@@ -176,7 +178,7 @@ function cacheBarrel(id) {
     cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();
-    img.src = cacheCanvas.toDataURL();
+    //img.src = cacheCanvas.toDataURL();
 
     images.shadowBarrels[id] = img;
 
@@ -188,7 +190,7 @@ function cacheBarrel(id) {
     cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     img = new Image();
-    img.src = cacheCanvas.toDataURL();
+    //img.src = cacheCanvas.toDataURL();
     cacheCanvasCtx.translate(1000, 0);
     images.previewBarrels[id] = img;
 }

@@ -233,7 +233,7 @@ function onBarrelMerge(lvl, bx, by)
 
     if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber())
     {
-        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later
+        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later sus
         let amount = getMagnetBaseValue();
         game.remainderMagnets += amount.remainder(1).toNumber();
         let roundAmount = amount.floor();

@@ -55,6 +55,7 @@ var images =
         beam: loadImage("Images/Currencies/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         angelbeam: loadImage("Images/Currencies/angelbeam.png"),
+        reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
         wrench: loadImage("Images/Currencies/wrench.png"),
         scrapyard: loadImage("Images/Scrapyard.png"),
         searchbutton: loadImage("Images/Buttons/search.png"),
@@ -124,7 +125,11 @@ var images =
                 unlockscrapyard: loadImage("Images/Upgrades/unlockscrapyard.png"),
                 aerobeamChance: loadImage("Images/Upgrades/aerobeamchance.png"),
                 angelBeamChance: loadImage("Images/Upgrades/angelbeamchance.png"),
-                angelBeamValue: loadImage("Images/Upgrades/angelbeamvalue.png"),
+            angelBeamValue: loadImage("Images/Upgrades/angelbeamvalue.png"),
+            reinforcedBeamValue: loadImage("Images/Upgrades/reinforcedbeamvalue.png"),
+            reinforcedBeamPower: loadImage("Images/Upgrades/reinforcedbeameasier.png"),
+            reinforcedBeamCrit: loadImage("Images/Upgrades/reinforcedbeamcrit.png"),
+            reinforcedBricks: loadImage("Images/Upgrades/reinforcedbrick.png"),
             },
         scenes:
             {
@@ -145,8 +150,9 @@ var images =
                 steelBeams: loadImage("Images/Scenes/steelbeams.png"),
                 beamboosts: loadImage("Images/Scenes/beamboosts.png"),
                 beamselection: loadImage("Images/Scenes/beamselection.png"),
-                aerobeams: loadImage("Images/Scenes/aerobeams.png"),
-                angelbeams: loadImage("Images/Scenes/angelbeams.png"),
+            aerobeams: loadImage("Images/Scenes/aerobeams.png"),
+            angelbeams: loadImage("Images/Scenes/angelbeams.png"),
+            reinforcedbeams: loadImage("Images/Scenes/reinforcedbeams.png"),
                 wrenches: loadImage("Images/Scenes/wrenches.png"),
                 scrapyard: loadImage("Images/Scenes/scrapyard.png"),
                 statistics: loadImage("Images/Scenes/stats.png"),
@@ -178,7 +184,8 @@ var images =
                 tire: loadImage("Images/MovingItems/tire.png"),
                 beam: loadImage("Images/MovingItems/steelbeam.png"),
                 aerobeam: loadImage("Images/Currencies/aerobeam.png"),
-                angelbeam: loadImage("Images/Currencies/angelbeam.png")
+                angelbeam: loadImage("Images/Currencies/angelbeam.png"),
+                reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png")
             }
     };
 
@@ -243,7 +250,7 @@ function cacheBarrel(id) {
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
 
-    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 600) / 100))) % 7, 1);
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 630) / 100))) % 8, 1);
     cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();

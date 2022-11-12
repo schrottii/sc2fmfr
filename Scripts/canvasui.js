@@ -598,6 +598,11 @@ class UIAngelBeamUpgrade extends UIUpgrade {
         super(upg, img, "$images.angelbeam$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
+class UIReinforcedBeamUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.reinforcedbeam$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
 
 class UISkillTreeUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col)

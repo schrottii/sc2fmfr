@@ -353,9 +353,11 @@
         totalbeams: new Decimal(0),
         totalaerobeams: new Decimal(0),
         totalangelbeams: new Decimal(0),
+        totalreinforcedbeams: new Decimal(0),
         totalbeamscollected: new Decimal(0),
         totalaerobeamscollected: new Decimal(0),
         totalangelbeamscollected: new Decimal(0),
+        totalreinforcedbeamscollected: new Decimal(0),
         totalquests: new Decimal(0),
         totalmergetokens: new Decimal(0),
         totaldarkscrap: new Decimal(0),
@@ -444,7 +446,7 @@
         amount: new Decimal(0),
         productionLevel: 0,
         currentMergeProgress: 0,
-        mergesPerLevel: () => Math.round(250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber()),
+        mergesPerLevel: () => Math.max(8, Math.round( (250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber()) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
         isUnlocked: () => game.highestScrapReached.gte(1e213),
         getProduction: level => {
             if (level === 0) {
@@ -460,11 +462,11 @@
         check: function () {
             if (game.settings.autoMerge == false) {
                 if (Math.random() < (applyUpgrade(game.wrenches.upgrades.instantBricksChance)) / 100) {
-                    game.bricks.productionLevel++;
+                    game.bricks.productionLevel += getBrickIncrease();
                 }
             }
             if (game.bricks.currentMergeProgress >= game.bricks.mergesPerLevel()) {
-                game.bricks.productionLevel++;
+                game.bricks.productionLevel += getBrickIncrease();
                 game.bricks.currentMergeProgress = 0;
             }
         },
@@ -762,7 +764,7 @@
                 level => 0.005 * level,
                 {
                     maxLevel: 50,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "-")
                 }),
             betterFallingMagnets: new AeroBeamUpgrade(
                 level => new Decimal(25 * (Math.round(level / 3) + 1)),
@@ -784,6 +786,12 @@
                 {
                     maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.unlock()
+                }),
+            moreTires: new AeroBeamUpgrade(
+                level => new Decimal(5 + Math.round(level / 10)),
+                level => 1 + (0.1 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
                 }),
         }
     },
@@ -824,6 +832,42 @@
                 }),
         }
     },
+    reinforcedbeams:
+    {
+        isUnlocked: () => game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.highestMasteryLevel > 299,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            reinforce: new ReinforcedBeamUpgrade(
+                level => new Decimal(5 * (level + 1) * Math.pow(1, Math.max(1, level - 11))),
+                level => 1 + level,
+                {
+                    maxLevel: 99,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
+                }),
+            strength: new ReinforcedBeamUpgrade(
+                level => new Decimal(30 * (level + 1) * Math.pow(1, Math.max(1, (level*2) - 18))),
+                level => 2 * level,
+                {
+                    maxLevel: 50,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-",)
+                }),
+            powerpunch: new ReinforcedBeamUpgrade(
+                level => new Decimal(100 * (level + 1)),
+                level => 2 * level,
+                {
+                    maxLevel: 10,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                }),
+            reinforcedbricks: new ReinforcedBeamUpgrade(
+                level => new Decimal( (Math.pow(1.5, level) * 25) + 475),
+                level => level,
+                {
+                    maxLevel: 10,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "")
+                }),
+        }
+    },
     wrenches:
     {
         isUnlocked: () => game.selfMerges > 11999/*52919*/,
@@ -850,6 +894,13 @@
                 {
                     maxLevel: 100,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                }),
+            fasterBeamChance: new WrenchUpgrade(
+                level => new Decimal(Math.round(10 + (level * 5) + (Math.max(0.2, level-50) * 5) - 1)),
+                level => level,
+                {
+                    maxLevel: 100,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "%")
                 }),
         }
     },
@@ -1074,28 +1125,38 @@
                 new Milestone(68, "Need more\nInfinities III", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(8, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(8, 1024))),
                 new Milestone(81, "New Dark", 51, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
+                new Milestone(126, "Steel", 76, () => "Collect your first Reinforced Beam!", () => game.reinforcedbeams.amount > 0),
                 new Milestone(82, "I've seen them all", 51, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
                 new Milestone(83, "MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
                 new Milestone(84, "Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
+                new Milestone(128, "Reinforce", 76, () => "Level the first Reinforced Beams upgrade to level 10", () => game.reinforcedbeams.upgrades.reinforce.level > 9),
                 new Milestone(85, "I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
+                new Milestone(127, "Reinforced Amount", 76, () => "Have 300 Reinforced Beams at once", () => game.reinforcedbeams.amount > 300),
                 new Milestone(69, "Are we\nthere yet?", 29, () => "Reach " + formatNumber(Decimal.pow(9.999, 1000)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(9.999, 1000)), "red"),
                 new Milestone(113, "I like to call it cloning", 27, () => "Spawn a tire by collecting a tire!", () => game.dimension == 508050),
                 new Milestone(118, "Sponsored by Angel Beams", 4, () => "Reach " + formatNumber(new Decimal(1e60)) + " Golden Scrap", () => game.goldenScrap.amount.gte(1e60)),
                 new Milestone(70, "Inf.^10", 36, () => "Reach " + formatNumber(Decimal.pow(2, 10240)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 10240)), "#b60045"),
                 new Milestone(99, "Slow, slow, slow", 47, () => "Make beams much slower", () => game.beams.upgrades.slowerBeams.level > 24),
+                new Milestone(129, "Build a house", 76, () => "Level the first Reinforced Beams upgrade to level 40", () => game.reinforcedbeams.upgrades.reinforce.level > 39),
                 new Milestone(122, "Champion", 0, () => "100 Achievements", () => game.ms.length > 99),
                 new Milestone(104, "Master Mastery II", 63, "Reach Merge Mastery Level 1000", () => game.highestMasteryLevel >= 1000),
                 new Milestone(124, "To The End Of The Universe", 74, () => "Mythus level 50", () => game.solarSystem.upgrades.mythus.level > 49),
-                new Milestone(125, "Level Push is OP", 75, () => "Reach Better Barrels level 5000", () => game.scrapUpgrades.betterBarrels.level > 4999),
+                new Milestone(131, "Balanced and fair", 76, () => "Keep the balance", () => game.reinforcedbeams.upgrades.reinforce.level > 19 && game.reinforcedbeams.upgrades.strength.level * 2 > game.reinforcedbeams.upgrades.reinforce.level - 3),
+                new Milestone(135, "Very, very EZ", 33, "Unlock the Super EZ Upgrader", () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader)),
                 new Milestone(86, "1 to 10 in Order", 1, () => "Put the first ten barrels (without stars) in order,\nlike auto merge would put them.\nThen upgrade Better Barrels when they are placed correctly.", () => game.dimension == 508050),
                 new Milestone(87, "Shrove Supremacy", 43, () => "Merge 10k barrels while Shrove\nis your spawning barrel", () => game.dimension == 508050),
                 new Milestone(88, "A whole field of 69", 44, () => "Make a 6 out of barrels, uprade\nBetter Barrels, make a 9\n and upgrade again to get this.", () => game.dimension == 508050),
                 new Milestone(89, "Pastaring", 45, () => "Put the first pasta barrel in the top left.\nSecond pasta barrel in the top right.\nThen upgrade Better Barrels to confirm.", () => game.dimension == 508050),
                 new Milestone(90, "Tire at top, in my hand", 46, () => "Collect a tire while having a stack of tires in the top left", () => game.dimension == 508050),
+                new Milestone(134, "Almost legendary scrap", 4, () => "Reach " + formatNumber(new Decimal(1e80)) + " Golden Scrap", () => game.goldenScrap.amount.gte(1e80)),
                 new Milestone(110, "Double Speed (v5 Style Pizza)", 68, "Upgrade scrapyard to level 101", () => game.mergeQuests.scrapyard > 100),
+                new Milestone(125, "Level Push is OP", 75, () => "Reach Better Barrels level 5000", () => game.scrapUpgrades.betterBarrels.level > 4999),
+                new Milestone(130, "Heavy Metal", 76, () => "Max. the first Reinforced Beams upgrade", () => game.reinforcedbeams.upgrades.reinforce.level > 98),
                 new Milestone(117, "For the Door Handle\nSalesman", 19, "Reach " + Decimal.pow(2, 15360).toFixed(2) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 15360))),
                 new Milestone(115, "The most and brightest", 71, () => "Every Angel Beam is worth 100", () => game.angelbeams.upgrades.beamValue.level > 98),
                 new Milestone(105, "EXILE", 64, "Reach Merge Mastery Level 2000", () => game.highestMasteryLevel >= 2000),
+                new Milestone(132, "Critical hit!", 77, () => "Collect a Reinforced Beam 3x faster", () => game.dimension == 508050),
+                new Milestone(133, "Slower but stronger", 78, () => "Reinforce your bricks", () => game.reinforcedbeams.upgrades.reinforcedbricks.level > 0),
                 new Milestone(120, "Can't touch this", 69, "Reach " + Decimal.pow(2, 20480).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
             ],
         highlighted: 0, 

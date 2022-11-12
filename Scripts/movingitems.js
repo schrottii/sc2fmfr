@@ -79,12 +79,13 @@ class MovingItem
 
 class FallingItem extends MovingItem
 {
-    constructor(img, x, y, w, h, speed, acc, swizzle, oncollect)
+    constructor(img, x, y, w, h, speed, acc, swizzle, oncollect, progress)
     {
         super(x, y, w, h, img, undefined, oncollect);
         this.speed = speed;
         this.acc = acc;
         this.swizzle = swizzle;
+        this.progress = progress;
     }
 
     move(delta)
@@ -196,7 +197,7 @@ var movingItemFactory =
                 }
                 let v = value ? value : Decimal.round(game.tires.value);
                 game.tires.amount = game.tires.amount.add(v);
-                game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
+                game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0])).mul(applyUpgrade(game.aerobeams.upgrades.moreTires));
                 game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
@@ -247,5 +248,34 @@ var movingItemFactory =
                 game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
+    },
+    fallingReinforcedBeam: (value) => {
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.65 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+            function () {
+                if (reinforcedBeamCooldown < 0.15) return false;
+                if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch)/100) {
+                    this.progress += 3;
+                    if (game.ms.includes(132) == false) {
+                        game.ms.push(132);
+                    }
+                }
+                else {
+                    this.progress += 1;
+                }
+                reinforcedBeamCooldown = 0;
+                if (this.progress >= getReinforcedTapsNeeded()) {
+                    this.collected = true;
+                    if (game.settings.lowPerformance) {
+                        this.destroy();
+                    }
+                    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value);
+                    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value);
+                    game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
+                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                }
+                else {
+                    currentScene.popupTexts.push(new PopUpText( ((this.progress / getReinforcedTapsNeeded()) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                }
+                }, 0))
     }
 };

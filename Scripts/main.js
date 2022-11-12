@@ -21,6 +21,8 @@ var movingItems = [];
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
 
+var reinforcedBeamCooldown = 0;
+
 var spawnTime =
     {
         cooldown: 0,
@@ -263,6 +265,22 @@ function update()
                     game.beams.time = 0;
                 }
             }
+
+            // Reinforced Beams
+            reinforcedBeamCooldown += delta;
+            if (game.beams.selected == 3) {
+                if (game.beams.time > 60 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 60 - 15 
+                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                            setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
+                        }
+                    }
+                    else {
+                        movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                    }
+                    game.beams.time = 0;
+                }
+            }
         }
     }
 
@@ -283,6 +301,17 @@ function getBeamBaseValue() {
 function getAngelBeamValue() {
     return applyUpgrade(game.angelbeams.upgrades.beamValue);
 }
+function getReinforcedBeamValue() {
+    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce);
+}
+
+function getReinforcedTapsNeeded() {
+    return 3 + game.reinforcedbeams.upgrades.reinforce.level - applyUpgrade(game.reinforcedbeams.upgrades.strength);
+}
+
+function getBrickIncrease() {
+    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks);
+}
 
 function getMagnetBaseValue()
 {
@@ -294,7 +323,7 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets));
 }
 
-function onBarrelMerge(lvl, bx, by)
+function onBarrelMerge(isAuto, lvl, bx, by)
 {
     if (game.mergeQuests.isUnlocked())
     {
@@ -309,7 +338,7 @@ function onBarrelMerge(lvl, bx, by)
     }
     
     game.totalMerges += 1;
-    if (game.settings.autoMerge == false) {
+    if (isAuto == false) {
         game.selfMerges += 1;
 
         if (game.wrenches.isUnlocked()) {
@@ -326,6 +355,11 @@ function onBarrelMerge(lvl, bx, by)
             if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery)) {
                 game.mergeMastery.currentMerges++;
                 game.mergeMastery.check(); //There is another one below
+            }
+
+            // Faster Beams
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance)) {
+                game.beams.time += 0.25;
             }
         }
     }
@@ -398,7 +432,7 @@ function autoMergeBarrel()
         let filtered = lvls.filter(lv => Math.round(lv.lvl) === Math.round(l.lvl));
         if (filtered.length >= 2)
         {
-            onBarrelMerge(Math.round(barrels[filtered[0].index].level), barrels[filtered[0].index].x, barrels[filtered[0].index].y);
+            onBarrelMerge(true, Math.round(barrels[filtered[0].index].level), barrels[filtered[0].index].x, barrels[filtered[0].index].y);
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
             barrels[filtered[1].index] = undefined;
@@ -716,7 +750,7 @@ function loadGame(saveCode)
         // Whoever...
         // Put that awful crap there...
         // See you in HELL!
-
+        
         if (loadObj.goldenScrap !== undefined)
         {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));
@@ -933,6 +967,22 @@ function loadGame(saveCode)
             game.angelbeams.amount = new Decimal(0);
             Object.keys(game.angelbeams.upgrades).forEach(k => {
                 game.angelbeams.upgrades[k].level = 0;
+            })
+        }
+
+        if (loadObj.reinforcedbeams !== undefined) {
+            game.reinforcedbeams.amount = loadVal(new Decimal(loadObj.reinforcedbeams.amount), new Decimal(0));
+
+            if (loadObj.reinforcedbeams.upgrades !== undefined) {
+                Object.keys(loadObj.reinforcedbeams.upgrades).forEach(k => {
+                    game.reinforcedbeams.upgrades[k].level = loadVal(loadObj.reinforcedbeams.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.reinforcedbeams.amount = new Decimal(0);
+            Object.keys(game.reinforcedbeams.upgrades).forEach(k => {
+                game.reinforcedbeams.upgrades[k].level = 0;
             })
         }
 

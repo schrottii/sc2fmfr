@@ -1599,13 +1599,41 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                new UIText(() => "Buy a plastic bag and save the crabs!", 0.575, 0.3, 0.04, "yellow"),
+                new UIText(() => "Buy a Plastic Bag and save the crabs!", 0.575, 0.3, 0.04, "yellow"),
                 new UIText(() => "Costs: " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level;
                         game.plasticBags.amount = game.plasticBags.amount.add(amount);
                         game.stats.totalplasticbags = game.stats.totalplasticbags.add(amount);
+
+                        let re = game.plasticBags.currentResource;
+                        let co = game.plasticBags.currentCosts;
+
+                        if (re == RESOURCE_SCRAP) {
+                            game.scrap = game.scrap.sub(co);
+                        }
+                        if (re == RESOURCE_MAGNET) {
+                            game.magnets = game.magnets.sub(co);
+                        }
+                        if (re == RESOURCE_GS) {
+                            game.goldenScrap.amount = game.goldenScrap.amount.sub(co);
+                        }
+                        if (re == RESOURCE_MERGE_TOKEN) {
+                            game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(co);
+                        }
+                        if (re == RESOURCE_FRAGMENT) {
+                            game.fragment.amount = game.fragment.amount.sub(co);
+                        }
+                        if (re == RESOURCE_ANGELBEAM) {
+                            game.angelbeams.amount = game.angelbeams.amount.sub(co);
+                        }
+                        if (re == RESOURCE_AEROBEAM) {
+                            game.aerobeams.amount = game.aerobeams.amount.sub(co);
+                        }
+                        if (re == RESOURCE_BEAM) {
+                            game.beams.amount = game.beams.amount.sub(co);
+                        }
 
                         let rand = Math.random() * 100;
                         let sin = Math.sin(game.stats.totalplasticbags) > 0 ? Math.sin(game.stats.totalplasticbags) : Math.sin(game.stats.totalplasticbags) * -1;

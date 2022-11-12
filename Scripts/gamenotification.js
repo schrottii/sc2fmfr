@@ -152,5 +152,5 @@ class TextNotification extends GameNotification {
         ctx.textAlign = "center";
         ctx.font = (h * 0.025) + "px " + fonts.default;
         ctx.fillText(this.title, w / 2, this.y - h * 0.03, w * 0.35);
-    }
+    } // :)
 }

@@ -493,12 +493,12 @@ class UISkillTreePath extends UIPath
 
 class UIUpgrade extends UIGroup
 {
-    constructor(upg, img, priceSuffix, y, desc, priceSize, col, isVisible, displayLevel)
+    constructor(upg, img, priceSuffix, y, desc, priceSize, col, isVisible, displayLevel, doround=true)
     {
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : colors.table),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(true), {quadratic: true}),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(doround), {quadratic: true}),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", {halign: "right"}),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", {halign: "right", valign: "middle", bold: true}),
                 new UIText(() => desc + "\n" +
@@ -542,9 +542,9 @@ class UIMergeTokenUpgrade extends UIGroup
 
 class UIBrickUpgrade extends UIUpgrade
 {
-    constructor(upg, img, y, desc, col)
+    constructor(upg, img, y, desc, col, doround)
     {
-        super(upg, img, "$images.brick$", y, desc, 0.05, col);
+        super(upg, img, "$images.brick$", y, desc, 0.05, col, false);
     }
 }
 
@@ -575,6 +575,12 @@ class UIDarkFragmentUpgrade extends UIUpgrade {
 class UIDarkScrapUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
         super(upg, img, "$images.darkscrap$", y, desc, 0.05, col, isVisible);
+    }
+}
+
+class UIBeamUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.beam$", y, desc, 0.05, col, isVisible);
     }
 }
 

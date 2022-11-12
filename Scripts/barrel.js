@@ -60,6 +60,7 @@ class Barrel
                       .mul(applyUpgrade(game.bricks.upgrades.scrapBoost))
                       .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost))
                       .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost2))
+                      .mul(applyUpgrade(game.beams.upgrades.moreScrap))
                       .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
                         .div(1 + (new Decimal(1e100) * game.dimension))
                         .mul(1 + (game.dimension * applyUpgrade(game.darkfragment.upgrades.scrapBoost)))

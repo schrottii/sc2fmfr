@@ -18,6 +18,9 @@ var currentScene = scenes[0];
 var gameNotifications = [];
 var movingItems = [];
 
+var trophyMergeCounter = 0;
+var trophyProgress = 0;
+
 var spawnTime =
     {
         cooldown: 0,
@@ -102,7 +105,7 @@ function update()
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
     deltaTimeOld = Date.now();
 
-    if (!document.hidden)
+    if (!document.hidden/* && delta > 0.5*/)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
         game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
@@ -194,17 +197,33 @@ function update()
         {
             item.tick(delta);
         }
+
+        if (game.beams.isUnlocked()) {
+            game.beams.time += delta;
+            if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
+                if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                    for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                        setTimeout(function () { movingItemFactory.fallingBeam(applyUpgrade(game.beams.upgrades.beamValue)) }, 500 * i);
+                    }
+                }
+                else {
+                    movingItemFactory.fallingBeam(applyUpgrade(game.beams.upgrades.beamValue));
+                }
+                game.beams.time = 0;
+            }
+        }
     }
 
-    ctx.font = (h * .02) + "px " + fonts.default;
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = "black";
+    //ctx.font = (h * .02) + "px " + fonts.default;
+    //ctx.textAlign = "left";
+    //ctx.textBaseline = "top";
+    //ctx.fillStyle = "black";
     //ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
 }
+
 
 function getMagnetBaseValue()
 {
@@ -212,7 +231,8 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.mergeQuests.upgrades.magnetBoost))
         .mul(game.mergeMastery.prestige.currentMagnetBoost())
         .mul(applyUpgrade(game.bricks.upgrades.magnetBoost))
-        .mul(applyUpgrade(game.fragment.upgrades.magnetBoost));
+        .mul(applyUpgrade(game.fragment.upgrades.magnetBoost))
+        .mul(applyUpgrade(game.beams.upgrades.moreMagnets));
 }
 
 function onBarrelMerge(lvl, bx, by)
@@ -227,6 +247,16 @@ function onBarrelMerge(lvl, bx, by)
                 break;
             }
         }
+    }
+
+    if (game.scrapUpgrades.betterBarrels.level == 224) {
+        if (86 in game.milestones.unlocked == false) {
+            trophyMergeCounter += 1;
+            if (trophyMergeCounter > 9999) {
+                   game.milestones.unlocked.push(86);
+                   GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[86]));
+                }
+            }
     }
 
     if (game.mergeMastery.isUnlocked())
@@ -422,7 +452,7 @@ function spawnBarrel()
         }
     }
 
-    if (idx !== -1)
+    if (idx !== -1 && game.settings.barrelSpawn == true)
     {
         barrels[idx] = new Barrel(applyUpgrade(game.scrapUpgrades.betterBarrels).toNumber());
     }
@@ -508,6 +538,9 @@ function loadGame(saveCode)
         game.highestMasteryLevel = loadVal(loadObj.highestMasteryLevel, 0);
         game.milestonesUnlocked = loadVal(loadObj.milestonesUnlocked, 0);
         game.dimension = loadVal(loadObj.dimension, 0);
+        if (loadObj.settings == undefined) {
+            loadObj.settings = { "barrelQuality": 1 };
+        }
         game.settings.barrelGalleryPage = loadVal(loadObj.settings.barrelGalleryPage, 0);
         game.settings.barrelShadows = loadVal(loadObj.settings.barrelShadows, false);
         game.settings.useCachedBarrels = loadVal(loadObj.settings.useCachedBarrels, false);
@@ -519,6 +552,7 @@ function loadGame(saveCode)
         game.settings.resetConfirmation = loadVal(loadObj.settings.resetConfirmation, true);
         game.settings.lowPerformance = loadVal(loadObj.settings.lowPerformance, false);
         game.settings.musicOnOff = loadVal(loadObj.settings.musicOnOff, false);
+        game.settings.barrelSpawn = loadVal(loadObj.settings.barrelSpawn, true);
         game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
 
         if (game.scrap == Infinity) game.scrap = new Decimal(0);
@@ -633,7 +667,7 @@ function loadGame(saveCode)
                 });
             }
         }
-        
+
         if (loadObj.darkscrap !== undefined) {
             game.darkscrap.amount = loadVal(new Decimal(loadObj.darkscrap.amount), new Decimal(0));
 
@@ -648,7 +682,25 @@ function loadGame(saveCode)
             Object.keys(game.darkscrap.upgrades).forEach(k => {
                 game.darkscrap.upgrades[k].level = 0;
             })
-            
+
+
+        }
+
+        if (loadObj.beams !== undefined) {
+            game.beams.amount = loadVal(new Decimal(loadObj.beams.amount), new Decimal(0));
+
+            if (loadObj.beams.upgrades !== undefined) {
+                Object.keys(loadObj.beams.upgrades).forEach(k => {
+                    game.beams.upgrades[k].level = loadVal(loadObj.beams.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.beams.amount = new Decimal(0);
+            Object.keys(game.beams.upgrades).forEach(k => {
+                game.beams.upgrades[k].level = 0;
+            })
+
 
         }
         if (loadObj.darkfragment !== undefined) {
@@ -735,4 +787,14 @@ setup();
 function updateBetterBarrels() {
     game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
 }
+
+function calculateCurrentHighest() {
+    var currentHighest = 0;
+    for (let i = 0; i < barrels.length; i++) {
+        if (barrels[i] == undefined) continue;
+        if (barrels[i].level > currentHighest) currentHighest = barrels[i].level;
+    }
+    return currentHighest;
+}
+
 updateBetterBarrels();

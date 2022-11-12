@@ -7,7 +7,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_FRAGMENT = 6,
     RESOURCE_BARREL = 7,
     RESOURCE_DARKSCRAP = 8,
-    RESOURCE_DARKFRAGMENT = 9;
+    RESOURCE_DARKFRAGMENT = 9,
+    RESOURCE_BEAM = 10;
 
 function applyUpgrade(upg)
 {
@@ -38,6 +39,8 @@ function getUpgradeResource(res)
             return game.darkscrap.amount;
         case RESOURCE_DARKFRAGMENT:
             return game.darkfragment.amount;
+        case RESOURCE_BEAM:
+            return game.beams.amount;
         default:
             return null;
     }
@@ -74,6 +77,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_DARKFRAGMENT:
             game.darkfragment.amount = res;
             break;
+        case RESOURCE_BEAM:
+            game.beams.amount = res;
+            break;
         default:
             break;
     }
@@ -101,6 +107,8 @@ function getResourceImage(res)
             return "$images.darkscrap$";
         case RESOURCE_DARKFRAGMENT:
             return "$images.darkfragment$";
+        case RESOURCE_BEAM:
+            return "$images.steelbeam$";
         default:
             break;
     }
@@ -161,7 +169,7 @@ class ScrapUpgrade
 
         let yohowmuch = new Decimal(this.currentPrice());        
 
-        let canAfford = round ? yohowmuch.round().lte(resource.toFixed(0)) : yohowmuch.round().lte(resource);
+        let canAfford = round ? yohowmuch.round().lte(resource.toFixed(0)) : yohowmuch.lte(resource);
         if (this.level < this.getMaxLevel() && canAfford)
         {
             this.onBuy();
@@ -424,16 +432,22 @@ class FragmentUpgrade extends ScrapUpgrade {
         this.resource = RESOURCE_FRAGMENT;
     }
 }
+class DarkFragmentUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_DARKFRAGMENT;
+    }
+}
 class DarkScrapUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_DARKSCRAP;
     }
 }
-class DarkFragmentUpgrade extends ScrapUpgrade {
+class BeamUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
-        this.resource = RESOURCE_DARKFRAGMENT;
+        this.resource = RESOURCE_BEAM;
     }
 }
 

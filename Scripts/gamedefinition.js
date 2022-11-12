@@ -12,6 +12,8 @@
     totalMerges: 0,
     selfMerges: 0,
 
+    ms: [],
+
     goldenScrap:
     {
         amount: new Decimal(0),
@@ -64,6 +66,7 @@
         reset: function () {
             if (!game.settings.resetConfirmation || confirm("Do you want to reset for " + formatNumber(game.goldenScrap.getResetAmount()) + " Golden Scrap?")) {
                 game.goldenScrap.amount = game.goldenScrap.amount.add(game.goldenScrap.getResetAmount());
+                game.stats.totalgsresets = game.stats.totalgsresets.add(1);
                 for (let i = 0; i < barrels.length; i++) {
                     barrels[i] = undefined;
                 }
@@ -107,16 +110,16 @@
             {
                 onBuy: function () {
                     trophyMergeCounter = 0;
-                    if (game.milestones.unlocked.includes(85) == false) {
+                    if (game.ms.includes(85) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
                             if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
-                                game.milestones.unlocked.push(85);
+                                game.ms.push(85);
                                 GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[85]));
                             }
                         }
                     }
 
-                    if (game.milestones.unlocked.includes(87) == false & !barrels.includes(undefined)) {
+                    if (game.ms.includes(87) == false & !barrels.includes(undefined)) {
                         if (trophyProgress != 87001) {
                             if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[12] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
                                 if (barrels[0].level == barrels[1].level && barrels[1].level == barrels[2].level && barrels[2].level == barrels[3].level && barrels[3].level == barrels[4].level && barrels[4].level != barrels[5].level && barrels[4].level == barrels[8].level && barrels[8].level == barrels[9].level && barrels[9].level == barrels[10].level && barrels[10].level == barrels[11].level && barrels[11].level == barrels[12].level && barrels[12].level != barrels[13].level && barrels[12].level == barrels[15].level && barrels[15].level == barrels[16].level && barrels[16].level == barrels[19].level) {
@@ -127,7 +130,7 @@
                         else if (trophyProgress == 87001 & !barrels.includes(undefined)) {
                             if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
                                 if (barrels[0].level == barrels[1].level && barrels[1].level == barrels[2].level && barrels[2].level == barrels[3].level && barrels[3].level == barrels[4].level && barrels[4].level != barrels[5].level && barrels[4].level == barrels[7].level && barrels[8].level == barrels[9].level && barrels[9].level == barrels[10].level && barrels[10].level == barrels[11].level && barrels[11].level != barrels[12].level && barrels[14].level != barrels[15].level && barrels[15].level == barrels[16].level && barrels[16].level == barrels[17].level && barrels[16].level == barrels[19].level) {
-                                    game.milestones.unlocked.push(87);
+                                    game.ms.push(87);
                                     GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[87]));
                                     trophyProgress = 0;
                                 }
@@ -135,10 +138,10 @@
                         }
                     }
 
-                    if (game.milestones.unlocked.includes(88) == false) {
+                    if (game.ms.includes(88) == false) {
                         if (barrels[0] != undefined && barrels[3] != undefined) {
                             if ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353) {
-                                game.milestones.unlocked.push(88);
+                                game.ms.push(88);
                                 GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[88]));
                             }
                         }
@@ -309,7 +312,8 @@
             ),
 
             astro: new GoldenScrapUpgrade(
-                level => new Decimal(1e30) * (1 + level / 11) * Math.max(1, Math.round((level / 3) - 7)) * Math.max(1, level - 11) * Math.max(1, level - 25) * (1 + level * 1.17) * (level > 99 ? Math.pow(level - 97, 15) : 1),
+                level => new Decimal(1e30).mul(1 + level / 11).mul(Math.max(1, Math.round((level / 3) - 7))).mul(Math.max(1, level - 11))
+                .mul(Math.max(1, level - 25)).mul(1 + level * 1.17).mul(level > 99 ? Math.pow(level - 97, 15) : 1),
                 level => 0.02 * level,
                 {
                     maxLevel: () => 100 + (game.skillTree.upgrades.higherAstroMax.level > 0 ? 25 : 0),
@@ -341,6 +345,24 @@
 
 
         }
+    },
+    stats:
+    {
+        playtime: new Decimal(0),
+        totalwrenches: new Decimal(0),
+        totalbeams: new Decimal(0),
+        totalaerobeams: new Decimal(0),
+        totalangelbeams: new Decimal(0),
+        totalbeamscollected: new Decimal(0),
+        totalaerobeamscollected: new Decimal(0),
+        totalangelbeamscollected: new Decimal(0),
+        totalquests: new Decimal(0),
+        totalmergetokens: new Decimal(0),
+        totaldarkscrap: new Decimal(0),
+        totalfragments: new Decimal(0),
+        totaldarkfragments: new Decimal(0),
+        totaltirescollected: new Decimal(0),
+        totalgsresets: new Decimal(0),
     },
     mergeQuests:
     {
@@ -932,163 +954,151 @@
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["moreMergeTokens"]),
 
+            superEzUpgrader: new SkillTreeUpgradeFixed([
+                [[new Decimal(500), RESOURCE_MERGE_TOKEN]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["moreMergeTokens"]),
+
         }
     },
     milestones:
     {
         achievements:
             [
-                new Milestone("Noob", 1, "Reach 1,000 Scrap", () => game.highestScrapReached.gte(1000)),
-                new Milestone("Magnet", 2, "Get your first Magnet", () => game.magnets.gte(1)),
-                new Milestone("OMG so rich", 1, "Reach 1,000,000,000 Scrap", () => game.highestScrapReached.gte(1000000000)),
-                new Milestone("Time to Retire!", 4, () => "Reach " + formatNumber(1e15) + " Scrap to be able to\nReset to get Golden Scrap.\nEach Golden Scrap Boosts Scrap\nProduction by 1%.", () => game.highestScrapReached.gte(1e15), "#ffff00"),
-                new Milestone("First Boosts", 3, "Buy your first Magnet Upgrade", () => Utils.filterObject(game.magnetUpgrades, upg => upg.level > 0).length > 0),
-
-                new Milestone("Doubled Scrap", 5, "Reach 100 Golden Scrap", () => game.goldenScrap.amount.gte(100)),
-                new Milestone("More Upgrades!", 58, "Buy your first \nGolden Scrap Upgrade", () => Utils.filterObject(game.goldenScrap.upgrades, upg => upg.level > 0).length > 0, "#b7b772"),
-                new Milestone("Automation", 6, "Reach " + formatThousands(1000) + " Golden Scrap to\nunlock auto-merging", () => game.goldenScrap.amount.gte(1000)),
-                new Milestone("Septillionaire", 7, () => "Reach " + formatNumber(1e24) + " Scrap", () => game.highestScrapReached.gte(1e24)),
-                new Milestone("Double Magnet", 59, "Get 2 Magnets each time you Merge", () => getMagnetBaseValue()
+                new Milestone(1, "Noob", 1, "Reach 1,000 Scrap", () => game.highestScrapReached.gte(1000)),
+                new Milestone(2, "Magnet", 2, "Get your first Magnet", () => game.magnets.gte(1)),
+                new Milestone(3, "OMG so rich", 1, "Reach 1,000,000,000 Scrap", () => game.highestScrapReached.gte(1000000000)),
+                new Milestone(4, "Time to Retire!", 4, () => "Reach " + formatNumber(1e15) + " Scrap to be able to\nReset to get Golden Scrap.\nEach Golden Scrap Boosts Scrap\nProduction by 1%.", () => game.highestScrapReached.gte(1e15), "#ffff00"),
+                new Milestone(5, "First Boosts", 3, "Buy your first Magnet Upgrade", () => Utils.filterObject(game.magnetUpgrades, upg => upg.level > 0).length > 0),
+                new Milestone(6, "Doubled Scrap", 5, "Reach 100 Golden Scrap", () => game.goldenScrap.amount.gte(100)),
+                new Milestone(7, "More Upgrades!", 58, "Buy your first \nGolden Scrap Upgrade", () => Utils.filterObject(game.goldenScrap.upgrades, upg => upg.level > 0).length > 0, "#b7b772"),
+                new Milestone(8, "Automation", 6, "Reach " + formatThousands(1000) + " Golden Scrap to\nunlock auto-merging", () => game.goldenScrap.amount.gte(1000)),
+                new Milestone(9, "Septillionaire", 7, () => "Reach " + formatNumber(1e24) + " Scrap", () => game.highestScrapReached.gte(1e24)),
+                new Milestone(10, "Double Magnet", 59, "Get 2 Magnets each time you Merge", () => getMagnetBaseValue()
                     .gte(2)),
-
-                new Milestone("Apollo 21", 49, "Reach Level 8 on the \"More Scrap\"\nGolden Scrap Upgrade to\nexplore the Solar System!", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, "#b0b0b0"),
-                new Milestone("Magnetism", 2, () => "Have " + formatNumber(1000) + " Magnets at once", () => game.magnets.gte(1000)),
-                new Milestone("BIG Scrap", 9, "Upgrade the Sun once", () => game.solarSystem.upgrades.sun.level > 0),
-                new Milestone("Palace of Gold", 12, "Reach 1,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(1e6)),
-                new Milestone("AM go brrrrrr", 28, "Barrels spawn faster than 500ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.5, "#00ffff"),
-
-                new Milestone("It's musically", 37, "Enable music", () => game.settings.musicOnOff == 1),
-                new Milestone("So I can read my scrap", 38, "Switch to scientific notation", () => game.settings.numberFormatType == 3),
-                new Milestone("Yeah, but it's 5 mil", 12, "Reach 5,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(5e6)),
-                new Milestone("Magnets & Mayonnaise", 2, () => "Have " + formatNumber(10000) + " Magnets at once", () => game.magnets.gte(10000)),
-                new Milestone("Just a few", 11, "Upgrade the sun a few times", () => game.solarSystem.upgrades.sun.level >= 100),
-
-                new Milestone("DESTROY THEM!!!", 1, "Enable destroying barrels", () => game.settings.destroyBarrels == 1),
-                new Milestone("The fanmade currency!", 39, "Reach barrel 100 to unlock Barrel Fragments!", () => game.fragment.isUnlocked()),
-                new Milestone("Mags sponsored by Frags", 8, "Buy a level of More Magnets (Fragment upgrade)", () => game.fragment.upgrades.magnetBoost.level > 0),
-                new Milestone("One K of F", 48, "Have 1000 fragments at once", () => game.fragment.amount.gte(1000)),
-                new Milestone("4Posupgs", 50, "Have 10000 fragments at once", () => game.fragment.amount.gte(10000)),
-
-                new Milestone("Who needs\nUpgrades", 13, () => "Get " + formatNumber(1e15) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e15) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
-                new Milestone("M.P. + W2ed", 8, "Have 69.420 magnets at once", () => game.magnets.gte(69420)),
-                new Milestone("RPG", 14, () => "Reach " + formatNumber(1e93) + " Scrap to\nunlock Merge Quests!", () => game.highestScrapReached.gte(1e93), "#5edc00"),
-                new Milestone("Best Barrels", 10, "Reach Better Barrels Upgrade Level 200", () => game.scrapUpgrades.betterBarrels.level >= 200),
-                new Milestone("Apollo 23", 15, "Unlock Mars by upgrading Earth!", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS, "#a0a0a0"),
-
-                new Milestone("Reinforcements", 16, () => "Reach " + formatNumber(1e153) + " Scrap to\nunlock Merge Mastery!", () => game.highestScrapReached.gte(1e153), "#00e8e4"),
-                new Milestone("Speed of Sound", 28, "Barrels spawn faster than 250ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.25, "#00ffff"),
-                new Milestone("Merge Again", 17, "Prestige Merge Mastery", () => game.mergeMastery.prestige.level > 0),
-                new Milestone("Questing to\nthe Max", 14, "Have all Merge Quest\nUpgrades at least at Level 20", () => Utils.filterObject(game.mergeQuests.upgrades, upg => upg.level >= 20).length === 3),
-                new Milestone("Interesting Barrels", 10, "Reach Better Barrels Level 300", () => game.scrapUpgrades.betterBarrels.level >= 300),
-
-                new Milestone("Who needs\nUpgrades II", 13, () => "Get " + formatNumber(1e30) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e30) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
-                new Milestone("Magnetism II", 2, () => "Have " + formatThousands(10e6) + " Magnets at once", () => game.magnets.gte(10e6)),
-                new Milestone("Building\nBlocks", 18, () => "Reach " + formatNumber(1e213) + " Scrap to\nunlock Bricks!", () => game.highestScrapReached.gte(1e213), "#feb329"),
-                new Milestone("Overproductive\nStart", 21, () => "First Barrel produces more than " + formatNumber(1e63) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(1e63)),
-                new Milestone("HUGE Scrap", 11, () => "Upgrade the Sun to Level 1000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 1000),
-
-                new Milestone("Who needs\nUpgrades III", 13, () => "Get " + formatNumber(1e90) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e90) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
-                new Milestone("Infinity", 19, () => "Reach " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 1024)), "red"),
-                new Milestone("100%", 20, "Upgrade Mercury to Level 99", () => game.solarSystem.upgrades.mercury.level >= 99),
-                new Milestone("Millions\nat once", 22, () => "Get " + formatThousands(1e6) + " Magnets per Merge", () => getMagnetBaseValue()
+                new Milestone(11, "Apollo 21", 49, "Reach Level 8 on the \"More Scrap\"\nGolden Scrap Upgrade to\nexplore the Solar System!", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, "#b0b0b0"),
+                new Milestone(12, "Magnetism", 2, () => "Have " + formatNumber(1000) + " Magnets at once", () => game.magnets.gte(1000)),
+                new Milestone(13, "BIG Scrap", 9, "Upgrade the Sun once", () => game.solarSystem.upgrades.sun.level > 0),
+                new Milestone(14, "Palace of Gold", 12, "Reach 1,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(1e6)),
+                new Milestone(15, "AM go brrrrrr", 28, "Barrels spawn faster than 500ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.5, "#00ffff"),
+                new Milestone(16, "It's musically", 37, "Enable music", () => game.settings.musicOnOff == 1),
+                new Milestone(17, "So I can read my scrap", 38, "Switch to scientific notation", () => game.settings.numberFormatType == 3),
+                new Milestone(18, "Yeah, but it's 5 mil", 12, "Reach 5,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(5e6)),
+                new Milestone(19, "Magnets & Mayonnaise", 2, () => "Have " + formatNumber(10000) + " Magnets at once", () => game.magnets.gte(10000)),
+                new Milestone(20, "Just a few", 11, "Upgrade the sun a few times", () => game.solarSystem.upgrades.sun.level >= 100),
+                new Milestone(21, "DESTROY THEM!!!", 1, "Enable destroying barrels", () => game.settings.destroyBarrels == 1),
+                new Milestone(22, "The fanmade currency!", 39, "Reach barrel 100 to unlock Barrel Fragments!", () => game.fragment.isUnlocked()),
+                new Milestone(23, "Mags sponsored by Frags", 8, "Buy a level of More Magnets (Fragment upgrade)", () => game.fragment.upgrades.magnetBoost.level > 0),
+                new Milestone(24, "One K of F", 48, "Have 1000 fragments at once", () => game.fragment.amount.gte(1000)),
+                new Milestone(121, "Where am I?", 73, () => "Use the barrel search to search\nfor your current spawning barrel", () => game.dimension == 508050),
+                new Milestone(25, "4Posupgs", 50, "Have 10000 fragments at once", () => game.fragment.amount.gte(10000)),
+                new Milestone(26, "Who needs\nUpgrades", 13, () => "Get " + formatNumber(1e15) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e15) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
+                new Milestone(27, "M.P. + W2ed", 8, "Have 69.420 magnets at once", () => game.magnets.gte(69420)),
+                new Milestone(28, "RPG", 14, () => "Reach " + formatNumber(1e93) + " Scrap to\nunlock Merge Quests!", () => game.highestScrapReached.gte(1e93), "#5edc00"),
+                new Milestone(29, "Best Barrels", 10, "Reach Better Barrels Upgrade Level 200", () => game.scrapUpgrades.betterBarrels.level >= 200),
+                new Milestone(30, "Apollo 23", 15, "Unlock Mars by upgrading Earth!", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS, "#a0a0a0"),
+                new Milestone(31, "Reinforcements", 16, () => "Reach " + formatNumber(1e153) + " Scrap to\nunlock Merge Mastery!", () => game.highestScrapReached.gte(1e153), "#00e8e4"),
+                new Milestone(32, "Speed of Sound", 28, "Barrels spawn faster than 250ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.25, "#00ffff"),
+                new Milestone(33, "Merge Again", 17, "Prestige Merge Mastery", () => game.mergeMastery.prestige.level > 0),
+                new Milestone(34, "Questing to\nthe Max", 14, "Have all Merge Quest\nUpgrades at least at Level 20", () => Utils.filterObject(game.mergeQuests.upgrades, upg => upg.level >= 20).length === 3),
+                new Milestone(35, "Interesting Barrels", 10, "Reach Better Barrels Level 300", () => game.scrapUpgrades.betterBarrels.level >= 300),
+                new Milestone(106, "Almost there!", 65, "Reach 10k self merges", () => game.selfMerges > 9999),
+                new Milestone(107, "The worst currency", 66, "Unlock wrenches", () => game.wrenches.isUnlocked()),
+                new Milestone(36, "Who needs\nUpgrades II", 13, () => "Get " + formatNumber(1e30) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e30) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
+                new Milestone(37, "Magnetism II", 2, () => "Have " + formatThousands(10e6) + " Magnets at once", () => game.magnets.gte(10e6)),
+                new Milestone(108, "Better than the dev", 66, "Have more than 5292 wrenches at once", () => game.wrenches.amount > 5292),
+                new Milestone(38, "Building\nBlocks", 18, () => "Reach " + formatNumber(1e213) + " Scrap to\nunlock Bricks!", () => game.highestScrapReached.gte(1e213), "#feb329"),
+                new Milestone(39, "Overproductive\nStart", 21, () => "First Barrel produces more than " + formatNumber(1e63) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(1e63)),
+                new Milestone(40, "HUGE Scrap", 11, () => "Upgrade the Sun to Level 1000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 1000),
+                new Milestone(91, "Steel Beams!", 47, () => "Unlock Steel Beams", () => game.highestBarrelReached > 299),
+                new Milestone(92, "Hey there my good old friend!", 47, () => "Catch your first Steel Beam", () => game.beams.amount > 0),
+                new Milestone(41, "Who needs\nUpgrades III", 13, () => "Get " + formatNumber(1e90) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e90) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
+                new Milestone(42, "Infinity", 19, () => "Reach " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 1024)), "red"),
+                new Milestone(43, "100%", 20, "Upgrade Mercury to Level 99", () => game.solarSystem.upgrades.mercury.level >= 99),
+                new Milestone(44, "Millions\nat once", 22, () => "Get " + formatThousands(1e6) + " Magnets per Merge", () => getMagnetBaseValue()
                     .gte(1e6)),
-                new Milestone("Mega Mastery", 16, "Reach Merge Mastery Level 150", () => game.highestMasteryLevel >= 150),
-
-                new Milestone("Tire", 26, "Get your first Tire\nReach Barrel 500 to unlock Tires", () => game.tires.amount.gt(0), "#00e57e"),
-                new Milestone("It is\npossible", 24, () => "Reach " + formatNumber(new Decimal("1e500")) + " Bricks", () => game.bricks.amount.gte(new Decimal("1e500"))),
-                new Milestone("COLOSSAL Scrap", 11, () => "Upgrade the Sun to Level 5000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 5000),
-                new Milestone("RPG v2", 32, "Unlock the Skill Tree", () => game.skillTree.isUnlocked(), "#98ff00"),
-                new Milestone("Apollo 99", 31, "Unlock the whole Solar System", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE, "#909090"),
-
-                new Milestone("Ultra Mastery", 16, "Reach Merge Mastery Level 300", () => game.highestMasteryLevel >= 300, "#e0e0e0"),
-                new Milestone("The Secret Upgrade", 34, "Unlock a new Upgrade...", () => game.skillTree.upgrades.mergeQuestUpgFallingMagnet.isUnlocked()),
-                new Milestone("Evolution\nof Tires", 27, "Unlock all Tire Upgrades", () => game.tires.amount.gte(game.tires.milestones[2])),
-                new Milestone("Speed\nof Light", 28, "Auto Merger is faster than 0.25s", () => applyUpgrade(game.solarSystem.upgrades.saturn)
+                new Milestone(45, "Mega Mastery", 16, "Reach Merge Mastery Level 150", () => game.highestMasteryLevel >= 150),
+                new Milestone(93, "I steal beans", 52, () => "Hoard quite some Steel Beams", () => game.beams.amount > 99),
+                new Milestone(46, "Tire", 26, "Get your first Tire\nReach Barrel 500 to unlock Tires", () => game.tires.amount.gt(0), "#00e57e"),
+                new Milestone(47, "It is\npossible", 24, () => "Reach " + formatNumber(new Decimal("1e500")) + " Bricks", () => game.bricks.amount.gte(new Decimal("1e500"))),
+                new Milestone(95, "Worth a LOT", 54, () => "Increase the beam worth to 5", () => game.beams.upgrades.beamValue.level > 3),
+                new Milestone(119, "Ski", 72, () => "Ski", () => game.highestBarrelReached >= 553),
+                new Milestone(48, "COLOSSAL Scrap", 11, () => "Upgrade the Sun to Level 5000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 5000),
+                new Milestone(94, "Bee-ms", 53, () => "Increase the beam frequency a bit", () => game.beams.upgrades.fasterBeams.level > 3),
+                new Milestone(49, "RPG v2", 32, "Unlock the Skill Tree", () => game.skillTree.isUnlocked(), "#98ff00"),
+                new Milestone(50, "Apollo 99", 31, "Unlock the whole Solar System", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE, "#909090"),
+                new Milestone(51, "Ultra Mastery", 16, "Reach Merge Mastery Level 300", () => game.highestMasteryLevel >= 300, "#e0e0e0"),
+                new Milestone(52, "The Secret Upgrade", 34, "Unlock a new Upgrade...", () => game.skillTree.upgrades.mergeQuestUpgFallingMagnet.isUnlocked()),
+                new Milestone(101, "AERODYNAMIC!", 60, () => "Catch an aerobeam", () => game.aerobeams.amount > 0),
+                new Milestone(96, "500m³ of beams", 55, () => "Increase the storm value to the max.", () => game.beams.upgrades.beamStormValue.level == 5),
+                new Milestone(53, "Evolution\nof Tires", 27, "Unlock all Tire Upgrades", () => game.tires.amount.gte(game.tires.milestones[2])),
+                new Milestone(54, "Speed\nof Light", 28, "Auto Merger is faster than 0.25s", () => applyUpgrade(game.solarSystem.upgrades.saturn)
                     .lte(0.25), "#00d7ff"),
-                new Milestone("Double every Dozen", 35, "Double Brick production every 12 Merges", () => game.bricks.mergesPerLevel() <= 12),
-
-                new Milestone("Very EZ", 33, "Unlock the EZ Upgrader\nand do Merge Quests\nmore easily", () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests)),
-                new Milestone("It is indeed\npossible", 25, () => "Reach " + formatNumber(new Decimal("1e5000")) + " Tires", () => game.tires.amount.gte(new Decimal("1e5000"))),
-                new Milestone("Is this even\npossible??", 23, () => "Have " + formatThousands(1e15) + " Magnets at once", () => game.magnets.gte(1e15)),
-                new Milestone("Best Barrels III", 10, "Reach Better Barrels Upgrade Level 1000", () => game.scrapUpgrades.betterBarrels.level >= 1000),
-                new Milestone("Warp 9.9", 28, "Barrels spawn faster than 5ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.005, "#0092ff"),
-
-                new Milestone("Going for Frank's record", 39, "Have 1e6 fragments at once", () => game.fragment.amount.gte(999999)),
-                new Milestone("Best Barrels IV", 10, "Reach Better Barrels Upgrade Level 2000", () => game.scrapUpgrades.betterBarrels.level >= 2000),
-                new Milestone("Master Mastery", 16, "Reach Merge Mastery Level 500", () => game.highestMasteryLevel >= 500, "#e0e0e0"),
-                new Milestone("TABLE SMASH!!!", 25, () => "Reach " + formatNumber(new Decimal("1e10000")) + " Tires", () => game.tires.amount.gte(new Decimal("1e10000"))),
-                new Milestone("Best Barrels V", 10, "Reach Better Barrels Upgrade Level 3000", () => game.scrapUpgrades.betterBarrels.level >= 3000),
-
-                new Milestone("Need more\nInfinities", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
+                new Milestone(55, "Double every Dozen", 35, "Double Brick production every 12 Merges", () => game.bricks.mergesPerLevel() <= 12),
+                new Milestone(97, "Beam Thunder", 56, () => "Increase the storm chance to 5%", () => game.beams.upgrades.beamStormChance.level > 49),
+                new Milestone(102, "Nonstop Aero", 61, () => "Max. aerobeam frequency", () => game.aerobeams.upgrades.fasterBeams.level == 30),
+                new Milestone(56, "Very EZ", 33, "Unlock the EZ Upgrader\nand do Merge Quests\nmore easily", () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests)),
+                new Milestone(57, "It is indeed\npossible", 25, () => "Reach " + formatNumber(new Decimal("1e5000")) + " Tires", () => game.tires.amount.gte(new Decimal("1e5000"))),
+                new Milestone(98, "Beam Hailstorm", 57, () => "Increase the storm chance to 10%", () => game.beams.upgrades.beamStormChance.level > 99),
+                new Milestone(58, "Is this even\npossible??", 23, () => "Have " + formatThousands(1e15) + " Magnets at once", () => game.magnets.gte(1e15)),
+                new Milestone(103, "Magnet Man get Sixpack", 62, () => "Triple the falling magnet value!", () => game.aerobeams.upgrades.betterFallingMagnets.level > 19),
+                new Milestone(59, "Best Barrels III", 10, "Reach Better Barrels Upgrade Level 1000", () => game.scrapUpgrades.betterBarrels.level >= 1000),
+                new Milestone(60, "Warp 9.9", 28, "Barrels spawn faster than 5ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.005, "#0092ff"),
+                new Milestone(61, "Going for Frank's record", 39, "Have 1e6 fragments at once", () => game.fragment.amount.gte(999999)),
+                new Milestone(100, "Great Northern Beans", 52, () => "Hoard quite many Steel Beams", () => game.beams.amount > 499),
+                new Milestone(62, "Best Barrels IV", 10, "Reach Better Barrels Upgrade Level 2000", () => game.scrapUpgrades.betterBarrels.level >= 2000),
+                new Milestone(63, "Master Mastery", 16, "Reach Merge Mastery Level 500", () => game.highestMasteryLevel >= 500, "#e0e0e0"),
+                new Milestone(64, "TABLE SMASH!!!", 25, () => "Reach " + formatNumber(new Decimal("1e10000")) + " Tires", () => game.tires.amount.gte(new Decimal("1e10000"))),
+                new Milestone(65, "Best Barrels V", 10, "Reach Better Barrels Upgrade Level 3000", () => game.scrapUpgrades.betterBarrels.level >= 3000),
+                new Milestone(66, "Need more\nInfinities", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(2, 1024))),
-                new Milestone("Need more\nInfinities II", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(4, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
+                new Milestone(111, "Believe in Beams", 70, () => "Catch an Angel Beam", () => game.angelbeams.amount > 0),
+                new Milestone(112, "So many! I can't believe it!", 70, () => "Every Angel Beam is worth 21", () => game.angelbeams.upgrades.beamValue.level > 19),
+                new Milestone(71, "Second Dimension", 42, () => "Unlock Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
+                new Milestone(72, "I'm scared", 42, () => "Enter the Second Dimension", () => game.dimension == 1),
+                new Milestone(73, "Back on earth", 1, () => "Leave the Second Dimension", () => game.darkscrap.amount > 1),
+                new Milestone(74, "Dark money???", 40, () => "Earn some dark scrap", () => game.darkscrap.amount > 24),
+                new Milestone(75, "Fragments from the\n other side", 41, () => "Earn your first dark fragments", () => game.darkfragment.amount > 1),
+                new Milestone(114, "Magnet Storms?", 23, () => "Unlock a new storm type", () => game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0),
+                new Milestone(67, "Need more\nInfinities II", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(4, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(4, 1024))),
-                new Milestone("Need more\nInfinities III", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(8, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
+                new Milestone(76, "it so slow.", 40, () => "Earn 1000 dark scrap", () => game.darkscrap.amount > 999),
+                new Milestone(77, "I like Pain", 40, () => "Earn 100k dark scrap", () => game.darkscrap.amount > 99999),
+                new Milestone(78, "They're like fragments,", 41, () => "Earn 100 dark fragments", () => game.darkfragment.amount > 99),
+                new Milestone(79, "but cooler", 41, () => "Earn 10k dark fragments", () => game.darkfragment.amount > 9999),
+                new Milestone(123, "The mythical planet", 74, () => "Mythus level 10", () => game.solarSystem.upgrades.mythus.level > 9),
+                new Milestone(80, "Double Tap Double Pain", 41, () => "Earn 100k dark fragments", () => game.darkfragment.amount > 99999),
+                new Milestone(109, "But it doesn't cost scrap!", 67, "Unlock the scrapyard", () => game.skillTree.upgrades.unlockScrapyard.level > 0),
+                new Milestone(116, "No storm :(", 22, () => "Increase storm chance to max.", () => game.angelbeams.upgrades.goldenScrapStormChance.level > 37),
+                new Milestone(68, "Need more\nInfinities III", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(8, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(8, 1024))),
-                new Milestone("Are we\nthere yet?", 29, () => "Reach " + formatNumber(Decimal.pow(9.999, 1000)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(9.999, 1000)), "red"),
-                new Milestone("Inf.^10", 36, () => "Reach " + formatNumber(Decimal.pow(2, 10240)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 10240)), "#b60045"),
-
-                new Milestone("Second Dimension", 42, () => "Unlock Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
-                new Milestone("I'm scared", 42, () => "Enter the Second Dimension", () => game.dimension == 1),
-                new Milestone("Back on earth", 1, () => "Leave the Second Dimension", () => game.darkscrap.amount > 1),
-                new Milestone("Dark money???", 40, () => "Earn some dark scrap", () => game.darkscrap.amount > 24),
-                new Milestone("Fragments from the\n other side", 41, () => "Earn your first dark fragments", () => game.darkfragment.amount > 1),
-
-                new Milestone("it so slow.", 40, () => "Earn 1000 dark scrap", () => game.darkscrap.amount > 999),
-                new Milestone("I like Pain", 40, () => "Earn 100k dark scrap", () => game.darkscrap.amount > 99999),
-                new Milestone("They're like fragments,", 41, () => "Earn 100 dark fragments", () => game.darkfragment.amount > 99),
-                new Milestone("but cooler", 41, () => "Earn 10k dark fragments", () => game.darkfragment.amount > 9999),
-                new Milestone("Double Tap Double Pain", 41, () => "Earn 100k dark fragments", () => game.darkfragment.amount > 99999),
-
-                new Milestone("New Dark", 51, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
-                new Milestone("I've seen them all", 51, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
-                new Milestone("MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
-                new Milestone("Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
-                new Milestone("I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
-
-                new Milestone("1 to 10 in Order", 1, () => "Put the first ten barrels (without stars) in order,\nlike auto merge would put them.\nThen upgrade Better Barrels when they are placed correctly.", () => game.dimension == 508050),
-                new Milestone("Shrove Supremacy", 43, () => "Merge 10k barrels while Shrove\nis your spawning barrel", () => game.dimension == 508050),
-                new Milestone("A whole field of 69", 44, () => "Make a 6 out of barrels, uprade\nBetter Barrels, make a 9\n and upgrade again to get this.", () => game.dimension == 508050),
-                new Milestone("Pastaring", 45, () => "Put the first pasta barrel in the top left.\nSecond pasta barrel in the top right.\nThen upgrade Better Barrels to confirm.", () => game.dimension == 508050),
-                new Milestone("Tire at top, in my hand", 46, () => "Collect a tire while having a stack of tires in the top left", () => game.dimension == 508050),
-
-                new Milestone("Steel Beams!", 47, () => "Unlock Steel Beams", () => game.highestBarrelReached > 299),
-                new Milestone("Hey there my good old friend!", 47, () => "Catch your first Steel Beam", () => game.beams.amount > 0),
-                new Milestone("I steal beans", 52, () => "Hoard quite some Steel Beams", () => game.beams.amount > 99),
-                new Milestone("Bee-ms", 53, () => "Increase the beam frequency a bit", () => game.beams.upgrades.fasterBeams.level > 3),
-                new Milestone("Worth a LOT", 54, () => "Increase the beam worth to 5", () => game.beams.upgrades.beamValue.level > 3),
-
-                new Milestone("500m³ of beams", 55, () => "Increase the storm value to the max.", () => game.beams.upgrades.beamStormValue.level == 5),
-                new Milestone("Beam Thunder", 56, () => "Increase the storm chance to 5%", () => game.beams.upgrades.beamStormChance.level > 49),
-                new Milestone("Beam Hailstorm", 57, () => "Increase the storm chance to 10%", () => game.beams.upgrades.beamStormChance.level > 99),
-                new Milestone("Slow, slow, slow", 47, () => "Make beams much slower", () => game.beams.upgrades.slowerBeams.level > 24),
-                new Milestone("Great Northern Beans", 52, () => "Hoard quite many Steel Beams", () => game.beams.amount > 499),
-
-                new Milestone("AERODYNAMIC!", 60, () => "Catch an aerobeam", () => game.aerobeams.amount > 0),
-                new Milestone("Nonstop Aero", 61, () => "Max. aerobeam frequency", () => game.aerobeams.upgrades.fasterBeams.level == 30),
-                new Milestone("Magnet Man get Sixpack", 62, () => "Triple the falling magnet value!", () => game.aerobeams.upgrades.betterFallingMagnets.level > 19),
-                new Milestone("Master Mastery II", 63, "Reach Merge Mastery Level 1000", () => game.highestMasteryLevel >= 1000),
-                new Milestone("EXILE", 64, "Reach Merge Mastery Level 2000", () => game.highestMasteryLevel >= 2000),
-
-                new Milestone("Almost there!", 65, "Reach 10k self merges", () => game.selfMerges > 9999),
-                new Milestone("The worst currency", 66, "Unlock wrenches", () => game.wrenches.isUnlocked()),
-                new Milestone("Better than the dev", 66, "Have more than 5292 wrenches at once", () => game.wrenches.amount > 5292),
-                new Milestone("But it doesn't cost scrap!", 67, "Unlock the scrapyard", () => game.skillTree.upgrades.unlockScrapyard.level > 0),
-                new Milestone("Double Speed (v5 Style Pizza)", 68, "Upgrade scrapyard to level 101", () => game.mergeQuests.scrapyard > 100),
-                
-                new Milestone("Believe in Beams", 70, () => "Catch an Angel Beam", () => game.angelbeams.amount > 0),
-                new Milestone("So many! I can't believe it!", 70, () => "Every Angel Beam is worth 21", () => game.angelbeams.upgrades.beamValue.level > 19),
-                new Milestone("I like to call it cloning", 27, () => "Spawn a tire by collecting a tire!", () => game.dimension == 508050),
-                new Milestone("Magnet Storms?", 23, () => "Unlock a new storm type", () => game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0),
-                new Milestone("The most and brightest", 71, () => "Every Angel Beam is worth 100", () => game.angelbeams.upgrades.beamValue.level > 98),
-                
-                new Milestone("No storm :(", 22, () => "Increase storm chance to max.", () => game.angelbeams.upgrades.goldenScrapStormChance.level > 37),
-                new Milestone("For the Door Handle\nSalesman", 19, "Reach " + Decimal.pow(2, 15360).toFixed(2) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 15360))),
-                new Milestone("Sponsored by Angel Beams", 4, () => "Reach " + formatNumber(new Decimal(1e60)) + " Golden Scrap", () => game.goldenScrap.amount.gte(1e60)),
-                new Milestone("Ski", 72, () => "Ski", () => game.highestBarrelReached >= 553),
-                new Milestone("Can't touch this", 69, "Reach " + Decimal.pow(2, 20480).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
+                new Milestone(81, "New Dark", 51, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
+                new Milestone(82, "I've seen them all", 51, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
+                new Milestone(83, "MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
+                new Milestone(84, "Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
+                new Milestone(85, "I love Pain", 42, () => "Earn 1.000.000 dark scrap or dark fragments", () => game.darkfragment.amount > 999999 || game.darkscrap.amount > 999999),
+                new Milestone(69, "Are we\nthere yet?", 29, () => "Reach " + formatNumber(Decimal.pow(9.999, 1000)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(9.999, 1000)), "red"),
+                new Milestone(113, "I like to call it cloning", 27, () => "Spawn a tire by collecting a tire!", () => game.dimension == 508050),
+                new Milestone(118, "Sponsored by Angel Beams", 4, () => "Reach " + formatNumber(new Decimal(1e60)) + " Golden Scrap", () => game.goldenScrap.amount.gte(1e60)),
+                new Milestone(70, "Inf.^10", 36, () => "Reach " + formatNumber(Decimal.pow(2, 10240)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 10240)), "#b60045"),
+                new Milestone(99, "Slow, slow, slow", 47, () => "Make beams much slower", () => game.beams.upgrades.slowerBeams.level > 24),
+                new Milestone(122, "Champion", 0, () => "100 Achievements", () => game.ms.length > 99),
+                new Milestone(104, "Master Mastery II", 63, "Reach Merge Mastery Level 1000", () => game.highestMasteryLevel >= 1000),
+                new Milestone(124, "To The End Of The Universe", 74, () => "Mythus level 50", () => game.solarSystem.upgrades.mythus.level > 49),
+                new Milestone(125, "Level Push is OP", 75, () => "Reach Better Barrels level 5000", () => game.scrapUpgrades.betterBarrels.level > 4999),
+                new Milestone(86, "1 to 10 in Order", 1, () => "Put the first ten barrels (without stars) in order,\nlike auto merge would put them.\nThen upgrade Better Barrels when they are placed correctly.", () => game.dimension == 508050),
+                new Milestone(87, "Shrove Supremacy", 43, () => "Merge 10k barrels while Shrove\nis your spawning barrel", () => game.dimension == 508050),
+                new Milestone(88, "A whole field of 69", 44, () => "Make a 6 out of barrels, uprade\nBetter Barrels, make a 9\n and upgrade again to get this.", () => game.dimension == 508050),
+                new Milestone(89, "Pastaring", 45, () => "Put the first pasta barrel in the top left.\nSecond pasta barrel in the top right.\nThen upgrade Better Barrels to confirm.", () => game.dimension == 508050),
+                new Milestone(90, "Tire at top, in my hand", 46, () => "Collect a tire while having a stack of tires in the top left", () => game.dimension == 508050),
+                new Milestone(110, "Double Speed (v5 Style Pizza)", 68, "Upgrade scrapyard to level 101", () => game.mergeQuests.scrapyard > 100),
+                new Milestone(117, "For the Door Handle\nSalesman", 19, "Reach " + Decimal.pow(2, 15360).toFixed(2) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 15360))),
+                new Milestone(115, "The most and brightest", 71, () => "Every Angel Beam is worth 100", () => game.angelbeams.upgrades.beamValue.level > 98),
+                new Milestone(105, "EXILE", 64, "Reach Merge Mastery Level 2000", () => game.highestMasteryLevel >= 2000),
+                new Milestone(120, "Can't touch this", 69, "Reach " + Decimal.pow(2, 20480).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
             ],
-        highlighted: 0,
+        highlighted: 0, 
         tooltip: null,
         page: 0,
         maxPage: () => Math.floor((game.milestones.achievements.length - 1) / 25),

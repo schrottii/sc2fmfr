@@ -267,6 +267,7 @@ var scenes =
                 ctx.textBaseline = "top";
                 ctx.font = "300 " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillText("Scrap II Fanmade FR", w * 0.5, h * 0.02, w * 0.9);
+                ctx.fillText("mod made by Schrottii", w * 0.5, h * 0.075, w * 0.45);
 
                 ctx.font = "300 " + (h * 0.05) + "px " + fonts.default;
                 ctx.fillText("Loading...", w * 0.5, h * 0.6, w * 0.9);
@@ -274,17 +275,36 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v2.1.1 (v2.8.1)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v2.2 (v2.9)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Not religious", w * 0.49, h - w * 0.1);
+                ctx.fillText("2.1 Part 2", w * 0.49, h - w * 0.1);
+
             }),
         new Scene("Barrels",
             [
                 new UIButton(0.125, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
                     game.scrapUpgrades.betterBarrels.buy();
                 }, { quadratic: true }),
+                new UIButton(0.75, 0.73, 0.05, 0.05, images.ezUpgrade, function () {
+                    let GoTo = prompt("Which barrel do you want to go to?");
+                    GoTo = Math.round(GoTo - 1);
+                    if (GoTo < 0) {
+                        alert("Too low!");
+                        return;
+                    }
+                    if (GoTo < game.scrapUpgrades.betterBarrels.maxLevel) {
+                        game.scrapUpgrades.betterBarrels.buyToTarget(GoTo);
+                        Scene.loadScene("Barrels");
+                    }
+                    else {
+                        alert("Too high!");
+                    }
+                }, {
+                    isVisible: () => game.skillTree.upgrades.superEzUpgrader.level > 0,
+                    quadratic: true
+                }),
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
                     game.scrapUpgrades.fasterBarrels.buy();
                 }, { quadratic: true }),
@@ -335,7 +355,7 @@ var scenes =
                     on: images.checkbox.autoConvert.on,
                 }),
                 new UICheckbox(0.7, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
-                    isVisible: () => game.milestones.unlocked.includes(6),
+                    isVisible: () => game.ms.includes(5),
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
                     on: images.checkbox.autoMerge.on,
@@ -592,7 +612,8 @@ var scenes =
                             game.dimension = 0;
 
 
-                            game.darkscrap.amount = game.darkscrap.amount.add(( Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost)) ));
+                            game.darkscrap.amount = game.darkscrap.amount.add((Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))));
+                            game.stats.totaldarkscrap = game.stats.totaldarkscrap.add((Math.round(currentHighest) * (applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))));
 
                             setBarrelQuality(game.settings.barrelQuality);
                             for (let i = 0; i < barrels.length; i++) {
@@ -700,6 +721,21 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.settings.barrelGalleryPage < game.barrelGallery.getMaxPage()
                 }),
+                new UIButton(0.5, 0.9, 0.1, 0.1, images.searchbutton, () => {
+                    let GoTo = parseInt(prompt("Which barrel do you want to go to?")); 
+                    GoTo = Math.floor(GoTo);
+                    if (GoTo < 1) GoTo = 1;
+                    if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
+                        if (game.ms.includes(120) == false) {
+                            game.ms.push(120);
+                            GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[120]));
+                        }
+                    }
+                    game.settings.barrelGalleryPage = Math.floor((GoTo-1) / 20);
+                }, {
+                    quadratic: true,
+                    isVisible: () => game.highestBarrelReached > 99
+                }),
                 new UIButton(0.1, 0.9, 0.1, 0.1, images.arrows.left_2, () => game.settings.barrelGalleryPage = 0,
                     {
                         quadratic: true,
@@ -746,6 +782,7 @@ var scenes =
                     ctx.textAlign = "center";
                     ctx.textBaseline = "top";
                     if (!drawPreview) {
+                        ctx.fillText(i+1, x, y - h * 0.065, w * 0.15);
                         ctx.fillText(formatNumber(Barrel.getIncomeForLevel(i)), x, y + h * 0.06, w * 0.15);
                     }
                 }
@@ -777,6 +814,9 @@ var scenes =
                 new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
                     quadratic: true,
                     isVisible: game.wrenches.isUnlocked
+                }),
+                new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.statistics, () => Scene.loadScene("Statistics"), {
+                    quadratic: true
                 }),
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("OuterSolarSystem"), {
                     quadratic: true,
@@ -851,7 +891,7 @@ var scenes =
                 new UIGroup(
                     [
                         new UIButton(0.5, 0.9, 0.3, 0.07, images.buttonEmpty, () => game.mergeMastery.prestige.reset()),
-                        new UIText("Prestige", 0.5, 0.9, 0.06, "black", { bold: true, valign: "middle" })
+                        new UIText("Prestige", 0.5, 0.9, 0.06, "white", { bold: true, valign: "middle" })
                     ], () => game.mergeMastery.level > 49)
             ],
             function () {
@@ -1207,10 +1247,10 @@ var scenes =
                     }
                 }, 0.5, 0.3, 0.03, "black"),
 
-                new UIText(() => "Total Scrap Boost: x" + formatNumber( (Math.max(1, applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost) / 100 * game.wrenches.amount) ))/*.toFixed(1)*/, 0.5, 0.7, 0.03, "black"),
+                new UIText(() => "Total Scrap Boost: x" + formatNumber( (Math.max(1, applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost) / 100 * game.wrenches.amount) ))/*.toFixed(1)*/, 0.5, 0.7, 0.03, "black"),                
+
                 new UIText(() => "Total Merges: " + game.totalMerges + "\nOwn Merges: " + game.selfMerges, 0.5, 0.8, 0.06, "black"),
                 new UIText(() => "Own merges -> Merges done while Auto Merge is turned off!", 0.5, 0.9, 0.03, "black"),
-                
 
                 new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.45, "x2 Merge Mastery progress\nfrom own merges", colors[C].table, game.mergeMastery.isUnlocked),
                 new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.55, "Instant brick prod. increase\nfrom own merges", colors[C].table2, game.bricks.isUnlocked),
@@ -1224,6 +1264,53 @@ var scenes =
                 ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
             }),
+
+
+
+new Scene("Statistics",
+    [
+        new UIText("Statistics", 0.5, 0.05, 0.08, "white", {
+            bold: 900,
+            borderSize: 0.005,
+            font: fonts.title
+        }),
+        new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+        new UIText(() => "Highest Merge Mastery Level: " + game.highestMasteryLevel, 0.5, 0.1, 0.04, "black"),
+        new UIText(() => "Highest Barrel: " + game.highestBarrelReached, 0.5, 0.125, 0.04, "black"),
+        new UIText(() => "Highest Scrap Reached: " + formatNumber(game.highestScrapReached), 0.5, 0.15, 0.04, "black"),
+
+        new UIText(() => "Total Wrenches: " + formatNumber(game.stats.totalwrenches), 0.5, 0.2, 0.04, "black"),
+        new UIText(() => "Total Beams: " + formatNumber(game.stats.totalbeams), 0.5, 0.225, 0.04, "black"),
+        new UIText(() => "Total Aerobeams: " + formatNumber(game.stats.totalaerobeams), 0.5, 0.25, 0.04, "black"),
+        new UIText(() => "Total Angel Beams: " + formatNumber(game.stats.totalangelbeams), 0.5, 0.275, 0.04, "black"),
+        new UIText(() => "Total Beams Collected: " + formatNumber(game.stats.totalbeamscollected), 0.5, 0.3, 0.04, "black"),
+        new UIText(() => "Total Aerobeams Collected: " + formatNumber(game.stats.totalaerobeamscollected), 0.5, 0.325, 0.04, "black"),
+        new UIText(() => "Total Angel Beams Collected: " + formatNumber(game.stats.totalangelbeamscollected), 0.5, 0.35, 0.04, "black"),
+        new UIText(() => "Total Quests completed: " + game.stats.totalquests, 0.5, 0.375, 0.04, "black"),
+        new UIText(() => "Total Merge Tokens: " + formatNumber(game.stats.totalmergetokens), 0.5, 0.4, 0.04, "black"),
+        new UIText(() => "Total Dark Scrap: " + formatNumber(game.stats.totaldarkscrap), 0.5, 0.425, 0.04, "black"),
+        new UIText(() => "Total Fragments: " + formatNumber(game.stats.totalfragments), 0.5, 0.45, 0.04, "black"),
+        new UIText(() => "Total Dark Fragments: " + formatNumber(game.stats.totaldarkfragments), 0.5, 0.475, 0.04, "black"),
+        new UIText(() => "Total Achievements: " + game.ms.length + "/" + game.milestones.achievements.length, 0.5, 0.5, 0.04, "black"),
+        new UIText(() => "Total Tires Collected: " + formatNumber(game.stats.totaltirescollected), 0.5, 0.525, 0.04, "black"),
+        new UIText(() => "Total GS Resets: " + formatNumber(game.stats.totalgsresets), 0.5, 0.55, 0.04, "black"),
+        new UIText(() => "Play Time: " + formatNumber(game.stats.playtime), 0.5, 0.575, 0.04, "black"),
+
+        new UIText(() => "Total Merges: " + game.totalMerges, 0.5, 0.625, 0.04, "black"),
+        new UIText(() => "Self Merges: " + game.selfMerges, 0.5, 0.655, 0.04, "black"),
+
+
+        new UIText(() => "Please note: Many of these stats were not\ntracked prior to update 2.2!", 0.5, 0.7, 0.04, "black"),
+
+        new UIButton(0.8, 0.95, 0.3, 0.07, images.buttonEmpty, () => console.log("Coming soon")),
+        new UIText("Compare", 0.8, 0.95, 0.06, "gray", { bold: true, valign: "middle" }),
+        new UIText("Coming soon", 0.8, 0.94, 0.04, "white", { bold: true, valign: "middle" })
+    ],
+    function () {
+        ctx.fillStyle = colors[C].bg;
+        ctx.fillRect(0, 0, w, h);
+    }),
 
         new Scene("Options",
             [
@@ -1264,7 +1351,7 @@ var scenes =
                 new UIGroup([
                     new UIToggleOption(0.25, "game.settings.musicOnOff", "Music", colors[C].bg),
                     new UIOption(0.35, images.options.numberFormat, () => {
-                        if (game.milestones.unlocked.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
+                        if (game.ms.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
                             game.settings.musicSelect = game.settings.musicSelect + 1;
                         }
                         else {
@@ -1286,31 +1373,31 @@ var scenes =
 
                             const removethose = [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84];
                             for (i = 0; i < removethose.length; i++) {
-                                const index = game.milestones.unlocked.indexOf(removethose[i]);
+                                const index = game.ms.indexOf(removethose[i]);
                                 if (index > -1) {
-                                    game.milestones.unlocked.splice(index, 1);
+                                    game.ms.splice(index, 1);
                                 }
                             }
                         }
                     }, "Reset Second Dimension Progress", colors[C].bg),
-                    new UIOption(0.55, images.scenes.options, () => {
+                    /*new UIOption(0.55, images.scenes.options, () => {
                         const removethose = [85, 86, 87, 88, 89];
                         let removedthose = [];
                         for (i = 0; i < removethose.length; i++) {
-                            const index = game.milestones.unlocked.indexOf(removethose[i]);
+                            const index = game.ms.indexOf(removethose[i]);
                             if (index > -1) {
-                                game.milestones.unlocked.splice(index, 1);
+                                game.ms.splice(index, 1);
                                 removedthose.push(removethose[i]);
                                 i -= 1;
                             }
                         }
                         for (i = 0; i < removedthose.length; i++) {
-                            const index = game.milestones.unlocked.indexOf(removedthose[i]);
+                            const index = game.ms.indexOf(removedthose[i]);
                             if (index == -1) {
-                                game.milestones.unlocked.push(removedthose[i]);
+                                game.ms.push(removedthose[i]);
                             }
                         }
-                    }, "Optimize savecode", colors[C].bg),
+                    }, "Optimize savecode", colors[C].bg),*/
                 ], () => game.settings.optionsPage === 2),
                 new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
@@ -1327,6 +1414,7 @@ var scenes =
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", {quadratic: true}),
                 new UIText("My Youtube Channel", 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
                 new UIText("Mod of VeproGames' Scrap 2 Fanmade", 0.95, 0.93, 0.025, "black", { halign: "right", valign: "bottom" }),
+                new UIText("Modded by Schrottii", 0.95, 0.94, 0.025, "black", { halign: "right", valign: "bottom" }),
                 new UIText("Libraries used:\nbreak_infinity\ngrapheme-splitter", 0.95, 0.99, 0.025, "black", {halign: "right", valign: "bottom"}),
                 new UIText("Export and Import", 0.3, 0.825, 0.035, "black"),
                 new UIButton(0.3, 0.775, 0.09, 0.09, images.exportImport, () => document.querySelector("div.absolute").style.display = "block", {quadratic: true}),
@@ -1454,7 +1542,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIText(() => game.milestones.unlocked.length + " / " + game.milestones.achievements.length, 0.5, 0.15, 0.06, "white", {
+                new UIText(() => game.ms.length + " / " + game.milestones.achievements.length, 0.5, 0.15, 0.06, "white", {
                     bold: 900,
                     borderSize: 0.003,
                     font: fonts.title
@@ -1481,12 +1569,12 @@ var scenes =
                     let iid = game.milestones.achievements[i].imageId;
                     let iX = 256 * (iid % 10);
                     let iY = 256 * Math.floor(iid / 10);
-                    ctx.drawImage(game.milestones.unlocked.includes(i) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize, tSize);
+                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize, tSize);
                     if(i === game.milestones.highlighted)
                     {
                         ctx.drawImage(images.highlightedSlot, x, y, tSize, tSize);
                     }
-                    ctx.fillStyle = game.milestones.unlocked.includes(i) ? game.milestones.achievements[i].fontColor : "white";
+                    ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
                     ctx.lineWidth = 0;
                 }
 
@@ -1572,7 +1660,8 @@ var scenes =
                     new UISkillTreePath(0.2, 2.15, 0.5, 2.45, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.higherAstroMax, game.skillTree.upgrades.tireValue]),
                     new UISkillTreePath(0.8, 2.15, 0.5, 2.45, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.higherAstroMax, game.skillTree.upgrades.tireValue]),
 
-                    new UISkillTreePath(0.5, 2.45, 0.5, 2.75, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreMergeTokens),
+                    new UISkillTreePath(0.5, 2.45, 0.2, 2.75, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreMergeTokens),
+                    new UISkillTreePath(0.5, 2.45, 0.8, 2.75, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreMergeTokens),
 
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
@@ -1597,7 +1686,8 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.moreMergeTokens, images.upgrades.moreMergeTokens, "Double\nMerge Tokens", 0.5, 2.45, colors[C].table),
 
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockScrapyard, images.upgrades.unlockscrapyard, "Unlock Scrapyard", 0.5, 2.75, colors[C].table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockScrapyard, images.upgrades.unlockscrapyard, "Unlock Scrapyard", 0.2, 2.75, colors[C].table2),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.superEzUpgrader, images.ezUpgrade, "Unlock Super\nEZ Upgrader", 0.8, 2.75, colors[C].table2),
 
                 ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 2.95})
             ],

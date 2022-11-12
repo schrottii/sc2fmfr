@@ -173,7 +173,7 @@ var movingItemFactory =
             function()
             {
                 this.collected = true;
-                if (89 in game.milestones.unlocked == false && barrels[0] != undefined) {
+                if (game.milestones.unlocked.includes(89) == false && barrels[0] != undefined) {
                     if (barrels[0].level.toFixed(0) == 384) {
                         game.milestones.unlocked.push(89);
                         GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[89]));
@@ -190,7 +190,7 @@ var movingItemFactory =
             }))
     },
     fallingBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.beam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * 1.0, h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.beam, w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.75 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {

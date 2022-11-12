@@ -220,18 +220,18 @@ class UIScrollContainer2D extends UIGroup
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
         if(this.axis.x)
         {
-            ctx.fillStyle = colors.scrollTrackbg;
+            ctx.fillStyle = colors[C].scrollTrackbg;
             ctx.fillRect(nx, ny + nh - w * 0.03, nw, w * 0.03);
-            ctx.fillStyle = colors.scrollTrack;
+            ctx.fillStyle = colors[C].scrollTrack;
             let barHeight = w * (this.w / (this.scrollBounds.xmax + (this.w + this.x) - this.scrollBounds.xmin)); //(this.w + this.x) correct from constructor custombounds
             //we don't need min, just the delta height, scrollX/Y is in the delta => 0 to 1
             ctx.fillRect(nx + (nw - barHeight + barSizeMod) * ((this.scrollX - this.scrollBounds.xmin) / (this.scrollBounds.xmax - this.scrollBounds.xmin)), ny + nh - w * 0.03, barHeight, w * 0.03);
         }
         if(this.axis.y)
         {
-            ctx.fillStyle = colors.scrollTrackbg;
+            ctx.fillStyle = colors[C].scrollTrackbg;
             ctx.fillRect(nx + nw - w * 0.03, ny, w * 0.03, nh);
-            ctx.fillStyle = colors.scrollTrack;
+            ctx.fillStyle = colors[C].scrollTrack;
             let barHeight = h * (this.h / (this.scrollBounds.ymax + (this.h + this.y) - this.scrollBounds.ymin));
             ctx.fillRect(nx + nw - w * 0.03, ny + (nh - barHeight + barSizeMod) * ((this.scrollY - this.scrollBounds.ymin) / (this.scrollBounds.ymax - this.scrollBounds.ymin)), w * 0.03, barHeight);
         }
@@ -497,7 +497,7 @@ class UIUpgrade extends UIGroup
     {
         super(
             [
-                new UIRect(0.5, y, 1, 0.1, col ? col : colors.table),
+                new UIRect(0.5, y, 1, 0.1, col ? col : colors[C].table),
                 new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(doround), {quadratic: true}),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", {halign: "right"}),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", {halign: "right", valign: "middle", bold: true}),
@@ -528,7 +528,7 @@ class UIMergeTokenUpgrade extends UIGroup
     constructor(upg, img, y, desc, col, isVisible)
     {
         super([
-            new UIRect(0.5, y, 1, 0.1, col ? col : colors.table),
+            new UIRect(0.5, y, 1, 0.1, col ? col : colors[C].table),
             new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(true), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", {bold: true, halign: "right", valign: "middle"}),
             new UIText(() => desc + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
@@ -551,7 +551,7 @@ class UIBrickUpgrade extends UIUpgrade
 class UITireUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col) {
         super([
-            new UIRect(x, y, 1 / 3, 0.225, col ? col : colors.table),
+            new UIRect(x, y, 1 / 3, 0.225, col ? col : colors[C].table),
             new UIText(title, x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
             new UIButton(x, y, 0.06, 0.06, img, () => upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("", "$images.tire$", false), x, y + 0.04, 0.05, "black"),
@@ -562,25 +562,25 @@ class UITireUpgrade extends UIGroup{
 
 class UIFragmentUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
-        super(upg, img, "$images.fragment$", y, desc, 0.05, col, isVisible);
+        super(upg, img, "$images.fragment$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
 
 class UIDarkFragmentUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
-        super(upg, img, "$images.darkfragment$", y, desc, 0.05, col, isVisible);
+        super(upg, img, "$images.darkfragment$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
 
 class UIDarkScrapUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
-        super(upg, img, "$images.darkscrap$", y, desc, 0.05, col, isVisible);
+        super(upg, img, "$images.darkscrap$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
 
 class UIBeamUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
-        super(upg, img, "$images.beam$", y, desc, 0.05, col, isVisible);
+        super(upg, img, "$images.beam$", y, desc, 0.05, col, isVisible, true, true);
     }
 }
 
@@ -588,7 +588,7 @@ class UISkillTreeUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col)
     {
         super([
-            new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : colors.table),
+            new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : colors[C].table),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
             new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
@@ -616,7 +616,7 @@ class UIToggleOption extends UIGroup
     constructor(y, prop, desc, color)
     {
         super([
-            new UIRect(0.5, y, 1, 0.1, color ? color : colors.table),
+            new UIRect(0.5, y, 1, 0.1, color ? color : colors[C].table),
             new UICheckbox(0.1, y, 0.07, 0.07, prop, {
                 quadratic: true
             }),
@@ -633,7 +633,7 @@ class UIOption extends UIGroup
     constructor(y, image, onclick, desc, color)
     {
         super([
-            new UIRect(0.5, y, 1, 0.1, color ? color : colors.table),
+            new UIRect(0.5, y, 1, 0.1, color ? color : colors[C].table),
             new UIButton(0.1, y, 0.07, 0.07, image, onclick, {quadratic: true}),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",

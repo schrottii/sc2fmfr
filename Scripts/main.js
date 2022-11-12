@@ -554,6 +554,9 @@ function loadGame(saveCode)
         game.settings.musicOnOff = loadVal(loadObj.settings.musicOnOff, false);
         game.settings.barrelSpawn = loadVal(loadObj.settings.barrelSpawn, true);
         game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
+        game.settings.C = loadVal(loadObj.settings.C, 0);
+
+        C = ["default", "darkblue", "dark"][game.settings.C];
 
         if (game.scrap == Infinity) game.scrap = new Decimal(0);
 

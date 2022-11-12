@@ -8,6 +8,10 @@
         magnets: new Decimal(0),
         remainderMagnets: 0,
         dimension: 0,
+
+        totalMerges: 0,
+        selfMerges: 0,
+
         goldenScrap:
             {
                 amount: new Decimal(0),
@@ -367,6 +371,8 @@
                 isUnlocked: () => game.highestScrapReached.gte(1e93),
                 quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(600, [2, 3, 4])],
                 mergeTokens: new Decimal(0),
+                scrapyard: 1,
+                scrapyardProgress: 0,
                 upgrades:
                     {
                         scrapBoost: new MergeTokenUpgrade(level => Decimal.min(5, 1 + Math.floor(level / 4))
@@ -402,7 +408,7 @@
                 level: 0,
                 currentMerges: 0,
                 getNeededMerges: level => Math.round((100 + 10 * level) * applyUpgrade(game.tires.upgrades[0][2])
-                    .toNumber()),
+                    .toNumber() / ((game.mergeQuests.scrapyard / 100) + 0.99)),
                 getScrapBoost: level => new Decimal(1 + 0.05 * level).pow(applyUpgrade(game.solarSystem.upgrades.uranus)),
                 getMagnetBonus: level => Decimal.round(getMagnetBaseValue().mul(2 + 0.25 * level)),
                 check: () =>
@@ -464,6 +470,11 @@
                 },
                 check: function ()
                 {
+                    if (game.settings.autoMerge == false) {
+                        if (Math.random() < (applyUpgrade(game.wrenches.upgrades.instantBricksChance))/100) {
+                            game.bricks.productionLevel++;
+                        }
+                    }
                     if (game.bricks.currentMergeProgress >= game.bricks.mergesPerLevel())
                     {
                         game.bricks.productionLevel++;
@@ -692,7 +703,7 @@
                 }),
             moreFragments: new DarkFragmentUpgrade(
                 level => 100 * Decimal.pow(1.1, level),
-                level => 1 + (0.2 * level),
+                level => 1 + (0.3 * level),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -793,6 +804,35 @@
                 }),*/
         }
     },
+    wrenches:
+    {
+        isUnlocked: () => game.selfMerges > 11999/*52919*/,
+        amount: new Decimal(0),
+        upgrades:
+        {
+            doubleMergeMastery: new WrenchUpgrade(
+                level => 10 + level,
+                level => 0.5 * level,
+                {
+                    maxLevel: 200,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                }),
+            instantBricksChance: new WrenchUpgrade(
+                level => 50,
+                level => 0.1 * level,
+                {
+                    maxLevel: 200,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                }),
+            wrenchScrapBoost: new WrenchUpgrade(
+                level => 10 * (1+Math.round(level/2)),
+                level => 10 * level,
+                {
+                    maxLevel: 100,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                }),
+        }
+    },
     skillTree:
     {
         isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SKILL_TREE,
@@ -887,6 +927,12 @@
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["higherAstroMax", "tireValue"]),
+
+            unlockScrapyard: new SkillTreeUpgradeFixed([
+                [[new Decimal("1e33"), RESOURCE_GS]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["moreMergeTokens"]),
 
         }
     },
@@ -1025,6 +1071,12 @@
                 new Milestone("Magnet Man get Sixpack", 62, () => "Triple the falling magnet value!", () => game.aerobeams.upgrades.betterFallingMagnets.level > 19),
                 new Milestone("Master Mastery II", 63, "Reach Merge Mastery Level 1000", () => game.highestMasteryLevel >= 1000),
                 new Milestone("EXILE", 64, "Reach Merge Mastery Level 2000", () => game.highestMasteryLevel >= 2000),
+
+                new Milestone("Almost there!", 65, "Reach 10k self merges", () => game.selfMerges > 9999),
+                new Milestone("The worst currency", 66, "Unlock wrenches", () => game.wrenches.isUnlocked()),
+                new Milestone("Better than the dev", 66, "Have more than 5292 wrenches at once", () => game.wrenches.amount > 5292),
+                new Milestone("But it doesn't cost scrap!", 67, "Unlock the scrapyard", () => game.skillTree.upgrades.unlockScrapyard.level > 0),
+                new Milestone("Double Speed (v5 Style Pizza)", 68, "Upgrade scrapyard to level 101", () => game.mergeQuests.scrapyard > 100),
             ],
         highlighted: 0,
         tooltip: null,

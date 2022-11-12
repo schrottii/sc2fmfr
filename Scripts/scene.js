@@ -1,4 +1,4 @@
-var myMusic;
+﻿var myMusic;
 var isPlaying = 0;
 var hePlayed = 0;
 
@@ -12,7 +12,7 @@ function playmusic(x = 0) {
         // Define myMusic. Set which song will be played depending on the player progess
         if (game.settings.musicSelect == 0) {
             hePlayed = game.settings.musicSelect;
-            myMusic = new sound("Newerwave.mp3");
+            myMusic = new sound("NewerWave.mp3");
         }
         else if (game.settings.musicSelect == 1) {
             hePlayed = game.settings.musicSelect;
@@ -66,7 +66,7 @@ function playmusic(x = 0) {
         else if (game.settings.musicSelect == 3) {
             setTimeout(repeatmusic, 200000);
         }
-    }
+    } //^Wonder what those values are? Duration of the song in ms!
 }
 
 function repeatmusic() {
@@ -263,7 +263,7 @@ var scenes =
                 ctx.textAlign = "center";
                 ctx.textBaseline = "top";
                 ctx.font = "300 " + (h * 0.06) + "px " + fonts.default;
-                ctx.fillText("Scrap II Fanmade", w * 0.5, h * 0.02, w * 0.9);
+                ctx.fillText("Scrap II Fanmade FR", w * 0.5, h * 0.02, w * 0.9);
 
                 ctx.font = "300 " + (h * 0.05) + "px " + fonts.default;
                 ctx.fillText("Loading...", w * 0.5, h * 0.6, w * 0.9);
@@ -271,11 +271,11 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.9.1 (v2.6.1)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v2.0.3 (v2.7)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                //ctx.fillText("Schrottii's favorite update", w * 0.49, h - w * 0.1);
+                ctx.fillText("AKA AAAAAH", w * 0.49, h - w * 0.1);
             }),
         new Scene("Barrels",
             [
@@ -758,6 +758,10 @@ var scenes =
                     quadratic: true,
                     isVisible: game.skillTree.isUnlocked
                 }),
+                new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
+                    quadratic: true,
+                    isVisible: game.wrenches.isUnlocked
+                }),
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("OuterSolarSystem"), {
                     quadratic: true,
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
@@ -1125,6 +1129,43 @@ var scenes =
                 ctx.fillStyle = colors[C].table;
                 ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
             }),
+        new Scene("Wrenches",
+            [
+                new UIText("Wrenches", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
+
+                new UIText(() => "$images.wrench$ Wrenches: " + game.wrenches.amount.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => {
+                    if (isMobile()) {
+                        return "You get 1 wrench for every merge!";
+                    }
+                    else {
+                        return "As a PC player, you get 3 wrenches for every merge!";
+                    }
+                }, 0.5, 0.3, 0.03, "black"),
+
+                new UIText(() => "Total Scrap Boost: x" + formatNumber( (Math.max(1, applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost) / 100 * game.wrenches.amount) ))/*.toFixed(1)*/, 0.5, 0.7, 0.03, "black"),
+                new UIText(() => "Total Merges: " + game.totalMerges + "\nOwn Merges: " + game.selfMerges, 0.5, 0.8, 0.06, "black"),
+                new UIText(() => "Own merges -> Merges done while Auto Merge is turned off!", 0.5, 0.9, 0.03, "black"),
+                
+
+                new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.45, "x2 Merge Mastery progress\nfrom own merges", colors[C].table, game.mergeMastery.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.55, "Instant brick prod. increase\nfrom own merges", colors[C].table2, game.bricks.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.wrenchScrapBoost, images.upgrades.moreScrap, 0.65, "+10% scrap/wrench"),
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C].bg;
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C].table;
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
+            }),
+
         new Scene("Options",
             [
                 new UIText("Options", 0.5, 0.1, 0.12, "white", {
@@ -1225,11 +1266,12 @@ var scenes =
                 new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", {quadratic: true}),
                 new UIText("My Discord Server", 0.18, 0.89, 0.045, "black", {halign: "left", valign: "middle"}),
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", {quadratic: true}),
-                new UIText("My Youtube Channel", 0.18, 0.96, 0.045, "black", {halign: "left", valign: "middle"}),
+                new UIText("My Youtube Channel", 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+                new UIText("Mod of VeproGames' Scrap 2 Fanmade", 0.95, 0.93, 0.025, "black", { halign: "right", valign: "bottom" }),
                 new UIText("Libraries used:\nbreak_infinity\ngrapheme-splitter", 0.95, 0.99, 0.025, "black", {halign: "right", valign: "bottom"}),
                 new UIText("Export and Import", 0.3, 0.825, 0.035, "black"),
                 new UIButton(0.3, 0.775, 0.09, 0.09, images.exportImport, () => document.querySelector("div.absolute").style.display = "block", {quadratic: true}),
-                new UIText("Play the Original", 0.7, 0.825, 0.035, "black"),
+                new UIText("Play the Original SC2", 0.7, 0.825, 0.035, "black"),
                 new UIButton(0.7, 0.775, 0.09, 0.09, images.logos.scrap2, () => location.href = "https://play.google.com/store/apps/details?id=com.scrap.clicker.android&hl=gsw", {quadratic: true}),
             ],
             function ()
@@ -1241,7 +1283,11 @@ var scenes =
             }),
         new Scene("MergeQuests",
             [
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), {quadratic: true}),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.125, 0.07, 0.07, images.scenes.scrapyard, () => Scene.loadScene("Scrapyard"), {
+                    isVisible: () => game.skillTree.upgrades.unlockScrapyard.isUnlocked(),
+                    quadratic: true,
+                }),
                 new UIMergeTokenUpgrade(game.mergeQuests.upgrades.scrapBoost, images.upgrades.moreScrap, 0.63, "Get More Scrap"),
                 new UIMergeTokenUpgrade(game.mergeQuests.upgrades.goldenScrapBoost, images.upgrades.goldenScrapBoost, 0.73, "Get More Golden Scrap", colors[C].table2),
                 new UIMergeTokenUpgrade(game.mergeQuests.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.83, "Get More Magnets"),
@@ -1300,6 +1346,35 @@ var scenes =
                     q.render(ctx, w * 0.15, h * (0.225 + 0.13 * idx));
                 }
             }, null, null),
+        new Scene("Scrapyard",
+            [
+                new UIText("Scrapyard", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("MergeQuests"), { quadratic: true }),
+
+                new UIText(() => "$images.mergeToken$ Tokens: " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "Every level reduces the merges needed for Merge Mastery\nby 1%! Current Boost: " + (game.mergeQuests.scrapyard-1) + "%!", 0.5, 0.3, 0.03, "black"),
+
+                new UIText(() => "Level: " + game.mergeQuests.scrapyard + "\n Progress to next: " + game.mergeQuests.scrapyardProgress*10 + "%!", 0.5, 0.8, 0.06, "black"),
+                new UIButton(0.5, 0.6, 0.4, 0.4, images.scrapyard, () => {
+                    // Scrapyard
+                    if (game.mergeQuests.mergeTokens.gte(new Decimal(game.mergeQuests.scrapyard))) { // AAAAAH
+                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(game.mergeQuests.scrapyard);
+                        game.mergeQuests.scrapyardProgress += 1;
+                        if (game.mergeQuests.scrapyardProgress == 10) {
+                            game.mergeQuests.scrapyardProgress = 0;
+                            game.mergeQuests.scrapyard += 1;
+                        }
+                    }
+                }, { quadratic: true }),
+            ],
+            function () {
+                ctx.fillStyle = colors[C].bg;
+                ctx.fillRect(0, 0, w, h);
+            }),
         new Scene("Milestones",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), {quadratic: true}),
@@ -1436,6 +1511,8 @@ var scenes =
                     new UISkillTreePath(0.2, 2.15, 0.5, 2.45, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.higherAstroMax, game.skillTree.upgrades.tireValue]),
                     new UISkillTreePath(0.8, 2.15, 0.5, 2.45, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.higherAstroMax, game.skillTree.upgrades.tireValue]),
 
+                    new UISkillTreePath(0.5, 2.45, 0.5, 2.75, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.moreMergeTokens),
+
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
 
@@ -1459,7 +1536,9 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.moreMergeTokens, images.upgrades.moreMergeTokens, "Double\nMerge Tokens", 0.5, 2.45, colors[C].table),
 
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 2.65})
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockScrapyard, images.upgrades.unlockscrapyard, "Unlock Scrapyard", 0.5, 2.75, colors[C].table2),
+
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 2.95})
             ],
             function ()
             {

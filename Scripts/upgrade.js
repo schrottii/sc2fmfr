@@ -8,8 +8,9 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_BARREL = 7,
     RESOURCE_DARKSCRAP = 8,
     RESOURCE_DARKFRAGMENT = 9,
-    RESOURCE_BEAM = 10;
-    RESOURCE_AEROBEAM = 11;
+    RESOURCE_BEAM = 10,
+    RESOURCE_AEROBEAM = 11,
+    RESOURCE_WRENCH = 12;
 
 function applyUpgrade(upg)
 {
@@ -44,6 +45,8 @@ function getUpgradeResource(res)
             return game.beams.amount;
         case RESOURCE_AEROBEAM:
             return game.aerobeams.amount;
+        case RESOURCE_WRENCH:
+            return game.wrenches.amount;
         default:
             return null;
     }
@@ -86,6 +89,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_AEROBEAM:
             game.aerobeams.amount = res;
             break;
+        case RESOURCE_WRENCH:
+            game.wrenches.amount = res;
+            break;
         default:
             break;
     }
@@ -117,6 +123,8 @@ function getResourceImage(res)
             return "$images.beam$";
         case RESOURCE_AEROBEAM:
             return "$images.aerobeam$";
+        case RESOURCE_WRENCH:
+            return "$images.wrench$";
         default:
             break;
     }
@@ -468,6 +476,12 @@ class AeroBeamUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_AEROBEAM;
+    }
+}
+class WrenchUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_WRENCH;
     }
 }
 

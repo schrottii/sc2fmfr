@@ -34,6 +34,7 @@ var images =
         scrap2logo: loadImage("Images/scrap2logo.png"),
         gameNotifaction: loadImage("Images/gamenotification.png"),
         clock: loadImage("Images/clock.png"),
+        coconut: loadImage("Images/coconut.jpg"),
         trophy: loadImage("Images/trophies.png"),
         exportGame: loadImage("Images/Buttons/export_game.png"),
         importGame: loadImage("Images/Buttons/import_game.png"),
@@ -47,6 +48,8 @@ var images =
         darkfragment: loadImage("Images/Currencies/darkfragment.png"),
         beam: loadImage("Images/Currencies/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
+        wrench: loadImage("Images/Currencies/wrench.png"),
+        scrapyard: loadImage("Images/Scrapyard.png"),
         logos:
             {
                 scrap2: loadImage("Images/scrap2logo.png"),
@@ -110,6 +113,7 @@ var images =
                 slowerBeams: loadImage("Images/Upgrades/slowerbeams.png"),
                 xplustwo: loadImage("Images/Upgrades/xplustwo.png"),
                 unlockbeamtypes: loadImage("Images/Upgrades/unlockbeamtypes.png"),
+                unlockscrapyard: loadImage("Images/Upgrades/unlockscrapyard.png"),
             },
         scenes:
             {
@@ -131,6 +135,8 @@ var images =
                 beamboosts: loadImage("Images/Scenes/beamboosts.png"),
                 beamselection: loadImage("Images/Scenes/beamselection.png"),
                 aerobeams: loadImage("Images/Scenes/aerobeams.png"),
+                wrenches: loadImage("Images/Scenes/wrenches.png"),
+                scrapyard: loadImage("Images/Scenes/scrapyard.png"),
             },
         solarSystem:
         {

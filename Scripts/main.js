@@ -271,6 +271,26 @@ function onBarrelMerge(lvl, bx, by)
             }
         }
     }
+    
+    game.totalMerges += 1;
+    if (game.settings.autoMerge == false) {
+        game.selfMerges += 1;
+
+        if (game.wrenches.isUnlocked()) {
+            if (isMobile()) {
+                game.wrenches.amount = game.wrenches.amount.add(1);
+            }
+            else {
+                game.wrenches.amount = game.wrenches.amount.add(3);
+            }
+
+            // Double Mastery
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery)) {
+                game.mergeMastery.currentMerges++;
+                game.mergeMastery.check(); //There is another one below
+            }
+        }
+    }
 
     if (game.scrapUpgrades.betterBarrels.level == 224) {
         if (game.milestones.unlocked.includes(86) == false) {
@@ -526,14 +546,21 @@ function loadGame(saveCode)
     let loadObj;
     if (saveCode !== undefined)
     {
-        try
-        {
-            loadObj = atob(saveCode);
+        if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
+            game.highestBarrelReached = 1;
+            for (i = 0; i < 3; i++) {
+                game.mergeQuests.quests[i].active = false;
+                game.mergeQuests.quests[i].currentCooldown = 0;
+            }
         }
-        catch (e)
-        {
-            alert("The provided Save Code could not be decoded.");
-            return;
+        else {
+            try {
+                loadObj = atob(saveCode);
+            }
+            catch (e) {
+                alert("The provided Save Code could not be decoded.");
+                return;
+            }
         }
     }
     else
@@ -549,9 +576,16 @@ function loadGame(saveCode)
         }
         catch (e)
         {
-            alert("An error occured while parsing the save code");
+            if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
+                document.querySelector("div.absolute textarea").value = "";
+                alert("Reset your highest barrel reached successfully!");
+            }
+            else {
+                alert("An error occured while parsing the save code");
+            }
             return;
         }
+
 
         game.scrap = loadVal(new Decimal(loadObj.scrap), new Decimal(0));
         game.scrapThisPrestige = loadVal(new Decimal(loadObj.scrapThisPrestige), new Decimal(0));
@@ -561,6 +595,10 @@ function loadGame(saveCode)
         game.highestMasteryLevel = loadVal(loadObj.highestMasteryLevel, 0);
         game.milestonesUnlocked = loadVal(loadObj.milestonesUnlocked, 0);
         game.dimension = loadVal(loadObj.dimension, 0);
+        game.totalMerges = loadVal(loadObj.totalMerges, 0);
+        game.selfMerges = loadVal(loadObj.selfMerges, 0);
+
+
         if (loadObj.settings == undefined) {
             loadObj.settings = { "barrelQuality": 1 };
         }
@@ -582,7 +620,10 @@ function loadGame(saveCode)
 
         C = ["default", "darkblue", "dark"][game.settings.C];
 
-        if (game.scrap == Infinity) game.scrap = new Decimal(0);
+        //if (game.scrap == Infinity) game.scrap = new Decimal(0);
+        // Whoever...
+        // Put that awful crap there...
+        // See you in HELL!
 
         if (loadObj.goldenScrap !== undefined)
         {
@@ -628,6 +669,9 @@ function loadGame(saveCode)
         if (loadObj.mergeQuests)
         {
             game.mergeQuests.mergeTokens = loadVal(new Decimal(loadObj.mergeQuests.mergeTokens), new Decimal(0));
+            if (game.mergeQuests.mergeTokens == "NaN") game.mergeQuests.mergeTokens = new Decimal(50);
+            game.mergeQuests.scrapyard = loadVal(loadObj.mergeQuests.scrapyard, 1);
+            game.mergeQuests.scrapyardProgress = loadVal(loadObj.mergeQuests.scrapyardProgress, 0);
             if (loadObj.mergeQuests.quests)
             {
                 for (let [i, q] of loadObj.mergeQuests.quests.entries())
@@ -695,6 +739,19 @@ function loadGame(saveCode)
             }
         }
 
+        // ANTI EXPLOIT:
+        if (loadObj.darkscrap !== undefined) { // 1 q
+            if (loadObj.darkscrap.amount > 1000000000000000) {
+                loadObj.darkscrap.amount = 1000000;
+                if (loadObj.darkscrap.upgrades.darkScrapBoost.level > 30) loadObj.darkscrap.upgrades.darkScrapBoost.level = 30;
+                if (loadObj.darkscrap.upgrades.mergeTokenBoost.level > 50) loadObj.darkscrap.upgrades.mergeTokenBoost.level = 50;
+                if (loadObj.darkscrap.upgrades.goldenScrapBoost !== undefined) {
+                    if (loadObj.darkscrap.upgrades.goldenScrapBoost.level > 100) loadObj.darkscrap.upgrades.goldenScrapBoost.level = 100;
+                }
+                alert("Exploit abuse detected! Your dark scrap has been reduced to realistic values!")
+            }
+        }
+
         if (loadObj.darkscrap !== undefined) {
             game.darkscrap.amount = loadVal(new Decimal(loadObj.darkscrap.amount), new Decimal(0));
 
@@ -709,8 +766,6 @@ function loadGame(saveCode)
             Object.keys(game.darkscrap.upgrades).forEach(k => {
                 game.darkscrap.upgrades[k].level = 0;
             })
-
-
         }
 
         if (loadObj.beams !== undefined) {
@@ -772,7 +827,22 @@ function loadGame(saveCode)
             }
         }
 
-        
+
+        if (loadObj.wrenches !== undefined) {
+            game.wrenches.amount = loadVal(new Decimal(loadObj.wrenches.amount), new Decimal(0));
+
+            if (loadObj.wrenches.upgrades !== undefined) {
+                Object.keys(loadObj.wrenches.upgrades).forEach(k => {
+                    game.wrenches.upgrades[k].level = loadVal(loadObj.wrenches.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.wrenches.amount = new Decimal(0);
+            Object.keys(game.wrenches.upgrades).forEach(k => {
+                game.wrenches.upgrades[k].level = 0;
+            })
+        }
 
         if (loadObj.skillTree.upgrades.moreFragments == undefined) game.skillTree.upgrades.moreFragments.level = 0;
         if (loadObj.skillTree.upgrades.fasterAutoMerge == undefined) game.skillTree.upgrades.fasterAutoMerge.level = 0;

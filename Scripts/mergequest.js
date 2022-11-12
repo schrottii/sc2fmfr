@@ -96,7 +96,7 @@ class MergeQuest
 
             ctx.textBaseline = "middle";
             ctx.textAlign = "left";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = colors[C]["text"];
             ctx.font = "bold " + (h * 0.05) + "px " + fonts.default;
             ctx.fillText(formatThousands(this.currentMerges) + " / " + formatThousands(this.getNeededMerges()), x + h * 0.1, y - h * 0.02);
             let rewardText = formatThousands(this.reward);
@@ -109,12 +109,12 @@ class MergeQuest
             }
 
             ctx.font = (h * 0.025) + "px " + fonts.default;
-            ctx.fillStyle = "black";
+            ctx.fillStyle = colors[C]["text"];
             ctx.fillText("#" + this.barrelLvl, x + h * 0.035, y + h * 0.05);
         }
         else
         {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = colors[C]["text"];
             ctx.font = "bold " + (h * 0.09) + "px " + fonts.default;
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";

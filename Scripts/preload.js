@@ -42,6 +42,8 @@ var images =
         ezUpgrade: loadImage("Images/Buttons/ez_upgrade.png"),
         highlightedSlot: loadImage("Images/highlighted_slot.png"),
         locked: loadImage("Images/locked.png"),
+        darkscrap: loadImage("Images/Currencies/darkscrap.png"),
+        darkfragment: loadImage("Images/Currencies/darkfragment.png"),
         logos:
             {
                 scrap2: loadImage("Images/scrap2logo.png"),
@@ -95,7 +97,8 @@ var images =
                 fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
                 fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
             fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
-                moreFragments: loadImage("Images/Upgrades/fragmentboost.png")
+            moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
+                moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png")
             },
         scenes:
             {
@@ -111,11 +114,13 @@ var images =
                 bricks: loadImage("Images/Scenes/bricks.png"),
                 tires: loadImage("Images/Scenes/tires.png"),
                 fragment: loadImage("Images/Scenes/fragment.png"),
+                dimension: loadImage("Images/Scenes/dimension.png"),
                 skillTree: loadImage("Images/Scenes/skilltree.png")
             },
         solarSystem:
-            {
+        {
                 inner: loadImage("Images/SolarSystem/inner.png"),
+                third: loadImage("Images/SolarSystem/third.png"),
                 sun: loadImage("Images/SolarSystem/sun.png"),
                 mercury: loadImage("Images/SolarSystem/mercury.png"),
                 venus: loadImage("Images/SolarSystem/venus.png"),

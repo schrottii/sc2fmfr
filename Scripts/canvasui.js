@@ -566,6 +566,18 @@ class UIFragmentUpgrade extends UIUpgrade {
     }
 }
 
+class UIDarkFragmentUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.darkfragment$", y, desc, 0.05, col, isVisible);
+    }
+}
+
+class UIDarkScrapUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.darkscrap$", y, desc, 0.05, col, isVisible);
+    }
+}
+
 class UISkillTreeUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col)
     {

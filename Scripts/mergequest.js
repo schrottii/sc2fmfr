@@ -51,7 +51,13 @@ class MergeQuest
             game.mergeQuests.mergeTokens = Decimal.round(game.mergeQuests.mergeTokens.add(this.reward));
             game.stats.totalmergetokens = Decimal.round(game.stats.totalmergetokens.add(this.reward));
             game.stats.totalquests = game.stats.totalquests.add(1);
-            if (this.getNeededMerges() > 8000) game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
+            if (this.getNeededMerges() > 8000) {
+                game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
+                if (game.barrelMastery.isUnlocked()) {
+                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(25);
+                    game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(25);
+                }
+            }
             GameNotification.create(new MergeQuestNotification(this));
             this.active = false;
             this.currentMerges = 0;
@@ -75,8 +81,9 @@ class MergeQuest
 
     render(ctx, x, y)
     {
-        ctx.fillStyle = colors[C].table;
-        ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.12);
+        ctx.fillStyle = colors[C]["table"];
+        if (this.getNeededMerges() > 8000) ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.17);
+        else ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.12);
 
         if(this.active)
         {
@@ -84,7 +91,7 @@ class MergeQuest
 
             ctx.fillStyle = "#505050";
             ctx.fillRect(x + h * 0.08, y - h * 0.05, w * 0.6, h * 0.05);
-            ctx.fillStyle = colors[C].bgFront;
+            ctx.fillStyle = colors[C]["bgFront"];
             ctx.fillRect(x + h * 0.08, y - h * 0.05, w * 0.6 * (this.currentMerges / this.getNeededMerges()), h * 0.05);
 
             ctx.textBaseline = "middle";
@@ -95,6 +102,11 @@ class MergeQuest
             let rewardText = formatThousands(this.reward);
             ctx.fillText(rewardText, x + h * 0.12, y + h * 0.04);
             ctx.drawImage(images.mergeToken, x + h * 0.13 + ctx.measureText(rewardText).width, y + h * 0.01, h * 0.05, h * 0.05);
+
+            if (this.getNeededMerges() > 8000 && game.barrelMastery.isUnlocked()) {
+                ctx.fillText(25, x + h * 0.12, y + h * 0.09);
+                ctx.drawImage(images.masteryToken, x + h * 0.13 + ctx.measureText(25).width, y + h * 0.06, h * 0.05, h * 0.05);
+            }
 
             ctx.font = (h * 0.025) + "px " + fonts.default;
             ctx.fillStyle = "black";

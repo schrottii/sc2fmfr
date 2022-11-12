@@ -43,7 +43,7 @@ function getUpgradeResource(res)
         case RESOURCE_FRAGMENT:
             return game.fragment.amount;
         case RESOURCE_BARREL:
-            return new Decimal(game.highestBarrelReached);
+            return new Decimal(game.highestBarrelReached + 1);
         case RESOURCE_DARKSCRAP:
             return game.darkscrap.amount;
         case RESOURCE_DARKFRAGMENT:

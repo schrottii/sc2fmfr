@@ -23,6 +23,7 @@ var images =
         goldenScrap: loadImage("Images/Currencies/goldenscrap.png"),
         brick: loadImage("Images/Currencies/brick.png"),
         tire: loadImage("Images/Currencies/tire.png"),
+        fragment: loadImage("Images/Currencies/fragment.png"),
         starSmall: loadImage("Images/star_small.png"),
         mergeToken: loadImage("Images/Currencies/mergetoken.png"),
         container: loadImage("Images/container.png"),
@@ -65,10 +66,15 @@ var images =
                 off: loadImage("Images/Checkbox/checkbox_off.png"),
                 on: loadImage("Images/Checkbox/checkbox_on.png"),
                 autoMerge:
-                    {
-                        off: loadImage("Images/Checkbox/automerge_off.png"),
-                        on:loadImage("Images/Checkbox/automerge_on.png")
-                    }
+                {
+                    off: loadImage("Images/Checkbox/automerge_off.png"),
+                    on: loadImage("Images/Checkbox/automerge_on.png")
+                },
+                autoConvert:
+                {
+                    off: loadImage("Images/Checkbox/autoconvert_off.png"),
+                    on: loadImage("Images/Checkbox/autoconvert_on.png")
+                }
             },
         upgrades:
             {
@@ -88,7 +94,8 @@ var images =
                 tireChance: loadImage("Images/Upgrades/tirechance.png"),
                 fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
                 fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
-                fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png")
+            fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
+                moreFragments: loadImage("Images/Upgrades/fragmentboost.png")
             },
         scenes:
             {
@@ -103,6 +110,7 @@ var images =
                 mergeMastery: loadImage("Images/Scenes/merge_mastery.png"),
                 bricks: loadImage("Images/Scenes/bricks.png"),
                 tires: loadImage("Images/Scenes/tires.png"),
+                fragment: loadImage("Images/Scenes/fragment.png"),
                 skillTree: loadImage("Images/Scenes/skilltree.png")
             },
         solarSystem:
@@ -116,7 +124,9 @@ var images =
                 jupiter: loadImage("Images/SolarSystem/jupiter.png"),
                 saturn: loadImage("Images/SolarSystem/saturn.png"),
                 uranus: loadImage("Images/SolarSystem/uranus.png"),
-                neptune: loadImage("Images/SolarSystem/neptune.png")
+                neptune: loadImage("Images/SolarSystem/neptune.png"),
+                astro: loadImage("Images/SolarSystem/astro.png"),
+                mythus: loadImage("Images/SolarSystem/mythus.png")
             },
         achievements:
             {
@@ -168,7 +178,7 @@ function cacheBarrel(id) {
     cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();
-    img.src = cacheCanvas.toDataURL();
+    //img.src = cacheCanvas.toDataURL();
 
     images.shadowBarrels[id] = img;
 
@@ -180,7 +190,7 @@ function cacheBarrel(id) {
     cacheCanvasCtx.drawImage(images.barrels, x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     img = new Image();
-    img.src = cacheCanvas.toDataURL();
+    //img.src = cacheCanvas.toDataURL();
     cacheCanvasCtx.translate(1000, 0);
     images.previewBarrels[id] = img;
 }

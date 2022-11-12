@@ -1,3 +1,61 @@
+var myMusic;
+var isPlaying = 0;
+
+function playmusic(x = 0) {
+    if (isPlaying == 0) {
+        // Define myMusic. Set which song will be played depending on the player progess
+        myMusic = new sound("NewerWave.mp3");
+        if (game.milestones.unlocked.length > 9) {
+            myMusic = new sound("GettingitDone.mp3");
+        }
+        else if (game.milestones.unlocked.length > 24) {
+            myMusic = new sound("Spellbound.mp3");
+        }
+        else if (game.milestones.unlocked.length > 49) {
+            myMusic = new sound("Voltaic.mp3");
+        }
+    }
+
+    // playmusic(50) will stop the music
+    if (x == 50) {
+        myMusic.pause();
+    }
+    // music turned off? get the hell outta here!
+    if (game.settings.musicOnOff == 0) {
+        isPlaying = 0;
+        return;
+    }
+
+    // for repeating music... code kinda complicated
+    if (x == 5) {
+        isPlaying = 0;
+    }
+
+    // play the music and repeat it
+    if (isPlaying != 1) {
+        myMusic.play();
+        isPlaying = 1;
+
+        if (game.milestones.unlocked.length < 10) {
+            setTimeout(repeatmusic, 175000);
+        }
+        else if (game.milestones.unlocked.length > 9) {
+            setTimeout(repeatmusic, 210000);
+        }
+        else if (game.milestones.unlocked.length > 24) {
+            setTimeout(repeatmusic, 230000);
+        }
+        else if (game.milestones.unlocked.length > 49) {
+            setTimeout(repeatmusic, 200000);
+        }
+    }
+}
+
+function repeatmusic() {
+    if (game.settings.musicOnOff == 1) playmusic(5);
+}
+
+
 class Scene
 {
     static loadScene(name)
@@ -10,6 +68,14 @@ class Scene
         else
         {
             console.warn("Scene \"" + name + "\" does not exist");
+        }
+
+        
+        if (game.settings.musicOnOff == 0) {
+            playmusic(50);
+        }
+        else {
+            playmusic();
         }
     }
 
@@ -71,6 +137,8 @@ class Scene
         }
 
         this.popupTexts = this.popupTexts.filter(text => text.lifeTime < 1);
+
+        
     }
 
     handleElementAction(element, type)
@@ -177,7 +245,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.0", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.1 (v1.8)", w * 0.99, h - w * 0.01);
             }),
         new Scene("Barrels",
             [
@@ -554,7 +622,8 @@ var scenes =
 
                 if(!game.settings.lowPerformance)
                 {
-                    drawStars(50, 1);
+                    drawStars(10, 2);
+                    drawStars(40, 1);
                 }
             }),
         new Scene("OuterSolarSystem",
@@ -780,7 +849,8 @@ var scenes =
                 new UIGroup([
                     new UIToggleOption(0.25, "game.settings.destroyBarrels","Double Click Barrels to remove them", colors.table),
                     new UIToggleOption(0.35, "game.settings.resetConfirmation","Reset Confirmation", colors.bg),
-                    new UIToggleOption(0.45, "game.settings.lowPerformance","Low performance Mode", colors.table)
+                    new UIToggleOption(0.45, "game.settings.lowPerformance", "Low performance Mode", colors.table),
+                    new UIToggleOption(0.55, "game.settings.musicOnOff", "Music", colors.bg)
                 ],() => game.settings.optionsPage === 1),
                 new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {

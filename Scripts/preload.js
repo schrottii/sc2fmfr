@@ -1,6 +1,7 @@
 var barrelsLoaded = false;
 var BARREL_SPRITE_SIZE = 64;
 
+
 function loadImage(path, onload) {
     let img = new Image();
     img.src = path;
@@ -183,3 +184,21 @@ function cacheBarrel(id) {
     cacheCanvasCtx.translate(1000, 0);
     images.previewBarrels[id] = img;
 }
+
+
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+
+    this.play = function () {
+        this.sound.play();
+    }
+    this.pause = function () {
+        this.sound.pause();
+    }
+} 
+

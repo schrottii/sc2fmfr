@@ -18,8 +18,8 @@ class MergeQuest
         let highestLvl = game ? Math.max(100, Math.min(game.highestBarrelReached - 10, game.scrapUpgrades.betterBarrels.maxLevel)) : 100;
         let minLvl = game ? Math.max(50, game.highestBarrelReached - 75) : 0;
         this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
-        this.neededMerges = [250, 500, 1000][tier];
-        this.reward = new Decimal([1, 2, 5][tier]);
+        this.neededMerges = [100, 250, 500, 1000, 2500][tier];
+        this.reward = new Decimal([1, 2, 3, 5, 10][tier]);
         this.active = true;
         this.currentCooldown = 0;
     }

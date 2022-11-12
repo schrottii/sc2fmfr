@@ -127,7 +127,7 @@ function update()
             if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber())
             {
                 fallingMagnetTime = 0;
-                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul(applyUpgrade(game.mergeQuests.upgrades.fallingMagnetValue))));
+                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul( (game.mergeQuests.upgrades.fallingMagnetValue.level)+1 )));
             }
         }
 
@@ -233,7 +233,7 @@ function onBarrelMerge(lvl, bx, by)
 
     if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber())
     {
-        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later
+        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later sus
         let amount = getMagnetBaseValue();
         game.remainderMagnets += amount.remainder(1).toNumber();
         let roundAmount = amount.floor();
@@ -473,11 +473,12 @@ function loadGame(saveCode)
         game.settings.barrelShadows = loadVal(loadObj.settings.barrelShadows, false);
         game.settings.useCachedBarrels = loadVal(loadObj.settings.useCachedBarrels, false);
         game.settings.numberFormatType = loadVal(loadObj.settings.numberFormatType, 0);
-        game.settings.barrelQuality = loadVal(loadObj.settings.barrelQuality, 0);
+        game.settings.barrelQuality = loadVal(loadObj.settings.barrelQuality, 1);
         game.settings.destroyBarrels = loadVal(loadObj.settings.destroyBarrels, false);
         game.settings.autoMerge = loadVal(loadObj.settings.autoMerge, false);
         game.settings.resetConfirmation = loadVal(loadObj.settings.resetConfirmation, true);
         game.settings.lowPerformance = loadVal(loadObj.settings.lowPerformance, false);
+        game.settings.musicOnOff = loadVal(loadObj.settings.musicOnOff, false);
         if (loadObj.goldenScrap !== undefined)
         {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));

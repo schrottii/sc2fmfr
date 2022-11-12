@@ -37,9 +37,9 @@ var game =
                             }),
                         gsBoost: new GoldenScrapUpgrade(
                             level => Decimal.pow(1.8, level).mul(200).add(50 * level),
-                            level => new Decimal(1 + 0.2 * level),
+                            level => new Decimal(1 + 0.2 * (Math.max(10, level)/10) * level),
                             {
-                                maxLevel: 20,
+                                maxLevel: 30,
                                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "", { namesAfter: 1e9 })
                             })
                     },
@@ -222,7 +222,7 @@ var game =
                             }
                         ),
                         venus: new ScrapUpgrade(
-                            level => Decimal.pow(10, 70 + level * 5),
+                            level => Decimal.pow(10, 50 + level * 5),
                             level => new Decimal((1 - Math.pow(19 / 20, Math.max(0, level - 1))) * 0.3 + (level > 0 ? 0.2 : 0)),
                             {
                                 getEffectDisplay: effectDisplayTemplates.percentStandard(1)
@@ -289,7 +289,7 @@ var game =
         mergeQuests:
             {
                 isUnlocked: () => game.highestScrapReached.gte(1e93),
-                quests: [new MergeQuest(300, [0, 1]), new MergeQuest(450, [0, 1, 2]), new MergeQuest(600, [1, 2])],
+                quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(600, [2, 3, 4])],
                 mergeTokens: new Decimal(0),
                 upgrades:
                     {
@@ -639,13 +639,19 @@ var game =
                             .gte(2)),
 
                         new Milestone("Apollo 21", 9, "Reach Level 8 on the \"More Scrap\"\nGolden Scrap Upgrade to\nexplore the Solar System!", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, "#b0b0b0"),
-                        new Milestone("M.P. + W2ed", 8, "Get 69.420 magnets", () => game.magnets.gte(69420)),
+                        new Milestone("Magnetism", 2, () => "Have " + formatNumber(1000) + " Magnets at once", () => game.magnets.gte(1000)),
                         new Milestone("BIG Scrap", 11, "Upgrade the Sun once", () => game.solarSystem.upgrades.sun.level > 0),
                         new Milestone("Palace of Gold", 12, "Reach 1,000,000 Golden Scrap", () => game.goldenScrap.amount.gte(1e6)),
                         new Milestone("AM go brrrrrr", 28, "Barrels spawn faster than 500ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.5, "#00ffff"),
 
+                        new Milestone("It's musically", 37, "Enable music", () => game.settings.musicOnOff == 1),
+                        new Milestone("So I can read my scrap", 38, "Switch to scientific notation", () => game.settings.numberFormatType == 3),
+                        new Milestone("DESTROY THEM!!!", 1, "Fragments when???", () => game.settings.destroyBarrels == 1),
+                        new Milestone("Magnets & Mayonnaise", 2, () => "Have " + formatNumber(10000) + " Magnets at once", () => game.magnets.gte(10000)),
+                        new Milestone("Just a few", 11, "Upgrade the sun a few times", () => game.solarSystem.upgrades.sun.level >= 100),
+
                         new Milestone("Who needs\nUpgrades", 13, () => "Get " + formatNumber(1e15) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e15) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
-                        new Milestone("Magnetism", 2, () => "Have " + formatNumber(50000) + " Magnets at once", () => game.magnets.gte(50000)),
+                        new Milestone("M.P. + W2ed", 8, "Have 69.420 magnets at once", () => game.magnets.gte(69420)),
                         new Milestone("RPG", 14, () => "Reach " + formatNumber(1e93) + " Scrap to\nunlock Merge Quests!", () => game.highestScrapReached.gte(1e93), "#5edc00"),
                         new Milestone("Best Barrels", 10, "Reach Better Barrels Upgrade Level 200", () => game.scrapUpgrades.betterBarrels.level >= 200),
                         new Milestone("Apollo 23", 15, "Unlock Mars by upgrading Earth!", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS, "#a0a0a0"),
@@ -737,10 +743,11 @@ var game =
                 optionsPage: 0,
                 barrelShadows: false,
                 useCachedBarrels: false,
-                barrelQuality: 0,
+                barrelQuality: 1,
                 destroyBarrels: false,
                 autoMerge: false,
                 resetConfirmation: true,
-                lowPerformance: false
+                lowPerformance: false,
+                musicOnOff: false
             }
     };

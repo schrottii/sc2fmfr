@@ -177,7 +177,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v1.0", w * 0.99, h - w * 0.01);
+                ctx.fillText("v1.0", w * 0.99, h - w * 0.01); // ahh, good old times...
             }),
         new Scene("Barrels",
             [

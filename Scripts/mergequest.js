@@ -17,10 +17,12 @@ class MergeQuest
     {
         let highestLvl = game ? Math.max(100, Math.min(game.highestBarrelReached - 10, game.scrapUpgrades.betterBarrels.maxLevel)) : 100;
         let minLvl = game ? Math.max(50, game.highestBarrelReached - 250) : 0;
-        this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
-        this.neededMerges = [100, 250, 500, 1000, 2500][tier];
-        this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens))));
-        // merges/token:  100, 125, 125, 125, 100
+        if (tier != 5) this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
+        else this.barrelLvl = (calcTime * (28643 * calcTime)) % 650; //Amount of barrels
+        this.neededMerges = [100, 250, 500, 1000, 2500, 10000][tier];
+        if(this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens))));
+        else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber() ));
+        // merges/token:  100, 125, 125, 125, 100, 40
         this.active = true;
         this.currentCooldown = 0;
     }
@@ -32,7 +34,8 @@ class MergeQuest
 
     getNeededMerges()
     {
-        return Math.round(this.neededMerges * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber());
+        if (this.neededMerges < 3000) return Math.round(this.neededMerges * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber());
+        else return Math.round(this.neededMerges);
     }
 
     check(mergedLvl)
@@ -48,6 +51,7 @@ class MergeQuest
             game.mergeQuests.mergeTokens = Decimal.round(game.mergeQuests.mergeTokens.add(this.reward));
             game.stats.totalmergetokens = Decimal.round(game.stats.totalmergetokens.add(this.reward));
             game.stats.totalquests = game.stats.totalquests.add(1);
+            if (this.getNeededMerges() > 8000) game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
             GameNotification.create(new MergeQuestNotification(this));
             this.active = false;
             this.currentMerges = 0;
@@ -106,7 +110,8 @@ class MergeQuest
 
             ctx.font = "bold " + (h * 0.06) + "px " + fonts.default;
             ctx.textAlign = "left";
-            ctx.fillText(formatTime(this.getCooldown() - this.currentCooldown), x + h * 0.1, y + h * 0.02);
+            if (this != game.mergeQuests.dailyQuest) ctx.fillText(formatTime(this.getCooldown() - this.currentCooldown), x + h * 0.1, y + h * 0.02);
+            else ctx.fillText(futureTimeDisplay, x + h * 0.1, y + h * 0.02, w * 0.55);
 
             ctx.font = "bold " + (h * 0.02) + "px " + fonts.default;
             ctx.fillText("Next Quest in", x + h * 0.1, y - h * 0.02);

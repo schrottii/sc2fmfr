@@ -127,7 +127,7 @@ class Barrel
 
     static renderBarrel(ctx, level, x, y, size, preview)
     {
-        let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % 630) / 100))) % 8, 1);
+        let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % 650) / 100))) % 8, 1);
         if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {
             let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
@@ -135,7 +135,7 @@ class Barrel
 
             let barrelSize = size;
             let lvl = Math.round(level);
-            let barrelAmount = 630//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
+            let barrelAmount = 650//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
             let lvlToDraw = lvl % barrelAmount;
             let spriteX = BARREL_SPRITE_SIZE * (lvlToDraw % 10);
             let spriteY = BARREL_SPRITE_SIZE * Math.floor((lvlToDraw / 10) % barrelRows);

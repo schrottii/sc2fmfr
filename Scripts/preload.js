@@ -154,8 +154,9 @@ var images =
             angelbeams: loadImage("Images/Scenes/angelbeams.png"),
             reinforcedbeams: loadImage("Images/Scenes/reinforcedbeams.png"),
                 wrenches: loadImage("Images/Scenes/wrenches.png"),
-                scrapyard: loadImage("Images/Scenes/scrapyard.png"),
-                statistics: loadImage("Images/Scenes/stats.png"),
+            scrapyard: loadImage("Images/Scenes/scrapyard.png"),
+            statistics: loadImage("Images/Scenes/stats.png"),
+            daily: loadImage("Images/Scenes/daily.png"),
             },
         solarSystem:
         {
@@ -171,7 +172,8 @@ var images =
                 uranus: loadImage("Images/SolarSystem/uranus.png"),
                 neptune: loadImage("Images/SolarSystem/neptune.png"),
                 astro: loadImage("Images/SolarSystem/astro.png"),
-                mythus: loadImage("Images/SolarSystem/mythus.png")
+                mythus: loadImage("Images/SolarSystem/mythus.png"),
+                posus: loadImage("Images/SolarSystem/posus.png"),
             },
         achievements:
             {
@@ -250,7 +252,7 @@ function cacheBarrel(id) {
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
 
-    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 630) / 100))) % 8, 1);
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 650) / 100))) % 8, 1);
     cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();

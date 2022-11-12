@@ -340,7 +340,15 @@
                         }
                     }
                 }
-            )
+            ),
+
+            posus: new MagnetUpgrade(
+                level => new Decimal(1).mul(Math.pow(10, level)),
+                level => Math.pow(1.2, level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
 
 
 
@@ -365,14 +373,17 @@
         totaldarkfragments: new Decimal(0),
         totaltirescollected: new Decimal(0),
         totalgsresets: new Decimal(0),
+        totaldailyquests: new Decimal(0),
     },
     mergeQuests:
     {
         isUnlocked: () => game.highestScrapReached.gte(1e93),
-        quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(600, [2, 3, 4])],
+        quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(3, [2, 3, 4])],
+        dailyQuest: new MergeQuest(12000, [5]),
         mergeTokens: new Decimal(0),
         scrapyard: 1,
         scrapyardProgress: 0,
+        nextDaily: "20220721",
         upgrades:
         {
             scrapBoost: new MergeTokenUpgrade(level => Decimal.min(5, 1 + Math.floor(level / 4))
@@ -446,7 +457,7 @@
         amount: new Decimal(0),
         productionLevel: 0,
         currentMergeProgress: 0,
-        mergesPerLevel: () => Math.max(8, Math.round( (250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber()) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
+        mergesPerLevel: () => Math.max(8, Math.round( (250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() * (1 - game.skillTree.upgrades.fasterBricks.level/100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
         isUnlocked: () => game.highestScrapReached.gte(1e213),
         getProduction: level => {
             if (level === 0) {
@@ -674,7 +685,7 @@
         {
             scrapBoost: new DarkFragmentUpgrade(
                 level => new Decimal(100 * Math.pow(1.1, level)),
-                level => 1 + (50 * level) * Math.pow(1.3, Math.max(0, level - 5)),
+                level => 1 + (100 * level) * Math.pow(1.3, Math.max(0, level - 5)),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -704,7 +715,7 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                 }),
             beamValue: new BeamUpgrade(
-                level => new Decimal(50 * ((level * Math.max(9, level)) + 1)),
+                level => new Decimal(25 * ((level * Math.max(9, level)) + 1)),
                 level => 1 + level,
                 {
                     maxLevel: 12,
@@ -1010,6 +1021,21 @@
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["moreMergeTokens"]),
+
+            higherBeamValueMax: new SkillTreeUpgrade(level => new Decimal("1e18").mul(Math.pow(100, level)), RESOURCE_MAGNET,
+                level => level,
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", ""),
+                    maxLevel: 20,
+                    afterBuy: () => { updateBetterBarrels() }
+                }, ["unlockScrapyard"]),
+
+            fasterBricks: new SkillTreeUpgrade(level => new Decimal(10000 * (level + 1)), RESOURCE_DARKFRAGMENT,
+                level => 1 * level,
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%"),
+                    maxLevel: 40
+                }, ["superEzUpgrader"]),
 
         }
     },

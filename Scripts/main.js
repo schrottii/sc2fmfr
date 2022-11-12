@@ -5,6 +5,8 @@ var h = canvas.height;
 var mouseX = 0, mouseY = 0, mouseMoveX = 0, mouseMoveY = 0;
 var mousePressed = false;
 
+var importType = 0;
+
 var gSplitter = new GraphemeSplitter();
 
 var barrels = [];
@@ -94,7 +96,8 @@ function setup()
         thebool = confirm("Do you really want to import?");
         if (thebool == true) {
             alert("importing game (from text field)...");
-            loadGame(document.querySelector("div.absolute textarea").value);
+            if (importType == 0) loadGame(document.querySelector("div.absolute textarea").value);
+            if (importType == 1) loadCompare(document.querySelector("div.absolute textarea").value);
         }
     };
     document.querySelector("div.absolute button#close").onclick = e => document.querySelector("div.absolute").style.display = "none";
@@ -173,6 +176,7 @@ function update()
             {
                 q.tick(delta);
             }
+            //game.mergeQuests.dailyQuest.tick(delta);
         }
 
         Milestone.check(true);
@@ -335,6 +339,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
                 break;
             }
         }
+        let merged = game.mergeQuests.dailyQuest.check(lvl);
     }
     
     game.totalMerges += 1;
@@ -444,8 +449,9 @@ function autoMergeBarrel()
 function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
         if (game.dimension == 0) {
-            game.fragment.amount = game.fragment.amount.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
-            game.stats.totalfragments = game.stats.totalfragments.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
+            let Amount = new Decimal(barrels[19].level / 10).mul(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus));
+            game.fragment.amount = game.fragment.amount.add(Amount);
+            game.stats.totalfragments = game.stats.totalfragments.add(Amount);
         }
         else if (game.dimension == 1) {
             game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
@@ -667,6 +673,29 @@ function loadVal(v, alt)
     return v !== undefined ? v : alt;
 }
 
+function loadCompare(compareCode) {
+    importCode = compareCode.slice(5);
+    try {
+        importCode = atob(importCode);
+    }
+    catch {
+        alert("The provided Save Code could not be decoded.");
+        return false;
+    }
+    try {
+        importCode = JSON.parse(importCode);
+    }
+    catch {
+        alert("An error occured while parsing the save code");
+        return false;
+    }
+    compareStats = {};
+    for (i in importCode) {
+        compareStats[i] = importCode[i];
+        if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
+    }
+}
+
 function loadGame(saveCode)
 {
     let loadObj;
@@ -774,13 +803,16 @@ function loadGame(saveCode)
             });
         }
         else {
-            if (loadObj.selfMerges.amount != undefined) game.stats.totalwrenches = new Decimal(loadObj.selfMerges.amount);
-            if (loadObj.beams.amount != undefined) game.stats.totalbeams = new Decimal(loadObj.beams.amount);
-            if (loadObj.aerobeams.amount != undefined) game.stats.totalaerobeams = new Decimal(loadObj.aerobeams.amount);
-            if (loadObj.angelbeams.amount != undefined) game.stats.totalangelbeams = new Decimal(loadObj.angelbeams.amount);
-            if (loadObj.darkscrap.amount != undefined) game.stats.totaldarkscrap = new Decimal(loadObj.darkscrap.amount);
-            if (loadObj.fragment.amount != undefined) game.stats.totalfragments = new Decimal(loadObj.fragment.amount);
-            if (loadObj.darkfragment.amount != undefined) game.stats.totaldarkfragments = new Decimal(loadObj.darkfragment.amount);
+            Object.keys(game.stats).forEach(k => {
+                game.stats[k] = new Decimal(0);
+            });
+            if (loadObj.selfMerges != undefined) game.stats.totalwrenches = new Decimal(loadObj.selfMerges.amount);
+            if (loadObj.beams != undefined) game.stats.totalbeams = new Decimal(loadObj.beams.amount);
+            if (loadObj.aerobeams != undefined) game.stats.totalaerobeams = new Decimal(loadObj.aerobeams.amount);
+            if (loadObj.angelbeams != undefined) game.stats.totalangelbeams = new Decimal(loadObj.angelbeams.amount);
+            if (loadObj.darkscrap != undefined) game.stats.totaldarkscrap = new Decimal(loadObj.darkscrap.amount);
+            if (loadObj.fragment != undefined) game.stats.totalfragments = new Decimal(loadObj.fragment.amount);
+            if (loadObj.darkfragment != undefined) game.stats.totaldarkfragments = new Decimal(loadObj.darkfragment.amount);
         }
 
         if (loadObj.scrapUpgrades !== undefined)
@@ -816,12 +848,12 @@ function loadGame(saveCode)
         {
             game.mergeQuests.mergeTokens = loadVal(new Decimal(loadObj.mergeQuests.mergeTokens), new Decimal(0));
             if (game.mergeQuests.mergeTokens == "NaN") game.mergeQuests.mergeTokens = new Decimal(50);
+            if (loadObj.mergeQuests.dailyQuest == undefined) loadObj.mergeQuests.dailyQuest = new MergeQuest(12000, [5]);
             game.mergeQuests.scrapyard = loadVal(loadObj.mergeQuests.scrapyard, 1);
             game.mergeQuests.scrapyardProgress = loadVal(loadObj.mergeQuests.scrapyardProgress, 0);
-            if (loadObj.mergeQuests.quests)
-            {
-                for (let [i, q] of loadObj.mergeQuests.quests.entries())
-                {
+            game.mergeQuests.nextDaily = loadVal(loadObj.mergeQuests.nextDaily, "20220721");
+            if (loadObj.mergeQuests.quests) {
+                for (let [i, q] of loadObj.mergeQuests.quests.entries()) {
                     game.mergeQuests.quests[i].barrelLvl = q.barrelLvl;
                     game.mergeQuests.quests[i].active = q.active;
                     game.mergeQuests.quests[i].reward = q.reward;
@@ -830,6 +862,17 @@ function loadGame(saveCode)
                     game.mergeQuests.quests[i].currentMerges = q.currentMerges;
                     game.mergeQuests.quests[i].neededMerges = q.neededMerges;
                 }
+            }
+            if (loadObj.mergeQuests.dailyQuest) {
+                let q = loadObj.mergeQuests.dailyQuest;
+                    game.mergeQuests.dailyQuest.barrelLvl = q.barrelLvl;
+                    game.mergeQuests.dailyQuest.active = q.active;
+                    game.mergeQuests.dailyQuest.reward = q.reward;
+                    game.mergeQuests.dailyQuest.cooldown = q.cooldown;
+                    game.mergeQuests.dailyQuest.currentCooldown = q.currentCooldown;
+                    game.mergeQuests.dailyQuest.currentMerges = q.currentMerges;
+                    game.mergeQuests.dailyQuest.neededMerges = q.neededMerges;
+                
             }
             if (loadObj.mergeQuests.upgrades)
             {
@@ -883,6 +926,12 @@ function loadGame(saveCode)
                     game.fragment.upgrades[k].level = loadVal(loadObj.fragment.upgrades[k].level, 0);
                 });
             }
+        }
+        else {
+            game.fragment.amount = new Decimal(0);
+            Object.keys(game.fragment.upgrades).forEach(k => {
+                game.fragment.upgrades[k].level = 0;
+            });
         }
 
         // ANTI EXPLOIT:
@@ -948,7 +997,7 @@ function loadGame(saveCode)
             }
         }
         else {
-            game.beams.aerobeams = new Decimal(0);
+            game.aerobeams.amount = new Decimal(0);
             Object.keys(game.aerobeams.upgrades).forEach(k => {
                 game.aerobeams.upgrades[k].level = 0;
             })
@@ -1055,6 +1104,8 @@ function loadGame(saveCode)
         else {
             game.ms = [];
         }
+
+        if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = "20220721";
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 
 
@@ -1094,6 +1145,7 @@ setup();
 
 function updateBetterBarrels() {
     game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
+    game.beams.upgrades.beamValue.maxLevel = 12 + game.skillTree.upgrades.higherBeamValueMax.level;
 }
 
 function calculateCurrentHighest() {

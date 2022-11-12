@@ -12,215 +12,222 @@ function loadImage(path, onload) {
 }
 
 var images =
+{
+    barrels1: undefined,
+    barrels2: undefined,
+    barrels3: undefined,
+    barrels4: undefined,
+    barrels5: undefined,
+    barrels6: undefined,
+    barrels7: undefined,
+    barrels8: undefined,
+    shadowBarrels: [],
+    previewBarrels: [],
+    appIcon: loadImage("Images/app-icon.png"),
+    scrap: loadImage("Images/Currencies/scrap.png"),
+    barrelTemplate: loadImage("Images/barrel_template.png"),
+    magnet: loadImage("Images/Currencies/magnet.png"),
+    goldenScrap: loadImage("Images/Currencies/goldenscrap.png"),
+    brick: loadImage("Images/Currencies/brick.png"),
+    tire: loadImage("Images/Currencies/tire.png"),
+    fragment: loadImage("Images/Currencies/fragment.png"),
+    starSmall: loadImage("Images/star_small.png"),
+    mergeToken: loadImage("Images/Currencies/mergetoken.png"),
+    container: loadImage("Images/container.png"),
+    buttonEmpty: loadImage("Images/Buttons/button_empty.png"),
+    buttonBack: loadImage("Images/Buttons/button_back.png"),
+    buttonMaxAll: loadImage("Images/Buttons/maxall.png"),
+    buttonReset: loadImage("Images/Buttons/button_reset.png"),
+    scrap2logo: loadImage("Images/scrap2logo.png"),
+    gameNotifaction: loadImage("Images/gamenotification.png"),
+    clock: loadImage("Images/clock.png"),
+    coconut: loadImage("Images/coconut.jpg"),
+    trophy: loadImage("Images/trophies.png"),
+    exportGame: loadImage("Images/Buttons/export_game.png"),
+    importGame: loadImage("Images/Buttons/import_game.png"),
+    exportImport: loadImage("Images/Buttons/export_import.png"),
+    zoomOut: loadImage("Images/Buttons/button_zoom_out.png"),
+    zoomIn: loadImage("Images/Buttons/button_zoom_in.png"),
+    ezUpgrade: loadImage("Images/Buttons/ez_upgrade.png"),
+    highlightedSlot: loadImage("Images/highlighted_slot.png"),
+    locked: loadImage("Images/locked.png"),
+    darkscrap: loadImage("Images/Currencies/darkscrap.png"),
+    darkfragment: loadImage("Images/Currencies/darkfragment.png"),
+    beam: loadImage("Images/Currencies/steelbeam.png"),
+    aerobeam: loadImage("Images/Currencies/aerobeam.png"),
+    angelbeam: loadImage("Images/Currencies/angelbeam.png"),
+    reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
+    glitchbeam: loadImage("Images/Currencies/glitchbeam.png"),
+    wrench: loadImage("Images/Currencies/wrench.png"),
+    scrapyard: loadImage("Images/Scrapyard.png"),
+    searchbutton: loadImage("Images/Buttons/search.png"),
+    glitch: loadImage("Images/h.png"),
+    legendaryScrap: loadImage("Images/Currencies/legendary.png"),
+    steelMagnet: loadImage("Images/Currencies/steelMagnet.png"),
+    blueBrick: loadImage("Images/Currencies/bluebrick.png"),
+    fillthetank: loadImage("Images/Buttons/fillthetank.png"),
+    onoffbutton: loadImage("Images/Buttons/onoff.png"),
+    shrine: loadImage("Images/shrinebydec.png"),
+    masteryToken: loadImage("Images/Currencies/masterytoken.png"),
+    masteryIcon: loadImage("Images/mastery.png"),
+    convertbutton: loadImage("Images/Buttons/convertbutton.png"),
+    multibuybutton: loadImage("Images/Buttons/multibuybutton.png"),
+    logos:
     {
-        barrels1: undefined,
-        barrels2: undefined,
-        barrels3: undefined,
-        barrels4: undefined,
-        barrels5: undefined,
-        barrels6: undefined,
-        barrels7: undefined,
-        barrels8: undefined,
-        shadowBarrels: [],
-        previewBarrels: [],
-        appIcon: loadImage("Images/app-icon.png"),
-        scrap: loadImage("Images/Currencies/scrap.png"),
-        barrelTemplate: loadImage("Images/barrel_template.png"),
-        magnet: loadImage("Images/Currencies/magnet.png"),
-        goldenScrap: loadImage("Images/Currencies/goldenscrap.png"),
-        brick: loadImage("Images/Currencies/brick.png"),
-        tire: loadImage("Images/Currencies/tire.png"),
-        fragment: loadImage("Images/Currencies/fragment.png"),
-        starSmall: loadImage("Images/star_small.png"),
-        mergeToken: loadImage("Images/Currencies/mergetoken.png"),
-        container: loadImage("Images/container.png"),
-        buttonEmpty: loadImage("Images/Buttons/button_empty.png"),
-        buttonBack: loadImage("Images/Buttons/button_back.png"),
-        buttonMaxAll: loadImage("Images/Buttons/maxall.png"),
-        buttonReset: loadImage("Images/Buttons/button_reset.png"),
-        scrap2logo: loadImage("Images/scrap2logo.png"),
-        gameNotifaction: loadImage("Images/gamenotification.png"),
-        clock: loadImage("Images/clock.png"),
-        coconut: loadImage("Images/coconut.jpg"),
-        trophy: loadImage("Images/trophies.png"),
-        exportGame: loadImage("Images/Buttons/export_game.png"),
-        importGame: loadImage("Images/Buttons/import_game.png"),
-        exportImport: loadImage("Images/Buttons/export_import.png"),
-        zoomOut: loadImage("Images/Buttons/button_zoom_out.png"),
-        zoomIn: loadImage("Images/Buttons/button_zoom_in.png"),
-        ezUpgrade: loadImage("Images/Buttons/ez_upgrade.png"),
-        highlightedSlot: loadImage("Images/highlighted_slot.png"),
-        locked: loadImage("Images/locked.png"),
-        darkscrap: loadImage("Images/Currencies/darkscrap.png"),
-        darkfragment: loadImage("Images/Currencies/darkfragment.png"),
-        beam: loadImage("Images/Currencies/steelbeam.png"),
+        scrap2: loadImage("Images/scrap2logo.png"),
+        discord: loadImage("Images/discord.png"),
+        youtube: loadImage("Images/youtube.png"),
+        cook1eegames: loadImage("Images/cook1eegames.png")
+    },
+    options:
+    {
+        barrelQuality: loadImage("Images/Buttons/barrel_quality.png"),
+        numberFormat: loadImage("Images/Buttons/number_format.png")
+    },
+    arrows:
+    {
+        left: loadImage("Images/Buttons/arrow_left.png"),
+        left_2: loadImage("Images/Buttons/arrow_left_2.png"),
+        right: loadImage("Images/Buttons/arrow_right.png"),
+        right_2: loadImage("Images/Buttons/arrow_right_2.png"),
+    },
+    buildings:
+    {
+        shrine: loadImage("Images/Buildings/shrine.png"),
+        factory: loadImage("Images/Buildings/factory.png"),
+        factorylocked: loadImage("Images/Buildings/factorylocked.png"),
+        generator: loadImage("Images/Buildings/generator.png"),
+        bluestacks: loadImage("Images/Buildings/autos.png"),
+    },
+    checkbox:
+    {
+        off: loadImage("Images/Checkbox/checkbox_off.png"),
+        on: loadImage("Images/Checkbox/checkbox_on.png"),
+        autoMerge:
+        {
+            off: loadImage("Images/Checkbox/automerge_off.png"),
+            on: loadImage("Images/Checkbox/automerge_on.png")
+        },
+        autoConvert:
+        {
+            off: loadImage("Images/Checkbox/autoconvert_off.png"),
+            on: loadImage("Images/Checkbox/autoconvert_on.png")
+        }
+    },
+    upgrades:
+    {
+        betterBarrels: loadImage("Images/Upgrades/betterbarrels.png"),
+        fasterBarrels: loadImage("Images/Upgrades/fasterbarrels.png"),
+        moreScrap: loadImage("Images/Upgrades/scrapboost.png"),
+        moreScrap2: loadImage("Images/Upgrades/scrapboost2.png"),
+        magnetBoost: loadImage("Images/Upgrades/magnetboost.png"),
+        magnetChance: loadImage("Images/Upgrades/magnetchance.png"),
+        goldenScrapBoost: loadImage("Images/Upgrades/goldenscrapboost.png"),
+        moreGS: loadImage("Images/Upgrades/moregs.png"),
+        brickBoost: loadImage("Images/Upgrades/brickboost.png"),
+        brickSpeed: loadImage("Images/Upgrades/brickspeed.png"),
+        questSpeed: loadImage("Images/Upgrades/questspeed.png"),
+        questLevels: loadImage("Images/Upgrades/questlevels.png"),
+        tireBoost: loadImage("Images/Upgrades/tireamount.png"),
+        tireChance: loadImage("Images/Upgrades/tirechance.png"),
+        fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
+        fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
+        fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
+        moreDarkScrap: loadImage("Images/Upgrades/darkscrapboost.png"),
+        moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
+        moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png"),
+        beamChance: loadImage("Images/Upgrades/beamchance.png"),
+        beamValue: loadImage("Images/Upgrades/beamvalue.png"),
+        beamStormChance: loadImage("Images/Upgrades/beamstormchance.png"),
+        beamStormValue: loadImage("Images/Upgrades/beamstormvalue.png"),
+        slowerBeams: loadImage("Images/Upgrades/slowerbeams.png"),
+        xplustwo: loadImage("Images/Upgrades/xplustwo.png"),
+        unlockbeamtypes: loadImage("Images/Upgrades/unlockbeamtypes.png"),
+        unlockscrapyard: loadImage("Images/Upgrades/unlockscrapyard.png"),
+        aerobeamChance: loadImage("Images/Upgrades/aerobeamchance.png"),
+        angelBeamChance: loadImage("Images/Upgrades/angelbeamchance.png"),
+        angelBeamValue: loadImage("Images/Upgrades/angelbeamvalue.png"),
+        reinforcedBeamValue: loadImage("Images/Upgrades/reinforcedbeamvalue.png"),
+        reinforcedBeamPower: loadImage("Images/Upgrades/reinforcedbeameasier.png"),
+        reinforcedBeamCrit: loadImage("Images/Upgrades/reinforcedbeamcrit.png"),
+        reinforcedBricks: loadImage("Images/Upgrades/reinforcedbrick.png"),
+        glitchBeamValue: loadImage("Images/Upgrades/glitchbeamvalue.png"),
+        repeatUpgrade: loadImage("Images/Upgrades/repeat.png"),
+        unlockFactory: loadImage("Images/Upgrades/unlockFactory.png"),
+        unlockGenerator: loadImage("Images/Upgrades/unlockGenerator.png"),
+        unlockAutos: loadImage("Images/Upgrades/unlockAutos.png"),
+        goldenBeams: loadImage("Images/Upgrades/goldenbeams.png"),
+        valueGlitchUpgrade: loadImage("Images/Upgrades/valueGlitchUpgrade.png"),
+        unlockMastery: loadImage("Images/Upgrades/unlockmastery.png"),
+        efficientenergy: loadImage("Images/Upgrades/efficientenergy.png"),
+        renewableenergy: loadImage("Images/Upgrades/renewableenergy.png"),
+        unlockConverter: loadImage("Images/Upgrades/unlockConverter.png"),
+        fourthUpgrades: loadImage("Images/Upgrades/4thupgrades.png"),
+    },
+    scenes:
+    {
+        scrap: loadImage("Images/Scenes/scrap.png"),
+        magnet: loadImage("Images/Scenes/magnet.png"),
+        goldenScrap: loadImage("Images/Scenes/goldenscrap.png"),
+        barrelGallery: loadImage("Images/Scenes/barrelgallery.png"),
+        solarSystem: loadImage("Images/Scenes/solarsystem.png"),
+        options: loadImage("Images/Scenes/options.png"),
+        mergeQuests: loadImage("Images/Scenes/mergequests.png"),
+        milestones: loadImage("Images/Scenes/milestones.png"),
+        mergeMastery: loadImage("Images/Scenes/merge_mastery.png"),
+        bricks: loadImage("Images/Scenes/bricks.png"),
+        tires: loadImage("Images/Scenes/tires.png"),
+        fragment: loadImage("Images/Scenes/fragment.png"),
+        dimension: loadImage("Images/Scenes/dimension.png"),
+        skillTree: loadImage("Images/Scenes/skilltree.png"),
+        steelBeams: loadImage("Images/Scenes/steelbeams.png"),
+        beamboosts: loadImage("Images/Scenes/beamboosts.png"),
+        beamselection: loadImage("Images/Scenes/beamselection.png"),
+        aerobeams: loadImage("Images/Scenes/aerobeams.png"),
+        angelbeams: loadImage("Images/Scenes/angelbeams.png"),
+        reinforcedbeams: loadImage("Images/Scenes/reinforcedbeams.png"),
+        glitchbeams: loadImage("Images/Scenes/glitchbeams.png"),
+        wrenches: loadImage("Images/Scenes/wrenches.png"),
+        scrapyard: loadImage("Images/Scenes/scrapyard.png"),
+        statistics: loadImage("Images/Scenes/stats.png"),
+        daily: loadImage("Images/Scenes/daily.png"),
+        factory: loadImage("Images/Scenes/factory.png"),
+        convert: loadImage("Images/Scenes/convertscene.png"),
+    },
+    solarSystem:
+    {
+        inner: loadImage("Images/SolarSystem/inner.png"),
+        third: loadImage("Images/SolarSystem/third.png"),
+        sun: loadImage("Images/SolarSystem/sun.png"),
+        mercury: loadImage("Images/SolarSystem/mercury.png"),
+        venus: loadImage("Images/SolarSystem/venus.png"),
+        earth: loadImage("Images/SolarSystem/earth.png"),
+        mars: loadImage("Images/SolarSystem/mars.png"),
+        jupiter: loadImage("Images/SolarSystem/jupiter.png"),
+        saturn: loadImage("Images/SolarSystem/saturn.png"),
+        uranus: loadImage("Images/SolarSystem/uranus.png"),
+        neptune: loadImage("Images/SolarSystem/neptune.png"),
+        astro: loadImage("Images/SolarSystem/astro.png"),
+        mythus: loadImage("Images/SolarSystem/mythus.png"),
+        posus: loadImage("Images/SolarSystem/posus.png"),
+    },
+    achievements:
+    {
+        locked: loadImage("Images/Achievements/locked.png"),
+        unlocked: loadImage("Images/Achievements/unlocked.png")
+    },
+    movingItems:
+    {
+        magnet: loadImage("Images/MovingItems/magnet.png"),
+        tire: loadImage("Images/MovingItems/tire.png"),
+        beam: loadImage("Images/MovingItems/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         angelbeam: loadImage("Images/Currencies/angelbeam.png"),
         reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
         glitchbeam: loadImage("Images/Currencies/glitchbeam.png"),
-        wrench: loadImage("Images/Currencies/wrench.png"),
-        scrapyard: loadImage("Images/Scrapyard.png"),
-        searchbutton: loadImage("Images/Buttons/search.png"),
-        glitch: loadImage("Images/h.png"),
-        legendaryScrap: loadImage("Images/Currencies/legendary.png"),
-        steelMagnet: loadImage("Images/Currencies/steelMagnet.png"),
-        blueBrick: loadImage("Images/Currencies/bluebrick.png"),
-        fillthetank: loadImage("Images/Buttons/fillthetank.png"),
-        onoffbutton: loadImage("Images/Buttons/onoff.png"),
-        shrine: loadImage("Images/shrinebydec.png"),
-        masteryToken: loadImage("Images/Currencies/masterytoken.png"),
-        masteryIcon: loadImage("Images/mastery.png"),
-        logos:
-            {
-                scrap2: loadImage("Images/scrap2logo.png"),
-                discord: loadImage("Images/discord.png"),
-                youtube: loadImage("Images/youtube.png"),
-                cook1eegames: loadImage("Images/cook1eegames.png")
-            },
-        options:
-            {
-                barrelQuality: loadImage("Images/Buttons/barrel_quality.png"),
-                numberFormat: loadImage("Images/Buttons/number_format.png")
-            },
-        arrows:
-            {
-                left: loadImage("Images/Buttons/arrow_left.png"),
-                left_2: loadImage("Images/Buttons/arrow_left_2.png"),
-                right: loadImage("Images/Buttons/arrow_right.png"),
-                right_2: loadImage("Images/Buttons/arrow_right_2.png"),
-            },
-        buildings:
-            {
-                shrine: loadImage("Images/Buildings/shrine.png"),
-                factory: loadImage("Images/Buildings/factory.png"),
-                factorylocked: loadImage("Images/Buildings/factorylocked.png"),
-                generator: loadImage("Images/Buildings/generator.png"),
-                bluestacks: loadImage("Images/Buildings/autos.png"),
-            },
-        checkbox:
-            {
-                off: loadImage("Images/Checkbox/checkbox_off.png"),
-                on: loadImage("Images/Checkbox/checkbox_on.png"),
-                autoMerge:
-                {
-                    off: loadImage("Images/Checkbox/automerge_off.png"),
-                    on: loadImage("Images/Checkbox/automerge_on.png")
-                },
-                autoConvert:
-                {
-                    off: loadImage("Images/Checkbox/autoconvert_off.png"),
-                    on: loadImage("Images/Checkbox/autoconvert_on.png")
-                }
-            },
-        upgrades:
-            {
-                betterBarrels: loadImage("Images/Upgrades/betterbarrels.png"),
-                fasterBarrels: loadImage("Images/Upgrades/fasterbarrels.png"),
-                moreScrap: loadImage("Images/Upgrades/scrapboost.png"),
-                moreScrap2: loadImage("Images/Upgrades/scrapboost2.png"),
-                magnetBoost: loadImage("Images/Upgrades/magnetboost.png"),
-                magnetChance: loadImage("Images/Upgrades/magnetchance.png"),
-                goldenScrapBoost: loadImage("Images/Upgrades/goldenscrapboost.png"),
-                moreGS: loadImage("Images/Upgrades/moregs.png"),
-                brickBoost: loadImage("Images/Upgrades/brickboost.png"),
-                brickSpeed: loadImage("Images/Upgrades/brickspeed.png"),
-                questSpeed: loadImage("Images/Upgrades/questspeed.png"),
-                questLevels: loadImage("Images/Upgrades/questlevels.png"),
-                tireBoost: loadImage("Images/Upgrades/tireamount.png"),
-                tireChance: loadImage("Images/Upgrades/tirechance.png"),
-                fasterMastery: loadImage("Images/Upgrades/fastermastery.png"),
-                fasterFallingMagnets: loadImage("Images/Upgrades/fasterfallingmagnets.png"),
-                fasterAutoMerge: loadImage("Images/Upgrades/fasterautomerge.png"),
-                moreDarkScrap: loadImage("Images/Upgrades/darkscrapboost.png"),
-                moreFragments: loadImage("Images/Upgrades/fragmentboost.png"),
-                moreMergeTokens: loadImage("Images/Upgrades/moremergetokens.png"),
-                beamChance: loadImage("Images/Upgrades/beamchance.png"),
-                beamValue: loadImage("Images/Upgrades/beamvalue.png"),
-                beamStormChance: loadImage("Images/Upgrades/beamstormchance.png"),
-                beamStormValue: loadImage("Images/Upgrades/beamstormvalue.png"),
-                slowerBeams: loadImage("Images/Upgrades/slowerbeams.png"),
-                xplustwo: loadImage("Images/Upgrades/xplustwo.png"),
-                unlockbeamtypes: loadImage("Images/Upgrades/unlockbeamtypes.png"),
-                unlockscrapyard: loadImage("Images/Upgrades/unlockscrapyard.png"),
-                aerobeamChance: loadImage("Images/Upgrades/aerobeamchance.png"),
-                angelBeamChance: loadImage("Images/Upgrades/angelbeamchance.png"),
-            angelBeamValue: loadImage("Images/Upgrades/angelbeamvalue.png"),
-            reinforcedBeamValue: loadImage("Images/Upgrades/reinforcedbeamvalue.png"),
-            reinforcedBeamPower: loadImage("Images/Upgrades/reinforcedbeameasier.png"),
-            reinforcedBeamCrit: loadImage("Images/Upgrades/reinforcedbeamcrit.png"),
-            reinforcedBricks: loadImage("Images/Upgrades/reinforcedbrick.png"),
-            glitchBeamValue: loadImage("Images/Upgrades/glitchbeamvalue.png"),
-            repeatUpgrade: loadImage("Images/Upgrades/repeat.png"),
-            unlockFactory: loadImage("Images/Upgrades/unlockFactory.png"),
-            unlockGenerator: loadImage("Images/Upgrades/unlockGenerator.png"),
-            unlockAutos: loadImage("Images/Upgrades/unlockAutos.png"),
-            goldenBeams: loadImage("Images/Upgrades/goldenbeams.png"),
-            valueGlitchUpgrade: loadImage("Images/Upgrades/valueGlitchUpgrade.png"),
-            unlockMastery: loadImage("Images/Upgrades/unlockmastery.png"),
-            },
-        scenes:
-            {
-                scrap: loadImage("Images/Scenes/scrap.png"),
-                magnet: loadImage("Images/Scenes/magnet.png"),
-                goldenScrap: loadImage("Images/Scenes/goldenscrap.png"),
-                barrelGallery: loadImage("Images/Scenes/barrelgallery.png"),
-                solarSystem: loadImage("Images/Scenes/solarsystem.png"),
-                options: loadImage("Images/Scenes/options.png"),
-                mergeQuests: loadImage("Images/Scenes/mergequests.png"),
-                milestones: loadImage("Images/Scenes/milestones.png"),
-                mergeMastery: loadImage("Images/Scenes/merge_mastery.png"),
-                bricks: loadImage("Images/Scenes/bricks.png"),
-                tires: loadImage("Images/Scenes/tires.png"),
-                fragment: loadImage("Images/Scenes/fragment.png"),
-                dimension: loadImage("Images/Scenes/dimension.png"),
-                skillTree: loadImage("Images/Scenes/skilltree.png"),
-                steelBeams: loadImage("Images/Scenes/steelbeams.png"),
-                beamboosts: loadImage("Images/Scenes/beamboosts.png"),
-                beamselection: loadImage("Images/Scenes/beamselection.png"),
-            aerobeams: loadImage("Images/Scenes/aerobeams.png"),
-            angelbeams: loadImage("Images/Scenes/angelbeams.png"),
-            reinforcedbeams: loadImage("Images/Scenes/reinforcedbeams.png"),
-            glitchbeams: loadImage("Images/Scenes/glitchbeams.png"),
-                wrenches: loadImage("Images/Scenes/wrenches.png"),
-            scrapyard: loadImage("Images/Scenes/scrapyard.png"),
-            statistics: loadImage("Images/Scenes/stats.png"),
-            daily: loadImage("Images/Scenes/daily.png"),
-            factory: loadImage("Images/Scenes/factory.png"),
-            },
-        solarSystem:
-        {
-                inner: loadImage("Images/SolarSystem/inner.png"),
-                third: loadImage("Images/SolarSystem/third.png"),
-                sun: loadImage("Images/SolarSystem/sun.png"),
-                mercury: loadImage("Images/SolarSystem/mercury.png"),
-                venus: loadImage("Images/SolarSystem/venus.png"),
-                earth: loadImage("Images/SolarSystem/earth.png"),
-                mars: loadImage("Images/SolarSystem/mars.png"),
-                jupiter: loadImage("Images/SolarSystem/jupiter.png"),
-                saturn: loadImage("Images/SolarSystem/saturn.png"),
-                uranus: loadImage("Images/SolarSystem/uranus.png"),
-                neptune: loadImage("Images/SolarSystem/neptune.png"),
-                astro: loadImage("Images/SolarSystem/astro.png"),
-                mythus: loadImage("Images/SolarSystem/mythus.png"),
-                posus: loadImage("Images/SolarSystem/posus.png"),
-            },
-        achievements:
-            {
-                locked: loadImage("Images/Achievements/locked.png"),
-                unlocked: loadImage("Images/Achievements/unlocked.png")
-            },
-        movingItems:
-            {
-                magnet: loadImage("Images/MovingItems/magnet.png"),
-                tire: loadImage("Images/MovingItems/tire.png"),
-                beam: loadImage("Images/MovingItems/steelbeam.png"),
-                aerobeam: loadImage("Images/Currencies/aerobeam.png"),
-                angelbeam: loadImage("Images/Currencies/angelbeam.png"),
-                reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
-                glitchbeam: loadImage("Images/Currencies/glitchbeam.png"),
-                goldenBeam: loadImage("Images/Currencies/goldenbeam.png"),
-            }
-    };
+        goldenBeam: loadImage("Images/Currencies/goldenbeam.png"),
+    }
+};
 
 var colors = {
     default:
@@ -232,7 +239,8 @@ var colors = {
         table2: "rgb(181, 213, 255)",
         scrollTrack: "rgb(0,80,197)",
         scrollTrackbg: "rgb(118,152,203)",
-        skillTreePath: "rgb(0,6,214)"
+        skillTreePath: "rgb(0,6,214)",
+        text: "rgb(0, 0, 0)"
     },
     darkblue:
     {
@@ -243,7 +251,8 @@ var colors = {
         table2: "rgb(131, 163, 205)",
         scrollTrack: "rgb(0,30,147)",
         scrollTrackbg: "rgb(68,102,153)",
-        skillTreePath: "rgb(0,6,164)"
+        skillTreePath: "rgb(0,6,164)",
+        text: "rgb(0, 0, 0)"
     },
     dark:
     {
@@ -254,15 +263,28 @@ var colors = {
         table2: "rgb(32, 50, 95)",
         scrollTrack: "rgb(0,20,60)",
         scrollTrackbg: "rgb(40,62,72)",
-        skillTreePath: "rgb(0,6,110)"
+        skillTreePath: "rgb(0,6,110)",
+        text: "rgb(255, 255, 255)"
+    },
+    pink:
+    {
+        bg: "rgb(188, 63, 63)",
+        bgFront: "rgb(221, 155, 155)",
+        bgFrontD: "rgb(201, 135, 135)",
+        table: "rgb(219, 96, 96)",
+        table2: "rgb(188, 83, 83)",
+        scrollTrack: "rgb(0,20,60)",
+        scrollTrackbg: "rgb(40,62,72)",
+        skillTreePath: "rgb(0,6,110)",
+        text: "rgb(0, 0, 0)"
     }
 };
 
 var fonts =
-    {
-        default: "Work Sans, Arial, sans-serif",
-        title: "Work Sans, Arial, sans-serif"
-    };
+{
+    default: "Work Sans, Arial, sans-serif",
+    title: "Work Sans, Arial, sans-serif"
+};
 
 var cacheCanvas = document.createElement("canvas");
 document.body.appendChild(cacheCanvas);
@@ -319,5 +341,5 @@ function sound(src) {
     this.pause = function () {
         this.sound.pause();
     }
-} 
+}
 

@@ -329,7 +329,7 @@
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3009 + (20 * level)),
+                level => new Decimal(3010 + (20 * level)),
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -351,7 +351,7 @@
 
             posus: new MagnetUpgrade(
                 level => new Decimal(1).mul(new Decimal(10).pow(level)),
-                level => Math.pow(1.2, level),
+                level => new Decimal(1.2).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
@@ -592,7 +592,7 @@
                         .mul(100),
                         level => new Decimal(1 / (1 + 0.01 * level)),
                         {
-                            maxLevel: 1000,
+                            maxLevel: 1900,
                             getEffectDisplay: effectDisplayTemplates.percentStandard(1),
                             afterBuy: () => game.bricks.check()
                         }),
@@ -729,7 +729,7 @@
                 }),
             moreFragments: new DarkFragmentUpgrade(
                 level => new Decimal(100 * Math.pow(1.1, level)),
-                level => 1 + (0.3 * level),
+                level => new Decimal(1 + (0.3 * level)).mul(Math.max(1, level / 33)),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -752,7 +752,7 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                 }),
             beamValue: new BeamUpgrade(
-                level => new Decimal(25 * ((level * Math.max(9, level)) + 1)),
+                level => new Decimal(25 * ((level * Math.min(19, Math.max(9, level))) + 1)),
                 level => 1 + level,
                 {
                     maxLevel: 12,
@@ -762,7 +762,7 @@
                 level => new Decimal(10 + level),
                 level => 0.1 * level,
                 {
-                    maxLevel: 100,
+                    maxLevel: () => (100 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 50 : 0)),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%")
                 }),
             beamStormValue: new BeamUpgrade(
@@ -774,13 +774,13 @@
                 }),
             moreScrap: new BeamUpgrade(
                 level => new Decimal(5 + Math.round(level / 10)),
-                level => Math.pow(1.1, level),
+                level => new Decimal(1.1).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
                 }),
             moreMagnets: new BeamUpgrade(
                 level => new Decimal(10 + Math.round(level / 10)),
-                level => Math.pow(1.03, level),
+                level => new Decimal(1.03).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
                 }),
@@ -825,7 +825,7 @@
                 level => new Decimal(500 * (Math.round(level / 2) + 1)),
                 level => 1 * level,
                 {
-                    maxLevel: 10,
+                    maxLevel: () => 10 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 15 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
                 }),
             unlockGoldenScrapStorms: new AeroBeamUpgrade(
@@ -875,12 +875,12 @@
                 level => new Decimal(50 * (level + level + 1)),
                 level => 1 + (0.5 * level),
                 {
-                    maxLevel: 38,
+                    maxLevel: () => 38 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 10 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%/min")
                 }),
             gsBoost: new AngelBeamUpgrade(
                 level => new Decimal(20 + Math.round(level / 10)),
-                level => Math.pow(1.217, 0.1 * level),
+                level => new Decimal(1.217).pow(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }),
@@ -914,10 +914,10 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
                 }),
             reinforcedbricks: new ReinforcedBeamUpgrade(
-                level => new Decimal( (Math.pow(1.5, level) * 25) + 475),
+                level => new Decimal( Math.floor(((Math.pow(1.5, Math.min(level, 10)) * 25) + 475) * Math.max(1, (level / 50) + 0.7))),
                 level => level,
                 {
-                    maxLevel: 10,
+                    maxLevel: () => 10 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 40 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "")
                 }),
             factoryTankSize: new ReinforcedBeamUpgrade(
@@ -960,8 +960,15 @@
                 level => new Decimal(Math.round(500 * Math.max(1, level / 3.492))),
                 level => 0.1 * level,
                 {
-                    maxLevel: 10,
+                    maxLevel: () => 10 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 40 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
+                }),
+            minimumValue: new GlitchBeamUpgrade(
+                level => new Decimal(500 * level + 1000),
+                level => 1 + 1 * level,
+                {
+                    maxLevel: 14,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "Min. ")
                 }),
         }
     },
@@ -1135,6 +1142,30 @@
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["speedBoostsFragments"]),
+
+            efficientEnergy: new SkillTreeUpgradeFixed([
+                [[new Decimal(15000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["unlockMastery"]),
+
+            renewableEnergy: new SkillTreeUpgradeFixed([
+                [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["efficientEnergy"]),
+
+            fourthMaxLevel: new SkillTreeUpgradeFixed([
+                [[new Decimal(3000), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["unlockMastery"]),
+
+            unlockBeamConverter: new SkillTreeUpgradeFixed([
+                [[new Decimal(1000), RESOURCE_BEAM], [new Decimal(1000), RESOURCE_AEROBEAM], [new Decimal(10000), RESOURCE_ANGELBEAM], [new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(1000), RESOURCE_GLITCHBEAM],],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["fourthMaxLevel"]),
             
         }
     },
@@ -1160,9 +1191,21 @@
                 }),
             brickBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1).mul(new Decimal(8).pow(level + Math.max(0, level - 100))),
+                level => new Decimal(1).mul(new Decimal(12).pow(level + Math.max(0, level - 100))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "^L3")
+                }),
+            fragmentBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.0003 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(5, "x", "^L4")
+                }),
+            magnetBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.001 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x", "^L5")
                 }),
         }
     },
@@ -1329,17 +1372,17 @@
                 new Milestone(31, "Reinforcements", 16, () => "Reach " + formatNumber(1e153) + " Scrap to\nunlock Merge Mastery!", () => game.highestScrapReached.gte(1e153), "#00e8e4"),
                 new Milestone(32, "Speed of Sound", 28, "Barrels spawn faster than 250ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.25, "#00ffff"),
                 new Milestone(33, "Merge Again", 17, "Prestige Merge Mastery", () => game.mergeMastery.prestige.level > 0),
+                new Milestone(91, "Steel Beams!", 47, () => "Unlock Steel Beams by reaching barrel 300", () => game.highestBarrelReached > 299),
                 new Milestone(34, "Questing to\nthe Max", 14, "Have all Merge Quest\nUpgrades at least at Level 20", () => Utils.filterObject(game.mergeQuests.upgrades, upg => upg.level >= 20).length === 3),
                 new Milestone(35, "Interesting Barrels", 10, "Reach Better Barrels Level 300", () => game.scrapUpgrades.betterBarrels.level >= 300),
-                new Milestone(106, "Almost there!", 65, "Reach 10k self merges", () => game.selfMerges > 9999),
-                new Milestone(107, "The worst currency", 66, "Unlock wrenches", () => game.wrenches.isUnlocked()),
+                new Milestone(106, "Almost there!", 65, "Do 10k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 9999),
+                new Milestone(107, "The worst currency", 66, "Unlock wrenches (12k self merges)", () => game.wrenches.isUnlocked()),
                 new Milestone(36, "Who needs\nUpgrades II", 13, () => "Get " + formatNumber(1e30) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e30) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
                 new Milestone(37, "Magnetism II", 2, () => "Have " + formatThousands(10e6) + " Magnets at once", () => game.magnets.gte(10e6)),
                 new Milestone(108, "Better than the dev", 66, "Have more than 5292 wrenches at once", () => game.wrenches.amount > 5292),
                 new Milestone(38, "Building\nBlocks", 18, () => "Reach " + formatNumber(1e213) + " Scrap to\nunlock Bricks!", () => game.highestScrapReached.gte(1e213), "#feb329"),
                 new Milestone(39, "Overproductive\nStart", 21, () => "First Barrel produces more than " + formatNumber(1e63) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(1e63)),
                 new Milestone(40, "HUGE Scrap", 11, () => "Upgrade the Sun to Level 1000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 1000),
-                new Milestone(91, "Steel Beams!", 47, () => "Unlock Steel Beams", () => game.highestBarrelReached > 299),
                 new Milestone(92, "Hey there my good old friend!", 47, () => "Catch your first Steel Beam", () => game.beams.amount > 0),
                 new Milestone(41, "Who needs\nUpgrades III", 13, () => "Get " + formatNumber(1e90) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e90) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0),
                 new Milestone(42, "Infinity", 19, () => "Reach " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => game.highestScrapReached.gte(Decimal.pow(2, 1024)), "red"),
@@ -1354,11 +1397,11 @@
                 new Milestone(119, "Ski", 72, () => "Ski", () => game.highestBarrelReached >= 553),
                 new Milestone(48, "COLOSSAL Scrap", 11, () => "Upgrade the Sun to Level 5000\n(Currently: " + game.solarSystem.upgrades.sun.level.toFixed(0) + ")", () => game.solarSystem.upgrades.sun.level >= 5000),
                 new Milestone(94, "Bee-ms", 53, () => "Increase the beam frequency a bit", () => game.beams.upgrades.fasterBeams.level > 3),
-                new Milestone(49, "RPG v2", 32, "Unlock the Skill Tree", () => game.skillTree.isUnlocked(), "#98ff00"),
+                new Milestone(49, "RPG v2", 32, "Unlock the Skill Tree by upgrading Earth", () => game.skillTree.isUnlocked(), "#98ff00"),
                 new Milestone(50, "Apollo 99", 31, "Unlock the whole Solar System", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE, "#909090"),
                 new Milestone(51, "Ultra Mastery", 16, "Reach Merge Mastery Level 300", () => game.highestMasteryLevel >= 300, "#e0e0e0"),
                 new Milestone(52, "The Secret Upgrade", 34, "Unlock a new Upgrade...", () => game.skillTree.upgrades.mergeQuestUpgFallingMagnet.isUnlocked()),
-                new Milestone(101, "AERODYNAMIC!", 60, () => "Catch an aerobeam", () => game.aerobeams.amount > 0),
+                new Milestone(101, "AERODYNAMIC!", 60, () => "Catch an aerobeam (unlocked with a tree upgrade)", () => game.aerobeams.amount > 0),
                 new Milestone(96, "500m³ of beams", 55, () => "Increase the storm value to the max.", () => game.beams.upgrades.beamStormValue.level == 5),
                 new Milestone(53, "Evolution\nof Tires", 27, "Unlock all Tire Upgrades", () => game.tires.amount.gte(game.tires.milestones[2])),
                 new Milestone(54, "Speed\nof Light", 28, "Auto Merger is faster than 0.25s", () => applyUpgrade(game.solarSystem.upgrades.saturn)
@@ -1381,9 +1424,9 @@
                 new Milestone(65, "Best Barrels V", 10, "Reach Better Barrels Upgrade Level 3000", () => game.scrapUpgrades.betterBarrels.level >= 3000),
                 new Milestone(66, "Need more\nInfinities", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(2, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(2, 1024))),
-                new Milestone(111, "Believe in Beams", 70, () => "Catch an Angel Beam", () => game.angelbeams.amount > 0),
+                new Milestone(111, "Believe in Beams", 70, () => "Catch an Angel Beam (unlocked by upgrading Earth and Skill Tree)", () => game.angelbeams.amount > 0),
                 new Milestone(112, "So many! I can't believe it!", 70, () => "Every Angel Beam is worth 21", () => game.angelbeams.upgrades.beamValue.level > 19),
-                new Milestone(71, "Second Dimension", 42, () => "Unlock Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
+                new Milestone(71, "Second Dimension", 42, () => "Unlock the Second Dimension", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION),
                 new Milestone(72, "I'm scared", 42, () => "Enter the Second Dimension", () => game.dimension == 1),
                 new Milestone(73, "Back on earth", 1, () => "Leave the Second Dimension", () => game.darkscrap.amount > 1),
                 new Milestone(74, "Dark money???", 40, () => "Earn some dark scrap", () => game.darkscrap.amount > 24),
@@ -1402,7 +1445,7 @@
                 new Milestone(68, "Need more\nInfinities III", 30, () => "First Barrel produces more than " + formatNumber(Decimal.pow(8, 1024)) + " Scrap", () => Barrel.getIncomeForLevel(0)
                     .gte(Decimal.pow(8, 1024))),
                 new Milestone(81, "New Dark", 51, () => "Reach Better Barrels 300 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 300),
-                new Milestone(126, "Steel", 76, () => "Collect your first Reinforced Beam!", () => game.reinforcedbeams.amount > 0),
+                new Milestone(126, "Steel", 76, () => "Collect your first Reinforced Beam!\nUnlocked by reaching Merge Mastery level 300", () => game.reinforcedbeams.amount > 0),
                 new Milestone(82, "I've seen them all", 51, () => "Reach Better Barrels 600 in the Second Dimension", () => game.dimension == 1 && game.scrapUpgrades.betterBarrels.level >= 600),
                 new Milestone(83, "MaxProd3000", 40, () => "Max. the first Dark Scrap upgrade", () => game.darkscrap.upgrades.darkScrapBoost.level > 49),
                 new Milestone(84, "Quests, I hate em", 14, () => "Max. the second Dark Scrap upgrade", () => game.darkscrap.upgrades.mergeTokenBoost.level > 49),
@@ -1419,7 +1462,7 @@
                 new Milestone(104, "Master Mastery II", 63, "Reach Merge Mastery Level 1000", () => game.highestMasteryLevel >= 1000),
                 new Milestone(124, "To The End Of The Universe", 74, () => "Mythus level 50", () => game.solarSystem.upgrades.mythus.level > 49),
                 new Milestone(131, "Balanced and fair", 76, () => "Keep the balance", () => game.reinforcedbeams.upgrades.reinforce.level > 19 && game.reinforcedbeams.upgrades.strength.level * 2 > game.reinforcedbeams.upgrades.reinforce.level - 3),
-                new Milestone(135, "Very, very EZ", 33, "Unlock the Super EZ Upgrader", () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader)),
+                new Milestone(135, "Very, very EZ", 33, "Unlock the Super EZ Upgrader in the Skill Tree!", () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader)),
                 new Milestone(86, "1 to 10 in Order", 1, () => "Put the first ten barrels (without stars) in order,\nBarrel 1 in pos 1 (top left), 2 in 2, etc.\nThen upgrade Better Barrels when they are placed correctly.", () => game.dimension == 508050),
                 new Milestone(87, "Shrove Supremacy", 43, () => "Merge 10k barrels while Shrove\nis your spawning barrel", () => game.dimension == 508050),
                 new Milestone(88, "A whole field of 69", 44, () => "Make a 6 out of barrels, uprade\nBetter Barrels, make a 9\n and upgrade again to get this.", () => game.dimension == 508050),

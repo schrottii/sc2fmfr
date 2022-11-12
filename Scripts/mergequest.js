@@ -46,6 +46,8 @@ class MergeQuest
         if(this.currentMerges >= this.getNeededMerges() && this.active)
         {
             game.mergeQuests.mergeTokens = Decimal.round(game.mergeQuests.mergeTokens.add(this.reward));
+            game.stats.totalmergetokens = Decimal.round(game.stats.totalmergetokens.add(this.reward));
+            game.stats.totalquests = game.stats.totalquests.add(1);
             GameNotification.create(new MergeQuestNotification(this));
             this.active = false;
             this.currentMerges = 0;

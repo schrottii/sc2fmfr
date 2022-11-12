@@ -21,6 +21,8 @@ var movingItems = [];
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
 
+var reinforcedBeamCooldown = 0;
+
 var spawnTime =
     {
         cooldown: 0,
@@ -105,6 +107,8 @@ function update()
     deltaTimeNew = Date.now();
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
     deltaTimeOld = Date.now();
+
+    game.stats.playtime = game.stats.playtime.add(delta);
 
     if (!document.hidden/* && delta > 0.5*/)
     {
@@ -261,6 +265,22 @@ function update()
                     game.beams.time = 0;
                 }
             }
+
+            // Reinforced Beams
+            reinforcedBeamCooldown += delta;
+            if (game.beams.selected == 3) {
+                if (game.beams.time > 60 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 60 - 15 
+                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                        for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                            setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
+                        }
+                    }
+                    else {
+                        movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                    }
+                    game.beams.time = 0;
+                }
+            }
         }
     }
 
@@ -281,6 +301,17 @@ function getBeamBaseValue() {
 function getAngelBeamValue() {
     return applyUpgrade(game.angelbeams.upgrades.beamValue);
 }
+function getReinforcedBeamValue() {
+    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce);
+}
+
+function getReinforcedTapsNeeded() {
+    return 3 + game.reinforcedbeams.upgrades.reinforce.level - applyUpgrade(game.reinforcedbeams.upgrades.strength);
+}
+
+function getBrickIncrease() {
+    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks);
+}
 
 function getMagnetBaseValue()
 {
@@ -292,7 +323,7 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets));
 }
 
-function onBarrelMerge(lvl, bx, by)
+function onBarrelMerge(isAuto, lvl, bx, by)
 {
     if (game.mergeQuests.isUnlocked())
     {
@@ -307,15 +338,17 @@ function onBarrelMerge(lvl, bx, by)
     }
     
     game.totalMerges += 1;
-    if (game.settings.autoMerge == false) {
+    if (isAuto == false) {
         game.selfMerges += 1;
 
         if (game.wrenches.isUnlocked()) {
             if (isMobile()) {
                 game.wrenches.amount = game.wrenches.amount.add(1);
+                game.stats.totalwrenches = game.stats.totalwrenches.add(1);
             }
             else {
                 game.wrenches.amount = game.wrenches.amount.add(3);
+                game.stats.totalwrenches = game.stats.totalwrenches.add(3);
             }
 
             // Double Mastery
@@ -323,14 +356,19 @@ function onBarrelMerge(lvl, bx, by)
                 game.mergeMastery.currentMerges++;
                 game.mergeMastery.check(); //There is another one below
             }
+
+            // Faster Beams
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance)) {
+                game.beams.time += 0.25;
+            }
         }
     }
 
     if (game.scrapUpgrades.betterBarrels.level == 224) {
-        if (game.milestones.unlocked.includes(86) == false) {
+        if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
-                   game.milestones.unlocked.push(86);
+                   game.ms.push(86);
                    GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[86]));
                 }
             }
@@ -394,7 +432,7 @@ function autoMergeBarrel()
         let filtered = lvls.filter(lv => Math.round(lv.lvl) === Math.round(l.lvl));
         if (filtered.length >= 2)
         {
-            onBarrelMerge(Math.round(barrels[filtered[0].index].level), barrels[filtered[0].index].x, barrels[filtered[0].index].y);
+            onBarrelMerge(true, Math.round(barrels[filtered[0].index].level), barrels[filtered[0].index].x, barrels[filtered[0].index].y);
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
             barrels[filtered[1].index] = undefined;
@@ -407,9 +445,11 @@ function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
         if (game.dimension == 0) {
             game.fragment.amount = game.fragment.amount.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
+            game.stats.totalfragments = game.stats.totalfragments.add(((barrels[19].level / 10) * game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level) * game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)));
         }
         else if (game.dimension == 1) {
             game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
+            game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[19].level / 10)));
         }
         barrels[19] = undefined;
     }
@@ -558,7 +598,11 @@ function maxSunUpgrades() {
 function saveGame(exportGame)
 {
     const saveObj = JSON.parse(JSON.stringify(game)); //clone object
-    saveObj.milestones = saveObj.milestones.unlocked;
+    if (saveObj.milestones.unlocked != undefined) {
+        if (saveObj.milestones.unlocked.length > 1) {
+            saveObj.ms = saveObj.milestones.unlocked;
+        }
+    }
     saveObj.barrelLvls = [];
 
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
@@ -706,7 +750,7 @@ function loadGame(saveCode)
         // Whoever...
         // Put that awful crap there...
         // See you in HELL!
-
+        
         if (loadObj.goldenScrap !== undefined)
         {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));
@@ -717,6 +761,26 @@ function loadGame(saveCode)
                     game.goldenScrap.upgrades[k].level = loadVal(loadObj.goldenScrap.upgrades[k].level, 0);
                 });
             }
+        }
+
+        if (loadObj.stats !== undefined) {
+            Object.keys(loadObj.stats).forEach(k => {
+                if (loadObj.stats[k] != undefined) {
+                    game.stats[k] = loadVal(new Decimal(loadObj.stats[k]), new Decimal(0));
+                }
+                else {
+                    game.stats[k] = new Decimal(0);
+                }
+            });
+        }
+        else {
+            if (loadObj.selfMerges.amount != undefined) game.stats.totalwrenches = new Decimal(loadObj.selfMerges.amount);
+            if (loadObj.beams.amount != undefined) game.stats.totalbeams = new Decimal(loadObj.beams.amount);
+            if (loadObj.aerobeams.amount != undefined) game.stats.totalaerobeams = new Decimal(loadObj.aerobeams.amount);
+            if (loadObj.angelbeams.amount != undefined) game.stats.totalangelbeams = new Decimal(loadObj.angelbeams.amount);
+            if (loadObj.darkscrap.amount != undefined) game.stats.totaldarkscrap = new Decimal(loadObj.darkscrap.amount);
+            if (loadObj.fragment.amount != undefined) game.stats.totalfragments = new Decimal(loadObj.fragment.amount);
+            if (loadObj.darkfragment.amount != undefined) game.stats.totaldarkfragments = new Decimal(loadObj.darkfragment.amount);
         }
 
         if (loadObj.scrapUpgrades !== undefined)
@@ -906,6 +970,22 @@ function loadGame(saveCode)
             })
         }
 
+        if (loadObj.reinforcedbeams !== undefined) {
+            game.reinforcedbeams.amount = loadVal(new Decimal(loadObj.reinforcedbeams.amount), new Decimal(0));
+
+            if (loadObj.reinforcedbeams.upgrades !== undefined) {
+                Object.keys(loadObj.reinforcedbeams.upgrades).forEach(k => {
+                    game.reinforcedbeams.upgrades[k].level = loadVal(loadObj.reinforcedbeams.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.reinforcedbeams.amount = new Decimal(0);
+            Object.keys(game.reinforcedbeams.upgrades).forEach(k => {
+                game.reinforcedbeams.upgrades[k].level = 0;
+            })
+        }
+
         if (loadObj.darkfragment !== undefined) {
             game.darkfragment.amount = loadVal(new Decimal(loadObj.darkfragment.amount), new Decimal(0));
 
@@ -952,21 +1032,28 @@ function loadGame(saveCode)
             })
         }
 
-
-        if(loadObj.milestones !== undefined)
-        {
-            if(loadObj.milestones != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/)
-            {
-                if (loadObj.milestones.unlocked != undefined) {
-                    loadObj.milestones = loadObj.milestones.unlocked;
-                }
-                game.milestones.unlocked = loadObj.milestones;
+        
+        if (loadObj.ms !== undefined) {
+            if (loadObj.ms != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/) {
+                game.ms = loadObj.ms;
             }
-            else
-            {
-                game.milestones.unlocked = [];
+            else {
+                game.ms = [];
                 Milestone.check(false);
             }
+        }
+        else if (loadObj.milestones !== undefined) {
+            if (loadObj.milestones.unlocked != undefined) {
+                loadObj.milestones = loadObj.milestones.unlocked;
+                game.ms = loadObj.milestones;
+            }
+            else {
+                game.ms = loadObj.milestones;
+                Milestone.check(false);
+            }
+        }
+        else {
+            game.ms = [];
         }
         game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
 

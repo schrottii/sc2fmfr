@@ -11,7 +11,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_BEAM = 10,
     RESOURCE_AEROBEAM = 11,
     RESOURCE_WRENCH = 12,
-    RESOURCE_ANGELBEAM = 13;
+    RESOURCE_ANGELBEAM = 13,
+    RESOURCE_REINFORCEDBEAM = 14;
 
 function applyUpgrade(upg)
 {
@@ -50,6 +51,8 @@ function getUpgradeResource(res)
             return game.wrenches.amount;
         case RESOURCE_ANGELBEAM:
             return game.angelbeams.amount;
+        case RESOURCE_REINFORCEDBEAM:
+            return game.reinforcedbeams.amount;
         default:
             return null;
     }
@@ -97,6 +100,9 @@ function assignResourceAfterUpgrade(resType, res)
             break;
         case RESOURCE_ANGELBEAM:
             game.angelbeams.amount = res;
+            break;
+        case RESOURCE_REINFORCEDBEAM:
+            game.reinforcedbeams.amount = res;
             break;
         default:
             break;
@@ -490,6 +496,12 @@ class AngelBeamUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_ANGELBEAM;
+    }
+}
+class ReinforcedBeamUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_REINFORCEDBEAM;
     }
 }
 

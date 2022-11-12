@@ -1,7 +1,7 @@
 class Milestone
 {
-    constructor(title, imageId, description, isUnlocked, fontColor)
-    {
+    constructor(id, title, imageId, description, isUnlocked, fontColor) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.isUnlocked = isUnlocked;
@@ -18,13 +18,13 @@ class Milestone
     {
         for(let i = 0; i < game.milestones.achievements.length; i++)
         {
-            if(game.milestones.achievements[i].isUnlocked() && !game.milestones.unlocked.includes(i))
+            if (game.milestones.achievements[i].isUnlocked() && !game.ms.includes(game.milestones.achievements[i].id - 1))
             {
                 if(createNotifs)
                 {
                     GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[i]));
                 }
-                game.milestones.unlocked.push(i);
+                game.ms.push(game.milestones.achievements[i].id - 1);
             }
         }
     }

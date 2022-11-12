@@ -20,6 +20,7 @@ var images =
         barrels5: undefined,
         barrels6: undefined,
         barrels7: undefined,
+        barrels8: undefined,
         shadowBarrels: [],
         previewBarrels: [],
         appIcon: loadImage("Images/app-icon.png"),
@@ -63,8 +64,12 @@ var images =
         glitch: loadImage("Images/h.png"),
         legendaryScrap: loadImage("Images/Currencies/legendary.png"),
         steelMagnet: loadImage("Images/Currencies/steelMagnet.png"),
+        blueBrick: loadImage("Images/Currencies/bluebrick.png"),
         fillthetank: loadImage("Images/Buttons/fillthetank.png"),
         onoffbutton: loadImage("Images/Buttons/onoff.png"),
+        shrine: loadImage("Images/shrinebydec.png"),
+        masteryToken: loadImage("Images/Currencies/masterytoken.png"),
+        masteryIcon: loadImage("Images/mastery.png"),
         logos:
             {
                 scrap2: loadImage("Images/scrap2logo.png"),
@@ -149,6 +154,9 @@ var images =
             unlockFactory: loadImage("Images/Upgrades/unlockFactory.png"),
             unlockGenerator: loadImage("Images/Upgrades/unlockGenerator.png"),
             unlockAutos: loadImage("Images/Upgrades/unlockAutos.png"),
+            goldenBeams: loadImage("Images/Upgrades/goldenbeams.png"),
+            valueGlitchUpgrade: loadImage("Images/Upgrades/valueGlitchUpgrade.png"),
+            unlockMastery: loadImage("Images/Upgrades/unlockmastery.png"),
             },
         scenes:
             {
@@ -209,7 +217,8 @@ var images =
                 aerobeam: loadImage("Images/Currencies/aerobeam.png"),
                 angelbeam: loadImage("Images/Currencies/angelbeam.png"),
                 reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
-                glitchbeam: loadImage("Images/Currencies/glitchbeam.png")
+                glitchbeam: loadImage("Images/Currencies/glitchbeam.png"),
+                goldenBeam: loadImage("Images/Currencies/goldenbeam.png"),
             }
     };
 
@@ -274,7 +283,7 @@ function cacheBarrel(id) {
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
 
-    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % 700) / 100))) % 8, 1);
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % BARRELS) / 100))) % 8, 1);
     cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();

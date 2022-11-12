@@ -57,14 +57,17 @@
             }
             let base = Decimal.floor(Decimal.pow(Decimal.log10(game.scrapThisPrestige) - 14, 1.5).mul(10))
                 .add(25);
-            return base.mul(Decimal.pow(1.1, Math.max(0, Decimal.log10(game.scrapThisPrestige) - 27)))
+            base = base.mul(Decimal.pow(1.1, Math.max(0, Decimal.log10(game.scrapThisPrestige) - 27)))
                 .mul(applyUpgrade(game.magnetUpgrades.moreGoldenScrap))
                 .mul(applyUpgrade(game.mergeQuests.upgrades.goldenScrapBoost))
                 .mul(game.mergeMastery.prestige.currentGSBoost())
                 .mul(applyUpgrade(game.tires.upgrades[2][2])).add(55)
                 .mul(applyUpgrade(game.goldenScrap.upgrades.gsBoost))
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
+                .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul(1 + (applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap) * game.darkscrap.amount));
+            if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
+            else return game.goldenScrap.amount.div(100)
         },
         reset: function () {
             if (!game.settings.resetConfirmation || confirm("Do you want to reset for " + formatNumber(game.goldenScrap.getResetAmount()) + " Golden Scrap?")) {
@@ -347,7 +350,7 @@
             ),
 
             posus: new MagnetUpgrade(
-                level => new Decimal(1).mul(Math.pow(10, level)),
+                level => new Decimal(1).mul(new Decimal(10).pow(level)),
                 level => Math.pow(1.2, level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
@@ -372,6 +375,7 @@
         totalangelbeamscollected: new Decimal(0),
         totalreinforcedbeamscollected: new Decimal(0),
         totalglitchbeamscollected: new Decimal(0),
+        totalgoldenbeamscollected: new Decimal(0),
         totalquests: new Decimal(0),
         totalmergetokens: new Decimal(0),
         totaldarkscrap: new Decimal(0),
@@ -382,7 +386,9 @@
         totaldailyquests: new Decimal(0),
         totallegendaryscrap: new Decimal(0),
         totalsteelmagnets: new Decimal(0),
+        totalbluebricks: new Decimal(0),
         totaltanks: new Decimal(0),
+        totalmasterytokens: new Decimal(0),
     },
     mergeQuests:
     {
@@ -474,7 +480,8 @@
             }
             return Decimal.pow(2, level - 1)
                 .mul(applyUpgrade(game.bricks.upgrades.brickBoost))
-                .mul(applyUpgrade(game.skillTree.upgrades.brickBoost));
+                .mul(applyUpgrade(game.skillTree.upgrades.brickBoost))
+                .mul(new Decimal(applyUpgrade(game.barrelMastery.upgrades.brickBoost)).pow((getTotalLevels(3))));
         },
         getCurrentProduction: () => {
             return game.bricks.getProduction(game.bricks.productionLevel);
@@ -533,12 +540,20 @@
                 {
                     maxLevel: () => 100 + (game.solarSystem.upgrades.earth.level >= EarthLevels.BRICK_3_LEVELS ? 200 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+")
+                }),
+            fasterCrafting: new BrickUpgrade(level => new Decimal("1e5000").pow(new Decimal(level + Math.pow(Math.max(level - 25, 0), 1.2)))
+                .mul("1e20000"),
+                level => level / 5,
+                {
+                    maxLevel: () => 250,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "%"),
+                    isUnlocked: () => applyUpgrade(game.shrine.generatorUnlock)
                 })
         },
         maxUpgrades: function () {
             for (k in game.bricks.upgrades) {
                 let upg = game.bricks.upgrades[k];
-                while (upg.currentPrice().lte(game.bricks.amount) && upg.level < upg.getMaxLevel()) {
+                while (upg.currentPrice().lte(game.bricks.amount) && upg.level < upg.getMaxLevel() && upg.isUnlocked != false) {
                     upg.buy();
                 }
             }
@@ -646,14 +661,14 @@
         upgrades:
         {
             scrapBoost: new FragmentUpgrade(
-                level => new Decimal(100 * Decimal.pow(1.1, level)),
-                level => 1 + (0.5 * level) * Decimal.pow(1.1, Math.max(0, level - 15)),
+                level => new Decimal(100).mul(new Decimal(1.1).pow(level)),
+                level => new Decimal(1 + (0.5 * level)).mul(new Decimal(1.1).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
             magnetBoost: new FragmentUpgrade(
-                level => new Decimal(500 * Decimal.pow(1.1, level)),
-                level => 1 + (0.2 * level) * Decimal.pow(1.05, Math.max(0, level - 15)),
+                level => new Decimal(500).mul(new Decimal(1.1).pow(level)),
+                level => new Decimal(1 + (0.2 * level)).mul(new Decimal(1.05).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
@@ -905,6 +920,13 @@
                     maxLevel: 10,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "")
                 }),
+            factoryTankSize: new ReinforcedBeamUpgrade(
+                level => new Decimal(4000 + (100 * level)),
+                level => 10 * level,
+                {
+                    maxLevel: 58,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+", "")
+                }),
         }
     },
     glitchbeams:
@@ -922,18 +944,25 @@
                 }),
             repeat: new GlitchBeamUpgrade(
                 level => new Decimal(Math.round(5 * (level / 3)) + 20),
-                level => 0.2 * level,
+                level => 0.5 * level,
                 {
                     maxLevel: 100,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
-            /*goldenbeam: new GlitchBeamUpgrade(
-                level => new Decimal(100 * level + 20),
+            valueGlitch: new GlitchBeamUpgrade(
+                level => new Decimal(Math.round(150 * Math.max(1, level / 6.543))),
+                level => 0.1 * level,
+                {
+                    maxLevel: 30,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
+                }),
+            goldenbeam: new GlitchBeamUpgrade(
+                level => new Decimal(Math.round(500 * Math.max(1, level / 3.492))),
                 level => 0.1 * level,
                 {
                     maxLevel: 10,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
-                }),*/ // add this in 2.6 - golden beam gives 1 of all
+                }),
         }
     },
     wrenches:
@@ -947,14 +976,14 @@
                 level => 0.5 * level,
                 {
                     maxLevel: 200,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "% Chance")
                 }),
             instantBricksChance: new WrenchUpgrade(
                 level => new Decimal(50),
                 level => 0.1 * level,
                 {
                     maxLevel: 200,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "% Chance")
                 }),
             wrenchScrapBoost: new WrenchUpgrade(
                 level => new Decimal(10 * (1 + Math.round(level / 2))),
@@ -968,7 +997,7 @@
                 level => level,
                 {
                     maxLevel: 100,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "%")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "% Chance")
                 }),
         }
     },
@@ -1085,14 +1114,14 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", ""),
                     maxLevel: 20,
                     afterBuy: () => { updateBetterBarrels() }
-                }, ["unlockScrapyard"]),
+                }, ["superEzUpgrader"]),
 
             fasterBricks: new SkillTreeUpgrade(level => new Decimal(10000 * (level + 1)), RESOURCE_DARKFRAGMENT,
                 level => 1 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%"),
                     maxLevel: 40
-                }, ["superEzUpgrader"]),
+                }, ["unlockScrapyard"]),
             speedBoostsFragments: new SkillTreeUpgrade(
                 level => new Decimal(300), RESOURCE_GLITCHBEAM,
                 level => 1 + (level * applyUpgrade(game.solarSystem.upgrades.venus) / applyUpgrade(game.scrapUpgrades.fasterBarrels)),
@@ -1101,7 +1130,40 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
                 }, ["higherBeamValueMax", "fasterBricks"]),
 
+            unlockMastery: new SkillTreeUpgradeFixed([
+                [[new Decimal(10), RESOURCE_LEGENDARYSCRAP], [new Decimal(1000), RESOURCE_BARREL], [new Decimal(400), RESOURCE_REINFORCEDBEAM]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["speedBoostsFragments"]),
             
+        }
+    },
+    barrelMastery: {
+        isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockMastery),
+        b: [], // All ya merges
+        bl: [], // All ya levels
+        levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        masteryTokens: new Decimal(0),
+        upgrades:
+        {
+            scrapBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.05 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "^L1")
+                }),
+            goldenScrapBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.0015 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x", "^L2")
+                }),
+            brickBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1).mul(new Decimal(8).pow(level + Math.max(0, level - 100))),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "^L3")
+                }),
         }
     },
     shrine: {
@@ -1141,6 +1203,7 @@
 
         legendaryScrap: new Decimal(0),
         steelMagnets: new Decimal(0),
+        blueBricks: new Decimal(0),
 
         upgrades:
         {
@@ -1150,22 +1213,33 @@
                 {
                     getEffectDisplay: () => "+1 Legendary Scrap\n-10 Energy",
                     onBuy: () => {
-                        game.factory.time = 2;
+                        game.factory.time = 5 * (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100);
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
-                }, level => [[new Decimal(1e50).pow(1 + level), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
+                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 24))).mul(new Decimal(1e50).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
                 level => new Decimal(20),
                 level => 1,
                 {
                     getEffectDisplay: () => "+1 Steel Magnet\n-20 Energy",
                     onBuy: () => {
-                        game.factory.time = 5;
+                        game.factory.time = 10 * (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100);
                         game.factory.steelMagnets = game.factory.steelMagnets.add(1);
                         game.stats.totalsteelmagnets = game.stats.totalsteelmagnets.add(1);
                     }
                 }, level => [[new Decimal(1000000 * Math.pow(100, level)), RESOURCE_MAGNET], [new Decimal(100), RESOURCE_BEAM]]),
+            blueBricks: new FactoryUpgrade(
+                level => new Decimal(15),
+                level => 1,
+                {
+                    getEffectDisplay: () => "+1 Blue Brick\n-15 Energy",
+                    onBuy: () => {
+                        game.factory.time = 45 * (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100);
+                        game.factory.blueBricks = game.factory.blueBricks.add(1);
+                        game.stats.totalbluebricks = game.stats.totalbluebricks.add(1);
+                    }
+                }, level => [[new Decimal("1e10000").mul(new Decimal("1e1000").pow(level * Math.min(10 + Math.max(0, level - 49), Math.max(1, level - 14)))), RESOURCE_BRICK], [new Decimal(75), RESOURCE_AEROBEAM]]),
         },
     },
     autos:
@@ -1204,6 +1278,15 @@
             time = 0,
             {
                 maxLevel: 15,
+                getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
+            }),
+        autoBrickUpgrades: new AutoUpgrade(
+            level => new Decimal(3),
+            level => (154 - (6 * level)) * Math.min(level, 1),
+            RESOURCE_BLUEBRICK, ["bricks", "all"],
+            time = 0,
+            {
+                maxLevel: 25,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
             }),
     },
@@ -1371,7 +1454,17 @@
                 new Milestone(152, "Google Magnets", 2, () => "Have " + formatNumber(1e100) + " Magnets at once", () => game.magnets.gte(1e100)),
                 new Milestone(153, "Beam Factory", 82, () => "Have 1M normal Beams at once", () => game.beams.amount.gte(1000000)),
                 new Milestone(154, "The strongest upgrade", 51, () => "Level stronger barrel tiers to 25", () => game.darkscrap.upgrades.strongerTiers.level > 24),
-                new Milestone(155, "Tire Club", 88, () => "1e1e9", () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(155, "Tire Club", 88, () => formatNumber(new Decimal("1e1e9")), () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(156, "RPG v3 (Mastery 2.0)", 92, "Unlock Barrel Mastery", () => game.barrelMastery.isUnlocked()),
+                new Milestone(157, "Influenced by the barrels", 1, "Unlock the first mastery upgrade", () => getTotalLevels(1) > 9),
+                new Milestone(158, "There's more?!", 2, "Unlock the second mastery upgrade", () => getTotalLevels(2) > 9),
+                new Milestone(159, "Uhh, why aren't you using them?", 93, "Refuse to spend your Mastery Tokens\nfor a while", () => game.barrelMastery.masteryTokens.gte(new Decimal(500))),
+                new Milestone(160, "Master Builder", 24, "Unlock the third mastery upgrade", () => getTotalLevels(3) > 9),
+                new Milestone(161, "Topper", 93, "Hoard 2k Mastery Tokens for some reason", () => game.barrelMastery.masteryTokens.gte(new Decimal(2000))),
+                new Milestone(162, "My first 1M barrel", 0, "Have 1M mastery merges on barrel 204", () => game.barrelMastery.b[203] >= 1000000),
+                new Milestone(163, "Another yellow beam", 94, "Collect a golden beam", () => game.stats.totalgoldenbeamscollected >= 1),
+                new Milestone(164, "yes", 50, "no", () => game.settings.numberFormatType == 9),
+                new Milestone(165, "Nobody can touch this", 69, "Reach " + Decimal.pow(2, 40960).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
                 ],
         highlighted: 0, 
         tooltip: null,
@@ -1418,6 +1511,7 @@
         barrelSpawn: true,
         musicSelect: 0,
         C: 1,
+        FPS: 9999,
         beamTimer: false,
     }
 };

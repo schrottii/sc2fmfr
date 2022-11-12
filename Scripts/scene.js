@@ -8,6 +8,13 @@ var calcTime = "";
 var calcTime2 = "";
 var timeDisplay = "";
 
+var barrelsDisplayMode = 0;
+const BARRELS = 750;
+
+function getTotalLevels(x) {
+    return 0;
+}
+
 function playmusic(x = 0) {
     if (game.settings.musicSelect != hePlayed) {
         x = 50;
@@ -285,11 +292,11 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v2.5 (v3.2)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v2.6.1 (v3.3.1)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("The G.O.A.T. update", w * 0.49, h - w * 0.1);
+                ctx.fillText("Dr. xd approved", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -631,6 +638,7 @@ var scenes =
 
                         game.scrap = new Decimal(0);
                         game.goldenScrap.amount = new Decimal(0);
+                        game.scrapThisPrestige = new Decimal(0);
                     }
                 }, { quadratic: true }),
                 new UIText("Second Dimension", 0.5, 0.1, 0.1, "white", {
@@ -719,6 +727,16 @@ var scenes =
         new Scene("BarrelGallery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.checkbox.autoMerge.on, () => {
+                    if (barrelsDisplayMode == 0) barrelsDisplayMode = 1;
+                    else barrelsDisplayMode = 0;
+                }, { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery"),
+                    { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
+
+                new UIButton(0.25, 0.15, 0.07, 0.07, images.upgrades.betterBarrels, function () {
+                    game.scrapUpgrades.betterBarrels.buy();
+                }, { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
                 new UIButton(0.25, 0.9, 0.1, 0.1, images.arrows.left, () => game.settings.barrelGalleryPage = Math.max(0, game.settings.barrelGalleryPage - 1),
                     {
                         quadratic: true,
@@ -791,10 +809,71 @@ var scenes =
                     ctx.textAlign = "center";
                     ctx.textBaseline = "top";
                     if (!drawPreview) {
-                        ctx.fillText(i + 1, x, y - h * 0.065, w * 0.15);
-                        ctx.fillText(formatNumber(Barrel.getIncomeForLevel(i)), x, y + h * 0.06, w * 0.15);
+                        if(barrelsDisplayMode == 0) ctx.fillText(i + 1, x, y - h * 0.065, w * 0.15);
+                        else ctx.fillText(game.barrelMastery.b[i % BARRELS], x, y - h * 0.065, w * 0.15);
+                        if (barrelsDisplayMode == 0) ctx.fillText(formatNumber(Barrel.getIncomeForLevel(i)), x, y + h * 0.06, w * 0.15);
+                        else ctx.fillText(calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y + h * 0.06, w * 0.15);
                     }
                 }
+            }),
+        new Scene("Mastery",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
+                new UIText("Mastery Upgrades", 0.5, 0.1, 0.12, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.scrapBoost, images.upgrades.moreScrap, 0.4, "Get More Scrap for L1 barrels", colors[C].table1, () => getTotalLevels(1) > 9),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.goldenScrapBoost, images.upgrades.moreGS, 0.525, "Get More GS for L2 barrels", colors[C].table2, () => getTotalLevels(2) > 9),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.brickBoost, images.upgrades.brickBoost, 0.65, "Get More Bricks for L3 barrels", colors[C].table1, () => getTotalLevels(3) > 9),
+            ],
+            function () {
+                ctx.fillStyle = colors[C].bg;
+                ctx.fillRect(0, 0, w, h);
+
+                drawCurrencyBar(game.barrelMastery.masteryTokens, images.masteryToken);
+
+                ctx.fillStyle = "black";
+                ctx.font = (h * 0.04) + "px " + fonts.default;
+                ctx.textAlign = "center";
+                ctx.fillText("Unlocked at 10 mastery level 1 barrels!", w * 0.5, h * 0.4, w * 0.5);
+                ctx.fillText("Unlocked at 10 mastery level 2 barrels!", w * 0.5, h * 0.525, w * 0.5);
+                ctx.fillText("Unlocked at 10 mastery level 3 barrels!", w * 0.5, h * 0.65, w * 0.5);
+
+                // Fuck you
+                ctx.fillStyle = "rgb(66, 66, 66)";
+                ctx.fillRect(0, h * 0.445, w, h * 0.025);
+                ctx.fillStyle = colors[C].bgFront;
+                ctx.fillRect(0, h * 0.445, w * (getTotalLevels(1) / BARRELS), h * 0.025);
+                ctx.fillStyle = "white";
+                ctx.font = (h * 0.025) + "px " + fonts.default;
+                ctx.textAlign = "center";
+                ctx.fillText(getTotalLevels(1) + " / " + BARRELS, w * 0.5, h * 0.4475, w * 0.15);
+                ctx.textAlign = "left";
+                ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(game.barrelMastery.upgrades.scrapBoost)).pow(getTotalLevels(1))), w * 0.025, h * 0.4475, w * 0.15);
+            
+                ctx.fillStyle = "rgb(66, 66, 66)";
+                ctx.fillRect(0, h * 0.57, w, h * 0.025);
+                ctx.fillStyle = colors[C].bgFront;
+                ctx.fillRect(0, h * 0.57, w * (getTotalLevels(1) / BARRELS), h * 0.025);
+                ctx.fillStyle = "white";
+                ctx.font = (h * 0.025) + "px " + fonts.default;
+                ctx.textAlign = "center";
+                ctx.fillText(getTotalLevels(2) + " / " + BARRELS, w * 0.5, h * 0.5725, w * 0.15);
+                ctx.textAlign = "left";
+                ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost)).pow((getTotalLevels(2)))), w * 0.025, h * 0.5725, w * 0.15);
+            
+                ctx.fillStyle = "rgb(66, 66, 66)";
+                ctx.fillRect(0, h * 0.695, w, h * 0.025);
+                ctx.fillStyle = colors[C].bgFront;
+                ctx.fillRect(0, h * 0.695, w * (getTotalLevels(1) / BARRELS), h * 0.025);
+                ctx.fillStyle = "white";
+                ctx.font = (h * 0.025) + "px " + fonts.default;
+                ctx.textAlign = "center";
+                ctx.fillText(getTotalLevels(3) + " / " + BARRELS, w * 0.5, h * 0.6975, w * 0.15);
+                ctx.textAlign = "left";
+                ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(game.barrelMastery.upgrades.brickBoost)).pow((getTotalLevels(3)))), w * 0.025, h * 0.6975, w * 0.15);
             }),
         new Scene("SolarSystem",
             [
@@ -1100,7 +1179,7 @@ var scenes =
 
                 new UIText(() => { return "Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of a beam storm\noccuring instead of a single beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.beam$ Beams: " + formatNumber(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
                 new UIBeamUpgrade(game.beams.upgrades.fasterBeams, images.upgrades.beamChance, 0.45, "All Beams spawn more often"),
                 new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.55, "Beams are worth more", colors[C].table2),
                 new UIBeamUpgrade(game.beams.upgrades.slowerBeams, images.upgrades.slowerBeams, 0.65, "Beams fall slower"),
@@ -1163,11 +1242,11 @@ var scenes =
 
                 new UIText("Select which beam type you want to get!\nYou can change this at any time", 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
-                new UIText(() => "$images.aerobeam$ Aerobeams: " + Math.round(game.aerobeams.amount), 0.5, 0.34, 0.06, "yellow"),
-                new UIText(() => "$images.angelbeam$ Angel Beams: " + Math.round(game.angelbeams.amount), 0.5, 0.38, 0.06, "yellow"),
-                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + Math.round(game.reinforcedbeams.amount), 0.5, 0.42, 0.06, "yellow"),
-                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + Math.round(game.glitchbeams.amount), 0.5, 0.46, 0.06, "yellow"),
+                new UIText(() => "$images.beam$ Beams: " + formatNumber(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.34, 0.06, "yellow"),
+                new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.38, 0.06, "yellow"),
+                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.42, 0.06, "yellow"),
+                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.46, 0.06, "yellow"),
                 new UIText(() => "Selected: " + ["Beams", "Aerobeams", "Angel Beams", "Reinforced Beams", "Glitch Beams"][game.beams.selected], 0.5, 0.5, 0.06, "yellow"),
 
 
@@ -1231,7 +1310,7 @@ var scenes =
 
                 new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.aerobeam$ Aerobeams: " + Math.round(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
 
                 new UIAerobeamUpgrade(game.aerobeams.upgrades.fasterBeams, images.upgrades.aerobeamChance, 0.45, "Aerobeams spawn more often"),
@@ -1260,7 +1339,7 @@ var scenes =
 
                 new UIText(() => { return "Angel Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) + " seconds and are worth " + getAngelBeamValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an Angel Beam storm\noccuring instead of a single Angel Beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.angelbeam$ Angel Beams: " + Math.round(game.angelbeams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
 
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.beamValue, images.upgrades.angelBeamValue, 0.45, "Angel Beams are worth more"),
@@ -1290,7 +1369,7 @@ var scenes =
                     return "Reinforced Beams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + getReinforcedBeamValue() + ".\n" + getReinforcedTapsNeeded() + " taps/beam.\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an Reinforced Beam storm\noccuring instead of a single Reinforced Beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams."
                 }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + Math.round(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
 
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.reinforce, images.upgrades.reinforcedBeamValue, 0.45, "Reinforced Beams are worth more,\nbut are harder to collect"),
@@ -1325,12 +1404,13 @@ var scenes =
                     return "Glitch Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth up to " + getGlitchBeamValue() + ".\n 3 taps/beam.\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an Glitch Beam storm\noccuring instead of a single Glitch Beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams."
                 }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + Math.round(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
 
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.beamValue, images.upgrades.glitchBeamValue, 0.45, "Glitch Beams can be worth more"),
-                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when it\nfalls out of the screen", colors[C].table2),
-                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.reinforcedBeamValue, 0.75, "Chance to get a golden beam instead of any beam", colors[C].table2),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", colors[C].table2),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "Chance to get more beams\n(all types)"),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "Chance to get a golden beam\ninstead of any beam", colors[C].table2),
 
             ],
             function () {
@@ -1424,9 +1504,9 @@ var scenes =
                 new UIText(() => "Own merges -> Merges done by the player!", 0.5, 0.9, 0.03, "black"),
 
                 new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.35, "x2 Merge Mastery progress\nfrom own merges", colors[C].table, game.mergeMastery.isUnlocked),
-                new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.45, "Chance for x16 brick progress\nfrom own merges", colors[C].table2, game.bricks.isUnlocked),
-                new UIWrenchUpgrade(game.wrenches.upgrades.wrenchScrapBoost, images.upgrades.moreScrap, 0.55, "x1.01 scrap/wrench/level"),
-                new UIWrenchUpgrade(game.wrenches.upgrades.fasterBeamChance, images.upgrades.beamChance, 0.65, "Chance to reduce the beam timer\nby 0.25s every own merge", colors[C].table2, game.beams.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.45, "x16 brick progress\nfrom own merges", colors[C].table2, game.bricks.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.wrenchScrapBoost, images.upgrades.moreScrap, 0.55, "Scrap Boost"),
+                new UIWrenchUpgrade(game.wrenches.upgrades.fasterBeamChance, images.upgrades.beamChance, 0.65, "Reduce the beam timer\nby 0.25s every own merge", colors[C].table2, game.beams.isUnlocked),
 
             ],
             function () {
@@ -1457,26 +1537,28 @@ var scenes =
                 new UIText(() => "Total Aerobeams: " + formatNumber(game.stats.totalaerobeams), 0.5, 0.25, 0.04, "black"),
                 new UIText(() => "Total Angel Beams: " + formatNumber(game.stats.totalangelbeams), 0.5, 0.275, 0.04, "black"),
                 new UIText(() => "Total Reinforced Beams: " + formatNumber(game.stats.totalreinforcedbeams), 0.5, 0.3, 0.04, "black"),
-                new UIText(() => "Total Beams Collected: " + formatNumber(game.stats.totalbeamscollected), 0.5, 0.325, 0.04, "black"),
-                new UIText(() => "Total Aerobeams Collected: " + formatNumber(game.stats.totalaerobeamscollected), 0.5, 0.35, 0.04, "black"),
-                new UIText(() => "Total Angel Beams Collected: " + formatNumber(game.stats.totalangelbeamscollected), 0.5, 0.375, 0.04, "black"),
-                new UIText(() => "Total Reinforced Beams Collected: " + formatNumber(game.stats.totalreinforcedbeamscollected), 0.5, 0.4, 0.04, "black"),
-                new UIText(() => "Total Quests completed: " + game.stats.totalquests.toFixed(0), 0.5, 0.425, 0.04, "black"),
-                new UIText(() => "Total Merge Tokens: " + formatNumber(game.stats.totalmergetokens), 0.5, 0.45, 0.04, "black"),
-                new UIText(() => "Total Dark Scrap: " + formatNumber(game.stats.totaldarkscrap), 0.5, 0.475, 0.04, "black"),
-                new UIText(() => "Total Fragments: " + formatNumber(game.stats.totalfragments), 0.5, 0.5, 0.04, "black"),
-                new UIText(() => "Total Dark Fragments: " + formatNumber(game.stats.totaldarkfragments), 0.5, 0.525, 0.04, "black"),
-                new UIText(() => "Total Achievements: " + game.ms.length + "/" + game.milestones.achievements.length, 0.5, 0.55, 0.04, "black"),
-                new UIText(() => "Total Tires Collected: " + formatNumber(game.stats.totaltirescollected), 0.5, 0.575, 0.04, "black"),
-                new UIText(() => "Total GS Resets: " + formatNumber(game.stats.totalgsresets), 0.5, 0.6, 0.04, "black"),
-                new UIText(() => "Play Time: " + formatNumber(game.stats.playtime), 0.5, 0.625, 0.04, "black"),
-                new UIText(() => "Total Daily Quests completed: " + game.stats.totaldailyquests.toFixed(0), 0.5, 0.65, 0.04, "black"),
+                new UIText(() => "Total Glitch Beams: " + formatNumber(game.stats.totalglitchbeams), 0.5, 0.325, 0.04, "black"),
+                new UIText(() => "Total Beams Collected: " + formatNumber(game.stats.totalbeamscollected), 0.5, 0.35, 0.04, "black"),
+                new UIText(() => "Total Aerobeams Collected: " + formatNumber(game.stats.totalaerobeamscollected), 0.5, 0.375, 0.04, "black"),
+                new UIText(() => "Total Angel Beams Collected: " + formatNumber(game.stats.totalangelbeamscollected), 0.5, 0.4, 0.04, "black"),
+                new UIText(() => "Total Reinforced Beams Collected: " + formatNumber(game.stats.totalreinforcedbeamscollected), 0.5, 0.425, 0.04, "black"),
+                new UIText(() => "Total Glitch Beams Collected: " + formatNumber(game.stats.totalglitchbeamscollected), 0.5, 0.45, 0.04, "black"),
+                new UIText(() => "Total Quests completed: " + game.stats.totalquests.toFixed(0), 0.5, 0.475, 0.04, "black"),
+                new UIText(() => "Total Merge Tokens: " + formatNumber(game.stats.totalmergetokens), 0.5, 0.5, 0.04, "black"),
+                new UIText(() => "Total Dark Scrap: " + formatNumber(game.stats.totaldarkscrap), 0.5, 0.525, 0.04, "black"),
+                new UIText(() => "Total Fragments: " + formatNumber(game.stats.totalfragments), 0.5, 0.55, 0.04, "black"),
+                new UIText(() => "Total Dark Fragments: " + formatNumber(game.stats.totaldarkfragments), 0.5, 0.575, 0.04, "black"),
+                new UIText(() => "Total Achievements: " + game.ms.length + "/" + game.milestones.achievements.length, 0.5, 0.6, 0.04, "black"),
+                new UIText(() => "Total Tires Collected: " + formatNumber(game.stats.totaltirescollected), 0.5, 0.625, 0.04, "black"),
+                new UIText(() => "Total GS Resets: " + formatNumber(game.stats.totalgsresets), 0.5, 0.65, 0.04, "black"),
+                new UIText(() => "Play Time: " + formatNumber(game.stats.playtime), 0.5, 0.675, 0.04, "black"),
+                new UIText(() => "Total Daily Quests completed: " + game.stats.totaldailyquests.toFixed(0), 0.5, 0.7, 0.04, "black"),
 
-                new UIText(() => "Total Merges: " + game.totalMerges, 0.5, 0.7, 0.04, "black"),
-                new UIText(() => "Self Merges: " + game.selfMerges, 0.5, 0.725, 0.04, "black"),
+                new UIText(() => "Total Merges: " + game.totalMerges, 0.5, 0.75, 0.04, "black"),
+                new UIText(() => "Self Merges: " + game.selfMerges, 0.5, 0.775, 0.04, "black"),
 
 
-                new UIText(() => "Please note: Many of these stats were not\ntracked prior to update 2.2!", 0.5, 0.8, 0.04, "black"),
+                new UIText(() => "Please note: Many of these stats were not\ntracked prior to update 2.2!", 0.5, 0.825, 0.04, "black"),
 
                 new UIButton(0.8, 0.95, 0.3, 0.07, images.buttonEmpty, () => Scene.loadScene("StatCompare")),
                 new UIText("Compare", 0.8, 0.95, 0.06, "white", {
@@ -1564,70 +1646,78 @@ var scenes =
                 new UIText(() => "" + formatNumber(game.stats.totalreinforcedbeams), 0.01, 0.3, 0.04, "black", { halign: "left" }),
                 new UIText(() => "" + formatNumber(compareStats.totalreinforcedbeams), 0.99, 0.3, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Beams Collected", 0.5, 0.325, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalbeamscollected), 0.01, 0.325, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalbeamscollected), 0.99, 0.325, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Glitch Beams", 0.5, 0.325, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalglitchbeams), 0.01, 0.325, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalglitchbeams), 0.99, 0.325, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Aerobeams Collected", 0.5, 0.35, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalaerobeamscollected), 0.01, 0.35, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalaerobeamscollected), 0.99, 0.35, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Beams Collected", 0.5, 0.35, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalbeamscollected), 0.01, 0.35, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalbeamscollected), 0.99, 0.35, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Angel Beams Collected", 0.5, 0.375, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalangelbeamscollected), 0.01, 0.375, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalangelbeamscollected), 0.99, 0.375, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Aerobeams Collected", 0.5, 0.375, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalaerobeamscollected), 0.01, 0.375, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalaerobeamscollected), 0.99, 0.375, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Reinforced Beams Collected", 0.5, 0.4, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalreinforcedbeamscollected), 0.01, 0.4, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalreinforcedbeamscollected), 0.99, 0.4, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Angel Beams Collected", 0.5, 0.4, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalangelbeamscollected), 0.01, 0.4, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalangelbeamscollected), 0.99, 0.4, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Quests completed", 0.5, 0.425, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalquests), 0.01, 0.425, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalquests), 0.99, 0.425, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Reinforced Beams Collected", 0.5, 0.425, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalreinforcedbeamscollected), 0.01, 0.425, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalreinforcedbeamscollected), 0.99, 0.425, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Merge Tokens", 0.5, 0.45, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalmergetokens), 0.01, 0.45, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalmergetokens), 0.99, 0.45, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Glitch Beams Collected", 0.5, 0.45, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalglitchbeamscollected), 0.01, 0.45, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalglitchbeamscollected), 0.99, 0.45, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Dark Scrap", 0.5, 0.475, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totaldarkscrap), 0.01, 0.475, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totaldarkscrap), 0.99, 0.475, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Quests completed", 0.5, 0.475, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalquests), 0.01, 0.475, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalquests), 0.99, 0.475, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Fragments", 0.5, 0.5, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalfragments), 0.01, 0.5, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalfragments), 0.99, 0.5, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Merge Tokens", 0.5, 0.5, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalmergetokens), 0.01, 0.5, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalmergetokens), 0.99, 0.5, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Dark Fragments", 0.5, 0.525, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totaldarkfragments), 0.01, 0.525, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totaldarkfragments), 0.99, 0.525, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Dark Scrap", 0.5, 0.525, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totaldarkscrap), 0.01, 0.525, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totaldarkscrap), 0.99, 0.525, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Achievements", 0.5, 0.55, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.ms.length), 0.01, 0.55, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalAchievements), 0.99, 0.55, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Fragments", 0.5, 0.55, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalfragments), 0.01, 0.55, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalfragments), 0.99, 0.55, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Tires Collected", 0.5, 0.575, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totaltirescollected), 0.01, 0.575, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totaltirescollected), 0.99, 0.575, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Dark Fragments", 0.575, 0.575, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totaldarkfragments), 0.01, 0.575, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totaldarkfragments), 0.99, 0.575, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total GS Resets", 0.5, 0.6, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totalgsresets), 0.01, 0.6, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalgsresets), 0.99, 0.6, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Achievements", 0.5, 0.6, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.ms.length), 0.01, 0.6, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalAchievements), 0.99, 0.6, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Play Time", 0.5, 0.625, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.playtime), 0.01, 0.625, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.playtime), 0.99, 0.625, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Tires Collected", 0.5, 0.625, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totaltirescollected), 0.01, 0.625, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totaltirescollected), 0.99, 0.625, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Total Daily Quests completed", 0.5, 0.65, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.stats.totaldailyquests), 0.01, 0.65, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totaldailyquests), 0.99, 0.65, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total GS Resets", 0.5, 0.65, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totalgsresets), 0.01, 0.65, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalgsresets), 0.99, 0.65, 0.04, "black", { halign: "right" }),
+
+                new UIText(() => "Play Time", 0.5, 0.675, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.playtime), 0.01, 0.675, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.playtime), 0.99, 0.675, 0.04, "black", { halign: "right" }),
+
+                new UIText(() => "Total Daily Quests completed", 0.5, 0.7, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.stats.totaldailyquests), 0.01, 0.7, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totaldailyquests), 0.99, 0.7, 0.04, "black", { halign: "right" }),
 
 
-                new UIText(() => "Total Merges", 0.5, 0.7, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.totalMerges), 0.01, 0.7, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.totalMerges), 0.99, 0.7, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Total Merges", 0.5, 0.75, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.totalMerges), 0.01, 0.75, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.totalMerges), 0.99, 0.75, 0.04, "black", { halign: "right" }),
 
-                new UIText(() => "Self Merges", 0.5, 0.725, 0.04, "black"),
-                new UIText(() => "" + formatNumber(game.selfMerges), 0.01, 0.725, 0.04, "black", { halign: "left" }),
-                new UIText(() => "" + formatNumber(compareStats.selfMerges), 0.99, 0.725, 0.04, "black", { halign: "right" }),
+                new UIText(() => "Self Merges", 0.5, 0.775, 0.04, "black"),
+                new UIText(() => "" + formatNumber(game.selfMerges), 0.01, 0.775, 0.04, "black", { halign: "left" }),
+                new UIText(() => "" + formatNumber(compareStats.selfMerges), 0.99, 0.775, 0.04, "black", { halign: "right" }),
             ],
             function () {
                 ctx.fillStyle = colors[C].bg;
@@ -1702,6 +1792,29 @@ var scenes =
                             }
                         }
                     }, "Reset Second Dimension Progress", colors[C].bg),
+                    new UIOption(0.55, images.options.barrelQuality, () => {
+                        switch (game.settings.FPS) {
+                            case 9999:
+                                game.settings.FPS = 60;
+                                break;
+                            case 60:
+                                game.settings.FPS = 30;
+                                break;
+                            case 30:
+                                game.settings.FPS = 15;
+                                break;
+                            case 15:
+                                game.settings.FPS = 5;
+                                break;
+                            case 5:
+                                game.settings.FPS = 9999;
+                                break;
+                        }
+                        FPS = game.settings.FPS;
+                    }, () => {
+                        if (FPS != 9999) return "FPS: " + FPS;
+                        else return "FPS: Unlimited";
+                    }, colors[C].table),
                     /*new UIOption(0.55, images.scenes.options, () => {
                         const removethose = [85, 86, 87, 88, 89];
                         let removedthose = [];
@@ -1735,6 +1848,7 @@ var scenes =
                 new UIText("My Discord Server", 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
                 new UIText("My Youtube Channel", 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+                new UIText("Unauthorized mods of this mod are prohibited!", 0.95, 0.88, 0.025, "black", { halign: "right", valign: "bottom" }),
                 new UIText("Mod of VeproGames' Scrap 2 Fanmade", 0.95, 0.93, 0.025, "black", { halign: "right", valign: "bottom" }),
                 new UIText("Modded by Schrottii", 0.95, 0.94, 0.025, "black", { halign: "right", valign: "bottom" }),
                 new UIText("Libraries used:\nbreak_infinity\ngrapheme-splitter", 0.95, 0.99, 0.025, "black", { halign: "right", valign: "bottom" }),
@@ -1978,13 +2092,15 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
-                new UISkillTreeUpgrade(game.shrine.generatorUnlock, images.upgrades.unlockGenerator, "Unlock the generator building", 0.5, 0.3, "gray"),
-                new UISkillTreeUpgrade(game.shrine.factoryUnlock, images.upgrades.unlockFactory, "Unlock the factory building", 0.5, 0.5, "gray"),
-                new UISkillTreeUpgrade(game.shrine.autosUnlock, images.upgrades.unlockAutos, "Unlock the auto buyer building", 0.5, 0.7, "gray"),
+                new UISkillTreeUpgradeNoBG(game.shrine.generatorUnlock, images.upgrades.unlockGenerator, "Unlock the generator building", 0.5, 0.3, "white"),
+                new UISkillTreeUpgradeNoBG(game.shrine.factoryUnlock, images.upgrades.unlockFactory, "Unlock the factory building", 0.5, 0.525, "white"),
+                new UISkillTreeUpgradeNoBG(game.shrine.autosUnlock, images.upgrades.unlockAutos, "Unlock the auto buyer building", 0.5, 0.75, "white"),
             ],
             function () {
                 ctx.fillStyle = "gray";
                 ctx.fillRect(0, 0, w, h);
+
+                ctx.drawImage(images.shrine, 0, 0, w, h);
             }),
         new Scene("Factory",
             [
@@ -1998,9 +2114,11 @@ var scenes =
                 new UIText(() => "Use 2 currencies and some energy from the generator\n to craft new currencies here!\nOnly available in the first dimension.", 0.5, 0.6, 0.03, "black"),
 
                 new UIText(() => "$images.legendaryScrap$" + Math.round(game.factory.legendaryScrap), 0.5, 0.15, 0.06, "yellow"),
-                new UIText(() => "$images.steelMagnet$" + Math.round(game.factory.steelMagnets), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.steelMagnet$" + Math.round(game.factory.steelMagnets), 0.5, 0.175, 0.06, "yellow"),
+                new UIText(() => "$images.blueBrick$" + Math.round(game.factory.blueBricks), 0.5, 0.2, 0.06, "yellow"),
                 new UIFactoryUpgrade(game.factory.upgrades.legendaryScrap, images.legendaryScrap, 0.3, "Produce Legendary Scrap"),
                 new UIFactoryUpgrade(game.factory.upgrades.steelMagnets, images.steelMagnet, 0.4, "Produce Steel Magnets", colors[C].table2),
+                new UIFactoryUpgrade(game.factory.upgrades.blueBricks, images.blueBrick, 0.5, "Produce Blue Bricks"),
             ],
             function () {
                 ctx.fillStyle = colors[C].bg;
@@ -2016,15 +2134,15 @@ var scenes =
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
 
                 new UIButton(0.5, 0.5, 0.07, 0.07, images.fillthetank, () => {
-                    if (game.factory.tank.lt(new Decimal(60))) {
+                    if (game.factory.tank.lt(getTankSize())) {
                         if (game.glitchbeams.amount.gte(new Decimal(5))) {
                             game.glitchbeams.amount = game.glitchbeams.amount.sub(new Decimal(5));
                             let amount = 20;
                             game.factory.tank = game.factory.tank.add(20);
-                            if (game.factory.tank.gt(new Decimal(60))) {
-                                amount -= game.factory.tank.sub(new Decimal(60));
+                            if (game.factory.tank.gt(getTankSize())) {
+                                amount -= game.factory.tank.sub(getTankSize());
                                 game.stats.totaltanks = game.stats.totaltanks.add(new Decimal(amount));
-                                game.factory.tank = new Decimal(60);
+                                game.factory.tank = getTankSize();
                             }
                         }
                     }
@@ -2032,23 +2150,28 @@ var scenes =
 
                 new UIText(() => "$images.glitchbeam$ Glitch Beams: " + Math.round(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => "Use 5 Glitch Beams to\nfill up the energy tank a bit!", 0.6, 0.4, 0.04, "black"),
+                new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "black"),
+
+                new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.factoryTankSize, images.upgrades.reinforcedBricks, 0.8, "Increase tank size"),
+                new UIBrickUpgrade(game.bricks.upgrades.fasterCrafting, images.upgrades.reinforcedBricks, 0.9, "Faster crafting", colors[C].table2),
+
             ],
             function () {
                 ctx.fillStyle = colors[C].bg;
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = "black";
-                ctx.fillRect(0.05 * w, 0.3 * h, 0.2 * w, 0.6 * h);
+                ctx.fillRect(0.05 * w, 0.3 * h, 0.2 * w, 0.4 * h);
 
                 ctx.fillStyle = "white";
-                ctx.fillRect(0.075 * w, 0.3125 * h, 0.15 * w, 0.575 * h);
+                ctx.fillRect(0.075 * w, 0.3125 * h, 0.15 * w, 0.375 * h);
 
                 ctx.fillStyle = "gray";
-                ctx.fillRect(0.075 * w, (0.8875 * h) - ((0.575 * h) * (Math.min(new Decimal(60), game.factory.tank.add(20).div(60)))), 0.15 * w, (0.575 * h) * (Math.min(new Decimal(60), game.factory.tank.add(20).div(60))));
+                ctx.fillRect(0.075 * w, (0.6875 * h) - ((0.375 * h) * (Math.min(getTankSize(), game.factory.tank.add(20).div(getTankSize())))), 0.15 * w, (0.375 * h) * (Math.min(getTankSize(), game.factory.tank.add(20).div(getTankSize()))));
 
 
                 ctx.fillStyle = "yellow";
-                ctx.fillRect(0.075 * w, (0.8875 * h) - ((0.575 * h) * (game.factory.tank.div(60))), 0.15 * w, (0.575 * h) * (game.factory.tank.div(60)));
+                ctx.fillRect(0.075 * w, (0.6875 * h) - ((0.375 * h) * (game.factory.tank.div(getTankSize()))), 0.15 * w, (0.375 * h) * (game.factory.tank.div(getTankSize())));
 
                 // Glitch Beams display
                 ctx.fillStyle = colors[C].table;
@@ -2068,6 +2191,7 @@ var scenes =
                 new UIAutoUpgrade(game.autos.autoFasterBarrels, images.legendaryScrap, 0.4, "Auto: Faster Barrels", colors[C].table2),
                 new UIAutoUpgrade(game.autos.autoScrapBoost, images.steelMagnet, 0.5, "Auto: More Scrap\n(Magnet upgrade)"),
                 new UIAutoUpgrade(game.autos.autoMoreGoldenScrap, images.steelMagnet, 0.6, "Auto: More GS\n(Magnet upgrade)", colors[C].table2),
+                new UIAutoUpgrade(game.autos.autoBrickUpgrades, images.blueBrick, 0.7, "Auto: All Brick upgrades"),
             ],
             function () {
                 ctx.fillStyle = colors[C].bg;
@@ -2124,6 +2248,8 @@ var scenes =
                     new UISkillTreePath(0.2, 3.05, 0.5, 3.35, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
                     new UISkillTreePath(0.8, 3.05, 0.5, 3.35, 0.01, colors[C].skillTreePath, [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
 
+                    new UISkillTreePath(0.5, 3.35, 0.5, 3.65, 0.01, colors[C].skillTreePath, game.skillTree.upgrades.speedBoostsFragments),
+
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
 
@@ -2155,8 +2281,10 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.speedBoostsFragments, images.upgrades.moreFragments, "Barrel spawn speed and Venus\nboost fragment gain", 0.5, 3.35),
 
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockMastery, images.upgrades.unlockMastery, "Unlock\nBarrel Mastery", 0.5, 3.65),
+
                     
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 3.55})
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 3.85})
             ],
             function ()
             {

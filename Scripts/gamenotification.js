@@ -125,3 +125,23 @@ class MilestoneNotificaion extends GameNotification
         ctx.fillText(this.title, w / 2 - w * 0.15, this.y - h * 0.03, w * 0.35);
     }
 }
+
+// Added in SC2FMFR 2.1 :)
+// Parameter 1 is the Title (top), 2 is text (below)
+class TextNotification extends GameNotification {
+    constructor(title, text) {
+        super(title);
+        this.title = title;
+        this.text = text;
+    }
+
+    render(ctx) {
+        super.renderBackground(ctx);
+
+        super.setDefaultFont(ctx);
+        ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.45);
+        ctx.textAlign = "left";
+        ctx.font = (h * 0.025) + "px " + fonts.default;
+        ctx.fillText(this.title, w / 2 - w * 0.15, this.y - h * 0.03, w * 0.35);
+    }
+}

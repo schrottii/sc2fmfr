@@ -127,14 +127,15 @@ class Barrel
 
     static renderBarrel(ctx, level, x, y, size, preview)
     {
-        if (images.barrels.width > 0 && images.barrels.height > 0) //prevent infinite loop, wait for loaded image
+        let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % 570) / 100))) % 7, 1);
+        if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {
-            let barrelRows = Math.floor(images.barrels.height / BARREL_SPRITE_SIZE); //rows in spritesheet
+            let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
             let amountDiff = 0;
 
             let barrelSize = size;
             let lvl = Math.round(level);
-            let barrelAmount = Math.round(images.barrels.width * images.barrels.height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
+            let barrelAmount = 570//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
             let lvlToDraw = lvl % barrelAmount;
             let spriteX = BARREL_SPRITE_SIZE * (lvlToDraw % 10);
             let spriteY = BARREL_SPRITE_SIZE * Math.floor((lvlToDraw / 10) % barrelRows);
@@ -161,7 +162,7 @@ class Barrel
                 }
                 else if (!game.settings.barrelShadows)
                 {
-                    ctx.drawImage(images.barrels, spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
+                    ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
                 }
                 else
                 {
@@ -188,7 +189,7 @@ class Barrel
                 {
                     ctx.translate(-10000, 0);
                 }
-                ctx.drawImage(images.barrels, spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
+                ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
                 if (preview)
                 {
                     ctx.translate(10000, 0);

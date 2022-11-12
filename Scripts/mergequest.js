@@ -19,7 +19,7 @@ class MergeQuest
         let minLvl = game ? Math.max(50, game.highestBarrelReached - 75) : 0;
         this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
         this.neededMerges = [100, 250, 500, 1000, 2500][tier];
-        this.reward = new Decimal([1, 2, 4, 8, 20][tier]) * Math.floor(applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost)) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens));
+        this.reward = new Decimal(Math.floor([1, 2, 4, 8, 20][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens))));
         this.active = true;
         this.currentCooldown = 0;
     }

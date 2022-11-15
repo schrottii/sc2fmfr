@@ -1036,8 +1036,8 @@ function loadGame(saveCode, isFromFile=false)
             loadObj.settings = { "barrelQuality": 1 };
         }
         game.settings.barrelGalleryPage = loadVal(loadObj.settings.barrelGalleryPage, 0);
-        game.settings.barrelShadows = false;
-        game.settings.useCachedBarrels = false;
+        game.settings.barrelShadows = loadVal(loadObj.settings.barrelShadows, false);
+        game.settings.useCachedBarrels = loadVal(loadObj.settings.useCachedBarrels, false);
         game.settings.numberFormatType = loadVal(loadObj.settings.numberFormatType, 0);
         game.settings.barrelQuality = loadVal(loadObj.settings.barrelQuality, 1);
         game.settings.destroyBarrels = loadVal(loadObj.settings.destroyBarrels, false);

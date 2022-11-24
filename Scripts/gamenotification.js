@@ -110,6 +110,7 @@ class MilestoneNotificaion extends GameNotification
 {
     constructor(milestone)
     {
+        console.log(milestone);
         for (i in game.milestones.achievements) {
             if (game.milestones.achievements[i].id == milestone) milestone = game.milestones.achievements[i];
         }

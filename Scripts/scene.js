@@ -1117,8 +1117,6 @@ var scenes =
                     ctx.fillText("+" + formatNumber(game.mergeMastery.getMagnetBonus(lvl), game.settings.numberFormatType, { namesAfter: 1e10 }), w * 0.3, h * 0.5, w * 0.68);
                     ctx.drawImage(images.screw, w * 0.075, h * 0.55, h * 0.075, h * 0.075);
                     ctx.fillText("+" + formatNumber(game.screws.getScrews(lvl)), w * 0.3, h * 0.575, w * 0.68);
-
-
                     ctx.font = (h * 0.025) + "px " + fonts.default;
                     ctx.fillText("Scrap income", w * 0.3, h * 0.45);
                     ctx.fillText("Magnets on Level Up", w * 0.3, h * 0.525);

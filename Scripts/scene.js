@@ -1737,7 +1737,7 @@ var scenes =
 
                 new UIText(() => "Current Time: " + timeDisplay, 0.5, 0.2, 0.06, "yellow"),
 
-                new UIButton(0.84, 0.385, 0.05, 0.05, images.ezUpgrade, () => {
+                new UIButton(0.84, 0.435, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.dailyQuest.active) {
                         if (game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.dailyQuest.barrelLvl);

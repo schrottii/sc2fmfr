@@ -343,7 +343,7 @@ class UIText extends UIElement
 
     render(ctx)
     {
-        Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size,
+        if (this.isVisible()) Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size,
             {
                 color: (C == "dark" && (this.color == "black" || this.color == "#000000")) ? "white" : this.color,
                 halign: this.halign,

@@ -25,6 +25,7 @@ class Milestone
                     GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[i].id));
                 }
                 game.ms.push(game.milestones.achievements[i].id - 1);
+                game.milestones.next = game.milestones.getNext();
             }
         }
     }

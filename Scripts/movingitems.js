@@ -84,7 +84,7 @@ class MovingItem
                 this.y = h * Math.min(Math.random(), 0.6);
             }
         }
-        if (this.timeSinceSpawn >= 1 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(0)) {
+        if (this.timeSinceSpawn >= 1 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(1)) {
             if (Math.random() * 100 <= applyUpgrade(game.collectors[this.autoType])) {
                 if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
                 game.factory.tank = game.factory.tank.sub(1);
@@ -210,7 +210,7 @@ var movingItemFactory =
 {
     fallingMagnet: (value) =>
     {
-        movingItems.push(new FallingItem(images.movingItems.magnet, "magnets", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.2 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.magnet, "magnets", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.275 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
         function()
         {
             this.collected = true;
@@ -287,7 +287,7 @@ var movingItemFactory =
             }))
     },
     fallingAeroBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.75,
+        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -35, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.65,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {

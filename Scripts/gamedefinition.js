@@ -34,7 +34,7 @@
                     return new Decimal(m[Math.min(level, m.length - 1)]).mul(Decimal.pow(10, Math.max(0, level - m.length + 1)));
                 },
                 {
-                    maxLevel: 75,
+                    maxLevel: 100,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0)
                 }),
             magnetBoost: new GoldenScrapUpgrade(
@@ -117,7 +117,9 @@
             {
                 onBuy: function () {
                     trophyMergeCounter = 0;
-                    if (game.ms.includes(85) == false) {
+
+                    // 1 to 10
+                    if (game.ms.includes(86) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
                             if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
                                 game.ms.push(86);
@@ -126,7 +128,8 @@
                         }
                     }
 
-                    if (game.ms.includes(87) == false & !barrels.includes(undefined)) {
+                    // 69
+                    if (game.ms.includes(88) == false & !barrels.includes(undefined)) {
                         if (trophyProgress != 87001) {
                             if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[12] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
                                 if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0) && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[8].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0) && barrels[11].level.toFixed(0) == barrels[12].level.toFixed(0) && barrels[12].level.toFixed(0) != barrels[13].level.toFixed(0) && barrels[12].level.toFixed(0) == barrels[15].level.toFixed(0) && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[19].level.toFixed(0)) {
@@ -145,7 +148,8 @@
                         }
                     }
 
-                    if (game.ms.includes(88) == false) {
+                    // Pastaring
+                    if (game.ms.includes(89) == false) {
                         if (barrels[0] != undefined && barrels[3] != undefined) {
                             if ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353) {
                                 game.ms.push(89);
@@ -266,7 +270,7 @@
             earth: new GoldenScrapUpgrade(
                 level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100][level]),
                 level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Unlock Angel Beams", "Second Dimension", "Scrap Factory"][level],
+                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory"][level],
                 {
                     maxLevel: 12,
                     getEffectDisplay: function () {
@@ -319,7 +323,7 @@
             ),
 
             astro: new GoldenScrapUpgrade(
-                level => new Decimal(1e30).mul(1 + level / 11).mul(Math.max(1, Math.round((level / 3) - 7))).mul(Math.max(1, level - 11))
+                level => new Decimal(1e30).pow(1 + level / 133).mul(Math.max(1, Math.round((level / 3) - 7))).mul(Math.max(1, level - 11))
                 .mul(Math.max(1, level - 25)).mul(1 + level * 1.17).mul(level > 99 ? Math.pow(level - 97, 15) : 1),
                 level => 0.02 * level,
                 {
@@ -840,7 +844,7 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
                 }),
             unlockGoldenScrapStorms: new AeroBeamUpgrade(
-                level => new Decimal(4000),
+                level => new Decimal(1200),
                 level => level,
                 {
                     maxLevel: 1,
@@ -932,7 +936,7 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "")
                 }),
             factoryTankSize: new ReinforcedBeamUpgrade(
-                level => new Decimal(4000 + (100 * level)),
+                level => new Decimal(2000 + (100 * level)),
                 level => 10 * level,
                 {
                     maxLevel: 58,
@@ -968,14 +972,14 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             goldenbeam: new GlitchBeamUpgrade(
-                level => new Decimal(Math.round(500 * Math.max(1, level / 3.492))),
+                level => new Decimal(Math.round(300 * Math.max(1, level / 3.492))),
                 level => 0.1 * level,
                 {
                     maxLevel: () => 10 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 40 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(500 * level + 1000),
+                level => new Decimal(100 * level + 200),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,
@@ -1227,7 +1231,7 @@
             }, ["efficientEnergy"]),
 
             fourthMaxLevel: new SkillTreeUpgradeFixed([
-                [[new Decimal(3000), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
+                [[new Decimal(2729), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockMastery"]),
@@ -1305,7 +1309,7 @@
             }, ["unlockPlasticBags"]),
 
             doublePlasticBags: new SkillTreeUpgradeFixed([
-                [[new Decimal(15000), RESOURCE_AEROBEAM], [new Decimal(1e30), RESOURCE_DARKSCRAP]],
+                [[new Decimal(15000), RESOURCE_AEROBEAM], [new Decimal(1e24), RESOURCE_DARKSCRAP]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["tireBoost2"]),
@@ -1461,14 +1465,14 @@
                         game.factory.fishingNets = game.factory.fishingNets.add(1);
                         game.stats.totalfishingnets = game.stats.totalfishingnets.add(1);
                     }
-                }, level => [[new Decimal(1 + Math.floor(level / 100)), RESOURCE_PLASTICBAG], [new Decimal(500), RESOURCE_REINFORCEDBEAM]]),
+                }, level => [[new Decimal(1 + Math.floor(level / 100)), RESOURCE_PLASTICBAG], [new Decimal(300), RESOURCE_REINFORCEDBEAM]]),
         },
     },
     autos:
     {
         autoBetterBarrels: new AutoUpgrade(
             level => new Decimal(Math.round(level / 20) + 2),
-            level => (60.5 - (0.5 * level)) * Math.min(level, 1),
+            level => (60.5 - (0.5 * level) - (0.25 * Math.min(level, 25)) + (0.25 * Math.max(level - 92, 0))) * Math.min(level, 1),
             RESOURCE_LEGENDARYSCRAP, ["scrapUpgrades", "betterBarrels"],
             time = 0,
             {
@@ -1477,7 +1481,7 @@
             }),
         autoFasterBarrels: new AutoUpgrade(
             level => new Decimal(2),
-            level => (62 - (2 * level)) * Math.min(level, 1),
+            level => (62 - (2 * level) - (1 * Math.min(level, 9)) + (1.5 * Math.max(level - 24, 0))) * Math.min(level, 1),
             RESOURCE_LEGENDARYSCRAP, ["scrapUpgrades", "fasterBarrels"],
             time = 0,
             {
@@ -1486,7 +1490,7 @@
             }),
         autoScrapBoost: new AutoUpgrade(
             level => new Decimal(Math.round(level / 4) + 3),
-            level => (64 - (4 * level)) * Math.min(level, 1),
+            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 11, 0))) * Math.min(level, 1),
             RESOURCE_STEELMAGNET, ["magnetUpgrades", "scrapBoost"],
             time = 0,
             {
@@ -1495,7 +1499,7 @@
             }),
         autoMoreGoldenScrap: new AutoUpgrade(
             level => new Decimal(Math.round(level / 6) + 2),
-            level => (64 - (4 * level)) * Math.min(level, 1),
+            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 11, 0))) * Math.min(level, 1),
             RESOURCE_STEELMAGNET, ["magnetUpgrades", "moreGoldenScrap"],
             time = 0,
             {
@@ -1504,11 +1508,20 @@
             }),
         autoBrickUpgrades: new AutoUpgrade(
             level => new Decimal(3),
-            level => (154 - (6 * level)) * Math.min(level, 1),
+            level => (154 - (6 * level) - (4 * Math.min(level, 5)) + (4 * Math.max(level - 20, 0))) * Math.min(level, 1),
             RESOURCE_BLUEBRICK, ["bricks", "all"],
             time = 0,
             {
                 maxLevel: 25,
+                getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
+            }),
+        autoGetMoreMagnets: new AutoUpgrade(
+            level => new Decimal(1).add(Math.floor(level / 12)),
+            level => (305 - (2 * level) - (3 * Math.min(level, 24)) + (1 * Math.max(level - 110, 0))) * Math.min(level, 1),
+            RESOURCE_BLUEBRICK, ["goldenScrap", "upgrades", "magnetBoost"],
+            time = 0,
+            {
+                maxLevel: 120,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
             }),
     },
@@ -1802,11 +1815,22 @@
         getHighestUnlocked: function () {
             let highest = 0;
             for (let i = 0; i < game.milestones.achievements.length; i++) {
-                if (game.milestones.achievements[i].isUnlocked()) {
-                    highest = i;
+                if (game.milestones.achievements[i].id > highest && game.ms.includes(game.milestones.achievements[i].id)) {
+                    highest = game.milestones.achievements[i].id;
                 }
             }
             return highest;
+        },
+        getNext: function () {
+            let lowest = 9999;
+            let low = 9999;
+            for (let i = 0; i < game.milestones.achievements.length; i++) {
+                if (!game.ms.includes(game.milestones.achievements[i].id - 1) && lowest > i) {
+                    lowest = i;
+                    low = game.milestones.achievements[i].id;
+                }
+            }
+            return low;
         }
     },
     barrelGallery:

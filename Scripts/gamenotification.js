@@ -34,7 +34,7 @@ class GameNotification
             this.y = h * 0.15;
         }
 
-        if(this.lifeTime > 4)
+        if(this.lifeTime > 3.25)
         {
             this.remove();
         }
@@ -78,10 +78,11 @@ class MergeQuestNotification extends GameNotification
         super.setDefaultFont(ctx);
         ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.4);
         Barrel.renderBarrel(ctx, this.barrelLvl, w * 0.35, this.y - h * 0.0325, h * 0.05);
-        
+
+        ctx.fillStyle = "white";
         ctx.font = "bold " + (h * 0.05) + "px " + fonts.default;
         ctx.fillText(formatNumber(this.reward), w * 0.5, this.y - h * 0.0275);
-        ctx.drawImage(images.mergeToken, w * 0.55, this.y - h * 0.05, h * 0.04, h * 0.04);
+        ctx.drawImage(images.mergeToken, w * 0.6, this.y - h * 0.05, h * 0.04, h * 0.04);
     }
 }
 
@@ -138,10 +139,12 @@ class MilestoneNotificaion extends GameNotification
 // Added in SC2FMFR 2.1 :)
 // Parameter 1 is the Title (top), 2 is text (below)
 class TextNotification extends GameNotification {
-    constructor(title, text) {
+    constructor(title, text, img="none", b="0") {
         super(title);
         this.title = title;
         this.text = text;
+        this.img = img;
+        this.b = b;
     }
 
     render(ctx) {
@@ -149,8 +152,17 @@ class TextNotification extends GameNotification {
 
         super.setDefaultFont(ctx);
         ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.45);
-        ctx.textAlign = "center";
         ctx.font = (h * 0.025) + "px " + fonts.default;
-        ctx.fillText(this.title, w / 2, this.y - h * 0.03, w * 0.35);
+
+        if (this.img != "none") {
+            ctx.textAlign = "left";
+            if (this.img != "barrel") ctx.drawImage(images[this.img], w / 2 - w * 0.2, this.y - h * 0.06, h * 0.05, h * 0.05);
+            else Barrel.renderBarrel(ctx, this.b - 1, w / 2 - w * 0.2, this.y - h * 0.032, h * 0.04);
+            ctx.fillText(this.title, w * 0.375, this.y - h * 0.03, w * 0.35);
+        }
+        else {
+            ctx.textAlign = "center";
+            ctx.fillText(this.title, w / 2, this.y - h * 0.03, w * 0.35);
+        }
     } // :)
 }

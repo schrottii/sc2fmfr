@@ -51,6 +51,7 @@ var images =
     zoomIn: loadImage("Images/Buttons/button_zoom_in.png"),
     ezUpgrade: loadImage("Images/Buttons/ez_upgrade.png"),
     highlightedSlot: loadImage("Images/highlighted_slot.png"),
+    nextSlot: loadImage("Images/highlighted_slot2.png"),
     locked: loadImage("Images/locked.png"),
     darkscrap: loadImage("Images/Currencies/darkscrap.png"),
     darkfragment: loadImage("Images/Currencies/darkfragment.png"),
@@ -77,6 +78,7 @@ var images =
     convertbutton: loadImage("Images/Buttons/convertbutton.png"),
     multibuybutton: loadImage("Images/Buttons/multibuybutton.png"),
     screw: loadImage("Images/Currencies/screw.png"),
+    factoryguy: loadImage("Images/Buildings/factoryguy.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

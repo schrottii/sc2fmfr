@@ -17,6 +17,8 @@ var multiConvert = 1;
 
 const BARRELS = 850;
 
+var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
+
 function getTotalLevels(x) {
     return 0;
 }
@@ -379,11 +381,11 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v2.8 (v3.5)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v2.8.1 (v3.5.1)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Did you try the name mixer?", w * 0.49, h - w * 0.1);
+                ctx.fillText("Maximum Productivity: 1 Day", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -632,7 +634,7 @@ var scenes =
         new Scene("MagnetUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
-                new UIText("Magnet Upgrades", 0.5, 0.1, 0.12, "white", {
+                new UIText("Magnet Upgrades", 0.5, 0.1, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -992,7 +994,7 @@ var scenes =
                 }),
 
                 new UIPlanet(0.5, 0.5, "Sun\nIncrease Scrap production", game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
-                new UIPlanet(0.7, 0.725, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
+                new UIPlanet(0.7, 0.7, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
                 new UIPlanet(0.3, 0.325, "Venus\nIncrease Double\nSpawn Chance", game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
                 new UIPlanet(0.65, 0.2, "Earth\nUnlock new Stuff", game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
                 new UIPlanet(0.2, 0.825, () => "Mars\nFalling Magnets\n" + formatNumber(getMagnetBaseValue()
@@ -1015,7 +1017,7 @@ var scenes =
             }),
         new Scene("OuterSolarSystem",
             [
-                new UIButton(0.1, 0.1, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
                 new UIPlanet(0.4, 0.6, "Jupiter\nCheaper Magnet Upgrades", game.solarSystem.upgrades.jupiter, "$images.mergeToken$", images.solarSystem.jupiter, 0.075, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER),
                 new UIPlanet(0.8, 0.7, "Saturn\nAuto Merge", game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
                 new UIPlanet(0.8, 0.25, "Uranus\nStronger Merge Mastery\nScrap Boost", game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
@@ -1036,7 +1038,7 @@ var scenes =
             }),
         new Scene("ThirdSolarSystem",
             [
-                new UIButton(0.1, 0.1, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("OuterSolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("OuterSolarSystem"), { quadratic: true }),
                 new UIPlanet(0.4, 0.6, "Astro\nAuto Convert speed", game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
                 new UIPlanet(0.8, 0.7, "Mythus\nBetter Barrels max.", game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4),
                 new UIPlanet(0.8, 0.15, "Posus\nMore Fragments", game.solarSystem.upgrades.posus, "$images.magnet$", images.solarSystem.posus, 0.12, () => game.solarSystem.upgrades.neptune.level > 4),
@@ -1071,14 +1073,23 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.2, w, h * 0.19);
 
-                ctx.fillStyle = colors[C]["table2"];
-                ctx.fillRect(0, h * 0.39, w, h * 0.08);
+                if (game.screws.isUnlocked()) {
+                    ctx.fillStyle = colors[C]["table2"];
+                    ctx.fillRect(0, h * 0.39, w, h * 0.08);
 
-                ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(0, h * (0.39 + 0.08), w, h * 0.08);
+                    ctx.fillStyle = colors[C]["table"];
+                    ctx.fillRect(0, h * (0.39 + 0.08), w, h * 0.08);
 
-                ctx.fillStyle = colors[C]["table2"];
-                ctx.fillRect(0, h * (0.39 + 0.16), w, h * 0.08);
+                    ctx.fillStyle = colors[C]["table2"];
+                    ctx.fillRect(0, h * (0.39 + 0.16), w, h * 0.08);
+                }
+                else {
+                    ctx.fillStyle = colors[C]["table2"];
+                    ctx.fillRect(0, h * 0.39, w, h * 0.12);
+
+                    ctx.fillStyle = colors[C]["table"];
+                    ctx.fillRect(0, h * (0.39 + 0.12), w, h * 0.12);
+                }
 
                 //main
                 ctx.fillStyle = "#000000a0";
@@ -1338,9 +1349,9 @@ var scenes =
 
                 new UIText(() => "$images.beam$ Beams: " + formatNumber(game.beams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.24, 0.06, "yellow"),
-                new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.28, 0.06, "yellow"),
-                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow"),
-                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow"),
+                new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.28, 0.06, "yellow", { isVisible: () => game.angelbeams.isUnlocked() }),
+                new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow", { isVisible: () => game.reinforcedbeams.isUnlocked() }),
+                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow", { isVisible: () => game.glitchbeams.isUnlocked() }),
                 new UIText(() => "Selected: " + ["Beams", "Aerobeams", "Angel Beams", "Reinforced Beams", "Glitch Beams"][game.beams.selected], 0.5, 0.4, 0.06, "yellow"),
 
 
@@ -1348,15 +1359,15 @@ var scenes =
                 new UIButton(0.7, 0.55, 0.15, 0.15, images.aerobeam, () => game.beams.selected = 1, { quadratic: true }),
                 new UIButton(0.3, 0.7, 0.15, 0.15, images.angelbeam, () => game.beams.selected = 2, {
                     quadratic: true,
-                    isVisible: () => { return game.angelbeams.isUnlocked(); }
+                    isVisible: () => { return game.angelbeams.isUnlocked() }
                 }),
                 new UIButton(0.7, 0.7, 0.15, 0.15, images.reinforcedbeam, () => game.beams.selected = 3, {
                     quadratic: true,
-                    isVisible: () => { return game.reinforcedbeams.isUnlocked(); }
+                    isVisible: () => { return game.reinforcedbeams.isUnlocked() }
                 }),
                 new UIButton(0.5, 0.85, 0.15, 0.15, images.glitchbeam, () => game.beams.selected = 4, {
                     quadratic: true,
-                    isVisible: () => { return game.glitchbeams.isUnlocked(); }
+                    isVisible: () => { return game.glitchbeams.isUnlocked() }
                 }),
 
                 new UIText(() => {
@@ -1579,7 +1590,7 @@ var scenes =
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.beamValue, images.upgrades.glitchBeamValue, 0.45, "Glitch Beams can be worth more"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", "table2"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "Chance to get more beams\n(all types)"),
-                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "Chance to get a golden beam\ninstead of any beam", "table2"),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "Chance to get a golden beam\ninstead of any beam\nwhich gives all beams", "table2"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.minimumValue, images.upgrades.glitchBeamValue, 0.85, "Increases the min. worth of\nGlitch Beams"),
 
             ],
@@ -1644,16 +1655,16 @@ var scenes =
                         }
                         else if (rand > 75) {
                             game.plasticBags.currentResource = RESOURCE_MAGNET;
-                            game.plasticBags.currentCosts = new Decimal(1e50 * sin).mul(new Decimal(1.5).pow(game.stats.totalplasticbags.add(1)));
+                            game.plasticBags.currentCosts = new Decimal(1e50 * sin).mul(new Decimal(1.4).pow(game.stats.totalplasticbags.add(1)));
                             // game.magnets.mul(1000 * Math.random());
                         }
                         else if (rand > 62.5) {
                             game.plasticBags.currentResource = RESOURCE_GS;
-                            game.plasticBags.currentCosts = new Decimal(1e60 * sin).mul(new Decimal(2).pow(game.stats.totalplasticbags.add(1)));
+                            game.plasticBags.currentCosts = new Decimal(1e60 * sin).mul(new Decimal(1.8).pow(game.stats.totalplasticbags.add(1)));
                         }
                         else if (rand > 50) {
                             game.plasticBags.currentResource = RESOURCE_MERGE_TOKEN;
-                            game.plasticBags.currentCosts = new Decimal(25 + Math.floor(500 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 75))));
+                            game.plasticBags.currentCosts = new Decimal(25 + Math.floor(500 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 200))));
                         }
                         else if (rand > 37.5) {
                             game.plasticBags.currentResource = RESOURCE_FRAGMENT;
@@ -1669,7 +1680,7 @@ var scenes =
                         }
                         else {
                             game.plasticBags.currentResource = RESOURCE_BEAM;
-                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(100 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 150))));
+                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(100 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 200))));
                         }
                     }
                 }),
@@ -1812,8 +1823,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
             }),
-
-
 
         new Scene("Statistics",
             [
@@ -2035,24 +2044,6 @@ var scenes =
                         if (FPS != 9999) return "FPS: " + FPS;
                         else return "FPS: Unlimited";
                     }, "table"),
-                    /*new UIOption(0.55, images.scenes.options, () => {
-                        const removethose = [85, 86, 87, 88, 89];
-                        let removedthose = [];
-                        for (i = 0; i < removethose.length; i++) {
-                            const index = game.ms.indexOf(removethose[i]);
-                            if (index > -1) {
-                                game.ms.splice(index, 1);
-                                removedthose.push(removethose[i]);
-                                i -= 1;
-                            }
-                        }
-                        for (i = 0; i < removedthose.length; i++) {
-                            const index = game.ms.indexOf(removedthose[i]);
-                            if (index == -1) {
-                                game.ms.push(removedthose[i]);
-                            }
-                        }
-                    }, "Optimize savecode", "bg"),*/
                 ], () => game.settings.optionsPage === 2),
                 new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
@@ -2247,8 +2238,11 @@ var scenes =
                     let iX = 256 * (iid % 10);
                     let iY = 256 * Math.floor(iid / 10);
                     ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize, tSize);
-                    if (i === game.milestones.highlighted) {
+                    if (game.milestones.achievements[i].id == game.milestones.highlighted) {
                         ctx.drawImage(images.highlightedSlot, x, y, tSize, tSize);
+                    }
+                    if (game.milestones.achievements[i].id == game.milestones.next) {
+                        ctx.drawImage(images.nextSlot, x, y, tSize, tSize);
                     }
                     ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
                     ctx.lineWidth = 0;
@@ -2280,7 +2274,8 @@ var scenes =
                 let perRow = 5;
                 let clickedMileStone = Math.floor(mouseX / w * perRow) + perRow * Math.floor((mouseY - h * 0.2) / w * perRow) + 25 * game.milestones.page;
                 if (clickedMileStone >= 25 * game.milestones.page && clickedMileStone < Math.min(25 * game.milestones.page + 25, game.milestones.achievements.length)) {
-                    game.milestones.highlighted = clickedMileStone;
+                    game.milestones.highlighted = game.milestones.achievements[clickedMileStone].id;
+                    game.milestones.next = game.milestones.getNext();
                     if (game.milestones.tooltip === clickedMileStone) {
                         game.milestones.tooltip = null;
                     }
@@ -2302,9 +2297,27 @@ var scenes =
                 new UIButton(0.225, 0.8, 0.25, 0.25, images.buildings.bluestacks, () => Scene.loadScene("Autobuyers"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.autosUnlock) }),
                 new UIButton(0.75, 0.9, 0.25, 0.25, images.buildings.collectors, () => Scene.loadScene("Autocollectors"), { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors) }),
             ],
-            function () {
+            function (delta) {
                 ctx.fillStyle = "lightgreen";
                 ctx.fillRect(0, 0, w, h);
+
+                for (c in characters) {
+                    if (characters[c][4]()) {
+                        if (characters[c][2] == 0) {
+                            characters[c][0] -= 0.02 * delta;
+                        }
+                        if (characters[c][2] == 1) {
+                            characters[c][0] += 0.02 * delta;
+                        }
+                        characters[c][3] += 0.1 * delta;
+                        if (characters[c][3] > 1) {
+                            characters[c][2] = characters[c][2] == 1 ? 0 : 1;
+                            characters[c][3] = 0;
+                        }
+
+                        ctx.drawImage(images["factoryguy"], 64 * characters[c][2], 0, 64, 64, w * characters[c][0], h * characters[c][1], h * 0.08, h * 0.08);
+                    }
+                }
             }),
         new Scene("Shrine",
             [
@@ -2377,7 +2390,7 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + Math.round(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => "Use 5 Glitch Beams to\nfill up the energy tank a bit!", 0.6, 0.4, 0.04, "black"),
                 new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "orange"),
 
@@ -2396,7 +2409,7 @@ var scenes =
                 ctx.fillRect(0.075 * w, 0.3125 * h, 0.15 * w, 0.375 * h);
 
                 ctx.fillStyle = "gray";
-                ctx.fillRect(0.075 * w, (0.6875 * h) - ((0.375 * h) * (Math.min(getTankSize(), game.factory.tank.add(20).div(getTankSize())))), 0.15 * w, (0.375 * h) * (Math.min(getTankSize(), game.factory.tank.add(20).div(getTankSize()))));
+                ctx.fillRect(0.075 * w, (0.6875 * h) - ((0.375 * h) * (Math.min(1, game.factory.tank.add(20).div(getTankSize()) * 1))), 0.15 * w, (0.375 * h) * (Math.min(1, game.factory.tank.add(20).div(getTankSize()) * 1)));
 
 
                 ctx.fillStyle = "yellow";
@@ -2421,6 +2434,7 @@ var scenes =
                 new UIAutoUpgrade(game.autos.autoScrapBoost, images.steelMagnet, 0.5, "Auto: More Scrap\n(Magnet upgrade)"),
                 new UIAutoUpgrade(game.autos.autoMoreGoldenScrap, images.steelMagnet, 0.6, "Auto: More GS\n(Magnet upgrade)", "table2"),
                 new UIAutoUpgrade(game.autos.autoBrickUpgrades, images.blueBrick, 0.7, "Auto: All Brick upgrades"),
+                new UIAutoUpgrade(game.autos.autoGetMoreMagnets, images.blueBrick, 0.8, "Auto: Get More Magnets\n(GS upgrade)", "table2"),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];

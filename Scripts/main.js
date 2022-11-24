@@ -151,7 +151,7 @@ function update()
             }
         }
 
-        if(game.milestones.achievements[6].isUnlocked())
+        if(game.milestones.achievements[7].isUnlocked())
         {
             if(game.settings.autoMerge)
             {
@@ -166,7 +166,7 @@ function update()
             }
             if (autoConvertTime >= 3 - applyUpgrade(game.solarSystem.upgrades.astro)) {
                 autoConvertBarrel();
-                autoConvertTime = 0;
+                autoConvertTime -= 3 - applyUpgrade(game.solarSystem.upgrades.astro);
             }
         }
 
@@ -202,13 +202,24 @@ function update()
                     if (game.autos[i].time <= 0) {
                         game.autos[i].time = applyUpgrade(game.autos[i]);
                         if (game.autos[i].auto[1] != "all") {
-                            let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                            game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
-                            if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
+                            if (game.autos[i].auto[2] == undefined) {
+                                let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
+                                game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
+                                if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if(Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
                                 }
+                            }
+                            else {
+                                let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
+                                game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
+                                if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
+                                    if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
+                                    else game.factory.tank = game.factory.tank.sub(2);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                }
+                            }
                         }
                         else {
                             let ls = [];
@@ -583,7 +594,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification("Barrel " + ((lvl % BARRELS)+1) + ": Level " + game.barrelMastery.bl[lvl % BARRELS] + " (+ " + game.barrelMastery.bl[lvl % BARRELS] + " Tokens!)", "Mastery level up!"));
+            GameNotification.create(new TextNotification("Level " + game.barrelMastery.bl[lvl % BARRELS] + " (+ " + game.barrelMastery.bl[lvl % BARRELS] + " Tokens!)", "Mastery level up!", "barrel", ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {
@@ -923,6 +934,23 @@ function saveGame(exportGame, downloaded=false)
             }
         }
 
+        let removethose = [86, 87, 88, 89, 90];
+        let removedthose = [];
+        let index;
+        for (i = 0; i < removethose.length; i++) {
+            index = saveObj.ms.indexOf(removethose[i]);
+            if (index > -1) {
+                saveObj.ms.splice(index, 1);
+                removedthose.push(removethose[i]);
+                i -= 1;
+            }
+        }
+        for (i = 0; i < removedthose.length; i++) {
+            index = saveObj.ms.indexOf(removedthose[i]);
+            if (index == -1) {
+                saveObj.ms.push(removedthose[i]);
+            }
+        }
     }
     catch{
         // for the case your javascript is so old it doesn't have Object.entries...
@@ -1367,6 +1395,9 @@ function loadGame(saveCode, isFromFile=false)
         if (loadObj.factory !== undefined) {
             game.factory.time = loadVal(loadObj.factory.time, 0);
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
+
+            if (!game.factory.tank.gt(-5)) game.factory.tank = new Decimal(10);
+
             game.factory.legendaryScrap = loadVal(new Decimal(loadObj.factory.legendaryScrap), new Decimal(0));
             game.factory.steelMagnets = loadVal(new Decimal(loadObj.factory.steelMagnets), new Decimal(0));
             game.factory.blueBricks = loadVal(new Decimal(loadObj.factory.blueBricks), new Decimal(0));
@@ -1457,7 +1488,8 @@ function loadGame(saveCode, isFromFile=false)
         game.glitchesCollected = loadVal(loadObj.glitchesCollected, 0);
 
         if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = "20220721";
-        game.milestones.highlighted = Math.min(game.milestones.achievements.length - 1, game.milestones.getHighestUnlocked());
+        game.milestones.highlighted = game.milestones.getHighestUnlocked() + 1;
+        game.milestones.next = game.milestones.getNext();
 
         // Mastery
         if (loadObj.barrelMastery !== undefined) {

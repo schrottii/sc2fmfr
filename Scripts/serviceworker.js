@@ -1,5 +1,8 @@
+alert("Hey...");
+
 self.addEventListener('install', (e) => {
     e.waitUntil(
+        caches.open('fr29').then((cache) => alert(cache)),
         caches.open('fr29').then((cache) => cache.addAll([Object.keys(images)
         ])),
     );

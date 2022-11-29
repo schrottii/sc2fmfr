@@ -74,6 +74,14 @@ function setup()
 
     resizeCanvas();
 
+    // Register service worker to control making site work offline
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('/pwa-examples/a2hs/sw.js')
+            .then(() => { console.log('Service Worker Registered'); });
+    }
+
     for (let q of game.mergeQuests.quests)
     {
         q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);

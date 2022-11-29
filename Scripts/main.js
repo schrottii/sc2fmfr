@@ -69,10 +69,10 @@ function isMobile()
 // Register service worker to control making site work offline
 
 if ('serviceWorker' in navigator) {
-    alert('Service Worker Registered');
+    console.log('Service Worker Registered');
     navigator.serviceWorker
         .register('Scripts/serviceworker.js')
-        .then(() => { alert('File loaded'); });
+        .then(() => { console.log('File loaded'); });
 }
 
 function setup()

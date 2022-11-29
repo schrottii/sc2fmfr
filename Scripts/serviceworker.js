@@ -1,13 +1,14 @@
-self.addEventListener('install', (e) => {
-    e.waitUntil(
-        caches.open('fr29').then((cache) => cache.addAll([Object.keys(images)
-        ])),
-    );
-});
+const cacheName = "fr29";
 
-self.addEventListener('fetch', (e) => {
-    console.log(e.request.url);
-    e.respondWith(
-        caches.match(e.request).then((response) => response || fetch(e.request)),
-    );
+self.addEventListener("fetch", event => {
+    event.respondWith((async () => {
+        try {
+            const res = await fetch(event.request);
+            (await caches.open(cacheName)).put(event.request, res.clone());
+            return res;
+        }
+        catch (err) {
+            return await caches.match(event.request);
+        }
+    })());
 });

@@ -590,6 +590,7 @@ var scenes =
                             barrels[i] = undefined;
                             draggedBarrel = undefined;
                             lastClickedBarrel = -1;
+                            freeSpots += 1;
                         }
                         else {
                             lastClickedBarrel = i;
@@ -610,6 +611,7 @@ var scenes =
                             if (Math.round(lvl) === Math.round(draggedBarrel.level)) {
                                 tempDrawnBarrels[index] = draggedBarrel.level;
                                 barrels[index] = new Barrel(draggedBarrel.level + 1);
+                                freeSpots += 1;
                                 onBarrelMerge(false, Math.round(draggedBarrel.level));
                                 draggedBarrel = undefined;
                             }

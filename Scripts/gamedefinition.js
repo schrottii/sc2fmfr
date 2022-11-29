@@ -76,6 +76,7 @@
                 for (let i = 0; i < barrels.length; i++) {
                     barrels[i] = undefined;
                 }
+                freeSpots = 20;
                 draggedBarrel = undefined;
                 game.mergesThisPrestige = 0;
                 game.scrap = new Decimal(0);

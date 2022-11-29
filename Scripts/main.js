@@ -10,6 +10,7 @@ var importType = 0;
 var gSplitter = new GraphemeSplitter();
 
 var barrels = [];
+var freeSpots = 20;
 var draggedBarrel;
 var tempDrawnBarrels = []; //barrels drawn below newly merged barrels
 var lastClickedBarrel = -1;
@@ -136,7 +137,7 @@ function update()
 
         spawnTime.cooldown += delta;
 
-        let barrelsToSpawn = Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber()));
+        let barrelsToSpawn = Math.min(freeSpots,Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
         if(barrelsToSpawn > 0)
         {
             spawnTime.cooldown = 0;
@@ -323,7 +324,7 @@ function update()
             }
 
             // Aerobeams
-            if (game.beams.selected == 1) {
+            else if (game.beams.selected == 1) {
                 if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
                         if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
@@ -356,7 +357,7 @@ function update()
             }
 
             // Angel Beams
-            if (game.beams.selected == 2) {
+            else if (game.beams.selected == 2) {
                 if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
                         if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
@@ -386,8 +387,7 @@ function update()
             }
 
             // Reinforced Beams
-            for(i in movingItems) movingItems[i].cooldown += delta;
-            if (game.beams.selected == 3) {
+            else if (game.beams.selected == 3) {
                 if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
                         if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
@@ -417,7 +417,7 @@ function update()
             }
 
             // Glitch Beams
-            if (game.beams.selected == 4) {
+            else if (game.beams.selected == 4) {
                 if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
                     if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
                         if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
@@ -445,14 +445,17 @@ function update()
                     game.beams.time = 0;
                 }
             }
+
+            for (i in movingItems) movingItems[i].cooldown += delta;
         }
     }
 
-    //ctx.font = (h * .02) + "px " + fonts.default;
-    //ctx.textAlign = "left";
-    //ctx.textBaseline = "top";
-    //ctx.fillStyle = "black";
-    //ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
+    ctx.font = (h * .02) + "px " + fonts.default;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "white";
+    ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
+    ctx.fillText(freeSpots, w * 0.33, h * 0.005, w);
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
@@ -706,6 +709,7 @@ function autoMergeBarrel()
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
             barrels[filtered[1].index] = undefined;
+            freeSpots += 1;
             break;
         }
     }
@@ -723,6 +727,7 @@ function autoConvertBarrel() {
             game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[19].level / 10)));
         }
         barrels[19] = undefined;
+        freeSpots += 1;
     }
 }
 
@@ -847,6 +852,7 @@ function spawnBarrel()
     if (idx !== -1 && game.settings.barrelSpawn == true)
     {
         barrels[idx] = new Barrel(applyUpgrade(game.scrapUpgrades.betterBarrels).toNumber());
+        freeSpots -= 1;
     }
 }
 
@@ -1562,11 +1568,13 @@ function loadGame(saveCode, isFromFile=false)
 
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
+        freeSpots = 20;
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {
             if (loadObj.barrelLvls[i] !== null)
             {
                 barrels[i] = new Barrel(loadObj.barrelLvls[i]);
+                freeSpots -= 1;
             }
             else
             {

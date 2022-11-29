@@ -10,7 +10,7 @@
       "type": "image/png"
     }
   ],
-  "display": "fullScreen",
+  "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/"

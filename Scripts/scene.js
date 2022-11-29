@@ -381,11 +381,11 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v2.8.1 (v3.5.1)", w * 0.99, h - w * 0.01);
+                ctx.fillText("v2.9 (v3.6)", w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Maximum Productivity: 1 Day", w * 0.49, h - w * 0.1);
+                ctx.fillText("Is for me?", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",

@@ -78,8 +78,8 @@ function setup()
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
-            .register('/pwa-examples/a2hs/sw.js')
-            .then(() => { console.log('Service Worker Registered'); });
+            .register('serviceworker.js')
+            .then(() => { alert('Service Worker Registered'); });
     }
 
     for (let q of game.mergeQuests.quests)

@@ -1,0 +1,10 @@
+{
+  "name": "Scrap II Fanmade FR",
+  "short_name": "SC2FMFR",
+  "theme_color": "#C8777F",
+  "background_color": "#303030",
+  "display": "fullScreen",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/"
+}

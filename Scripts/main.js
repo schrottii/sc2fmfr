@@ -79,7 +79,7 @@ function setup()
     if ('serviceWorker' in navigator) {
         alert('Service Worker Registered');
         navigator.serviceWorker
-            .register('sc2fmfr/serviceworker.js')
+            .register('Scripts/serviceworker.js')
             .then(() => { alert('File loaded'); });
     }
 

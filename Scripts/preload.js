@@ -2,12 +2,15 @@ var barrelsLoaded = false;
 var BARREL_SPRITE_SIZE = 64;
 
 
+var imageURLs = [];
+
 function loadImage(path, onload) {
     let img = new Image();
     img.src = path;
     if (onload) {
         img.onload = onload;
     }
+    imageURLs.push(path);
     return img;
 }
 
@@ -249,8 +252,6 @@ var images =
         goldenBeam: loadImage("Images/Currencies/goldenbeam.png"),
     }
 };
-
-var imageURLs = Object.values(images);
 
 var colors = {
     default:

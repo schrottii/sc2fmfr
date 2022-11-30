@@ -12,6 +12,5 @@
   ],
   "display": "fullscreen",
   "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/"
+  "start_url": "index.html"
 }

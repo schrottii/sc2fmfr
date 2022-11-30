@@ -72,7 +72,7 @@ function isMobile()
 if ('serviceWorker' in navigator) {
     console.log('Service Worker Registered');
     navigator.serviceWorker
-        .register('Scripts/serviceworker.js')
+        .register('serviceworker.js')
         .then(() => { console.log('File loaded'); });
 }
 

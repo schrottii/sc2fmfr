@@ -250,6 +250,8 @@ var images =
     }
 };
 
+var imageURLs = Object.values(images);
+
 var colors = {
     default:
     {

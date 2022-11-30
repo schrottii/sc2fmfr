@@ -1,5 +1,11 @@
 const cacheName = "fr29";
 
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(cacheName).then((cache) => cache.addAll(imageURLs)),
+    );
+});
+
 self.addEventListener("fetch", event => {
     event.respondWith((async () => {
         try {

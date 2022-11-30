@@ -1606,8 +1606,7 @@ onresize = e => resizeCanvas();
 setup();
 
 let deferredPrompt;
-const addBtn = document.querySelector(".add-button");
-addBtn.style.display = "none";
+btnInstall.style.display = "none";
 
 
 function updateBetterBarrels() {

@@ -1,5 +1,19 @@
 const btnInstall = document.querySelector("div.absolute button#add-button");
 
+function addPwaInstall() {
+    window.addEventListener("beforeinstallprompt", e => {
+        btnInstall.style.display = "block";
+        btnInstall.addEventListener("click", clickEvent => {
+            e.prompt();
+            e.userChoice.then(choice => {
+                if (choice.outcome === "accepted") {
+                    console.log("installed");
+                }
+            });
+        });
+    });
+}
+
 window.addEventListener("beforeinstallprompt", (e) => {
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();

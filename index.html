@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Scrap</title>
     <meta charset="utf-8" />
@@ -98,41 +98,42 @@
     </style>
 </head>
 
-    <body>
-        <canvas id="gameCanvas" width="500" height="800"></canvas>
+<body>
+    <canvas id="gameCanvas" width="500" height="800"></canvas>
 
-        <div class="absolute">
-            <div id="myFhile" style="left: 70vw; top: 70vh;" type="file"></div>
+    <div class="absolute">
+        <div id="myFhile" style="left: 70vw; top: 70vh;" type="file"></div>
 
-            <textarea value="text" id="text-area"></textarea>
-            <button id="export" style="left: 30vw; top: 60vh;">Export</button>
-            <button id="import" style="left: 70vw; top: 60vh;">Import</button>
+        <textarea value="text" id="text-area"></textarea>
+        <button id="export" style="left: 30vw; top: 60vh;">Export</button>
+        <button id="import" style="left: 70vw; top: 60vh;">Import</button>
 
-            <button id="save" onclick="saveFile()" style="left: 30vw; top: 70vh;">Export file</button>
-            <input id="myFile" style="margin-left: 50%; margin-top: 90%;" type="file">
-            <button style="left: 70vw; top: 70vh;" onclick="openFile()">Import file</button>
+        <button id="save" onclick="saveFile()" style="left: 30vw; top: 70vh;">Export file</button>
+        <input id="myFile" style="margin-left: 50%; margin-top: 90%;" type="file">
+        <button style="left: 70vw; top: 70vh;" onclick="openFile()">Import file</button>
 
-            <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
+        <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
 
-            <button id="close" style="left: 50vw; top: 80vh;">Close</button>
-        </div>
+        <button class="add-button">Add to home screen</button>
+        <button id="close" style="left: 50vw; top: 80vh;">Close</button>
+    </div>
 
-        <script src="Scripts/breakinfinity.js"></script>
-        <script src="Scripts/graphemesplitter.js"></script>
-        <script src="Scripts/utils.js"></script>
-        <script src="Scripts/pwa.js"></script>
-        <script src="Scripts/numberformatter.js"></script>
-        <script src="Scripts/preload.js"></script>
-        <script src="Scripts/canvasui.js"></script>
-        <script src="Scripts/gamenotification.js"></script>
-        <script src="Scripts/upgrade.js"></script>
-        <script src="Scripts/mergequest.js"></script>
-        <script src="Scripts/milestone.js"></script>
-        <script src="Scripts/movingitems.js"></script>
-        <script src="Scripts/gamedefinition.js"></script>
-        <script src="Scripts/scene.js"></script>
-        <script src="Scripts/barrel.js"></script>
-        <script src="Scripts/effects.js"></script>
-        <script src="Scripts/main.js"></script>
-    </body>
+    <script src="Scripts/breakinfinity.js"></script>
+    <script src="Scripts/graphemesplitter.js"></script>
+    <script src="Scripts/utils.js"></script>
+    <script src="Scripts/pwa.js"></script>
+    <script src="Scripts/numberformatter.js"></script>
+    <script src="Scripts/preload.js"></script>
+    <script src="Scripts/canvasui.js"></script>
+    <script src="Scripts/gamenotification.js"></script>
+    <script src="Scripts/upgrade.js"></script>
+    <script src="Scripts/mergequest.js"></script>
+    <script src="Scripts/milestone.js"></script>
+    <script src="Scripts/movingitems.js"></script>
+    <script src="Scripts/gamedefinition.js"></script>
+    <script src="Scripts/scene.js"></script>
+    <script src="Scripts/barrel.js"></script>
+    <script src="Scripts/effects.js"></script>
+    <script src="Scripts/main.js"></script>
+</body>
 </html>

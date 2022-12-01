@@ -2,7 +2,6 @@ const btnInstall = document.querySelector("div.absolute button#add-button");
 
 function addPwaInstall() {
     window.addEventListener("beforeinstallprompt", e => {
-        console.log("e");
         btnInstall.style.display = "block";
         btnInstall.addEventListener("click", clickEvent => {
             e.prompt();
@@ -40,14 +39,10 @@ window.addEventListener("beforeinstallprompt", (e) => {
     });
 });
 
-console.log("a");
 if (location.protocol === "https:" && window.isSecureContext) {
-    console.log("b");
     addEventListener("load", e => {
         if ("serviceWorker" in navigator) {
-            console.log("c");
             navigator.serviceWorker.register("serviceworker.js").then(registration => {
-                console.log("d");
                 addPwaInstall();
             })
                 .catch(err => alert(`Error while installing: ${err}`));

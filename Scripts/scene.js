@@ -584,8 +584,8 @@ var scenes =
                                     game.stats.totalfragments = game.stats.totalfragments.add(Amount);
                                 }
                                 else if (game.dimension == 1) {
-                                    game.darkfragment.amount = game.darkfragment.amount.add(((barrels[i].level / 10)));
-                                    game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[i].level / 10)));
+                                    game.darkfragment.amount = game.darkfragment.amount.add(new Decimal(barrels[i].level / 10).mul(getDarkFragmentBaseValue()));
+                                    game.stats.totaldarkfragments = game.darkfragment.amount.add(new Decimal(barrels[i].level / 10).mul(getDarkFragmentBaseValue()));
                                 }
                             }
                             barrels[i] = undefined;
@@ -702,6 +702,7 @@ var scenes =
                             for (let i = 0; i < barrels.length; i++) {
                                 barrels[i] = undefined;
                             }
+                            freeSpots = 20;
                             draggedBarrel = undefined;
 
                             game.scrap = new Decimal(0);
@@ -722,10 +723,14 @@ var scenes =
                         game.darkscrap.amount = game.darkscrap.amount.add(new Decimal(getDarkScrap(calculateCurrentHighest())));
                         game.stats.totaldarkscrap = game.stats.totaldarkscrap.add(new Decimal(getDarkScrap(calculateCurrentHighest())));
 
+                        game.scrapUpgrades.betterBarrels.level = 0;
+                        game.scrapUpgrades.fasterBarrels.level = 0;
+
                         setBarrelQuality(game.settings.barrelQuality);
                         for (let i = 0; i < barrels.length; i++) {
                             barrels[i] = undefined;
                         }
+                        freeSpots = 20;
                         draggedBarrel = undefined;
 
                         game.scrap = new Decimal(0);
@@ -1224,6 +1229,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
+                new UIScrollContainerY([
                 new UIGroup([
                     new UIRect(0.5, 0.6, 1, 0.2, "table2"),
                     new UIImage(images.locked, 0.5, 0.58, 0.125, 0.125, { quadratic: true }),
@@ -1237,18 +1243,36 @@ var scenes =
                 new UIGroup([
                     new UITireUpgrade(game.tires.upgrades[0][0], images.upgrades.fasterBarrels, "Faster Barrels", 0.5 / 3, 0.4),
                     new UITireUpgrade(game.tires.upgrades[0][1], images.upgrades.brickSpeed, "Faster Brick\nLevel Up", 1.5 / 3, 0.4),
-                    new UITireUpgrade(game.tires.upgrades[0][2], images.upgrades.fasterMastery, "Faster\nMerge Mastery", 2.5 / 3, 0.4)
+                    new UITireUpgrade(game.tires.upgrades[0][2], images.upgrades.fasterMastery, "Faster\nMerge Mastery", 2.5 / 3, 0.4),
+                    new UIButton(0.5 / 3 + 0.11, 0.4, 0.05, 0.05, images.buttonMaxAll, () => {
+                        game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 10000);
+                    }, { quadratic: true, isVisible: () => game.tires.upgrades[0][1].level == game.tires.upgrades[0][1].maxLevel && game.tires.upgrades[0][2].level == game.tires.upgrades[0][2].maxLevel }),
                 ]),
                 new UIGroup([
                     new UITireUpgrade(game.tires.upgrades[1][0], images.upgrades.tireBoost, "Tire Value\nper Collect", 0.5 / 3, 0.6, "table2"),
                     new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "Tire Chance\nper Merge", 1.5 / 3, 0.6, "table2"),
-                    new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, "table2")
+                    new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, "table2"),
+                    new UIButton(0.5 / 3 + 0.11, 0.6, 0.05, 0.05, images.buttonMaxAll, () => {
+                        game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 10000);
+                    }, { quadratic: true, isVisible: () => game.tires.upgrades[1][1].level == game.tires.upgrades[1][1].maxLevel && game.tires.upgrades[1][2].level == game.tires.upgrades[1][2].maxLevel }),
                 ], () => game.tires.amount.gt(game.tires.milestones[1])),
                 new UIGroup([
                     new UITireUpgrade(game.tires.upgrades[2][0], images.upgrades.fasterFallingMagnets, "Faster\nFalling Magnets", 0.5 / 3, 0.8),
                     new UITireUpgrade(game.tires.upgrades[2][1], images.upgrades.fasterAutoMerge, "Faster\nAuto Merge", 1.5 / 3, 0.8),
-                    new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "More\nGolden Scrap", 2.5 / 3, 0.8)
-                ], () => game.tires.amount.gt(game.tires.milestones[2]))
+                    new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "More\nGolden Scrap", 2.5 / 3, 0.8),
+                    new UIButton(2.5 / 3 + 0.11, 0.8, 0.05, 0.05, images.buttonMaxAll, () => {
+                        game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                    }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
+                ], () => game.tires.amount.gt(game.tires.milestones[2])),
+                new UIGroup([
+                    new UITireUpgrade(game.tires.upgrades[3][0], images.upgrades.higherNeptuneMax, "More\nPassive Magnets", 0.5 / 3, 1.0, "table2"),
+                    new UITireUpgrade(game.tires.upgrades[3][1], images.upgrades.beamValue, "More Beams\n(All types)", 1.5 / 3, 1.0, "table2"),
+                    new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "Cheaper\nPlastic Bags", 2.5 / 3, 1.0, "table2"),
+                    new UIButton(2.5 / 3 + 0.11, 1.0, 0.05, 0.05, images.buttonMaxAll, () => {
+                        game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                    }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
+                ], () => game.tires.milestones[3]())
+                ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.1 })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -1649,6 +1673,7 @@ var scenes =
 
                         let rand = Math.random() * 100;
                         let sin = Math.sin(game.stats.totalplasticbags) > 0 ? Math.sin(game.stats.totalplasticbags) : Math.sin(game.stats.totalplasticbags) * -1;
+                        let pbt = game.stats.totalplasticbags.sub(Math.min(game.stats.totalplasticbags, applyUpgrade(game.tires.upgrades[3][2])));
 
                         if (rand > 87.5) {
                             game.plasticBags.currentResource = RESOURCE_SCRAP;
@@ -1656,32 +1681,32 @@ var scenes =
                         }
                         else if (rand > 75) {
                             game.plasticBags.currentResource = RESOURCE_MAGNET;
-                            game.plasticBags.currentCosts = new Decimal(1e50 * sin).mul(new Decimal(1.4).pow(game.stats.totalplasticbags.add(1)));
+                            game.plasticBags.currentCosts = new Decimal(1e50 * sin).mul(new Decimal(1.4).pow(pbt));
                             // game.magnets.mul(1000 * Math.random());
                         }
                         else if (rand > 62.5) {
                             game.plasticBags.currentResource = RESOURCE_GS;
-                            game.plasticBags.currentCosts = new Decimal(1e60 * sin).mul(new Decimal(1.8).pow(game.stats.totalplasticbags.add(1)));
+                            game.plasticBags.currentCosts = new Decimal(1e60 * sin).mul(new Decimal(1.8).pow(pbt));
                         }
                         else if (rand > 50) {
                             game.plasticBags.currentResource = RESOURCE_MERGE_TOKEN;
-                            game.plasticBags.currentCosts = new Decimal(25 + Math.floor(500 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 200))));
+                            game.plasticBags.currentCosts = new Decimal(25 + Math.floor(500 * sin * Math.random() * (1 + (pbt / 200))));
                         }
                         else if (rand > 37.5) {
                             game.plasticBags.currentResource = RESOURCE_FRAGMENT;
-                            game.plasticBags.currentCosts = new Decimal(1000000 * sin).mul(new Decimal(1.03).pow(game.stats.totalplasticbags.add(1)));
+                            game.plasticBags.currentCosts = new Decimal(1000000 * sin).mul(new Decimal(1.03).pow(pbt));
                         }
                         else if (rand > 25) {
                             game.plasticBags.currentResource = RESOURCE_ANGELBEAM;
-                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(250 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 150))));
+                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(250 * sin * Math.random() * (1 + (pbt / 150))));
                         }
                         else if (rand > 12.5) {
                             game.plasticBags.currentResource = RESOURCE_AEROBEAM;
-                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(250 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 100))));
+                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(250 * sin * Math.random() * (1 + (pbt / 100))));
                         }
                         else {
                             game.plasticBags.currentResource = RESOURCE_BEAM;
-                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(100 * sin * Math.random() * (1 + (game.stats.totalplasticbags / 200))));
+                            game.plasticBags.currentCosts = new Decimal(5 + Math.floor(100 * sin * Math.random() * (1 + (pbt / 200))));
                         }
                     }
                 }),
@@ -2606,8 +2631,11 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockAutoCollectors, images.upgrades.unlockAutoCollectors, "Unlock\nAuto Collectors", 0.8, 5.45, "table2"),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockScrews, images.upgrades.unlockScrews, "Unlock Screws", 0.5, 5.75, "table"),
+
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.newTireUpgrades, images.upgrades.tireBoost, "Unlock new\nTire Upgrades", 0.5, 6.05, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.posusAffectsDark, images.upgrades.unlockScrews, "Posus affects\nDark Fragments\n(^0.5)", 0.8, 6.05, "table2"),
                     
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.05})
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.35})
             ],
             function ()
             {

@@ -69,7 +69,7 @@ function isMobile()
 
 // Register service worker to control making site work offline
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && location.protocol === "https:" && window.isSecureContext) {
     console.log('Service Worker Registered');
     navigator.serviceWorker
         .register('serviceworker.js')
@@ -146,7 +146,7 @@ function update()
                 spawnBarrel();
                 if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber())
                 {
-                    spawnBarrel();
+                    if (freeSpots > 0) spawnBarrel();
                 }
             }
         }
@@ -398,7 +398,7 @@ function update()
                         }
                         else {
                             for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
+                                setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 750 * i);
                                 renewableEnergy();
                             }
                         }
@@ -428,7 +428,7 @@ function update()
                         }
                         else {
                             for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))) }, 1000 * i);
+                                setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))) }, 300 * i);
                                 renewableEnergy();
                             }
                         }
@@ -463,17 +463,21 @@ function update()
 }
 
 function getBeamBaseValue() {
-    return applyUpgrade(game.beams.upgrades.beamValue)
-        + (2 * applyUpgrade(game.skillTree.upgrades.xplustwo));
+    return (applyUpgrade(game.beams.upgrades.beamValue)
+        + (2 * applyUpgrade(game.skillTree.upgrades.xplustwo)))
+        * applyUpgrade(game.tires.upgrades[3][1]);
 }
 function getAngelBeamValue() {
-    return applyUpgrade(game.angelbeams.upgrades.beamValue);
+    return applyUpgrade(game.angelbeams.upgrades.beamValue)
+        * applyUpgrade(game.tires.upgrades[3][1]);
 }
 function getReinforcedBeamValue() {
-    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce);
+    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
+        * applyUpgrade(game.tires.upgrades[3][1]);
 }
 function getGlitchBeamValue() {
-    return applyUpgrade(game.glitchbeams.upgrades.beamValue);
+    return applyUpgrade(game.glitchbeams.upgrades.beamValue)
+        * applyUpgrade(game.tires.upgrades[3][1]);
 }
 
 function getReinforcedTapsNeeded() {
@@ -486,6 +490,10 @@ function getBrickIncrease() {
 
 function getFragmentBaseValue() {
     return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4)));
+}
+
+function getDarkFragmentBaseValue() {
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1);
 }
 
 function getMagnetBaseValue()
@@ -724,8 +732,8 @@ function autoConvertBarrel() {
             game.stats.totalfragments = game.stats.totalfragments.add(Amount);
         }
         else if (game.dimension == 1) {
-            game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
-            game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[19].level / 10)));
+            game.darkfragment.amount = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
+            game.stats.totaldarkfragments = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
         }
         barrels[19] = undefined;
         freeSpots += 1;

@@ -317,7 +317,7 @@
             ),
             neptune: new TireUpgrade(
                 level => Decimal.pow(1e15, level * Math.pow(1.4, Math.min(level, 18)) * (1 + Math.pow(1.15, Math.max(level - 20, 0)))).mul(new Decimal("1e100")),
-                level => new Decimal(0.01 * level).mul(getMagnetBaseValue()), {
+                level => new Decimal(0.01 * level).mul(getMagnetBaseValue()).mul(applyUpgrade(game.tires.upgrades[3][0])), {
                 maxLevel: () => 20 + applyUpgrade(game.skillTree.upgrades.higherNeptuneMax),
                 getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+", "/s")
             }
@@ -593,7 +593,7 @@
                 movingItemFactory.jumpingTire();
             }
         },
-        milestones: [new Decimal(0), new Decimal(1e63), Decimal.pow(2, 1024)],
+        milestones: [new Decimal(0), new Decimal(1e63), Decimal.pow(2, 1024), () => applyUpgrade(game.skillTree.upgrades.newTireUpgrades)],
         getLevelBias: level => Math.pow(Math.max(level - 100, 0), 1.7),
         upgrades:
             [
@@ -667,6 +667,27 @@
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                         }),
+                ],
+                [ //more passive magnets, more beams, cheaper plastic bags
+                    new TireUpgrade(level => Decimal.pow(Decimal.pow(2, 2555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level))
+                        .mul("1e500000"),
+                        level => new Decimal(1).add(0.2 * level), {
+                        maxLevel: 495,
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    }),
+                    new TireUpgrade(level => Decimal.pow(Decimal.pow(2, 187500), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level))
+                        .mul("1e750000"),
+                        level => 1 + (0.02 * level),
+                        {
+                            maxLevel: 100,
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                        }),
+                    new TireUpgrade(level => Decimal.pow(Decimal.pow(2, 5555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level))
+                        .mul("1e1000000"),
+                        level => (10 + (level > 99 ? 15 : 0)) * level,
+                        {
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "L")
+                        }),
                 ]
             ]
     },
@@ -738,7 +759,7 @@
         {
             scrapBoost: new DarkFragmentUpgrade(
                 level => new Decimal(100 * Math.pow(1.1, level)),
-                level => new Decimal(100).pow(level).mul(Math.pow(1.3, Math.max(0, level - 5))),
+                level => new Decimal(100).pow(level).mul(new Decimal(1.3).pow(Math.max(0, level - 5))).mul(new Decimal(5.7).pow(Math.max(0, level - 100))),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -1207,7 +1228,7 @@
                 }, ["unlockScrapyard"]),
             speedBoostsFragments: new SkillTreeUpgrade(
                 level => new Decimal(300), RESOURCE_GLITCHBEAM,
-                level => 1 + (level * applyUpgrade(game.solarSystem.upgrades.venus) / applyUpgrade(game.scrapUpgrades.fasterBarrels)),
+                level => 1 + (level * 100 * applyUpgrade(game.solarSystem.upgrades.venus) / applyUpgrade(game.scrapUpgrades.fasterBarrels)),
                 {
                     maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
@@ -1327,6 +1348,20 @@
                 getEffectDisplay: effectDisplayTemplates.unlock(),
                 oneDep: true
             }, ["fasterMergeMastery", "unlockAutoCollectors", "cheaperMythus"]),
+
+            posusAffectsDark: new SkillTreeUpgradeFixed([
+                [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e6), RESOURCE_DARKFRAGMENT], [new Decimal(10000), RESOURCE_BEAM]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock(),
+                oneDep: true
+            }, ["unlockScrews"]),
+
+            newTireUpgrades: new SkillTreeUpgradeFixed([
+                [[new Decimal(100000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_FISHINGNET], [new Decimal("1e1000000"), RESOURCE_TIRE]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock(),
+                oneDep: true
+            }, ["unlockScrews"]),
         }
     },
     barrelMastery: {
@@ -1351,7 +1386,7 @@
                 }),
             brickBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1).mul(new Decimal(12).pow(level + Math.max(0, level - 100))),
+                level => new Decimal(1).mul(new Decimal(16).pow(level + Math.max(0, level - 100))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "^L3")
                 }),
@@ -1422,7 +1457,7 @@
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
-                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 24))).mul(new Decimal(1e50).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
+                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 24))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
                 level => new Decimal(20),
                 level => 1,
@@ -1433,7 +1468,7 @@
                         game.factory.steelMagnets = game.factory.steelMagnets.add(1);
                         game.stats.totalsteelmagnets = game.stats.totalsteelmagnets.add(1);
                     }
-                }, level => [[new Decimal(1000000 * Math.pow(100, level)), RESOURCE_MAGNET], [new Decimal(100), RESOURCE_BEAM]]),
+                }, level => [[new Decimal(1000000).mul(new Decimal(100).pow(level)), RESOURCE_MAGNET], [new Decimal(100), RESOURCE_BEAM]]),
             blueBricks: new FactoryUpgrade(
                 level => new Decimal(15),
                 level => 1,
@@ -1736,9 +1771,9 @@
                 new Milestone(132, "Critical hit!", 77, () => "Collect a Reinforced Beam 3x faster", () => game.dimension == 508050),
                 new Milestone(133, "Slower but stronger", 78, () => "Reinforce your bricks", () => game.reinforcedbeams.upgrades.reinforcedbricks.level > 0),
                 new Milestone(120, "Can't touch this", 69, "Reach " + Decimal.pow(2, 20480).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
-                new Milestone(136, "Buggy game", 79, "Collect a glitch", () => game.glitchesCollected > 0),
+                new Milestone(136, "Buggy game", 79, "Gather enough dark scrap and select\nthe right beam type to find glitches...\nand collect one", () => game.glitchesCollected > 0),
                 new Milestone(137, "Broken game", 79, "Collect 6 glitches", () => game.glitchesCollected > 5),
-                new Milestone(138, "Where did he go?", 80, "Collect a Glitch Beam", () => game.glitchbeams.amount.gte(1)),
+                new Milestone(138, "Where did he go?", 80, "Collect a Glitch Beam (Unlocked by collecting enough glitches)", () => game.glitchbeams.amount.gte(1)),
                 new Milestone(139, "What the...?", 83, "Unlock the Scrap Factory", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY),
                 new Milestone(140, "Pay the bills?", 84, "Unlock the Generator", () => applyUpgrade(game.shrine.generatorUnlock)),
                 new Milestone(141, "ScrapCraft", 83, "Unlock the Factory itself", () => applyUpgrade(game.shrine.factoryUnlock)),
@@ -1800,7 +1835,8 @@
                 new Milestone(199, "Screw it, I'm the new King", 107, () => "Earn " + formatNumber(1000000) + " screws (total)", () => game.stats.totalscrews.gte(1000000)),
                 new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
                 new Milestone(165, "Nobody can touch this", 69, "Reach " + Decimal.pow(2, 40960).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
-                new Milestone(155, "Tire Club", 88, () => formatNumber(new Decimal("1e1e9")), () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(201, "Tire Wire Fire Hire", 88, () => "Unlock a new row of tire upgrades...", () => applyUpgrade(game.skillTree.upgrades.newTireUpgrades)),
                 //new Milestone(166, "", 50, "", () => ),
                 ],
         highlighted: 0, 

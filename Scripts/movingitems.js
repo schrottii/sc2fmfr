@@ -351,7 +351,7 @@ var movingItemFactory =
     fallingGlitchBeam: (value) => {
         movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function () {
-                if (this.cooldown < 0.15) return false;
+                if (this.cooldown < 0.05) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
                     this.progress += 3;
                     if (game.ms.includes(131) == false) {

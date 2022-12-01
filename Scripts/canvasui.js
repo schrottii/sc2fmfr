@@ -143,9 +143,9 @@ class UIGroup
 
 class UIScrollContainer2D extends UIGroup
 {
-    constructor(elements, x, y, w, h, isVisisble, customBounds)
+    constructor(elements, x, y, w, h, isVisible, customBounds)
     {
-        super(elements, isVisisble);
+        super(elements, isVisible);
         this.x = x;
         this.y = y;
         this.w = w;
@@ -199,24 +199,28 @@ class UIScrollContainer2D extends UIGroup
         }
     }
 
-    render()
-    {
+    render() {
         let nx = this.x * w;
         let ny = this.y * h;
         let nw = this.w * w;
         let nh = this.h * h;
         ctx.save();
         let path = new Path2D();
-        path.moveTo(nx, ny);
-        path.lineTo(nx + nw, ny);
-        path.lineTo(nx + nw, ny + nh);
-        path.lineTo(nx, ny + nh);
-        ctx.clip(path);
-        for(let ui of this.uiElements)
-        {
-            ui.offset = [-this.scrollX, -this.scrollY];
+
+        if (this.isVisible()) {
+            path.moveTo(nx, ny);
+            path.lineTo(nx + nw, ny);
+            path.lineTo(nx + nw, ny + nh);
+            path.lineTo(nx, ny + nh);
+            ctx.clip(path);
+        }
+        for (let ui of this.uiElements) {
+            if (this.isVisible()) ui.offset = [-this.scrollX, -this.scrollY];
             ui.render(ctx);
         }
+
+        if (!this.isVisible()) return false;
+
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
         if(this.axis.x)
         {

@@ -16,7 +16,7 @@ class Barrel
 
     static getBarrelSize()
     {
-        return Math.max(w, h) * 0.1;
+        return h * 0.1;
     }
 
     static getGlobalIncome()
@@ -80,7 +80,7 @@ class Barrel
 
     tick(delta)
     {
-        this.scale = Math.min(1, this.scale + delta * 5);
+        if (this.scale < 1) this.scale = game.settings.lowPerformance ? 1 : Math.min(1, this.scale + delta * 5);
     }
 
     createIncomeText()
@@ -134,8 +134,7 @@ class Barrel
         if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {
             let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
-            let amountDiff = 0;
-
+            
             let barrelSize = size;
             let lvl = Math.round(level);
             let barrelAmount = BARRELS//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;

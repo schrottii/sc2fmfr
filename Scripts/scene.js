@@ -450,21 +450,21 @@ var scenes =
                     }),
 
 
-                new UIButton(0.1, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
-                new UIButton(0.25, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
-                new UIButton(0.4, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
-                new UIButton(0.55, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
+                new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
+                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
+                new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.575, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
                     {
                         quadratic: true,
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1
                     }),
-                new UICheckbox(0.85, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
+                new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
                     isVisible: () => game.highestBarrelReached >= 300,
                     quadratic: true,
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
                 }),
-                new UICheckbox(0.7, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
+                new UICheckbox(0.725, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.ms.includes(5),
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
@@ -489,7 +489,8 @@ var scenes =
                 }
 
                 incomeTextTime.cooldown += delta;
-                if (incomeTextTime.cooldown >= incomeTextTime.time) {
+
+                if (incomeTextTime.cooldown >= incomeTextTime.time && !game.settings.lowPerformance) {
                     for (let b of barrels) {
                         if (b !== undefined) {
                             b.createIncomeText();

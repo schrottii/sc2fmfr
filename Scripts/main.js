@@ -190,7 +190,7 @@ function update()
             //game.mergeQuests.dailyQuest.tick(delta);
         }
 
-        //Milestone.check(true);
+        Milestone.check(true);
 
         timeSinceLastBarrelClick += delta;
 
@@ -838,8 +838,7 @@ else
 }
 
 
-function spawnBarrel()
-{
+function spawnBarrel() {
     let idx = -1;
     for (let i = 0; i < barrels.length; i++)
     {

@@ -190,7 +190,7 @@ function update()
             //game.mergeQuests.dailyQuest.tick(delta);
         }
 
-        Milestone.check(true);
+        //Milestone.check(true);
 
         timeSinceLastBarrelClick += delta;
 
@@ -450,12 +450,13 @@ function update()
         }
     }
 
+    
     ctx.font = (h * .02) + "px " + fonts.default;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillStyle = "white";
     ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
-    ctx.fillText(freeSpots, w * 0.33, h * 0.005, w);
+    
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);

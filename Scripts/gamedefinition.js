@@ -477,9 +477,9 @@
                     game.mergeMastery.currentMerges = 0;
                 }
             },
-            getGoldenScrapBoost: level => new Decimal(1 + 0.02 * level).mul(applyUpgrade(game.angelbeams.upgrades.moreMasteryGS)).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryGS) * (level / 25000) + 1),
+            getGoldenScrapBoost: level => new Decimal(1 + 0.02 * level).mul(applyUpgrade(game.angelbeams.upgrades.moreMasteryGS)).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryGS)),
             currentGSBoost: () => game.mergeMastery.prestige.getGoldenScrapBoost(game.mergeMastery.prestige.level),
-            getMagnetBoost: level => new Decimal(1 + 0.01 * level).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryMagnets) * (level / 50000) + 1),
+            getMagnetBoost: level => new Decimal(1 + 0.01 * level).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryMagnets)),
             currentMagnetBoost: () => game.mergeMastery.prestige.getMagnetBoost(game.mergeMastery.prestige.level)
         }
     },
@@ -1253,7 +1253,7 @@
             strongerMasteryGS: new SkillTreeUpgrade(
                 level => new Decimal(4000 + (2000 * level)), RESOURCE_MERGE_TOKEN,
 
-                level => level,
+                level => 1 + level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x^"),
                     maxLevel: 10
@@ -1262,7 +1262,7 @@
             strongerMasteryMagnets: new SkillTreeUpgrade(
                 level => new Decimal(7 + level), RESOURCE_STEELMAGNET,
 
-                level => level,
+                level => 1 + level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x^"),
                     maxLevel: 10

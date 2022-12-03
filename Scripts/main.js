@@ -1116,6 +1116,8 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.C = loadVal(loadObj.settings.C, 0);
         game.settings.beamTimer = loadVal(loadObj.settings.beamTimer, false);
         game.settings.FPS = loadVal(loadObj.settings.FPS, 9999);
+        game.settings.coconut = loadVal(loadObj.settings.coconut, false);
+        game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
 
         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
 

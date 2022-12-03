@@ -1905,5 +1905,6 @@
         C: 1,
         FPS: 9999,
         beamTimer: false,
+        coconut: false,
     }
 };

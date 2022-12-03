@@ -130,6 +130,7 @@ class Barrel
 
     static renderBarrel(ctx, level, x, y, size, preview)
     {
+        if (game.settings.nobarrels) return false;
         let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % BARRELS) / 100))) % 10 /* Change this when you add new BARRELS files */, 1);
         if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {
@@ -145,6 +146,10 @@ class Barrel
             let finalX = x - size / 2;
             let finalY = y - size / 2;
 
+            if (game.settings.coconut) {
+                ctx.drawImage(images["coconut"], finalX, finalY, size, size);
+                return true;
+            }
             if (game.settings.useCachedBarrels)
             {
                 if (preview)

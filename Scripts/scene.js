@@ -19,6 +19,7 @@ const BARRELS = 850;
 
 var timeMode = false;
 var timeModeTime = 0;
+var timeModeAttempts = 3;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
 
@@ -699,20 +700,21 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.goldenScrap, () => {
-                    if (game.goldenScrap.getResetAmount().gt(0)) {
+                    if (timeModeAttempts > 0) {
                         game.settings.autoConvert = false;
                         game.settings.autoMerge = false;
+                        timeModeAttempts -= 1;
                         timeModeTime = 0;
                         timeMode = true;
                         game.goldenScrap.reset();
                     }
                 }, { quadratic: true }),
-                new UIText("Tim Mode", 0.5, 0.1, 0.1, "white", {
+                new UIText("Race Against Time", 0.5, 0.1, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIText(() => "Race against the time\nDon't let the entire field fill up! Earn cogwheels", 0.5, 0.2, 0.04, "black"),
+                new UIText(() => "Race against the time\nDon't let the entire field fill up! Earn cogwheels\nDaily attempts left: " + timeModeAttempts, 0.5, 0.2, 0.04, "black"),
                 new UIText(() => "$images.cogwheel$" + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
                 new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
             ],
@@ -1844,6 +1846,7 @@ var scenes =
                         let dq = game.mergeQuests.dailyQuest;
                         dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
                         dq.currentMerges = 0;
+                        timeModeAttempts = 3;
                         game.mergeQuests.nextDaily = calcTime2;
                     }
                 }
@@ -2022,14 +2025,16 @@ var scenes =
         ),
         new Scene("Options",
             [
-                new UIText("Options", 0.5, 0.1, 0.12, "white", {
+                new UIText("Options", 0.5, 0.05, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
-                new UIGroup([
+
+                new UIScrollContainerY([
+                //new UIGroup([
                     new UIToggleOption(0.25, "game.settings.barrelShadows", "Toggle Barrel Shadows\n(can slow down Game)", "table"),
                     new UIToggleOption(0.35, "game.settings.useCachedBarrels", "Cache some Barrel Images\n(may slow down\nor speed up Game)", "bg"),
                     new UIOption(0.45, images.options.barrelQuality, () => {
@@ -2049,16 +2054,16 @@ var scenes =
                         game.settings.C = (++game.settings.C) % 4;
                         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
                     }, () => "Theme: " + ["Default light blue", "Dark Blue", "Dark Theme", "Square Pink"][game.settings.C], "table"),
-                ], () => game.settings.optionsPage === 0),
-                new UIGroup([
-                    new UIToggleOption(0.25, "game.settings.destroyBarrels", "Double Click Barrels to remove them", "table"),
-                    new UIToggleOption(0.35, "game.settings.resetConfirmation", "Reset Confirmation", "bg"),
-                    new UIToggleOption(0.45, "game.settings.lowPerformance", "Low performance Mode", "table"),
-                    new UIToggleOption(0.55, "game.settings.barrelSpawn", "Barrel Spawn", "bg"),
-                ], () => game.settings.optionsPage === 1),
-                new UIGroup([
-                    new UIToggleOption(0.25, "game.settings.musicOnOff", "Music", "bg"),
-                    new UIOption(0.35, images.options.numberFormat, () => {
+                //], () => game.settings.optionsPage === 0),
+                //new UIGroup([
+                    new UIToggleOption(0.75, "game.settings.destroyBarrels", "Double Click Barrels to remove them", "table"),
+                    new UIToggleOption(0.85, "game.settings.resetConfirmation", "Reset Confirmation", "bg"),
+                    new UIToggleOption(0.95, "game.settings.lowPerformance", "Low performance Mode", "table"),
+                    new UIToggleOption(1.05, "game.settings.barrelSpawn", "Barrel Spawn", "bg"),
+                //], () => game.settings.optionsPage === 1),
+                //new UIGroup([
+                    new UIToggleOption(1.15, "game.settings.musicOnOff", "Music", "bg"),
+                    new UIOption(1.25, images.options.numberFormat, () => {
                         if (game.ms.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
                             game.settings.musicSelect = game.settings.musicSelect + 1;
                         }
@@ -2067,7 +2072,7 @@ var scenes =
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                     }, () => "Current: " + ["Newerwave", "Getting It Done", "Spellbound", "Voltaic"][game.settings.musicSelect] + "\nKevin MacLeod"),
-                    new UIOption(0.45, images.scenes.options, () => {
+                    new UIOption(1.35, images.scenes.options, () => {
                         if (confirm("Warning! You are about to reset your Dark Scrap (Upgrades), Dark Fragment (Upgrades) and related achievements. Press cancel if you want to keep them.")) {
                             game.darkscrap.amount = new Decimal(0);
                             Object.keys(game.darkscrap.upgrades).forEach(k => {
@@ -2088,7 +2093,7 @@ var scenes =
                             }
                         }
                     }, "Reset Second Dimension Progress", "bg"),
-                    new UIOption(0.55, images.options.barrelQuality, () => {
+                    new UIOption(1.45, images.options.barrelQuality, () => {
                         switch (game.settings.FPS) {
                             case 9999:
                                 game.settings.FPS = 60;
@@ -2111,7 +2116,9 @@ var scenes =
                         if (FPS != 9999) return "FPS: " + FPS;
                         else return "FPS: Unlimited";
                     }, "table"),
-                ], () => game.settings.optionsPage === 2),
+                //], () => game.settings.optionsPage === 2),
+
+            ], 0, 0.1, 1, 0.5, () => true, { ymin: 0, ymax: 1.65 }),
                 new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
                         quadratic: true,

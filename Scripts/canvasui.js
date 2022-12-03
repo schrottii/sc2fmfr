@@ -143,9 +143,10 @@ class UIGroup
 
 class UIScrollContainer2D extends UIGroup
 {
-    constructor(elements, x, y, w, h, isVisible, customBounds)
+    constructor(elements, x, y, w, h, isVisiible, customBounds)
     {
-        super(elements, isVisible);
+        super(elements);
+        this.isVisiible = isVisiible;
         this.x = x;
         this.y = y;
         this.w = w;
@@ -182,7 +183,7 @@ class UIScrollContainer2D extends UIGroup
         {
             ui.update();
         }
-        if(mousePressed)
+        if (mousePressed && this.isVisiible())
         {
             let mx = Math.abs(mouseMoveX) > 1 ? mouseMoveX : 0;
             let my = Math.abs(mouseMoveY) > 1 ? mouseMoveY : 0;
@@ -207,7 +208,7 @@ class UIScrollContainer2D extends UIGroup
         ctx.save();
         let path = new Path2D();
 
-        if (this.isVisible()) {
+        if (this.isVisiible()) {
             path.moveTo(nx, ny);
             path.lineTo(nx + nw, ny);
             path.lineTo(nx + nw, ny + nh);
@@ -215,11 +216,11 @@ class UIScrollContainer2D extends UIGroup
             ctx.clip(path);
         }
         for (let ui of this.uiElements) {
-            if (this.isVisible()) ui.offset = [-this.scrollX, -this.scrollY];
+            if (this.isVisiible()) ui.offset = [-this.scrollX, -this.scrollY];
             ui.render(ctx);
         }
 
-        if (!this.isVisible()) return false;
+        if (!this.isVisiible()) return false;
 
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
         if(this.axis.x)
@@ -261,9 +262,9 @@ class UIScrollContainerX extends UIScrollContainer2D
 
 class UIScrollContainerY extends UIScrollContainer2D
 {
-    constructor(ui, x, y, w, h, isVisible, customBounds)
+    constructor(ui, x, y, w, h, isVisiible, customBounds)
     {
-        super(ui ,x, y, w, h, isVisible, customBounds);
+        super(ui, x, y, w, h, isVisiible, customBounds);
         this.axis.x = false;
         this.scrollX = 0;
         this.scrollY = this.scrollBounds.ymin;

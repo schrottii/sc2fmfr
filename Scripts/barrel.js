@@ -135,7 +135,7 @@ class Barrel
         {
             let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
             
-            let barrelSize = size;
+            let barrelSize = size;/*
             let lvl = Math.round(level);
             let barrelAmount = BARRELS//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
             let lvlToDraw = lvl % barrelAmount;
@@ -143,11 +143,13 @@ class Barrel
             let spriteY = BARREL_SPRITE_SIZE * Math.floor((lvlToDraw / 10) % barrelRows);
 
             let order = Math.floor(lvl / barrelAmount);
-
+            */
             let finalX = x - barrelSize / 2;
             let finalY = y - barrelSize / 2;
             let scale = barrelSize;
 
+                ctx.drawImage(images["coconut"], finalX, finalY, scale, scale);
+                /*
             if (game.settings.useCachedBarrels)
             {
                 let lvlToDraw = lvl % barrelAmount;
@@ -225,7 +227,7 @@ class Barrel
                     ctx.textBaseline = "middle";
                     ctx.fillText(formatThousands(order), x, y + barrelSize * 0.37, starSize * 0.5);
                 }
-            }
+            }*/
         }
     }
 

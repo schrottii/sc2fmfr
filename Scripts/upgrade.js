@@ -21,7 +21,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_PLASTICBAG = 20,
     RESOURCE_BUCKET = 21,
     RESOURCE_FISHINGNET = 22,
-    RESOURCE_SCREW = 23;
+    RESOURCE_SCREW = 23,
+    RESOURCE_COGWHEEL = 24;
 
 function applyUpgrade(upg)
 {
@@ -80,6 +81,8 @@ function getUpgradeResource(res)
             return game.factory.fishingNets;
         case RESOURCE_SCREW:
             return game.screws.amount;
+        case RESOURCE_COGWHEEL:
+            return game.cogwheels.amount;
         default:
             return null;
     }
@@ -157,6 +160,8 @@ function assignResourceAfterUpgrade(resType, res)
             break;
         case RESOURCE_SCREW:
             game.screws.amount = res;
+        case RESOURCE_COGWHEEL:
+            game.cogwheels.amount = res;
             break;
         default:
             break;
@@ -215,6 +220,8 @@ function getResourceImage(res)
             return "$images.fishingNet$";
         case RESOURCE_SCREW:
             return "$images.screw$";
+        case RESOURCE_COGWHEEL:
+            return "$images.cogwheel$";
         default:
             break;
     }

@@ -179,7 +179,7 @@
                 let pow2 = Decimal.pow(5, Math.max(0, level - 100));
                 return Decimal.pow(5, level).mul(pow).mul(pow2).mul(10000)
             },
-            level => new Decimal(2.5 / (1 + 0.1 * level)).mul(applyUpgrade(game.tires.upgrades[0][0])),
+            level => new Decimal(2.5 / (1 + 0.1 * level)).mul(timeMode ? 1 : applyUpgrade(game.tires.upgrades[0][0])),
             {
                 getEffectDisplay: function () {
                     let s = this.getEffect(this.level).toNumber();
@@ -488,7 +488,7 @@
         amount: new Decimal(0),
         productionLevel: 0,
         currentMergeProgress: 0,
-        mergesPerLevel: () => Math.max(8, Math.round((250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() * (1 - game.skillTree.upgrades.fasterBricks.level / 100) / (1 + game.screws.upgrades.fasterBricks.level / 100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
+        mergesPerLevel: () => Math.max(8, Math.round((250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() * (1 - game.skillTree.upgrades.fasterBricks.level / 100) / (1 + applyUpgrade(game.screws.upgrades.fasterBricks) / 100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
         isUnlocked: () => game.highestScrapReached.gte(1e213),
         getProduction: level => {
             if (level === 0) {
@@ -772,6 +772,14 @@
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
         },
+    },
+    cogwheels:
+    {
+        isUnlocked: () => true,
+        amount: new Decimal(0),
+        upgrades: {
+
+        }
     },
     beams:
     {

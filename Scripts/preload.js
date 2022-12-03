@@ -82,6 +82,7 @@ var images =
     multibuybutton: loadImage("Images/Buttons/multibuybutton.png"),
     screw: loadImage("Images/Currencies/screw.png"),
     factoryguy: loadImage("Images/Buildings/factoryguy.png"),
+    cogwheel: loadImage("Images/Currencies/cogwheel.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

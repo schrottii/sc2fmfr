@@ -138,17 +138,30 @@ function update()
         spawnTime.cooldown += delta;
 
         let barrelsToSpawn = Math.min(freeSpots,Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
-        if(barrelsToSpawn > 0)
-        {
+        if (barrelsToSpawn > 0) {
             spawnTime.cooldown = 0;
-            for(let i = 0; i < barrelsToSpawn; i++)
-            {
+            for (let i = 0; i < barrelsToSpawn; i++) {
                 spawnBarrel();
-                if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber())
-                {
-                    if (freeSpots > 0) spawnBarrel();
+                if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber()) {
+                    if (freeSpots > 0 && !timeMode) spawnBarrel();
                 }
             }
+        }
+        else if (timeMode && freeSpots == 0) {
+            timeMode = false;
+            let cogReward = Math.floor(timeModeTime / 4000) * calculateCurrentHighest();
+
+            game.goldenScrap.reset();
+
+            game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
+            GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
+
+            timeModeTime = 0;
+        }
+
+        if (timeMode) {
+            timeModeTime += 1 / delta;
+            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 8000);
         }
 
         if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS)
@@ -1102,13 +1115,10 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
         game.settings.C = loadVal(loadObj.settings.C, 0);
         game.settings.beamTimer = loadVal(loadObj.settings.beamTimer, false);
+        game.settings.FPS = loadVal(loadObj.settings.FPS, 9999);
 
         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
 
-        //if (game.scrap == Infinity) game.scrap = new Decimal(0);
-        // Whoever...
-        // Put that awful crap there...
-        // See you in HELL!
 
         if (loadObj.goldenScrap !== undefined) {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));
@@ -1226,7 +1236,8 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.tires.upgrades !== undefined) {
                 for (let row = 0; row < loadObj.tires.upgrades.length; row++) {
                     for (let col = 0; col < loadObj.tires.upgrades[row].length; col++) {
-                        game.tires.upgrades[row][col].level = loadVal(loadObj.tires.upgrades[row][col].level, 0);
+                        if (loadObj.tires.upgrades[row] != undefined) game.tires.upgrades[row][col].level = loadVal(loadObj.tires.upgrades[row][col].level, 0);
+                        else game.tires.upgrades[row][col].level = 0;
                     }
                 }
             }
@@ -1590,6 +1601,8 @@ function loadGame(saveCode, isFromFile=false)
             }
         }
 
+        updateBetterBarrels();
+
         if (isFromFile) alert("The file has been imported successfully!");
 
     }
@@ -1632,4 +1645,3 @@ function calculateCurrentHighest() {
     return currentHighest;
 }
 
-updateBetterBarrels();

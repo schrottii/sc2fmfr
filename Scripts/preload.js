@@ -316,6 +316,14 @@ var fonts =
     title: "Work Sans, Arial, sans-serif"
 };
 
+var songs =
+{
+    newerWave: "Sounds/NewerWave.mp3",
+    gettingItDone: "Sounds/GettingitDone.mp3",
+    powerBeams: "Sounds/powerbeams.mp3",
+    voltaic: "Sounds/Voltaic.mp3",
+};
+
 var cacheCanvas = document.createElement("canvas");
 document.body.appendChild(cacheCanvas);
 cacheCanvas.style.appearance = "none";
@@ -355,21 +363,3 @@ function cacheBarrel(id) {
     cacheCanvasCtx.translate(1000, 0);
     images.previewBarrels[id] = img;
 }
-
-
-function sound(src) {
-    this.sound = document.createElement("audio");
-    this.sound.src = src;
-    this.sound.setAttribute("preload", "auto");
-    this.sound.setAttribute("controls", "none");
-    this.sound.style.display = "none";
-    document.body.appendChild(this.sound);
-
-    this.play = function () {
-        this.sound.play();
-    }
-    this.pause = function () {
-        this.sound.pause();
-    }
-}
-

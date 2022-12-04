@@ -1156,6 +1156,10 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.FPS = loadVal(loadObj.settings.FPS, 9999);
         game.settings.coconut = loadVal(loadObj.settings.coconut, false);
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
+        game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
+
+        musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
+        musicPlayer.volume = game.settings.musicVolume / 100;
 
         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
 
@@ -1644,6 +1648,9 @@ function loadGame(saveCode, isFromFile=false)
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
         freeSpots = 20;
+
+        playMusic();
+
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {
             if (loadObj.barrelLvls[i] !== null)

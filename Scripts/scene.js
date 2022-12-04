@@ -1,5 +1,4 @@
-﻿var myMusic;
-var isPlaying = 0;
+﻿var isPlaying = 0;
 var hePlayed = 0;
 var compareStats = {};
 
@@ -22,81 +21,27 @@ var timeMode = false;
 var timeModeTime = 0;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-var tabYs = [0.2, 0.8, 1.6, 1.9];
+var tabYs = [0.2, 0.8, 1.6, 2.0];
+
+var musicPlayer = document.getElementById("audioPlayer");
+musicPlayer.src = songs["newerWave"];
+musicPlayer.loop = true;
+musicPlayer.preload = true;
 
 function getTotalLevels(x) {
     return 0;
 }
 
-function playmusic(x = 0) {
-    if (game.settings.musicSelect != hePlayed) {
-        x = 50;
+function playMusic() {
+    if (game.settings.musicOnOff) {
+        musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
+        musicPlayer.volume = game.settings.musicVolume / 100;
+        musicPlayer.play();
     }
-    if (isPlaying == 0) {
-        // Define myMusic. Set which song will be played depending on the player progess
-        if (game.settings.musicSelect == 0) {
-            hePlayed = game.settings.musicSelect;
-            myMusic = new sound("NewerWave.mp3");
-        }
-        else if (game.settings.musicSelect == 1) {
-            hePlayed = game.settings.musicSelect;
-            myMusic = new sound("GettingitDone.mp3");
-        }
-        else if (game.settings.musicSelect == 2) {
-            hePlayed = game.settings.musicSelect;
-            myMusic = new sound("Spellbound.mp3");
-        }
-        else if (game.settings.musicSelect == 3) {
-            hePlayed = game.settings.musicSelect;
-            myMusic = new sound("Voltaic.mp3");
-        }
+    else {
+        musicPlayer.pause();
     }
-
-    // playmusic(50) will stop the music
-    if (x == 50) {
-        isPlaying = 0;
-        myMusic.pause();
-    }
-    // music turned off? get the hell outta here!
-    if (game.settings.musicOnOff == 0) {
-        isPlaying = 0;
-        return;
-    }
-
-    if (game.settings.musicSelect != hePlayed) {
-        hePlayed = game.settings.musicSelect;
-        playmusic();
-    }
-
-    // for repeating music... code kinda complicated
-    if (x == 5) {
-        isPlaying = 0;
-    }
-
-    // play the music and repeat it
-    if (isPlaying != 1) {
-        myMusic.play();
-        isPlaying = 1;
-
-        if (game.settings.musicSelect == 0) {
-            setTimeout(repeatmusic, 175000);
-        }
-        else if (game.settings.musicSelect == 1) {
-            setTimeout(repeatmusic, 210000);
-        }
-        else if (game.settings.musicSelect == 2) {
-            setTimeout(repeatmusic, 230000);
-        }
-        else if (game.settings.musicSelect == 3) {
-            setTimeout(repeatmusic, 200000);
-        }
-    } //^Wonder what those values are? Duration of the song in ms!
 }
-
-function repeatmusic() {
-    if (game.settings.musicOnOff == 1) playmusic(5);
-}
-
 
 class Scene
 {
@@ -110,14 +55,6 @@ class Scene
         else
         {
             console.warn("Scene \"" + name + "\" does not exist");
-        }
-
-        
-        if (game.settings.musicOnOff == 0) {
-            playmusic(50);
-        }
-        else {
-            playmusic();
         }
     }
 
@@ -1380,7 +1317,7 @@ var scenes =
                     new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.5, "Beams are worth more", "table2"),
                     new UIBeamUpgrade(game.beams.upgrades.slowerBeams, images.upgrades.slowerBeams, 0.6, "Beams fall slower"),
                     new UIBeamUpgrade(game.beams.upgrades.beamStormChance, images.upgrades.beamStormChance, 0.7, "Beam storms occur more often", "table2"),
-                    new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.8, "Beams storms are longer"),
+                    new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.8, "Beam storms are longer"),
                     new UIBeamUpgrade(game.beams.upgrades.moreScrap, images.upgrades.moreScrap, 0.9, "Get more Scrap", "table2"),
                     new UIBeamUpgrade(game.beams.upgrades.moreMagnets, images.upgrades.magnetBoost, 1.0, "Get more Magnets", "table", () => { return game.beams.upgrades.moreScrap.level > 9 }),
 
@@ -2131,7 +2068,15 @@ var scenes =
                             game.settings.musicSelect = 0;
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
-                    }, () => "Current: " + ["Newerwave", "Getting It Done", "Spellbound", "Voltaic"][game.settings.musicSelect] + "\nKevin MacLeod", "table2"),
+                        playMusic();
+                    }, () => "Current: " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
+
+                    // Volume
+                    new UIOption(tabYs[2] + 0.3, images.options.numberFormat, () => {
+                        game.settings.musicVolume += 10;
+                        if (game.settings.musicVolume > 100) game.settings.musicVolume = 0;
+                        playMusic();
+                    }, () => "Volume: " + game.settings.musicVolume + "%", "table"),
 
                     /*new UIOption(1.35, images.scenes.options, () => {
                         if (confirm("Warning! You are about to reset your Dark Scrap (Upgrades), Dark Fragment (Upgrades) and related achievements. Press cancel if you want to keep them.")) {

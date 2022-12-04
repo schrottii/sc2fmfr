@@ -420,6 +420,7 @@ class UICheckbox extends UIElement
             eval(this.prop + " = !" + this.prop);
             this.customClick();
         }
+        playMusic();
     }
 
     render(ctx)

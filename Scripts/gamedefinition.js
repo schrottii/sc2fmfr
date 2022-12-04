@@ -1982,5 +1982,6 @@
         FPS: 9999,
         beamTimer: false,
         coconut: false,
+        musicVolume: 0,
     }
 };

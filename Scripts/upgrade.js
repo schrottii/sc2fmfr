@@ -160,6 +160,7 @@ function assignResourceAfterUpgrade(resType, res)
             break;
         case RESOURCE_SCREW:
             game.screws.amount = res;
+            break;
         case RESOURCE_COGWHEEL:
             game.cogwheels.amount = res;
             break;

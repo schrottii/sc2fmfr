@@ -83,6 +83,35 @@ class MovingItem
                 this.x = w * Math.random();
                 this.y = h * Math.min(Math.random(), 0.6);
             }
+            if (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams)) {
+                if (Math.random() > 0.99) {
+                    this.speed = h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams));
+                    this.swizzle = 0;
+                }
+                if (Math.random() > 0.995) {
+                    this.speed = h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)) * (-1);
+                }
+                if (Math.random() > 0.997) {
+                    this.speed *= 2.5;
+                }
+                if (Math.random() > 0.999) {
+                    this.speed *= 0.5;
+                }
+                if (Math.random() > 0.999) {
+                    this.swizzle = w * 0.5;
+                    this.speed *= 0.8;
+                }
+                if (Math.random() > 0.9993) {
+                    this.speed = 0;
+                    this.acc = 0;
+                }
+                if (Math.random() > 0.9995) {
+                    movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                }
+                if (Math.random() > 0.9999) {
+                    this.img = images.movingItems.goldenBeam;
+                }
+            }
         }
         if (this.timeSinceSpawn >= 1 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(1)) {
             if (Math.random() * 100 <= applyUpgrade(game.collectors[this.autoType])) {
@@ -210,7 +239,7 @@ var movingItemFactory =
 {
     fallingMagnet: (value) =>
     {
-        movingItems.push(new FallingItem(images.movingItems.magnet, "magnets", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.275 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.magnet, "magnets", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.125, h * 0.125, h * (0.275 - applyUpgrade(game.aerobeams.upgrades.slowerFallingMagnets)), h * 0.2, w * 0.2,
         function()
         {
             this.collected = true;
@@ -287,7 +316,7 @@ var movingItemFactory =
             }))
     },
     fallingAeroBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -35, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.65,
+        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -35, h * 0.125, h * 0.125, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.65,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -302,7 +331,7 @@ var movingItemFactory =
             }))
     },
     fallingAngelBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.angelbeam, "angelBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.angelbeam, "angelBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.125, h * 0.125, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -317,7 +346,7 @@ var movingItemFactory =
             }))
     },
     fallingReinforcedBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.2, h * 0.2, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
@@ -349,7 +378,8 @@ var movingItemFactory =
             }, 0))
     },
     fallingGlitchBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
+        let rndm = applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? Math.max(0.75, Math.random() + 0.25) : 1;
+        movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15 * rndm, h * 0.15 * rndm, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function () {
                 if (this.cooldown < 0.05) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
@@ -374,9 +404,14 @@ var movingItemFactory =
                     }
                     if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
 
-                    game.glitchbeams.amount = game.glitchbeams.amount.add(value);
-                    game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
-                    game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
+                    if (this.img == images.movingItems.goldenBeam) {
+                        awardGoldenBeam(value);
+                    }
+                    else {
+                        game.glitchbeams.amount = game.glitchbeams.amount.add(value);
+                        game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
+                        game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
+                    }
                     currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
                 }
                 else {
@@ -396,7 +431,7 @@ var movingItemFactory =
             }))
     },
     fallingGoldenBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.goldenBeam, "gold", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.5 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, w * 0.1,
+        movingItems.push(new FallingItem(images.movingItems.goldenBeam, "gold", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.175, h * 0.175, h * (0.5 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, w * 0.1,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -404,32 +439,13 @@ var movingItemFactory =
                 }
                 if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
 
-                game.beams.amount = game.beams.amount.add(value);
-                game.stats.totalbeams = game.stats.totalbeams.add(value);
-                game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
+                awardGoldenBeam(value);
 
-                game.aerobeams.amount = game.aerobeams.amount.add(value);
-                game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
-                game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
-
-                game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
-                game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
-                game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
-
-                game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
-                game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
-                game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
-
-                game.glitchbeams.amount = game.glitchbeams.amount.add(value);
-                game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
-                game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
-
-                game.stats.totalgoldenbeamscollected = game.stats.totalgoldenbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
     },
     fallingScrew: (value) => {
-        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.05, h * 0.05, h * 1, h * 0.2, 0,
+        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.075, h * 0.075, h * 1, h * 0.2, 0,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {

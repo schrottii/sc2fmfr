@@ -282,7 +282,6 @@ class ScrapUpgrade
 
     buy(round) {
         let resource = getUpgradeResource(this.resource);
-
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford) {
             this.onBuy();
@@ -420,7 +419,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gte(resource))
+            if(p[0].gt(resource))
             {
                 return;
             }
@@ -692,6 +691,12 @@ class MasteryTokenUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_MASTERYTOKEN;
+    }
+}
+class CogwheelUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_COGWHEEL;
     }
 }
 

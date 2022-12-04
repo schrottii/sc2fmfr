@@ -149,7 +149,7 @@ function update()
         }
         else if (timeMode && freeSpots == 0) {
             timeMode = false;
-            let cogReward = Math.floor(timeModeTime / 4000) * calculateCurrentHighest();
+            let cogReward = Math.floor(timeModeTime / 4) * calculateCurrentHighest();
 
             game.goldenScrap.reset();
 
@@ -160,22 +160,22 @@ function update()
         }
 
         if (timeMode) {
-            timeModeTime += 1 / delta;
-            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 8000);
+            timeModeTime += delta;
+            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 8);
         }
 
-        if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS)
+        if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode)
         {
             fallingMagnetTime += game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS ? delta : 0;
 
             if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber())
             {
                 fallingMagnetTime = 0;
-                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul((game.mergeQuests.upgrades.fallingMagnetValue.level) + 1).mul(applyUpgrade(game.aerobeams.upgrades.betterFallingMagnets))));
+                movingItemFactory.fallingMagnet(fallingMagnetWorth());
             }
         }
 
-        if(game.milestones.achievements[7].isUnlocked())
+        if (game.milestones.achievements[7].isUnlocked() && !timeMode)
         {
             if(game.settings.autoMerge)
             {
@@ -184,7 +184,7 @@ function update()
             tryAutoMerge();
         }
 
-        if (game.highestBarrelReached > 299) {
+        if (game.highestBarrelReached > 299 && !timeMode) {
             if (game.settings.autoConvert) {
                 autoConvertTime += delta;
             }
@@ -285,7 +285,7 @@ function update()
 
         if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) {
             gsStormTime += delta;
-            if (gsStormTime >= 60) {
+            if (gsStormTime >= 60 && !timeMode) {
                 gsStormTime = 0;
                 if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
                     if (applyUpgrade(game.skillTree.upgrades.shortGSStorms)) {
@@ -306,160 +306,162 @@ function update()
         if (game.beams.isUnlocked()) {
             game.beams.time += delta;
 
-            // Normal Beams
-            if (game.beams.selected == 0) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+            if (!timeMode) {
+                // Normal Beams
+                if (game.beams.selected == 0) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingBeam(getBeamBaseValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingBeam(getBeamBaseValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Aerobeams
-            else if (game.beams.selected == 1) {
-                if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Aerobeams
+                else if (game.beams.selected == 1) {
+                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
-                        }
-                    }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingAeroBeam(getBeamBaseValue());
-                            if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
-                                movingItemFactory.glitchItem(1);
+                            else {
+                                movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                                if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
+                                    movingItemFactory.glitchItem(1);
+                                }
                             }
+                            renewableEnergy();
                         }
-                        renewableEnergy();
+                        game.beams.time = 0;
                     }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Angel Beams
-            else if (game.beams.selected == 2) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Angel Beams
+                else if (game.beams.selected == 2) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingAngelBeam(getAngelBeamValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingAngelBeam(getAngelBeamValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Reinforced Beams
-            else if (game.beams.selected == 3) {
-                if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Reinforced Beams
+                else if (game.beams.selected == 3) {
+                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 750 * i);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 750 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Glitch Beams
-            else if (game.beams.selected == 4) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Glitch Beams
+                else if (game.beams.selected == 4) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
+                                    renewableEnergy();
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))) }, 300 * i);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))) }, 300 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            for (i in movingItems) movingItems[i].cooldown += delta;
+                for (i in movingItems) movingItems[i].cooldown += delta;
+            }
         }
     }
 
@@ -490,7 +492,8 @@ function getReinforcedBeamValue() {
 }
 function getGlitchBeamValue() {
     return applyUpgrade(game.glitchbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1]);
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1);
 }
 
 function getReinforcedTapsNeeded() {
@@ -502,11 +505,11 @@ function getBrickIncrease() {
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4)));
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost));
 }
 
 function getDarkFragmentBaseValue() {
-    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1);
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost));
 }
 
 function getMagnetBaseValue()
@@ -517,11 +520,22 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.bricks.upgrades.magnetBoost))
         .mul(applyUpgrade(game.fragment.upgrades.magnetBoost))
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets))
-        .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)));
+        .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)))
+        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost));
 }
 
 function getDarkScrap(level) {
-    return Math.round(Math.pow(1.0075, level) * applyUpgrade(game.darkscrap.upgrades.darkScrapBoost));
+    return new Decimal(1.0075).pow(level)
+        .mul(applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))
+        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost));
+}
+
+function craftingMulti() {
+    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting);
+}
+
+function fallingMagnetWorth() {
+    return Decimal.round(getMagnetBaseValue().mul(5).mul((game.mergeQuests.upgrades.fallingMagnetValue.level) + 1).mul(applyUpgrade(game.aerobeams.upgrades.betterFallingMagnets)).mul(applyUpgrade(game.skillTree.upgrades.fallingMagnetValue)));
 }
 
 function getTankSize() {
@@ -534,6 +548,30 @@ function tryAutoMerge() {
         autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }
+}
+
+function awardGoldenBeam(value) {
+    game.beams.amount = game.beams.amount.add(value);
+    game.stats.totalbeams = game.stats.totalbeams.add(value);
+    game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
+
+    game.aerobeams.amount = game.aerobeams.amount.add(value);
+    game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
+    game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
+
+    game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
+    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
+    game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
+
+    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
+    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
+    game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
+
+    game.glitchbeams.amount = game.glitchbeams.amount.add(value);
+    game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
+    game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
+
+    game.stats.totalgoldenbeamscollected = game.stats.totalgoldenbeamscollected.add(1);
 }
 
 function renewableEnergy() {
@@ -1433,7 +1471,7 @@ function loadGame(saveCode, isFromFile=false)
             game.factory.time = loadVal(loadObj.factory.time, 0);
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
 
-            if (!game.factory.tank.gt(-5)) game.factory.tank = new Decimal(10);
+            if (!game.factory.tank.gte(new Decimal(0))) game.factory.tank = new Decimal(10);
 
             game.factory.legendaryScrap = loadVal(new Decimal(loadObj.factory.legendaryScrap), new Decimal(0));
             game.factory.steelMagnets = loadVal(new Decimal(loadObj.factory.steelMagnets), new Decimal(0));
@@ -1584,6 +1622,22 @@ function loadGame(saveCode, isFromFile=false)
             game.screws.amount = new Decimal(0);
             Object.keys(game.screws.upgrades).forEach(k => {
                 game.screws.upgrades[k].level = 0;
+            })
+        }
+
+        if (loadObj.cogwheels !== undefined) {
+            game.cogwheels.amount = loadVal(new Decimal(loadObj.cogwheels.amount), new Decimal(0));
+            game.cogwheels.timeModeAttempts = loadVal(loadObj.cogwheels.timeModeAttempts, 3);
+            if (loadObj.cogwheels.upgrades !== undefined) {
+                Object.keys(loadObj.cogwheels.upgrades).forEach(k => {
+                    game.cogwheels.upgrades[k].level = loadVal(loadObj.cogwheels.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.cogwheels.amount = new Decimal(0);
+            Object.keys(game.cogwheels.upgrades).forEach(k => {
+                game.cogwheels.upgrades[k].level = 0;
             })
         }
 

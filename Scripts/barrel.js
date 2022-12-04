@@ -65,6 +65,7 @@ class Barrel
                 .mul(applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost))
                 .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
                 .mul(new Decimal(applyUpgrade(game.barrelMastery.upgrades.scrapBoost)).pow(getTotalLevels(1)))
+                .mul(applyUpgrade(game.cogwheels.upgrades.scrapBoost))
         }
         if (game.dimension == 1) {
             return Decimal.pow(1.1, level)
@@ -130,7 +131,6 @@ class Barrel
 
     static renderBarrel(ctx, level, x, y, size, preview)
     {
-        if (game.settings.nobarrels) return false;
         let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % BARRELS) / 100))) % 10 /* Change this when you add new BARRELS files */, 1);
         if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {

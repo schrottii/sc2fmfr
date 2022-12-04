@@ -217,7 +217,19 @@ class UIScrollContainer2D extends UIGroup
         }
         for (let ui of this.uiElements) {
             if (this.isVisiible()) ui.offset = [-this.scrollX, -this.scrollY];
-            ui.render(ctx);
+            let dispos;
+            if (ui.uiElements != undefined) {
+                if (ui.uiElements[0].uiElements != undefined) dispos = [ui.uiElements[0].uiElements[0].x, ui.uiElements[0].uiElements[0].y, ui.uiElements[0].uiElements[0].height, ((ui.uiElements[0].uiElements[0].points != undefined) ? (ui.uiElements[0].uiElements[0].points[1][1] - ui.uiElements[0].uiElements[0].points[1][0]) : 0)];
+                else dispos = [ui.uiElements[0].x, ui.uiElements[0].y, ui.uiElements[0].height / 2, ((ui.uiElements[0].points != undefined) ? (ui.uiElements[0].points[1][1] - ui.uiElements[0].points[1][0]) : 0)];
+            }
+            else dispos = [ui.x, ui.y, ui.height, ((ui.points != undefined) ? ui.points[1][1] - ui.points[1][0] : 0)];
+
+            if (dispos[0] + ui.offset[0] < this.x + this.w && dispos[1] - dispos[2] + ui.offset[1] < this.y + this.h &&
+                dispos[0] + ui.offset[0] >= this.x && dispos[1] + dispos[2] + dispos[3] + ui.offset[1] >= this.y) {
+                ui.outOfScroll = false;
+                ui.render(ctx);
+            }
+            else ui.outOfScroll = true;
         }
 
         if (!this.isVisiible()) return false;
@@ -683,6 +695,11 @@ class UIAutoUpgrade extends UIUpgrade3 {
 class UIMasteryUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
         super(upg, img, "$images.masteryToken$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
+class UICogwheelUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.cogwheel$", y, desc, 0.05, col, isVisible, false, true);
     }
 }
 

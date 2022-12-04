@@ -16,13 +16,13 @@ var worth1, worth2;
 var multiConvert = 1;
 
 const BARRELS = 850;
+const gameVersionText = "v2.9 (v3.6)";
 
 var timeMode = false;
 var timeModeTime = 0;
-var timeModeAttempts = 3;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-var tabYs = [0.1, 0.7, 1.5, 1.8];
+var tabYs = [0.2, 0.8, 1.6, 1.9];
 
 function getTotalLevels(x) {
     return 0;
@@ -201,7 +201,7 @@ class Scene
         }
         else
         {
-            if(element.isVisible())
+            if(element.isVisible() && !element.outOfScroll)
             {
                 for (let el of element.uiElements)
                 {
@@ -262,20 +262,25 @@ function drawCurrencyBar(val, img, offY, width)
 }
 
 function getBeamTime() {
-    if (game.beams.selected == 0) {
-        return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
+    if (timeMode) {
+        return "Time: " + formatTime(timeModeTime);
     }
-    if (game.beams.selected == 1) {
-        return "Next Beam in: " + (45 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)).toFixed(0);
-    }
-    if (game.beams.selected == 2) {
-        return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)).toFixed(0);
-    }
-    if (game.beams.selected == 3) {
-        return "Next Beam in: " + (45 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
-    }
-    if (game.beams.selected == 4) {
-        return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
+    else {
+        if (game.beams.selected == 0) {
+            return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
+        }
+        if (game.beams.selected == 1) {
+            return "Next Beam in: " + (45 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)).toFixed(0);
+        }
+        if (game.beams.selected == 2) {
+            return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)).toFixed(0);
+        }
+        if (game.beams.selected == 3) {
+            return "Next Beam in: " + (45 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
+        }
+        if (game.beams.selected == 4) {
+            return "Next Beam in: " + (30 - game.beams.time - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(0);
+        }
     }
 }
 
@@ -386,7 +391,7 @@ var scenes =
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText("v2.9 (v3.6)", w * 0.99, h - w * 0.01);
+                ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
@@ -564,15 +569,17 @@ var scenes =
 
                     ctx.fillStyle = "rgb(127, 127, 127)";
 
-                    if (barrels[i] === undefined && tempDrawnBarrels[i] === undefined || (barrels[i] !== undefined && barrels[i].scale < 1) && tempDrawnBarrels[i] === undefined) {
-                        ctx.drawImage(images.barrelTemplate, x - barrelSize / 2, y - barrelSize / 2, barrelSize, barrelSize);
-                    }
-                    if (!game.settings.lowPerformance && tempDrawnBarrels[i] !== undefined && (barrels[i] !== undefined && barrels[i].scale < 1)) {
-                        Barrel.renderBarrel(ctx, tempDrawnBarrels[i], x, y, barrelSize);
-                    }
-                    if (barrels[i] !== undefined) {
-                        barrels[i].setCoord(x, y);
-                        barrels[i].render(ctx);
+                    if (!game.settings.nobarrels) {
+                        if (barrels[i] === undefined && tempDrawnBarrels[i] === undefined || (barrels[i] !== undefined && barrels[i].scale < 1) && tempDrawnBarrels[i] === undefined) {
+                            ctx.drawImage(images.barrelTemplate, x - barrelSize / 2, y - barrelSize / 2, barrelSize, barrelSize);
+                        }
+                        if (!game.settings.lowPerformance && tempDrawnBarrels[i] !== undefined && (barrels[i] !== undefined && barrels[i].scale < 1)) {
+                            Barrel.renderBarrel(ctx, tempDrawnBarrels[i], x, y, barrelSize);
+                        }
+                        if (barrels[i] !== undefined) {
+                            barrels[i].setCoord(x, y);
+                            barrels[i].render(ctx);
+                        }
                     }
                 }
 
@@ -588,7 +595,7 @@ var scenes =
                     let b = barrels[i];
                     if (b != null && b.isClicked()) {
                         draggedBarrel = b;
-                        if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels) {
+                        if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
                                 if (game.dimension == 0) {
                                     let Amount = new Decimal(barrels[i].level / 10).mul(getFragmentBaseValue());
@@ -674,7 +681,9 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.goldenScrap, () => {
                     if (game.goldenScrap.getResetAmount().gt(0)) {
-                        game.goldenScrap.reset();
+                        if (!game.settings.resetConfirmation || confirm("Do you want to reset for " + formatNumber(game.goldenScrap.getResetAmount()) + " Golden Scrap?")) {
+                            game.goldenScrap.reset();
+                        }
                     }
                 }, { quadratic: true }),
                 new UIText("Golden Scrap", 0.5, 0.1, 0.1, "white", {
@@ -701,14 +710,14 @@ var scenes =
         new Scene("TimeMode",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
-                new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.goldenScrap, () => {
-                    if (timeModeAttempts > 0) {
-                        game.settings.autoConvert = false;
-                        game.settings.autoMerge = false;
-                        timeModeAttempts -= 1;
-                        timeModeTime = 0;
-                        timeMode = true;
-                        game.goldenScrap.reset();
+                new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.timemode, () => {
+                    if (game.cogwheels.timeModeAttempts > 0) {
+                        if (!game.settings.resetConfirmation || confirm("Do you really want to start the Time Mode and prestige?")) {
+                            game.cogwheels.timeModeAttempts -= 1;
+                            timeModeTime = 0;
+                            timeMode = true;
+                            game.goldenScrap.reset();
+                        }
                     }
                 }, { quadratic: true }),
                 new UIText("Race Against Time", 0.5, 0.1, 0.1, "white", {
@@ -716,9 +725,10 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIText(() => "Race against the time\nDon't let the entire field fill up! Earn cogwheels\nDaily attempts left: " + timeModeAttempts, 0.5, 0.2, 0.04, "black"),
+                new UIText(() => "Race against the time\nDon't let the entire field fill up! Earn cogwheels\nDaily attempts left: " + game.cogwheels.timeModeAttempts, 0.5, 0.2, 0.04, "black"),
                 new UIText(() => "$images.cogwheel$" + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
-                new UIGoldenScrapUpgrade(game.goldenScrap.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
+                new UICogwheelUpgrade(game.cogwheels.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
+                new UICogwheelUpgrade(game.cogwheels.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.75, "Get More Dark Scrap", "table2"),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -761,8 +771,8 @@ var scenes =
                         game.mergesThisPrestige = 0;
                         updateBetterBarrels();
 
-                        game.darkscrap.amount = game.darkscrap.amount.add(new Decimal(getDarkScrap(calculateCurrentHighest())));
-                        game.stats.totaldarkscrap = game.stats.totaldarkscrap.add(new Decimal(getDarkScrap(calculateCurrentHighest())));
+                        game.darkscrap.amount = game.darkscrap.amount.add(getDarkScrap(calculateCurrentHighest()));
+                        game.stats.totaldarkscrap = game.stats.totaldarkscrap.add(getDarkScrap(calculateCurrentHighest()));
 
                         game.scrapUpgrades.betterBarrels.level = 0;
                         game.scrapUpgrades.fasterBarrels.level = 0;
@@ -831,7 +841,7 @@ var scenes =
                         return "Fragments can be earned by destroying barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(game.scrapUpgrades.betterBarrels.level / 10).mul(getFragmentBaseValue())) + " fragments."
                     }
                     if (game.dimension == 1) {
-                        return "Dark Fragments can be earned by destroying dark barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(((parseInt(game.scrapUpgrades.betterBarrels.level) / 10))) + " dark fragments."
+                        return "Dark Fragments can be earned by destroying dark barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(game.scrapUpgrades.betterBarrels.level / 10).mul(getDarkFragmentBaseValue())) + " dark fragments."
                     }
                 }, 0.5, 0.2, 0.03, "black"),
 
@@ -1037,7 +1047,7 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
-                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("TimeMode"), {
+                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.timemode, () => Scene.loadScene("TimeMode"), {
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
@@ -1050,8 +1060,7 @@ var scenes =
                 new UIPlanet(0.7, 0.7, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
                 new UIPlanet(0.3, 0.325, "Venus\nIncrease Double\nSpawn Chance", game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
                 new UIPlanet(0.65, 0.2, "Earth\nUnlock new Stuff", game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
-                new UIPlanet(0.2, 0.825, () => "Mars\nFalling Magnets\n" + formatNumber(getMagnetBaseValue()
-                    .mul(5)) + " each", game.solarSystem.upgrades.mars, "$images.fragment$", images.solarSystem.mars, 0.04, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS), //whoever did not put a , there before I hate U!!!
+                new UIPlanet(0.2, 0.825, () => "Mars\nFalling Magnets\n" + formatNumber(fallingMagnetWorth()) + " each", game.solarSystem.upgrades.mars, "$images.fragment$", images.solarSystem.mars, 0.04, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS), //whoever did not put a , there before I hate U!!!
 
                 new UIButton(0.6, 0.5, 0.05, 0.05, images.buttonMaxAll, () => maxSunUpgrades(),
                     {
@@ -1344,12 +1353,11 @@ var scenes =
                     quadraticMin: true,
                     isVisible: () => game.aerobeams.isUnlocked(),
                 }),
-                new UIButton(0.35, 0.97, 0.15, 0.06, images.scenes.beamboosts, () => Scene.loadScene("Beamboosts"), { quadraticMin: true }),
-                new UIButton(0.5, 0.97, 0.15, 0.06, images.scenes.convert, () => Scene.loadScene("Beamconvert"), {
+                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.convert, () => Scene.loadScene("Beamconvert"), {
                     quadraticMin: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockBeamConverter),
                 }),
-                new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.angelbeams, () => Scene.loadScene("AngelBeams"), {
+                new UIButton(0.6, 0.97, 0.15, 0.06, images.scenes.angelbeams, () => Scene.loadScene("AngelBeams"), {
                     quadraticMin: true,
                     isVisible: () => game.angelbeams.isUnlocked(),
                 }),
@@ -1366,12 +1374,17 @@ var scenes =
                 new UIText(() => { return "Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of a beam storm\noccuring instead of a single beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.beam$ Beams: " + formatNumber(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
-                new UIBeamUpgrade(game.beams.upgrades.fasterBeams, images.upgrades.beamChance, 0.45, "All Beams spawn more often"),
-                new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.55, "Beams are worth more", "table2"),
-                new UIBeamUpgrade(game.beams.upgrades.slowerBeams, images.upgrades.slowerBeams, 0.65, "Beams fall slower"),
-                new UIBeamUpgrade(game.beams.upgrades.beamStormChance, images.upgrades.beamStormChance, 0.75, "Beam storms occur more often", "table2"),
-                new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.85, "Beams storms are longer"),
 
+                new UIScrollContainerY([
+                    new UIBeamUpgrade(game.beams.upgrades.fasterBeams, images.upgrades.beamChance, 0.4, "All Beams spawn more often"),
+                    new UIBeamUpgrade(game.beams.upgrades.beamValue, images.upgrades.beamValue, 0.5, "Beams are worth more", "table2"),
+                    new UIBeamUpgrade(game.beams.upgrades.slowerBeams, images.upgrades.slowerBeams, 0.6, "Beams fall slower"),
+                    new UIBeamUpgrade(game.beams.upgrades.beamStormChance, images.upgrades.beamStormChance, 0.7, "Beam storms occur more often", "table2"),
+                    new UIBeamUpgrade(game.beams.upgrades.beamStormValue, images.upgrades.beamStormValue, 0.8, "Beams storms are longer"),
+                    new UIBeamUpgrade(game.beams.upgrades.moreScrap, images.upgrades.moreScrap, 0.9, "Get more Scrap", "table2"),
+                    new UIBeamUpgrade(game.beams.upgrades.moreMagnets, images.upgrades.magnetBoost, 1.0, "Get more Magnets", "table", () => { return game.beams.upgrades.moreScrap.level > 9 }),
+
+                ], 0, 0.35, 1, 0.55, () => true, { ymin: 0, ymax: 1.05 }),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -1382,29 +1395,6 @@ var scenes =
 
                 ctx.fillStyle = colors[C]["bgFront"];
                 ctx.fillRect(0, h * 0.94, w, h * 0.06);
-            }),
-        new Scene("Beamboosts",
-            [
-                new UIText("Steel Beams", 0.5, 0.1, 0.08, "white", {
-                    bold: 900,
-                    borderSize: 0.005,
-                    font: fonts.title
-                }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
-
-                new UIText(() => { return "Beams fall every " + (30 - applyUpgrade(game.beams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of a beam storm\noccuring instead of a single beam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
-
-                new UIText(() => "$images.beam$ Beams: " + Math.round(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
-                new UIBeamUpgrade(game.beams.upgrades.moreScrap, images.upgrades.moreScrap, 0.45, "Get more Scrap"),
-                new UIBeamUpgrade(game.beams.upgrades.moreMagnets, images.upgrades.magnetBoost, 0.55, "Get more Magnets", "table2", () => { return game.beams.upgrades.moreScrap.level > 9 }),
-
-            ],
-            function () {
-                ctx.fillStyle = colors[C]["bg"];
-                ctx.fillRect(0, 0, w, h);
-
-                ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
             }),
         new Scene("Beamselection",
             [
@@ -1632,6 +1622,8 @@ var scenes =
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.strength, images.upgrades.reinforcedBeamPower, 0.55, "Reinforced Beams are easier\nto collect (Min. 2)", "table2"),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.powerpunch, images.upgrades.reinforcedBeamCrit, 0.65, "Chance to collect Reinforced\nBeams 3x faster"),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks, images.upgrades.reinforcedBricks, 0.75, "x2 Bricks, but 75% more merges", "table2"),
+                new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.fragmentBoost, images.upgrades.moreFragments, 0.85, "Get More Fragments", "table", () => { return game.angelbeams.upgrades.gsBoost.level > 9 }),
+                new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost, images.upgrades.moreFragments, 0.95, "Get More Dark Fragments", "table2", () => { return game.reinforcedbeams.upgrades.fragmentBoost.level > 9 }),
 
             ],
             function () {
@@ -1848,7 +1840,7 @@ var scenes =
                         let dq = game.mergeQuests.dailyQuest;
                         dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
                         dq.currentMerges = 0;
-                        timeModeAttempts = 3;
+                        game.cogwheels.timeModeAttempts = 3;
                         game.mergeQuests.nextDaily = calcTime2;
                     }
                 }
@@ -2027,15 +2019,15 @@ var scenes =
         ),
         new Scene("Options",
             [
-                new UIText("Options", 0.5, 0.05, 0.1, "white", {
+                new UIText("Options", 0.5, 0.1, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.8, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
                 new UIScrollContainerY([
-                    new UIText("General Settings", 0.5, tabYs[0], 0.075, "white", {
+                    new UIText("General Options", 0.5, tabYs[0], 0.075, "white", {
                         bold: 600,
                         borderSize: 0.003,
                         font: fonts.title
@@ -2174,9 +2166,13 @@ var scenes =
                         "\nMod of VeproGames' Scrap 2 Fanmade ©2019" +
                         "\nMod SC2FMFR created by Schrottii ©2021", 0.5, tabYs[3] + 0.1, 0.035, "white"),
                     new UIText("Unauthorized mods of this mod are prohibited!", 0.5, tabYs[3] + 0.2, 0.035, "white"),
-                    new UIText("Libraries used:\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.3, 0.04, "white"),
 
-            ], 0, 0.1, 1, 0.6, () => true, { ymin: 0, ymax: tabYs[3] + 0.4 }),
+                    new UIText("Special credit to all barrel makers,\nidea givers, bug finders, beta testers\nand whoever made the coconut image", 0.5, tabYs[3] + 0.3, 0.035, "white"),
+                    new UIText(gameVersionText, 0.5, tabYs[3] + 0.4, 0.05, "white"),
+
+                    new UIText("Libraries used:\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.5, 0.04, "white"),
+
+            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.6 }),
                 /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
                         quadratic: true,
@@ -2187,6 +2183,7 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.settings.optionsPage < 2
                     }),*/
+                new UIButton(0.8, 0.89, 0.1, 0.1, images.logos.schrottii, () => GameNotification.create(new TextNotification("You have found me", "Schrottii")), { quadratic: true }),
                 new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
                 new UIText("My Discord Server", 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
@@ -2618,6 +2615,8 @@ var scenes =
                     new UIRect(0.5, 5.5, 1, 0.3, "table2"),
                     new UIRect(0.5, 5.8, 1, 0.3, "table"),
                     new UIRect(0.5, 6.1, 1, 0.3, "table2"),
+                    new UIRect(0.5, 6.4, 1, 0.3, "table"),
+                    new UIRect(0.5, 6.7, 1, 0.3, "table2"),
 
                     new UISkillTreePath(0.5, 0.4, 0.5, 0.65, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 
@@ -2679,6 +2678,18 @@ var scenes =
                     new UISkillTreePath(0.8, 5.45, 0.8, 5.75, 0.01, "skillTreePath2", game.skillTree.upgrades.unlockAutoCollectors),
                     new UISkillTreePath(0.8, 5.7475, 0.5, 5.75, 0.01, "skillTreePath2", game.skillTree.upgrades.unlockAutoCollectors),
 
+                    new UISkillTreePath(0.5, 5.75, 0.2, 6.05, 0.01, "skillTreePath", game.skillTree.upgrades.unlockScrews),
+                    new UISkillTreePath(0.5, 5.75, 0.5, 6.05, 0.01, "skillTreePath", game.skillTree.upgrades.unlockScrews),
+                    new UISkillTreePath(0.5, 5.75, 0.8, 6.05, 0.01, "skillTreePath", game.skillTree.upgrades.unlockScrews),
+
+                    new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.magnetBoost),
+                    new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.newTireUpgrades),
+                    new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.posusAffectsDark),
+
+                    new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.fallingMagnetValue),
+                    new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.unlockTimeMode),
+                    new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.starDaily),
+
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.xplustwo, images.upgrades.xplustwo, "x + 2", 0.5, 0.65, "table2"),
@@ -2733,10 +2744,19 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockScrews, images.upgrades.unlockScrews, "Unlock Screws", 0.5, 5.75, "table"),
 
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.magnetBoost, images.upgrades.magnetBoost, "More Magnets", 0.2, 6.05, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.newTireUpgrades, images.upgrades.tireBoost, "Unlock new\nTire Upgrades", 0.5, 6.05, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.posusAffectsDark, images.upgrades.unlockScrews, "Posus affects\nDark Fragments\n(^0.5)", 0.8, 6.05, "table2"),
+
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, "Falling Magnets\nare worth more", 0.2, 6.35, "table"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockTimeMode, images.upgrades.tireBoost, "Unlock\nTime Mode", 0.5, 6.35, "table"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.starDaily, images.upgrades.tireBoost, "Star barrels count\nfor daily quests", 0.8, 6.35, "table"),
+
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.veryFastCrafting, images.upgrades.fasterMaster, "Faster Crafting", 0.2, 6.65, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.funnyGlitchBeams, images.upgrades.tireBoost, "Funny Glitch Beams\n(& x2 worth)", 0.5, 6.65, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax, images.upgrades.moreDarkScrap, "Higher max. for\n2nd Dark Scrap upg.", 0.8, 6.65, "table2"),
                     
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.35})
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.95})
             ],
             function ()
             {

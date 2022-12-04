@@ -40,7 +40,7 @@ class MergeQuest
 
     check(mergedLvl)
     {
-        let merged = this.barrelLvl === Math.floor(mergedLvl);
+        let merged = this.barrelLvl === ((this.getNeededMerges() > 8000 && applyUpgrade(game.skillTree.upgrades.starDaily)) ? Math.floor(mergedLvl % BARRELS) : Math.floor(mergedLvl));
         if(merged)
         {
             this.currentMerges++;

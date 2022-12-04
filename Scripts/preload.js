@@ -88,7 +88,7 @@ var images =
         scrap2: loadImage("Images/scrap2logo.png"),
         discord: loadImage("Images/discord.png"),
         youtube: loadImage("Images/youtube.png"),
-        cook1eegames: loadImage("Images/cook1eegames.png")
+        schrottii: loadImage("Images/schrottii.png")
     },
     options:
     {
@@ -218,6 +218,7 @@ var images =
         convert: loadImage("Images/Scenes/convertscene.png"),
         plasticbags: loadImage("Images/Scenes/plasticbags.png"),
         screws: loadImage("Images/Scenes/screws.png"),
+        timemode: loadImage("Images/Scenes/timemode.png"),
     },
     solarSystem:
     {

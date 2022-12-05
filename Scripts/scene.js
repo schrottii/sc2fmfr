@@ -654,6 +654,11 @@ var scenes =
                             timeModeTime = 0;
                             timeMode = true;
                             game.goldenScrap.reset();
+
+                            if (game.ms.includes(212) == false) {
+                                game.ms.push(212);
+                                GameNotification.create(new MilestoneNotificaion(213));
+                            }
                         }
                     }
                 }, { quadratic: true }),
@@ -2129,7 +2134,13 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.settings.optionsPage < 2
                     }),*/
-                new UIButton(0.8, 0.89, 0.1, 0.1, images.logos.schrottii, () => GameNotification.create(new TextNotification("You have found me", "Schrottii")), { quadratic: true }),
+                new UIButton(0.8, 0.89, 0.1, 0.1, images.logos.schrottii, () => {
+                    GameNotification.create(new TextNotification("You have found me", "Schrottii"))
+                    if (game.ms.includes(206) == false) {
+                        game.ms.push(206);
+                        GameNotification.create(new MilestoneNotificaion(207));
+                    }
+                }, { quadratic: true }),
                 new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
                 new UIText("My Discord Server", 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),

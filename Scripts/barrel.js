@@ -65,6 +65,7 @@ class Barrel
                 .mul(applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost))
                 .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
                 .mul(new Decimal(applyUpgrade(game.barrelMastery.upgrades.scrapBoost)).pow(getTotalLevels(1)))
+                .mul(applyUpgrade(game.plasticBags.upgrades.moreScrap))
                 .mul(applyUpgrade(game.cogwheels.upgrades.scrapBoost))
         }
         if (game.dimension == 1) {

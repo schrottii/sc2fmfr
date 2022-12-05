@@ -152,6 +152,11 @@ function update()
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 4) * calculateCurrentHighest();
 
+            if (game.ms.includes(215) == false && cogReward > 999) {
+                game.ms.push(215);
+                GameNotification.create(new MilestoneNotificaion(216));
+            }
+
             game.goldenScrap.reset();
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);

@@ -49,6 +49,7 @@ var images =
     trophy: loadImage("Images/trophies.png"),
     exportGame: loadImage("Images/Buttons/export_game.png"),
     importGame: loadImage("Images/Buttons/import_game.png"),
+    setTimeButton: loadImage("Images/Buttons/settime.png"),
     exportImport: loadImage("Images/Buttons/export_import.png"),
     zoomOut: loadImage("Images/Buttons/button_zoom_out.png"),
     zoomIn: loadImage("Images/Buttons/button_zoom_in.png"),
@@ -83,6 +84,7 @@ var images =
     screw: loadImage("Images/Currencies/screw.png"),
     factoryguy: loadImage("Images/Buildings/factoryguy.png"),
     cogwheel: loadImage("Images/Currencies/cogwheel.png"),
+    storm: loadImage("Images/storm.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -186,6 +188,11 @@ var images =
         doublePlasticBags: loadImage("Images/Upgrades/doubleplasticbags.png"),
         unlockPlasticBags: loadImage("Images/Upgrades/unlockplasticbags.png"),
         unlockScrews: loadImage("Images/Upgrades/unlockscrews.png"),
+        starDaily: loadImage("Images/Upgrades/stardaily.png"),
+        unlockTimeMode: loadImage("Images/Upgrades/unlocktimemode.png"),
+        funnyGlitchBeams: loadImage("Images/Upgrades/glitchbeams.png"),
+        posusDarkFragments: loadImage("Images/Upgrades/posusdarkfragments.png"),
+        fasterFactory: loadImage("Images/Upgrades/fasterfactory.png"),
     },
     scenes:
     {

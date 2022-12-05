@@ -755,5 +755,14 @@ var effectDisplayTemplates =
             {
                 return this.getEffect(this.level) ? "Unlocked" : "Locked";
             }
+        },
+    unlockEffect: function (prefix, suffix)
+    {
+        let p = prefix !== undefined ? prefix : "";
+        let s = suffix !== undefined ? suffix : "";
+            return function()
+            {
+                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : "Locked";
+            }
         }
     };

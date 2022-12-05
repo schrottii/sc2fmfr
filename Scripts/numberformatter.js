@@ -8,7 +8,7 @@ function formatThousands(n, prec)
     });
 }
 
-var NUM_FORMAT_TYPES = 12;
+var NUM_FORMAT_TYPES = 13;
 function formatNumber(x, type, cfg)
 {
     x = new Decimal(x);
@@ -133,6 +133,28 @@ function formatNumber(x, type, cfg)
     if (type === 11) {
         if (x > 0) return "yes";
         else return "no";
+    }
+    if (type === 12) {
+        let suffixes = letters
+        let order = Math.floor(Math.log(x.e / 3) / Math.log(suffixes.length));
+        let remainingE = x.e;
+        let suffix = "";
+
+        while (order >= 0) {
+            let index = Math.floor(remainingE / Math.pow(suffixes.length, order) / 3);
+            suffix += suffixes[index];
+            remainingE -= Math.pow(suffixes.length, order) * index * 3;
+            order--;
+        }
+
+        let pre = numberPrefixesShort;
+        let newE = x.e - 3;
+        let thousand = Math.floor(newE / 3000) < 10 ? pre.thousands[Math.floor(newE / 3000)] : "[" + formatNumber(Math.floor(newE / 3000)) + "]M";
+
+        return x.m.toFixed(x.e < 10000 ? 2 : 0) + "e" + (x.e >= 1e4 ? formatNumber(x.e, game.settings.numberFormatType, { namesAfter: 1e9 }) : x.e.toFixed(0)) + suffix + "&" + thousand +
+            pre.hundreds[Math.floor(newE / 300) % pre.hundreds.length] +
+            pre.ones[Math.floor(newE / 3) % pre.ones.length] +
+            pre.tens[Math.floor(newE / 30) % pre.tens.length];
     }
 }
 

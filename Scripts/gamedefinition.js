@@ -118,17 +118,17 @@
                     trophyMergeCounter = 0;
 
                     // 1 to 10
-                    if (game.ms.includes(86) == false) {
+                    if (game.ms.includes(85) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
                             if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
-                                game.ms.push(86);
+                                game.ms.push(85);
                                 GameNotification.create(new MilestoneNotificaion(86));
                             }
                         }
                     }
 
                     // 69
-                    if (game.ms.includes(88) == false & !barrels.includes(undefined)) {
+                    if (game.ms.includes(87) == false & !barrels.includes(undefined)) {
                         if (trophyProgress != 87001) {
                             if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[12] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
                                 if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0) && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[8].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0) && barrels[11].level.toFixed(0) == barrels[12].level.toFixed(0) && barrels[12].level.toFixed(0) != barrels[13].level.toFixed(0) && barrels[12].level.toFixed(0) == barrels[15].level.toFixed(0) && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[19].level.toFixed(0)) {
@@ -139,7 +139,7 @@
                         else if (trophyProgress == 87001 & !barrels.includes(undefined)) {
                             if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
                                 if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0) && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[7].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0) && barrels[11].level.toFixed(0) != barrels[12].level.toFixed(0) && barrels[14].level.toFixed(0) != barrels[15].level.toFixed(0) && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[17].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[19].level.toFixed(0)) {
-                                    game.ms.push(88);
+                                    game.ms.push(87);
                                     GameNotification.create(new MilestoneNotificaion(88));
                                     trophyProgress = 0;
                                 }
@@ -148,10 +148,10 @@
                     }
 
                     // Pastaring
-                    if (game.ms.includes(89) == false) {
+                    if (game.ms.includes(88) == false) {
                         if (barrels[0] != undefined && barrels[3] != undefined) {
                             if ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353) {
-                                game.ms.push(89);
+                                game.ms.push(88);
                                 GameNotification.create(new MilestoneNotificaion(89));
                             }
                         }
@@ -1148,8 +1148,8 @@
                 }),
             xplustwo: new SkillTreeUpgradeFixed([
                 [[new Decimal(100000), RESOURCE_FRAGMENT]],
-            ], [false, true], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+            ], [false, 2], {
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, ["scrapBoost"]),
             unlockbeamtypes: new SkillTreeUpgradeFixed([
                 [[new Decimal(1000), RESOURCE_BEAM]],
@@ -1208,8 +1208,8 @@
 
             fasterAutoMerge: new SkillTreeUpgradeFixed([
                 [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
-            ], [false, true], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+            ], [false, 50], {
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("-", "%")
             }, ["moreFragments"]),
 
             tireValue: new SkillTreeUpgradeFixed([
@@ -1220,8 +1220,8 @@
 
             higherAstroMax: new SkillTreeUpgradeFixed([
                 [[new Decimal("1e1000"), RESOURCE_SCRAP]],
-            ], [false, true], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+            ], [false, 25], {
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, ["scrapBoost2"]),
 
             moreMergeTokens: new SkillTreeUpgradeFixed([
@@ -1397,15 +1397,15 @@
 
             posusAffectsDark: new SkillTreeUpgradeFixed([
                 [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e6), RESOURCE_DARKFRAGMENT], [new Decimal(10000), RESOURCE_BEAM]],
-            ], [false, true], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+            ], [false, 0.5], {
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("^")
             }, ["unlockScrews"]),
 
             // Row 2
             fallingMagnetValue: new SkillTreeUpgradeFixed([
                 [[new Decimal("1e150"), RESOURCE_MAGNET], [new Decimal(10), RESOURCE_BUCKET], [new Decimal(5000), RESOURCE_MERGE_TOKEN]],
             ], [1, 100], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, ["magnetBoost"]),
 
             unlockTimeMode: new SkillTreeUpgradeFixed([
@@ -1424,10 +1424,10 @@
             veryFastCrafting: new SkillTreeUpgradeFixed([
                 [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(1000), RESOURCE_MASTERYTOKEN], [new Decimal(25000), RESOURCE_AEROBEAM], [new Decimal(1000), RESOURCE_WRENCH]],
                 [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(10000), RESOURCE_BEAM], [new Decimal(200), RESOURCE_WRENCH]],
-                    [[new Decimal("1e400"), RESOURCE_GS], [new Decimal(50), RESOURCE_FISHINGNET], [new Decimal(100), RESOURCE_PLASTICBAG]],
+                    [[new Decimal("1e400"), RESOURCE_GS], [new Decimal(25), RESOURCE_FISHINGNET], [new Decimal(25), RESOURCE_PLASTICBAG]],
                     [[new Decimal("1e750"), RESOURCE_GS], [new Decimal("1e120"), RESOURCE_DARKSCRAP], [new Decimal(250000), RESOURCE_REINFORCEDBEAM]]
             ], [1, 2, 3, 4, 8], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, ["fallingMagnetValue"]),
 
             funnyGlitchBeams: new SkillTreeUpgradeFixed([
@@ -1539,7 +1539,7 @@
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
-                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 24))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
+                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
                 level => new Decimal(20),
                 level => 1,
@@ -1681,7 +1681,7 @@
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
             }),
         glitchbeams: new AutoUpgrade(
-            level => new Decimal(20 + Math.floor(level / 2)),
+            level => new Decimal(10 + Math.floor(level / 5)),
             level => level,
             RESOURCE_FISHINGNET, "glitchbeams",
             time = "b",
@@ -1906,7 +1906,7 @@
                 new Milestone(191, "Screw You!", 108, "Earn 100 screws (total)", () => game.stats.totalscrews.gte(100)),
                 new Milestone(149, "He's afraid of something", 77, () => "Have 300k Reinforced Beams at once", () => game.reinforcedbeams.amount.gte(300000)),
                 new Milestone(189, "The best barrel", 105, "Have 1M mastery merges on barrel 700", () => game.barrelMastery.b[699] >= 1000000),
-                new Milestone(120, "Can't touch this", 69, "Reach " + Decimal.pow(2, 20480).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
+                new Milestone(120, "Can't touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(20480)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 20480))),
                 new Milestone(192, "Crab Saver V", 96, "Buy 2500 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(2500)),
                 new Milestone(193, "Screw This Game!", 108, "Earn 5000 screws (total)", () => game.stats.totalscrews.gte(5000)),
                 new Milestone(194, "From 3 to 4", 51, () => "Level stronger barrel tiers to 100", () => game.darkscrap.upgrades.strongerTiers.level > 99),
@@ -1917,10 +1917,13 @@
                 new Milestone(199, "Screw it, I'm the new King", 107, () => "Earn " + formatNumber(1000000) + " screws (total)", () => game.stats.totalscrews.gte(1000000)),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
                 new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
-                new Milestone(165, "Nobody can touch this", 69, "Reach " + Decimal.pow(2, 40960).toFixed(2) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
+                new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
                 new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000")),
                 new Milestone(201, "Tire Wire Fire Hire", 26, () => "Unlock a new row of tire upgrades...", () => applyUpgrade(game.skillTree.upgrades.newTireUpgrades)),
                 new Milestone(203, "Champion III", 0, () => "200 Achievements", () => game.ms.length > 199),
+                new Milestone(204, "Everyone can read it", 38, () => "Switch to the ultimate notation\nwhile having at least " + formatNumber(new Decimal(1e182)) + " magnets", () => game.settings.numberFormatType == 12 && game.magnets.gte(new Decimal(1e182))),
+                new Milestone(205, "Scrap Coconut II", 0, () => "Merge coconuts", () => game.settings.coconut == true && (game.mergeQuests.dailyQuest.currentMerges >= 4000 || game.mergeQuests.dailyQuest.active == false)),
+                new Milestone(206, "Power Beams", 0, () => "140 Beams per minute", () => game.dimension == 508050),
                 //new Milestone(166, "", 50, "", () => ),
                 ],
         highlighted: 0, 

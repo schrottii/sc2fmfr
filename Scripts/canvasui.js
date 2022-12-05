@@ -309,11 +309,12 @@ class UIButton extends UIElement
 
 function autoToggle(upg) {
     if (upg.time == "b") return false;
+
     if (upg.time != false) {
         upg.time = false;
     }
     else {
-        upg.time = applyUpgrade(upg);
+        upg.time = 0.01;
     }
 }
 
@@ -566,8 +567,12 @@ class UIUpgrade3 extends UIGroup {
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => desc + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
-                new UIText(() => upg.time == "b" ? "" : Math.round(upg.time) + "", 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
+                new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
+                new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
+                    let att = prompt("New time? (In seconds, e. g. 8)");
+                    if(parseInt(att) > 0) upg.setTime = att;
+                }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
             ], isVisible);
     }
 }

@@ -78,6 +78,8 @@ class MovingItem
         {
             ctx.drawImage(this.img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
         }
+        if (this.x < w * -1.5 || this.x > w * 1.5) this.destroy();
+
         if (this.img == images.movingItems.glitchbeam) {
             if (Math.random() > 0.99) {
                 this.x = w * Math.random();
@@ -366,6 +368,11 @@ var movingItemFactory =
                         this.destroy();
                     }
                     if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+
+                    if (game.ms.includes(205) == false && game.settings.musicSelect == 2 && value > 139) {
+                        game.ms.push(205);
+                        GameNotification.create(new MilestoneNotificaion(206));
+                    }
 
                     game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value);
                     game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value);

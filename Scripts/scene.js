@@ -840,7 +840,7 @@ var scenes =
                     if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
                         if (game.ms.includes(120) == false) {
                             game.ms.push(120);
-                            GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[120]));
+                            GameNotification.create(new MilestoneNotificaion(121));
                         }
                     }
                     game.settings.barrelGalleryPage = Math.floor((GoTo - 1) / 20);
@@ -981,10 +981,6 @@ var scenes =
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags)
                 }),
                 new UIButton(0.7, 0.8, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("Screws"), {
-                    quadratic: true,
-                    isVisible: () => game.screws.isUnlocked()
-                }),
-                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.timemode, () => Scene.loadScene("TimeMode"), {
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
@@ -1736,6 +1732,11 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.scenes.timemode, () => Scene.loadScene("TimeMode"), {
+                    quadratic: true,
+                    isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
+                }),
 
                 new UIText(() => "Current Time: " + timeDisplay, 0.5, 0.2, 0.06, "yellow"),
 
@@ -2490,7 +2491,7 @@ var scenes =
             }),
         new Scene("Autobuyers",
             [
-                new UIText("Autobuyers", 0.5, 0.1, 0.08, "white", {
+                new UIText("Auto Buyers", 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2628,11 +2629,11 @@ var scenes =
                     new UISkillTreePath(0.5, 5.75, 0.8, 6.05, 0.01, "skillTreePath", game.skillTree.upgrades.unlockScrews),
 
                     new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.magnetBoost),
-                    new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.newTireUpgrades),
-                    new UISkillTreePath(0.2, 6.05, 0.2, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.posusAffectsDark),
+                    new UISkillTreePath(0.5, 6.05, 0.5, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.newTireUpgrades),
+                    new UISkillTreePath(0.8, 6.05, 0.8, 6.35, 0.01, "skillTreePath", game.skillTree.upgrades.posusAffectsDark),
 
-                    new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.fallingMagnetValue),
-                    new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.unlockTimeMode),
+                    new UISkillTreePath(0.2, 6.35, 0.2, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.fallingMagnetValue),
+                    new UISkillTreePath(0.5, 6.35, 0.5, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.unlockTimeMode),
                     new UISkillTreePath(0.8, 6.35, 0.8, 6.65, 0.01, "skillTreePath", game.skillTree.upgrades.starDaily),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "More Scrap", 0.5, 0.35),
@@ -2691,14 +2692,14 @@ var scenes =
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.magnetBoost, images.upgrades.magnetBoost, "More Magnets", 0.2, 6.05, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.newTireUpgrades, images.upgrades.tireBoost, "Unlock new\nTire Upgrades", 0.5, 6.05, "table2"),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.posusAffectsDark, images.upgrades.unlockScrews, "Posus affects\nDark Fragments\n(^0.5)", 0.8, 6.05, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.posusAffectsDark, images.upgrades.posusDarkFragments, "Posus affects\nDark Fragments", 0.8, 6.05, "table2"),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, "Falling Magnets\nare worth more", 0.2, 6.35, "table"),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockTimeMode, images.upgrades.tireBoost, "Unlock\nTime Mode", 0.5, 6.35, "table"),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.starDaily, images.upgrades.tireBoost, "Star barrels count\nfor daily quests", 0.8, 6.35, "table"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockTimeMode, images.upgrades.unlockTimeMode, "Unlock\nTime Mode", 0.5, 6.35, "table"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.starDaily, images.upgrades.starDaily, "Star barrels count\nfor daily quests", 0.8, 6.35, "table"),
 
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.veryFastCrafting, images.upgrades.fasterMaster, "Faster Crafting", 0.2, 6.65, "table2"),
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.funnyGlitchBeams, images.upgrades.tireBoost, "Funny Glitch Beams\n(& x2 worth)", 0.5, 6.65, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.veryFastCrafting, images.upgrades.fasterFactory, "Faster Crafting", 0.2, 6.65, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.funnyGlitchBeams, images.upgrades.funnyGlitchBeams, "Funny Glitch Beams\n(& x2 worth)", 0.5, 6.65, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax, images.upgrades.moreDarkScrap, "Higher max. for\n2nd Dark Scrap upg.", 0.8, 6.65, "table2"),
                     
                 ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.95})

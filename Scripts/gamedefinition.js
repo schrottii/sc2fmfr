@@ -397,6 +397,8 @@
         totalplasticbags: new Decimal(0),
         totalscrews: new Decimal(0),
         totalscrewscollected: new Decimal(0),
+        giftsSent: new Decimal(0),
+        giftsReceived: new Decimal(0),
     },
     mergeQuests:
     {

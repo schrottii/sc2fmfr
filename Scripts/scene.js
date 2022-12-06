@@ -1,6 +1,7 @@
 ﻿var isPlaying = 0;
 var hePlayed = 0;
 var compareStats = {};
+var comparePage = 0;
 
 var C = "default";
 var calcTime = "";
@@ -1748,7 +1749,15 @@ var scenes =
                 new UIButton(0.84, 0.435, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.dailyQuest.active) {
                         if (game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
-                            game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.dailyQuest.barrelLvl);
+                            let buyTo = game.mergeQuests.dailyQuest.barrelLvl;
+                            if (applyUpgrade(game.skillTree.upgrades.starDaily)) buyTo = Math.floor(game.highestBarrelReached / BARRELS) * BARRELS + game.mergeQuests.dailyQuest.barrelLvl;
+                            game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);
+
+                            while (applyUpgrade(game.skillTree.upgrades.starDaily) && game.scrapUpgrades.betterBarrels.level != buyTo) {
+                                // If star daily tree upg: Go down 1 star every time and keep trying to buy it
+                                buyTo = Math.max(buyTo - BARRELS, 0);
+                                game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);
+                            }
                             Scene.loadScene("Barrels");
                         }
                     }
@@ -1899,7 +1908,9 @@ var scenes =
                     bold: true, valign: "middle",
                 }),
 
-
+                new UIButton(0.5, 0.95, 0.2, 0.07, images.buttonEmpty, () => {
+                    comparePage = ++comparePage % 2;
+                }),
 
                 new UIButton(0.8, 0.95, 0.3, 0.07, images.buttonEmpty, () => {
                     importType = 1;
@@ -1919,44 +1930,60 @@ var scenes =
                 ctx.font = (h * 0.02) + "px " + fonts.default;
                 ctx.textAlign = "left";
                 ctx.textBaseline = "top";
-                for (i = 0; i < 3; i++) {
-                    ctx.fillText(formatNumber([game.highestMasteryLevel, game.highestBarrelReached, game.highestScrapReached][i]), w * 0.01, h * (0.125 + (0.025 * i)));
+
+                if (comparePage == 0) {
+                    var compareIDs = [
+                        "totalwrenches", "totalbeams", "totalaerobeams", "totalangelbeams", "totalreinforcedbeams", "totalglitchbeams", "totalbeamscollected", "totalaerobeamscollected", "totalangelbeamscollected", "totalreinforcedbeamscollected", "totalglitchbeamscollected", "totalquests", "totalmergetokens", "totaldarkscrap", "totalfragments", "totaldarkfragments", "totaltirescollected", "totalgsresets", "playtime", "totaldailyquests", "totalmasterytokens", "totalplasticbags", "totalscrews", "totalscrewscollected", "giftsSent", "giftsReceived"
+                    ];
+                    var compareNums = [new Decimal(game.highestMasteryLevel), new Decimal(game.highestBarrelReached), new Decimal(game.highestScrapReached), game.stats.totalwrenches, game.stats.totalbeams, game.stats.totalaerobeams, game.stats.totalangelbeams, game.stats.totalreinforcedbeams, game.stats.totalglitchbeams, game.stats.totalbeamscollected, game.stats.totalaerobeamscollected, game.stats.totalangelbeamscollected, game.stats.totalreinforcedbeamscollected, game.stats.totalglitchbeamscollected, game.stats.totalquests, game.stats.totalmergetokens, game.stats.totaldarkscrap, game.stats.totalfragments, game.stats.totaldarkfragments, game.stats.totaltirescollected, game.stats.totalgsresets, game.stats.playtime, game.stats.totaldailyquests, game.stats.totalmasterytokens, game.stats.totalplasticbags, game.stats.totalscrews, game.stats.totalscrewscollected, game.stats.giftsSent, game.stats.giftsReceived, new Decimal(game.totalMerges), new Decimal(game.selfMerges)];
+                    var textDisplays = [
+                        "Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total quests completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"
+                    ];
                 }
-                for (i = 0; i < 2; i++) {
-                    ctx.fillText(formatNumber([game.totalMerges, game.selfMerges][i]), w * 0.01, h * (0.75 + (0.025 * i)));
+                else {
+                    var compareIDs = [
+                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks"
+                    ];
+                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks];
+                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills"];
                 }
-                for (i = 0; i < 20; i++) {
-                    ctx.fillText(formatNumber(game.stats[[
-                        "totalwrenches", "totalbeams", "totalaerobeams", "totalangelbeams", "totalreinforcedbeams", "totalglitchbeams", "totalbeamscollected", "totalaerobeamscollected", "totalangelbeamscollected", "totalreinforcedbeamscollected", "totalglitchbeamscollected", "totalquests", "totalmergetokens", "totaldarkscrap", "totalfragments", "totaldarkfragments", "totaltirescollected", "totalgsresets", "playtime", "totaldailyquests"
-                    ][i]]), w * 0.01, h * (0.2 + (0.025 * i)));
+
+                var compareIDs2 = [];
+                for (c in compareIDs) compareIDs2.push(compareIDs[c]);
+                compareIDs2.unshift("highestMasteryLevel", "highestBarrelReached", "highestScrapReached");
+
+                if (comparePage == 0) {
+                    for (i = 0; i < 3; i++) {
+                        ctx.fillText(formatNumber([game.highestMasteryLevel, game.highestBarrelReached, game.highestScrapReached][i]), w * 0.01, h * (0.125 + (0.025 * i)));
+                    }
+                    for (i = 0; i < 2; i++) {
+                        ctx.fillText(formatNumber([game.totalMerges, game.selfMerges][i]), w * 0.01, h * (0.85 + (0.025 * i)));
+                    }
                 }
-                ctx.fillText(formatNumber(game.stats["totaldailyquests"]), w * 0.01, h * (0.7 + (0.025 * i)));
+                for (i = 0; i < compareIDs.length; i++) {
+                    ctx.fillText(formatNumber(game.stats[compareIDs[i]]), w * 0.01, h * (0.2 + (0.025 * i)));
+                }
 
                 ctx.textAlign = "right";
 
-                for (i = 0; i < 3; i++) {
-                    ctx.fillText(formatNumber([compareStats.highestMasteryLevel, compareStats.highestBarrelReached, compareStats.highestScrapReached][i]), w * 0.99, h * (0.125 + (0.025 * i)));
+                if (comparePage == 0) {
+                    for (i = 0; i < 3; i++) {
+                        ctx.fillText(formatNumber([compareStats.highestMasteryLevel, compareStats.highestBarrelReached, compareStats.highestScrapReached][i]), w * 0.99, h * (0.125 + (0.025 * i)));
+                    }
+                    for (i = 0; i < 2; i++) {
+                        ctx.fillText(formatNumber([compareStats.totalMerges, compareStats.selfMerges][i]), w * 0.99, h * (0.85 + (0.025 * i)));
+                    }
                 }
-                for (i = 0; i < 2; i++) {
-                    ctx.fillText(formatNumber([compareStats.totalMerges, compareStats.selfMerges][i]), w * 0.99, h * (0.75 + (0.025 * i)));
+                for (i = 0; i < compareIDs.length; i++) {
+                    ctx.fillText(formatNumber(compareStats[compareIDs[i]]), w * 0.99, h * (0.2 + (0.025 * i)));
                 }
-                for (i = 0; i < 20; i++) {
-                    ctx.fillText(formatNumber(compareStats[[
-                        "totalwrenches", "totalbeams", "totalaerobeams", "totalangelbeams", "totalreinforcedbeams", "totalglitchbeams", "totalbeamscollected", "totalaerobeamscollected", "totalangelbeamscollected", "totalreinforcedbeamscollected", "totalglitchbeamscollected", "totalquests", "totalmergetokens", "totaldarkscrap", "totalfragments", "totaldarkfragments", "totaltirescollected", "totalgsresets", "playtime", "totaldailyquests"
-                    ][i]]), w * 0.99, h * (0.2 + (0.025 * i)));
-                }
-                ctx.fillText(formatNumber(game.stats["totaldailyquests"]), w * 0.99, h * (0.7 + (0.025 * i)));
 
                 ctx.textAlign = "center";
 
-                for (i = 0; i < 27; i++) {
-                    ctx.fillStyle = [new Decimal(game.highestMasteryLevel), new Decimal(game.highestBarrelReached), new Decimal(game.highestScrapReached), game.stats.totalwrenches, game.stats.totalbeams, game.stats.totalaerobeams, game.stats.totalangelbeams, game.stats.totalreinforcedbeams, game.stats.totalglitchbeams, game.stats.totalbeamscollected, game.stats.totalaerobeamscollected, game.stats.totalangelbeamscollected, game.stats.totalreinforcedbeamscollected, game.stats.totalglitchbeamscollected, game.stats.totalquests, game.stats.totalmergetokens, game.stats.totaldarkscrap, game.stats.totalfragments, game.stats.totaldarkfragments, game.stats.totaltirescollected, game.stats.totalgsresets, game.stats.playtime, game.stats.totaldailyquests, new Decimal(0), new Decimal(0), new Decimal(game.totalMerges), new Decimal(game.selfMerges)]
-                    [i].gte(compareStats[[
-                        "highestMasteryLevel", "highestBarrelReached", "highestScrapReached", "totalwrenches", "totalbeams", "totalaerobeams", "totalangelbeams", "totalreinforcedbeams", "totalglitchbeams", "totalbeamscollected", "totalaerobeamscollected", "totalangelbeamscollected", "totalreinforcedbeamscollected", "totalglitchbeamscollected", "totalquests", "totalmergetokens", "totaldarkscrap", "totalfragments", "totaldarkfragments", "totaltirescollected", "totalgsresets", "playtime", "totaldailyquests", "totaldailyquests", "totaldailyquests", "totalMerges", "selfMerges"
-                    ][i]]) ? "lightgreen" : colors[C]["text"];
-                    ctx.fillText([
-                        "Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total quests completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "", "", "Total Merges", "Self Merges"
-                    ][i], w * 0.5, h * (0.125 + (0.025 * i)));
+                for (i = 0; i < compareNums.length; i++) {
+                    ctx.fillStyle = compareNums
+                    [i].gte(compareStats[compareIDs2[i]]) ? "lightgreen" : colors[C]["text"];
+                    ctx.fillText(textDisplays[i], w * 0.5, h * (0.125 + (0.025 * i) + (comparePage > 0 ? 0.075 : 0)));
                 }
             }
         ),

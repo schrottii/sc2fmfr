@@ -27,6 +27,46 @@ var trophyProgress = 0;
 
 var FPS = 9999;
 
+let shortV = {
+    "playtime": "p",
+    "totalwrenches": "w",
+    "totalbeams": "b",
+    "totalaerobeams": "eb",
+    "totalangelbeams": "ab",
+    "totalreinforcedbeams": "rb",
+    "totalglitchbeams": "gb",
+    "totalbeamscollected": "bc",
+    "totalaerobeamscollected": "ebc",
+    "totalangelbeamscollected": "abc",
+    "totalreinforcedbeamscollected": "rbc",
+    "totalglitchbeamscollected": "gbc",
+    "totalgoldenbeamscollected": "glc",
+    "totalquests": "q",
+    "totalmergetokens": "mgt",
+    "totaldarkscrap": "ds",
+    "totalfragments": "f",
+    "totaldarkfragments": "df",
+    "totaltirescollected": "ttc",
+    "totalgsresets": "tgs",
+    "totaldailyquests": "tdq",
+    "totallegendaryscrap": "ls",
+    "totalsteelmagnets": "sm",
+    "totalbluebricks": "bb",
+    "totalbuckets": "bck",
+    "totalfishingnets": "fn",
+    "totaltanks": "tx",
+    "totalmasterytokens": "mt",
+    "totalplasticbags": "pb",
+    "totalscrews": "s",
+    "totalscrewscollected": "sc",
+    "highestMasteryLevel": "ml",
+    "highestBarrelReached": "br",
+    "highestScrapReached": "sr",
+    "totalAchievements": "ms",
+    "selfMerges": "sfm",
+    "totalMerges": "ttm",
+}
+
 var spawnTime =
     {
         cooldown: 0,
@@ -966,8 +1006,8 @@ function maxSunUpgrades() {
 }
 
 function exportCompare() {
-    let exportCode;
-    exportCode = Object.assign({}, game.stats, {
+    let pexportCode;
+    pexportCode = Object.assign({}, game.stats, {
         highestMasteryLevel: game.highestMasteryLevel,
         highestBarrelReached: game.highestBarrelReached,
         highestScrapReached: game.highestScrapReached,
@@ -976,7 +1016,14 @@ function exportCompare() {
         totalMerges: game.totalMerges
     });
 
-    exportCode = "tPt3-" + btoa(JSON.stringify(exportCode));
+    let exportCode = {};
+
+    for (e in pexportCode) {
+        console.log(e, shortV[e]);
+        exportCode[shortV[e]] = typeof (pexportCode[e]) == "object" ? pexportCode[e].toPrecision(6).toString() : pexportCode[e].toFixed(6).toString();
+    }
+
+    exportCode = "tPt4-" + btoa(JSON.stringify(exportCode));
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
     alert("The compare code has  been copied to your clipboard. Paste it into a text file and keep the file safe.");
@@ -1091,6 +1138,8 @@ function loadVal(v, alt)
 }
 
 function loadCompare(compareCode) {
+    let compareCodeType = parseInt(compareCode[3]); // returns 3 or 4
+
     importCode = compareCode.slice(5);
     try {
         importCode = atob(importCode);
@@ -1107,10 +1156,23 @@ function loadCompare(compareCode) {
         return false;
     }
     compareStats = {};
-    for (i in importCode) {
-        compareStats[i] = importCode[i];
-        if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
+    if (compareCodeType == 3) {
+        for (i in importCode) {
+            compareStats[i] = importCode[i];
+            if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
+        }
     }
+    if (compareCodeType == 4) {
+        let sic = {};
+        for (var key in shortV) {
+            sic[shortV[key]] = key;
+        }
+
+        for (i in importCode) {
+            compareStats[sic[i]] = importCode[i];
+        }
+    }
+
 }
 
 function loadGame(saveCode, isFromFile=false)

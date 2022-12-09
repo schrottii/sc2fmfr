@@ -34,7 +34,7 @@ var timeModeTime = 0;
 var timeTires = 0;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-var tabYs = [0.2, 0.8, 1.6, 2.0];
+var tabYs = [0.2, 0.8, 1.7, 2.1];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
@@ -2260,6 +2260,9 @@ var scenes =
 
                     // No Barrels
                     new UIToggleOption(tabYs[1] + 0.7, "game.settings.nobarrels", "Hide barrels entirely", "table2"),
+
+                    // FPS
+                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.displayFPS", "Show FPS"),
 
 
                     new UIText("Audio", 0.5, tabYs[2], 0.075, "white", {

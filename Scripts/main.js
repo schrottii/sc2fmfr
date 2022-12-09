@@ -548,13 +548,14 @@ function update()
         }
     }
 
-    /*
-    ctx.font = (h * .02) + "px " + fonts.default;
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = "white";
-    ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
-    */
+    if (game.settings.displayFPS) {
+        ctx.font = (h * .02) + "px " + fonts.default;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "white";
+        ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
+    }
+
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
@@ -1263,6 +1264,7 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.beamTimer = loadVal(loadObj.settings.beamTimer, false);
         game.settings.FPS = loadVal(loadObj.settings.FPS, 9999);
         game.settings.coconut = loadVal(loadObj.settings.coconut, false);
+        game.settings.displayFPS = loadVal(loadObj.settings.displayFPS, false);
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
 

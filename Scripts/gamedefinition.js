@@ -2029,5 +2029,6 @@
         beamTimer: false,
         coconut: false,
         musicVolume: 0,
+        displayFPS: false,
     }
 };

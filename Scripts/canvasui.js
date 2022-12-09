@@ -143,9 +143,10 @@ class UIGroup
 
 class UIScrollContainer2D extends UIGroup
 {
-    constructor(elements, x, y, w, h, isVisisble, customBounds)
+    constructor(elements, x, y, w, h, isVisiible, customBounds)
     {
-        super(elements, isVisisble);
+        super(elements);
+        this.isVisiible = isVisiible;
         this.x = x;
         this.y = y;
         this.w = w;
@@ -182,7 +183,7 @@ class UIScrollContainer2D extends UIGroup
         {
             ui.update();
         }
-        if(mousePressed)
+        if (mousePressed && this.isVisiible())
         {
             let mx = Math.abs(mouseMoveX) > 1 ? mouseMoveX : 0;
             let my = Math.abs(mouseMoveY) > 1 ? mouseMoveY : 0;
@@ -199,24 +200,40 @@ class UIScrollContainer2D extends UIGroup
         }
     }
 
-    render()
-    {
+    render() {
         let nx = this.x * w;
         let ny = this.y * h;
         let nw = this.w * w;
         let nh = this.h * h;
         ctx.save();
         let path = new Path2D();
-        path.moveTo(nx, ny);
-        path.lineTo(nx + nw, ny);
-        path.lineTo(nx + nw, ny + nh);
-        path.lineTo(nx, ny + nh);
-        ctx.clip(path);
-        for(let ui of this.uiElements)
-        {
-            ui.offset = [-this.scrollX, -this.scrollY];
-            ui.render(ctx);
+
+        if (this.isVisiible()) {
+            path.moveTo(nx, ny);
+            path.lineTo(nx + nw, ny);
+            path.lineTo(nx + nw, ny + nh);
+            path.lineTo(nx, ny + nh);
+            ctx.clip(path);
         }
+        for (let ui of this.uiElements) {
+            if (this.isVisiible()) ui.offset = [-this.scrollX, -this.scrollY];
+            let dispos;
+            if (ui.uiElements != undefined) {
+                if (ui.uiElements[0].uiElements != undefined) dispos = [ui.uiElements[0].uiElements[0].x, ui.uiElements[0].uiElements[0].y, ui.uiElements[0].uiElements[0].height, ((ui.uiElements[0].uiElements[0].points != undefined) ? (ui.uiElements[0].uiElements[0].points[1][1] - ui.uiElements[0].uiElements[0].points[1][0]) : 0)];
+                else dispos = [ui.uiElements[0].x, ui.uiElements[0].y, ui.uiElements[0].height / 2, ((ui.uiElements[0].points != undefined) ? (ui.uiElements[0].points[1][1] - ui.uiElements[0].points[1][0]) : 0)];
+            }
+            else dispos = [ui.x, ui.y, ui.height, ((ui.points != undefined) ? ui.points[1][1] - ui.points[1][0] : 0)];
+
+            if (dispos[0] + ui.offset[0] < this.x + this.w && dispos[1] - dispos[2] + ui.offset[1] < this.y + this.h &&
+                dispos[0] + ui.offset[0] >= this.x && dispos[1] + dispos[2] + dispos[3] + ui.offset[1] >= this.y) {
+                ui.outOfScroll = false;
+                ui.render(ctx);
+            }
+            else ui.outOfScroll = true;
+        }
+
+        if (!this.isVisiible()) return false;
+
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
         if(this.axis.x)
         {
@@ -257,9 +274,9 @@ class UIScrollContainerX extends UIScrollContainer2D
 
 class UIScrollContainerY extends UIScrollContainer2D
 {
-    constructor(ui, x, y, w, h, isVisible, customBounds)
+    constructor(ui, x, y, w, h, isVisiible, customBounds)
     {
-        super(ui ,x, y, w, h, isVisible, customBounds);
+        super(ui, x, y, w, h, isVisiible, customBounds);
         this.axis.x = false;
         this.scrollX = 0;
         this.scrollY = this.scrollBounds.ymin;
@@ -292,11 +309,12 @@ class UIButton extends UIElement
 
 function autoToggle(upg) {
     if (upg.time == "b") return false;
+
     if (upg.time != false) {
         upg.time = false;
     }
     else {
-        upg.time = applyUpgrade(upg);
+        upg.time = 0.01;
     }
 }
 
@@ -403,6 +421,7 @@ class UICheckbox extends UIElement
             eval(this.prop + " = !" + this.prop);
             this.customClick();
         }
+        playMusic();
     }
 
     render(ctx)
@@ -548,8 +567,16 @@ class UIUpgrade3 extends UIGroup {
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => desc + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
-                new UIText(() => upg.time == "b" ? "" : Math.round(upg.time) + "", 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
+                new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
+                new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
+                    let att = prompt("New time? (In seconds, e. g. 8)");
+                    if (parseInt(att) > 0) upg.setTime = att;
+                    if (game.ms.includes(207) == false) {
+                        game.ms.push(207);
+                        GameNotification.create(new MilestoneNotificaion(208));
+                    }
+                }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
             ], isVisible);
     }
 }
@@ -678,6 +705,11 @@ class UIAutoUpgrade extends UIUpgrade3 {
 class UIMasteryUpgrade extends UIUpgrade {
     constructor(upg, img, y, desc, col, isVisible) {
         super(upg, img, "$images.masteryToken$", y, desc, 0.05, col, isVisible, true, true);
+    }
+}
+class UICogwheelUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
+        super(upg, img, "$images.cogwheel$", y, desc, 0.05, col, isVisible, false, true);
     }
 }
 

@@ -21,7 +21,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_PLASTICBAG = 20,
     RESOURCE_BUCKET = 21,
     RESOURCE_FISHINGNET = 22,
-    RESOURCE_SCREW = 23;
+    RESOURCE_SCREW = 23,
+    RESOURCE_COGWHEEL = 24;
 
 function applyUpgrade(upg)
 {
@@ -80,6 +81,8 @@ function getUpgradeResource(res)
             return game.factory.fishingNets;
         case RESOURCE_SCREW:
             return game.screws.amount;
+        case RESOURCE_COGWHEEL:
+            return game.cogwheels.amount;
         default:
             return null;
     }
@@ -158,6 +161,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_SCREW:
             game.screws.amount = res;
             break;
+        case RESOURCE_COGWHEEL:
+            game.cogwheels.amount = res;
+            break;
         default:
             break;
     }
@@ -215,6 +221,8 @@ function getResourceImage(res)
             return "$images.fishingNet$";
         case RESOURCE_SCREW:
             return "$images.screw$";
+        case RESOURCE_COGWHEEL:
+            return "$images.cogwheel$";
         default:
             break;
     }
@@ -246,6 +254,9 @@ class ScrapUpgrade
             {
                 this.onLevelDown = cfg.onLevelDown;
             }
+            if (cfg.onBuyMax) {
+                this.onBuyMax = cfg.onBuyMax;
+            }
             if (cfg.isUnlocked)
             {
                 this.isUnlocked = cfg.isUnlocked;
@@ -271,14 +282,17 @@ class ScrapUpgrade
 
     }
 
+    onBuyMax() {
+
+    }
 
 
-    buy(round) {
+
+    buy(round, disableOnBuy=false) {
         let resource = getUpgradeResource(this.resource);
-
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford) {
-            this.onBuy();
+            if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
             resource = resource.sub(p);
             if (isNaN(resource)) //is resource negative
@@ -413,7 +427,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gte(resource))
+            if(p[0].gt(resource))
             {
                 return;
             }
@@ -687,6 +701,12 @@ class MasteryTokenUpgrade extends ScrapUpgrade {
         this.resource = RESOURCE_MASTERYTOKEN;
     }
 }
+class CogwheelUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_COGWHEEL;
+    }
+}
 
 var EarthLevels =
     {
@@ -701,6 +721,7 @@ var EarthLevels =
         ANGEL_BEAMS: 10,
         SECOND_DIMENSION: 11,
         SCRAP_FACTORY: 12,
+        GIFTS: 13,
     };
 
 var effectDisplayTemplates =
@@ -741,6 +762,15 @@ var effectDisplayTemplates =
             return function()
             {
                 return this.getEffect(this.level) ? "Unlocked" : "Locked";
+            }
+        },
+    unlockEffect: function (prefix, suffix)
+    {
+        let p = prefix !== undefined ? prefix : "";
+        let s = suffix !== undefined ? suffix : "";
+            return function()
+            {
+                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : "Locked";
             }
         }
     };

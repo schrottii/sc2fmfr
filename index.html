@@ -1,69 +1,79 @@
 ﻿<!DOCTYPE html>
-<html>
-    <head>
-        <title>Scrap</title>
-        <meta charset="utf-8"/>
+<html lang="en">
+<head>
+    <title>Scrap</title>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="#C8777F">
+    <link rel="manifest" href="manifest.webmanifest" />
 
-        <style>
-            @font-face {
-                font-family: "Work Sans";
-                src: url("Fonts/WorkSans-Medium.ttf");
-                font-weight: 500;
-            }
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="fr29" />
+    <link rel="apple-touch-icon" href="Images/app-icon.png" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-            @font-face {
-                font-family: "Work Sans";
-                src: url("Fonts/WorkSans-Bold.ttf");
-                font-weight: 700;
-            }
+    <style>
+        @font-face {
+            font-family: "Work Sans";
+            src: url("Fonts/WorkSans-Medium.ttf");
+            font-weight: 500;
+        }
 
-            @font-face {
-                font-family: "Work Sans";
-                src: url("Fonts/WorkSans-Black.ttf");
-                font-weight: 900;
-            }
+        @font-face {
+            font-family: "Work Sans";
+            src: url("Fonts/WorkSans-Bold.ttf");
+            font-weight: 700;
+        }
 
-            *, html, body{
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                height: 100%;
-                text-align: center;
-            }
+        @font-face {
+            font-family: "Work Sans";
+            src: url("Fonts/WorkSans-Black.ttf");
+            font-weight: 900;
+        }
 
-            body{
-                background-color: black;
-                font-family: Helvetica, Arial, sans-serif;
-            }
+        *, html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            text-align: center;
+        }
 
-            canvas#gameCanvas{
-                width: auto;
-                height: 100%;
-            }
+        body {
+            background-color: black;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+ 
+        canvas#gameCanvas {
+            width: auto;
+            height: 100%;
+        }
 
-            canvas.cache{
-                width: 0;
-                height: 0;
-            }
+        canvas.cache {
+            width: 0;
+            height: 0;
+        }
 
-            div.absolute{
-                position: absolute;
-                display: none;
-                left: 0;
-                top: 0;
-                width: 100vw;
-                height: 100vh;
-                padding: 0;
-                margin: 0;
-                z-index: 10;
-                background-color: rgba(0, 0, 0, 0.3);
-            }
+        div.absolute {
+            position: absolute;
+            display: none;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
 
-            div.absolute > *{
+            div.absolute > * {
                 transform: translate(-50%, -50%);
             }
 
-            div.absolute textarea{
+            div.absolute textarea {
                 position: absolute;
                 left: 50vw;
                 top: 25vh;
@@ -76,7 +86,7 @@
                 border: none;
             }
 
-            div.absolute > button{
+            div.absolute > button {
                 height: 1.5em;
                 position: absolute;
                 font-size: 3vh;
@@ -85,43 +95,47 @@
                 box-shadow: 1px 1px 0px black;
                 padding: 0.5vh;
             }
-        </style>
-    </head>
+    </style>
+</head>
 
-    <body>
-        <canvas id="gameCanvas" width="500" height="800"></canvas>
+<body>
+    <canvas id="gameCanvas" width="500" height="800"></canvas>
 
-        <div class="absolute">
-            <div id="myFhile" style="left: 70vw; top: 70vh;" type="file"></div>
+    <div class="absolute">
+        <div id="myFhile" style="left: 70vw; top: 70vh;" type="file"></div>
 
-            <textarea value="text" id="text-area"></textarea>
-            <button id="export" style="left: 30vw; top: 60vh;">Export</button>
-            <button id="import" style="left: 70vw; top: 60vh;">Import</button>
+        <textarea value="text" id="text-area"></textarea>
+        <button id="export" style="left: 30vw; top: 60vh;">Export</button>
+        <button id="import" style="left: 70vw; top: 60vh;">Import</button>
 
-            <button id="save" onclick="saveFile()" style="left: 30vw; top: 70vh;">Export file</button>
-            <input id="myFile" style="margin-left: 50%; margin-top: 90%;" type="file">
-            <button style="left: 70vw; top: 70vh;" onclick="openFile()">Import file</button>
+        <button id="save" onclick="saveFile()" style="left: 30vw; top: 70vh;">Export file</button>
+        <input id="myFile" style="margin-left: 50%; margin-top: 90%;" type="file">
+        <button style="left: 70vw; top: 70vh;" onclick="openFile()">Import file</button>
 
-            <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
+        <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
 
-            <button id="close" style="left: 50vw; top: 80vh;">Close</button>
-        </div>
+        <button style="color: white; left: 50vw; top: 7vh; width: 85%" id="add-button">Add to home screen</button>
+        <button id="close" style="left: 50vw; top: 80vh;">Close</button>
+    </div>
 
-        <script src="Scripts/breakinfinity.js"></script>
-        <script src="Scripts/graphemesplitter.js"></script>
-        <script src="Scripts/utils.js"></script>
-        <script src="Scripts/numberformatter.js"></script>
-        <script src="Scripts/preload.js"></script>
-        <script src="Scripts/canvasui.js"></script>
-        <script src="Scripts/gamenotification.js"></script>
-        <script src="Scripts/upgrade.js"></script>
-        <script src="Scripts/mergequest.js"></script>
-        <script src="Scripts/milestone.js"></script>
-        <script src="Scripts/movingitems.js"></script>
-        <script src="Scripts/gamedefinition.js"></script>
-        <script src="Scripts/scene.js"></script>
-        <script src="Scripts/barrel.js"></script>
-        <script src="Scripts/effects.js"></script>
-        <script src="Scripts/main.js"></script>
-    </body>
+    <audio id="audioPlayer"></audio>
+
+    <script src="Scripts/breakinfinity.js"></script>
+    <script src="Scripts/graphemesplitter.js"></script>
+    <script src="Scripts/utils.js"></script>
+    <script src="Scripts/numberformatter.js"></script>
+    <script src="Scripts/preload.js"></script>
+    <script src="Scripts/pwa.js"></script>
+    <script src="Scripts/canvasui.js"></script>
+    <script src="Scripts/gamenotification.js"></script>
+    <script src="Scripts/upgrade.js"></script>
+    <script src="Scripts/mergequest.js"></script>
+    <script src="Scripts/milestone.js"></script>
+    <script src="Scripts/movingitems.js"></script>
+    <script src="Scripts/gamedefinition.js"></script>
+    <script src="Scripts/scene.js"></script>
+    <script src="Scripts/barrel.js"></script>
+    <script src="Scripts/effects.js"></script>
+    <script src="Scripts/main.js"></script>
+</body>
 </html>

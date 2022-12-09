@@ -2,12 +2,15 @@ var barrelsLoaded = false;
 var BARREL_SPRITE_SIZE = 64;
 
 
+var imageURLs = [];
+
 function loadImage(path, onload) {
     let img = new Image();
     img.src = path;
     if (onload) {
         img.onload = onload;
     }
+    imageURLs.push(path);
     return img;
 }
 
@@ -22,6 +25,7 @@ var images =
     barrels7: undefined,
     barrels8: undefined,
     barrels9: undefined,
+    barrels10: undefined,
     shadowBarrels: [],
     previewBarrels: [],
     appIcon: loadImage("Images/app-icon.png"),
@@ -46,6 +50,7 @@ var images =
     trophy: loadImage("Images/trophies.png"),
     exportGame: loadImage("Images/Buttons/export_game.png"),
     importGame: loadImage("Images/Buttons/import_game.png"),
+    setTimeButton: loadImage("Images/Buttons/settime.png"),
     exportImport: loadImage("Images/Buttons/export_import.png"),
     zoomOut: loadImage("Images/Buttons/button_zoom_out.png"),
     zoomIn: loadImage("Images/Buttons/button_zoom_in.png"),
@@ -79,12 +84,16 @@ var images =
     multibuybutton: loadImage("Images/Buttons/multibuybutton.png"),
     screw: loadImage("Images/Currencies/screw.png"),
     factoryguy: loadImage("Images/Buildings/factoryguy.png"),
+    cogwheel: loadImage("Images/Currencies/cogwheel.png"),
+    storm: loadImage("Images/storm.png"),
+    gift: loadImage("Images/gift.png"),
+    setmessage: loadImage("Images/Buttons/setmsg.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
         discord: loadImage("Images/discord.png"),
         youtube: loadImage("Images/youtube.png"),
-        cook1eegames: loadImage("Images/cook1eegames.png")
+        schrottii: loadImage("Images/schrottii.png")
     },
     options:
     {
@@ -182,6 +191,11 @@ var images =
         doublePlasticBags: loadImage("Images/Upgrades/doubleplasticbags.png"),
         unlockPlasticBags: loadImage("Images/Upgrades/unlockplasticbags.png"),
         unlockScrews: loadImage("Images/Upgrades/unlockscrews.png"),
+        starDaily: loadImage("Images/Upgrades/stardaily.png"),
+        unlockTimeMode: loadImage("Images/Upgrades/unlocktimemode.png"),
+        funnyGlitchBeams: loadImage("Images/Upgrades/glitchbeams.png"),
+        posusDarkFragments: loadImage("Images/Upgrades/posusdarkfragments.png"),
+        fasterFactory: loadImage("Images/Upgrades/fasterfactory.png"),
     },
     scenes:
     {
@@ -214,6 +228,8 @@ var images =
         convert: loadImage("Images/Scenes/convertscene.png"),
         plasticbags: loadImage("Images/Scenes/plasticbags.png"),
         screws: loadImage("Images/Scenes/screws.png"),
+        timemode: loadImage("Images/Scenes/timemode.png"),
+        gifts: loadImage("Images/Scenes/gifts.png"),
     },
     solarSystem:
     {
@@ -311,6 +327,14 @@ var fonts =
     title: "Work Sans, Arial, sans-serif"
 };
 
+var songs =
+{
+    newerWave: "Sounds/NewerWave.mp3",
+    gettingItDone: "Sounds/GettingitDone.mp3",
+    powerBeams: "Sounds/powerbeams.mp3",
+    voltaic: "Sounds/Voltaic.mp3",
+};
+
 var cacheCanvas = document.createElement("canvas");
 document.body.appendChild(cacheCanvas);
 cacheCanvas.style.appearance = "none";
@@ -330,7 +354,7 @@ function cacheBarrel(id) {
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
 
-    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % BARRELS) / 100))) % 8, 1);
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % BARRELS) / 100))) % 11, 1); /* Change this when you add new BARRELS files */
     cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();
@@ -350,21 +374,3 @@ function cacheBarrel(id) {
     cacheCanvasCtx.translate(1000, 0);
     images.previewBarrels[id] = img;
 }
-
-
-function sound(src) {
-    this.sound = document.createElement("audio");
-    this.sound.src = src;
-    this.sound.setAttribute("preload", "auto");
-    this.sound.setAttribute("controls", "none");
-    this.sound.style.display = "none";
-    document.body.appendChild(this.sound);
-
-    this.play = function () {
-        this.sound.play();
-    }
-    this.pause = function () {
-        this.sound.pause();
-    }
-}
-

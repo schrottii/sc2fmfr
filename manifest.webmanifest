@@ -1,0 +1,21 @@
+{
+  "name": "Scrap II Fanmade FR",
+  "short_name": "SC2FMFR",
+  "theme_color": "#C8777F",
+  "background_color": "#303030",
+  "icons": [
+    {
+      "src": "favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "start_url": "index.html"
+}

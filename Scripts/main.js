@@ -10,6 +10,8 @@ var importType = 0;
 var gSplitter = new GraphemeSplitter();
 
 var barrels = [];
+var stormQueue = []; // queueueueueeueueuueueuueuuuu euueue ueuuee? ? ? ? ? ?????? ????
+var freeSpots = 20;
 var draggedBarrel;
 var tempDrawnBarrels = []; //barrels drawn below newly merged barrels
 var lastClickedBarrel = -1;
@@ -24,6 +26,46 @@ var trophyMergeCounter = 0;
 var trophyProgress = 0;
 
 var FPS = 9999;
+
+let shortV = {
+    "playtime": "p",
+    "totalwrenches": "w",
+    "totalbeams": "b",
+    "totalaerobeams": "eb",
+    "totalangelbeams": "ab",
+    "totalreinforcedbeams": "rb",
+    "totalglitchbeams": "gb",
+    "totalbeamscollected": "bc",
+    "totalaerobeamscollected": "ebc",
+    "totalangelbeamscollected": "abc",
+    "totalreinforcedbeamscollected": "rbc",
+    "totalglitchbeamscollected": "gbc",
+    "totalgoldenbeamscollected": "glc",
+    "totalquests": "q",
+    "totalmergetokens": "mgt",
+    "totaldarkscrap": "ds",
+    "totalfragments": "f",
+    "totaldarkfragments": "df",
+    "totaltirescollected": "ttc",
+    "totalgsresets": "tgs",
+    "totaldailyquests": "tdq",
+    "totallegendaryscrap": "ls",
+    "totalsteelmagnets": "sm",
+    "totalbluebricks": "bb",
+    "totalbuckets": "bck",
+    "totalfishingnets": "fn",
+    "totaltanks": "tx",
+    "totalmasterytokens": "mt",
+    "totalplasticbags": "pb",
+    "totalscrews": "s",
+    "totalscrewscollected": "sc",
+    "highestMasteryLevel": "ml",
+    "highestBarrelReached": "br",
+    "highestScrapReached": "sr",
+    "totalAchievements": "ms",
+    "selfMerges": "sfm",
+    "totalMerges": "ttm",
+}
 
 var spawnTime =
     {
@@ -63,6 +105,16 @@ function isMobile()
         }
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
+}
+
+
+// Register service worker to control making site work offline
+
+if ('serviceWorker' in navigator && location.protocol === "https:" && window.isSecureContext) {
+    console.log('Service Worker Registered');
+    navigator.serviceWorker
+        .register('serviceworker.js')
+        .then(() => { console.log('File loaded'); });
 }
 
 function setup()
@@ -126,32 +178,56 @@ function update()
 
         spawnTime.cooldown += delta;
 
-        let barrelsToSpawn = Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber()));
-        if(barrelsToSpawn > 0)
-        {
+        let barrelsToSpawn = Math.min(freeSpots,Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
+        if (barrelsToSpawn > 0) {
             spawnTime.cooldown = 0;
-            for(let i = 0; i < barrelsToSpawn; i++)
-            {
+            for (let i = 0; i < barrelsToSpawn; i++) {
                 spawnBarrel();
-                if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber())
-                {
-                    spawnBarrel();
+                if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber()) {
+                    if (freeSpots > 0 && !timeMode) spawnBarrel();
                 }
             }
         }
+        else if (timeMode && freeSpots == 0) {
+            timeMode = false;
+            let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
-        if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS)
+            if (game.ms.includes(215) == false && cogReward > 999) {
+                game.ms.push(215);
+                GameNotification.create(new MilestoneNotificaion(216));
+            }
+
+            game.goldenScrap.reset();
+
+            game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
+            GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
+
+            timeModeTime = 0;
+            let Ti = 0;
+            while (timeTires >= 0) {
+                stormQueue.push([100 * Ti, "tire", 1]);
+                timeTires -= 1;
+                Ti += 1;
+            }
+        }
+
+        if (timeMode) {
+            timeModeTime += delta;
+            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 4);
+        }
+
+        if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode)
         {
             fallingMagnetTime += game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS ? delta : 0;
 
             if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber())
             {
                 fallingMagnetTime = 0;
-                movingItemFactory.fallingMagnet(Decimal.round(getMagnetBaseValue().mul(5).mul((game.mergeQuests.upgrades.fallingMagnetValue.level) + 1).mul(applyUpgrade(game.aerobeams.upgrades.betterFallingMagnets))));
+                movingItemFactory.fallingMagnet(fallingMagnetWorth());
             }
         }
 
-        if(game.milestones.achievements[7].isUnlocked())
+        if (game.milestones.achievements[7].isUnlocked() && !timeMode)
         {
             if(game.settings.autoMerge)
             {
@@ -160,7 +236,7 @@ function update()
             tryAutoMerge();
         }
 
-        if (game.highestBarrelReached > 299) {
+        if (game.highestBarrelReached > 299 && !timeMode) {
             if (game.settings.autoConvert) {
                 autoConvertTime += delta;
             }
@@ -198,9 +274,9 @@ function update()
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
                 if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2))) {
-                    game.autos[i].time -= delta;
-                    if (game.autos[i].time <= 0) {
-                        game.autos[i].time = applyUpgrade(game.autos[i]);
+                    game.autos[i].time += delta;
+                    if (game.autos[i].time >= Math.max(applyUpgrade(game.autos[i]), ((game.autos[i].setTime != undefined) ? game.autos[i].setTime : 0))) {
+                        game.autos[i].time = 0.001;
                         if (game.autos[i].auto[1] != "all") {
                             if (game.autos[i].auto[2] == undefined) {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
@@ -261,7 +337,7 @@ function update()
 
         if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) {
             gsStormTime += delta;
-            if (gsStormTime >= 60) {
+            if (gsStormTime >= 60 && !timeMode) {
                 gsStormTime = 0;
                 if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
                     if (applyUpgrade(game.skillTree.upgrades.shortGSStorms)) {
@@ -269,7 +345,7 @@ function update()
                     }
                     else {
                         for (i = 0; i < 20; i++) {
-                            setTimeout(function () { movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35)) }, 250 * i);
+                            stormQueue.push([250 * i, "gs", game.goldenScrap.getResetAmount().div(35)]);
                         }
                     }
                 }
@@ -282,184 +358,226 @@ function update()
         if (game.beams.isUnlocked()) {
             game.beams.time += delta;
 
-            // Normal Beams
-            if (game.beams.selected == 0) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+            if (!timeMode) {
+                // Normal Beams
+                if (game.beams.selected == 0) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "beam", getBeamBaseValue()]);
+                                    renewableEnergy();
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingBeam(getBeamBaseValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingBeam(getBeamBaseValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Aerobeams
-            if (game.beams.selected == 1) {
-                if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Aerobeams
+                else if (game.beams.selected == 1) {
+                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "aerobeam", getBeamBaseValue()]);
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingAeroBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
-                        }
-                    }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingAeroBeam(getBeamBaseValue());
-                            if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
-                                movingItemFactory.glitchItem(1);
+                            else {
+                                movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                                if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
+                                    movingItemFactory.glitchItem(1);
+                                }
                             }
+                            renewableEnergy();
                         }
-                        renewableEnergy();
+                        game.beams.time = 0;
                     }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Angel Beams
-            if (game.beams.selected == 2) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Angel Beams
+                else if (game.beams.selected == 2) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "angelgoldenbeam", getAngelBeamValue()]);
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingAngelBeam(getAngelBeamValue()) }, 500 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingAngelBeam(getAngelBeamValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingAngelBeam(getAngelBeamValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Reinforced Beams
-            for(i in movingItems) movingItems[i].cooldown += delta;
-            if (game.beams.selected == 3) {
-                if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Reinforced Beams
+                else if (game.beams.selected == 3) {
+                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([750 * i, "reinforcedbeam", getReinforcedBeamValue()]);
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue()) }, 1000 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
+                            }
+                            renewableEnergy();
                         }
+                        game.beams.time = 0;
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
-            }
 
-            // Glitch Beams
-            if (game.beams.selected == 4) {
-                if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                    if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGoldenBeam(getBeamBaseValue()) }, 500 * i);
-                                renewableEnergy();
+                // Glitch Beams
+                else if (game.beams.selected == 4) {
+                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
+                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
+                                }
+                            }
+                            else {
+                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
+                                    stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
+                                }
                             }
                         }
                         else {
-                            for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                setTimeout(function () { movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))) }, 1000 * i);
-                                renewableEnergy();
+                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
+                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
+                            else {
+                                movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                            }
+                            renewableEnergy();
+                        }
+                        game.beams.time = 0;
+                    }
+                }
+
+                for (i in movingItems) movingItems[i].cooldown += delta;
+                if (stormQueue.length > 0 || movingItems.length > 4) {
+                    ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+
+                    for (q in stormQueue) {
+                        stormQueue[q][0] -= delta * 1000;
+
+                        if (stormQueue[q][0] < 1) {
+                            let val = stormQueue[q][2];
+
+                            switch (stormQueue[q][1]) {
+                                case "tire":
+                                    movingItemFactory.jumpingTire();
+                                    break;
+                                case "goldenbeam":
+                                    movingItemFactory.fallingGoldenBeam(val);
+                                    break;
+                                case "beam":
+                                    movingItemFactory.fallingBeam(val);
+                                    break;
+                                case "aerobeam":
+                                    movingItemFactory.fallingAeroBeam(val);
+                                    break;
+                                case "angelbeam":
+                                    movingItemFactory.fallingAngelBeam(val);
+                                    break;
+                                case "reinforcedbeam":
+                                    movingItemFactory.fallingReinforcedBeam(val);
+                                    break;
+                                case "glitchbeam":
+                                    movingItemFactory.fallingGlitchBeam(val);
+                                    break;
+                                case "gs":
+                                    movingItemFactory.fallingGold(val);
+                                    break;
+                            }
+
+                            stormQueue.splice(q, 1); // Remove from queue
                         }
                     }
-                    else {
-                        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                            movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                        }
-                        else {
-                            movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
-                        }
-                        renewableEnergy();
-                    }
-                    game.beams.time = 0;
                 }
             }
         }
     }
 
-    //ctx.font = (h * .02) + "px " + fonts.default;
-    //ctx.textAlign = "left";
-    //ctx.textBaseline = "top";
-    //ctx.fillStyle = "black";
-    //ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
+    if (game.settings.displayFPS) {
+        ctx.font = (h * .02) + "px " + fonts.default;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "white";
+        ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
+    }
+
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
 }
 
 function getBeamBaseValue() {
-    return applyUpgrade(game.beams.upgrades.beamValue)
-        + (2 * applyUpgrade(game.skillTree.upgrades.xplustwo));
+    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
+        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getAngelBeamValue() {
-    return applyUpgrade(game.angelbeams.upgrades.beamValue);
+    return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getReinforcedBeamValue() {
-    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce);
+    return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getGlitchBeamValue() {
-    return applyUpgrade(game.glitchbeams.upgrades.beamValue);
+    return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1));
 }
 
 function getReinforcedTapsNeeded() {
@@ -471,7 +589,11 @@ function getBrickIncrease() {
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4)));
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost));
+}
+
+function getDarkFragmentBaseValue() {
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost));
 }
 
 function getMagnetBaseValue()
@@ -482,11 +604,22 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.bricks.upgrades.magnetBoost))
         .mul(applyUpgrade(game.fragment.upgrades.magnetBoost))
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets))
-        .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)));
+        .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)))
+        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost));
 }
 
 function getDarkScrap(level) {
-    return Math.round(Math.pow(1.0075, level) * applyUpgrade(game.darkscrap.upgrades.darkScrapBoost));
+    return new Decimal(1.0075).pow(level)
+        .mul(applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))
+        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost));
+}
+
+function craftingMulti() {
+    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting);
+}
+
+function fallingMagnetWorth() {
+    return Decimal.round(getMagnetBaseValue().mul(5).mul((game.mergeQuests.upgrades.fallingMagnetValue.level) + 1).mul(applyUpgrade(game.aerobeams.upgrades.betterFallingMagnets)).mul(applyUpgrade(game.skillTree.upgrades.fallingMagnetValue)));
 }
 
 function getTankSize() {
@@ -501,6 +634,30 @@ function tryAutoMerge() {
     }
 }
 
+function awardGoldenBeam(value) {
+    game.beams.amount = game.beams.amount.add(value);
+    game.stats.totalbeams = game.stats.totalbeams.add(value);
+    game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
+
+    game.aerobeams.amount = game.aerobeams.amount.add(value);
+    game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
+    game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
+
+    game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
+    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
+    game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
+
+    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
+    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
+    game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
+
+    game.glitchbeams.amount = game.glitchbeams.amount.add(value);
+    game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
+    game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
+
+    game.stats.totalgoldenbeamscollected = game.stats.totalgoldenbeamscollected.add(1);
+}
+
 function renewableEnergy() {
     if (!applyUpgrade(game.skillTree.upgrades.renewableEnergy)) return false;
 
@@ -511,6 +668,8 @@ function renewableEnergy() {
 var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
+
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
@@ -696,6 +855,7 @@ function autoMergeBarrel()
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
             barrels[filtered[1].index] = undefined;
+            freeSpots += 1;
             break;
         }
     }
@@ -709,10 +869,11 @@ function autoConvertBarrel() {
             game.stats.totalfragments = game.stats.totalfragments.add(Amount);
         }
         else if (game.dimension == 1) {
-            game.darkfragment.amount = game.darkfragment.amount.add(((barrels[19].level / 10)));
-            game.stats.totaldarkfragments = game.stats.totaldarkfragments.add(((barrels[19].level / 10)));
+            game.darkfragment.amount = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
+            game.stats.totaldarkfragments = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
         }
         barrels[19] = undefined;
+        freeSpots += 1;
     }
 }
 
@@ -720,8 +881,8 @@ function setBarrelQuality(idx, fromScene)
 {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
-    if (game.dimension == 0) {
-        for (i = 1; i < 10; i++) { // Change these two every time you add new BARRELS files
+    if (game.dimension == 0) { /* Change this when you add new BARRELS files */
+        for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
                 "barrels" + i + "_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -730,7 +891,7 @@ function setBarrelQuality(idx, fromScene)
         }
     }
     if (game.dimension == 1) {
-        for (i = 1; i < 10; i++) {
+        for (i = 1; i < 11; i++) {
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
                 "barrels" + i + "b_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -822,8 +983,7 @@ else
 }
 
 
-function spawnBarrel()
-{
+function spawnBarrel() {
     let idx = -1;
     for (let i = 0; i < barrels.length; i++)
     {
@@ -837,6 +997,7 @@ function spawnBarrel()
     if (idx !== -1 && game.settings.barrelSpawn == true)
     {
         barrels[idx] = new Barrel(applyUpgrade(game.scrapUpgrades.betterBarrels).toNumber());
+        freeSpots -= 1;
     }
 }
 
@@ -844,8 +1005,9 @@ function maxScrapUpgrades() {
     for (k in game.scrapUpgrades) {
         let upg = game.scrapUpgrades[k];
         while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
-            upg.buy();
+            upg.buy(false, true);
         }
+        upg.onBuyMax();
     }
 }
 
@@ -857,8 +1019,8 @@ function maxSunUpgrades() {
 }
 
 function exportCompare() {
-    let exportCode;
-    exportCode = Object.assign({}, game.stats, {
+    let pexportCode;
+    pexportCode = Object.assign({}, game.stats, {
         highestMasteryLevel: game.highestMasteryLevel,
         highestBarrelReached: game.highestBarrelReached,
         highestScrapReached: game.highestScrapReached,
@@ -867,10 +1029,17 @@ function exportCompare() {
         totalMerges: game.totalMerges
     });
 
-    exportCode = "tPt3-" + btoa(JSON.stringify(exportCode));
+    let exportCode = {};
+
+    for (e in pexportCode) {
+        console.log(e, shortV[e]);
+        exportCode[shortV[e]] = typeof (pexportCode[e]) == "object" ? pexportCode[e].toPrecision(6).toString() : pexportCode[e].toFixed(6).toString();
+    }
+
+    exportCode = "tPt4-" + btoa(JSON.stringify(exportCode));
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The compare code has  been copied to your clipboard. Paste it into a text file and keep the file safe.");
+    alert("The compare code has been copied to your clipboard. Paste it into a text file and keep the file safe.");
 }
 
 function saveGame(exportGame, downloaded=false)
@@ -982,6 +1151,8 @@ function loadVal(v, alt)
 }
 
 function loadCompare(compareCode) {
+    let compareCodeType = parseInt(compareCode[3]); // returns 3 or 4
+
     importCode = compareCode.slice(5);
     try {
         importCode = atob(importCode);
@@ -998,10 +1169,23 @@ function loadCompare(compareCode) {
         return false;
     }
     compareStats = {};
-    for (i in importCode) {
-        compareStats[i] = importCode[i];
-        if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
+    if (compareCodeType == 3) {
+        for (i in importCode) {
+            compareStats[i] = importCode[i];
+            if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
+        }
     }
+    if (compareCodeType == 4) {
+        let sic = {};
+        for (var key in shortV) {
+            sic[shortV[key]] = key;
+        }
+
+        for (i in importCode) {
+            compareStats[sic[i]] = importCode[i];
+        }
+    }
+
 }
 
 function loadGame(saveCode, isFromFile=false)
@@ -1078,13 +1262,30 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.musicSelect = loadVal(loadObj.settings.musicSelect, 0);
         game.settings.C = loadVal(loadObj.settings.C, 0);
         game.settings.beamTimer = loadVal(loadObj.settings.beamTimer, false);
+        game.settings.FPS = loadVal(loadObj.settings.FPS, 9999);
+        game.settings.coconut = loadVal(loadObj.settings.coconut, false);
+        game.settings.displayFPS = loadVal(loadObj.settings.displayFPS, false);
+        game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
+        game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
+
+        musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
+        musicPlayer.volume = game.settings.musicVolume / 100;
 
         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
 
-        //if (game.scrap == Infinity) game.scrap = new Decimal(0);
-        // Whoever...
-        // Put that awful crap there...
-        // See you in HELL!
+        if (loadObj.code == undefined) game.code = (Math.random() + 1).toString(36).substring(7);
+        else game.code = loadObj.code;
+
+        if (loadObj.gifts !== undefined) {
+            game.gifts.openedToday = loadVal(loadObj.gifts.openedToday, []);
+            game.gifts.openLimit = loadVal(loadObj.gifts.openLimit, 3);
+            game.gifts.sendLimit = loadVal(loadObj.gifts.sendLimit, 2);
+        }
+        else {
+            game.gifts.openedToday = [];
+            game.gifts.openLimit = 3;
+            game.gifts.sendLimit = 2;
+        }
 
         if (loadObj.goldenScrap !== undefined) {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));
@@ -1202,7 +1403,8 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.tires.upgrades !== undefined) {
                 for (let row = 0; row < loadObj.tires.upgrades.length; row++) {
                     for (let col = 0; col < loadObj.tires.upgrades[row].length; col++) {
-                        game.tires.upgrades[row][col].level = loadVal(loadObj.tires.upgrades[row][col].level, 0);
+                        if (loadObj.tires.upgrades[row] != undefined) game.tires.upgrades[row][col].level = loadVal(loadObj.tires.upgrades[row][col].level, 0);
+                        else game.tires.upgrades[row][col].level = 0;
                     }
                 }
             }
@@ -1396,7 +1598,7 @@ function loadGame(saveCode, isFromFile=false)
             game.factory.time = loadVal(loadObj.factory.time, 0);
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
 
-            if (!game.factory.tank.gt(-5)) game.factory.tank = new Decimal(10);
+            if (!game.factory.tank.gte(new Decimal(0))) game.factory.tank = new Decimal(10);
 
             game.factory.legendaryScrap = loadVal(new Decimal(loadObj.factory.legendaryScrap), new Decimal(0));
             game.factory.steelMagnets = loadVal(new Decimal(loadObj.factory.steelMagnets), new Decimal(0));
@@ -1550,19 +1752,42 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
+        if (loadObj.cogwheels !== undefined) {
+            game.cogwheels.amount = loadVal(new Decimal(loadObj.cogwheels.amount), new Decimal(0));
+            game.cogwheels.timeModeAttempts = loadVal(loadObj.cogwheels.timeModeAttempts, 3);
+            if (loadObj.cogwheels.upgrades !== undefined) {
+                Object.keys(loadObj.cogwheels.upgrades).forEach(k => {
+                    game.cogwheels.upgrades[k].level = loadVal(loadObj.cogwheels.upgrades[k].level, 0);
+                });
+            }
+        }
+        else {
+            game.cogwheels.amount = new Decimal(0);
+            Object.keys(game.cogwheels.upgrades).forEach(k => {
+                game.cogwheels.upgrades[k].level = 0;
+            })
+        }
+
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
+
+        freeSpots = 20;
+
+        playMusic();
 
         for (let i = 0; i < loadObj.barrelLvls.length; i++)
         {
             if (loadObj.barrelLvls[i] !== null)
             {
                 barrels[i] = new Barrel(loadObj.barrelLvls[i]);
+                freeSpots -= 1;
             }
             else
             {
                 barrels[i] = undefined;
             }
         }
+
+        updateBetterBarrels();
 
         if (isFromFile) alert("The file has been imported successfully!");
 
@@ -1587,6 +1812,10 @@ onresize = e => resizeCanvas();
 
 setup();
 
+let deferredPrompt;
+btnInstall.style.display = "none";
+
+
 function updateBetterBarrels() {
     if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
     if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.min(3000 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25);
@@ -1602,4 +1831,3 @@ function calculateCurrentHighest() {
     return currentHighest;
 }
 
-updateBetterBarrels();

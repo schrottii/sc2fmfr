@@ -16,7 +16,7 @@ class Barrel
 
     static getBarrelSize()
     {
-        return Math.max(w, h) * 0.1;
+        return h * 0.1;
     }
 
     static getGlobalIncome()
@@ -65,6 +65,8 @@ class Barrel
                 .mul(applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost))
                 .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
                 .mul(new Decimal(applyUpgrade(game.barrelMastery.upgrades.scrapBoost)).pow(getTotalLevels(1)))
+                .mul(applyUpgrade(game.plasticBags.upgrades.moreScrap))
+                .mul(applyUpgrade(game.cogwheels.upgrades.scrapBoost))
         }
         if (game.dimension == 1) {
             return Decimal.pow(1.1, level)
@@ -80,7 +82,7 @@ class Barrel
 
     tick(delta)
     {
-        this.scale = Math.min(1, this.scale + delta * 5);
+        if (this.scale < 1) this.scale = game.settings.lowPerformance ? 1 : Math.min(1, this.scale + delta * 5);
     }
 
     createIncomeText()
@@ -130,28 +132,27 @@ class Barrel
 
     static renderBarrel(ctx, level, x, y, size, preview)
     {
-        let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % BARRELS) / 100))) % 10 /* Change this when you add new BARRELS files */, 1);
+        let section = Math.max((Math.max(1, Math.ceil((0.0001 + level % BARRELS) / 100))) % 11 /* Change this when you add new BARRELS files */, 1);
         if (images["barrels" + section].width > 0 && images["barrels" + section].height > 0) //prevent infinite loop, wait for loaded image
         {
             let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
-            let amountDiff = 0;
-
-            let barrelSize = size;
+            
             let lvl = Math.round(level);
-            let barrelAmount = BARRELS//Math.round(images["barrels" + section].width * images["barrels" + section].height / (BARREL_SPRITE_SIZE * BARREL_SPRITE_SIZE)) + amountDiff;
-            let lvlToDraw = lvl % barrelAmount;
-            let spriteX = BARREL_SPRITE_SIZE * (lvlToDraw % 10);
+            let lvlToDraw = lvl % BARRELS;
+            let spriteX = BARREL_SPRITE_SIZE * (lvlToDraw % 10); // don't change these 2
             let spriteY = BARREL_SPRITE_SIZE * Math.floor((lvlToDraw / 10) % barrelRows);
 
-            let order = Math.floor(lvl / barrelAmount);
+            let order = Math.floor(lvl / BARRELS);
+            
+            let finalX = x - size / 2;
+            let finalY = y - size / 2;
 
-            let finalX = x - barrelSize / 2;
-            let finalY = y - barrelSize / 2;
-            let scale = barrelSize;
-
+            if (game.settings.coconut) {
+                ctx.drawImage(images["coconut"], finalX, finalY, size, size);
+                return true;
+            }
             if (game.settings.useCachedBarrels)
             {
-                let lvlToDraw = lvl % barrelAmount;
                 if (preview)
                 {
                     if (images.previewBarrels[lvlToDraw] === undefined && barrelsLoaded)
@@ -160,12 +161,12 @@ class Barrel
                     }
                     if (images.previewBarrels[lvlToDraw] !== undefined)
                     {
-                        ctx.drawImage(images.previewBarrels[lvlToDraw], finalX, finalY, scale, scale);
+                        ctx.drawImage(images.previewBarrels[lvlToDraw], finalX, finalY, size, size);
                     }
                 }
                 else if (!game.settings.barrelShadows)
                 {
-                    ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
+                    ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, size, size);
                 }
                 else
                 {
@@ -175,7 +176,7 @@ class Barrel
                     }
                     if (images.shadowBarrels[lvlToDraw] !== undefined)
                     {
-                        ctx.drawImage(images.shadowBarrels[lvlToDraw], finalX, finalY, scale, scale);
+                        ctx.drawImage(images.shadowBarrels[lvlToDraw], finalX, finalY, size, size);
                     }
                 }
             }
@@ -183,8 +184,8 @@ class Barrel
             {
                 if (game.settings.barrelShadows || preview)
                 {
-                    let ox = preview ? 10000 : barrelSize * 0.05;
-                    let oy = preview ? 0 : barrelSize * 0.05;
+                    let ox = preview ? 10000 : size * 0.05;
+                    let oy = preview ? 0 : size * 0.05;
                     Utils.setCanvasShadow(ctx, "#00000064", 0, ox, oy);
                 }
 
@@ -192,14 +193,14 @@ class Barrel
                 {
                     ctx.translate(-10000, 0);
                 }
-                ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, scale, scale);
+                ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, size, size);
                 if (preview)
                 {
                     ctx.translate(10000, 0);
                 }
             }
 
-            Utils.removeCanvasShadow();
+            if (game.settings.barrelShadows || preview) Utils.removeCanvasShadow();
 
             if (!preview)
             {
@@ -208,23 +209,23 @@ class Barrel
                 {
                     for (let i = 0; i < order; i++)
                     {
-                        starSize = barrelSize / 3.0;
+                        starSize = size / 3.0;
                         let offsetX = starSize / 2 * (i - order / 2 + 0.5);
                         let offsetY = -starSize / 5;
-                        ctx.drawImage(images.starSmall, x - starSize / 2 + offsetX, y - starSize / 2 + barrelSize / 3 - offsetY, starSize, starSize);
+                        ctx.drawImage(images.starSmall, x - starSize / 2 + offsetX, y - starSize / 2 + size / 3 - offsetY, starSize, starSize);
                     }
                 }
                 else
                 {
-                    starSize = barrelSize / 1.8;
+                    starSize = size / 1.8;
                     let starX = x - starSize / 2;
-                    let starY = y - starSize / 2 + barrelSize / 3;
+                    let starY = y - starSize / 2 + size / 3;
                     ctx.drawImage(images.starSmall, starX, starY, starSize, starSize);
                     ctx.font = "bold " + (starSize / 2.75) + "px Helvetica";
                     ctx.fillStyle = "black";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "middle";
-                    ctx.fillText(formatThousands(order), x, y + barrelSize * 0.37, starSize * 0.5);
+                    ctx.fillText(formatThousands(order), x, y + size * 0.37, starSize * 0.5);
                 }
             }
         }

@@ -254,6 +254,9 @@ class ScrapUpgrade
             {
                 this.onLevelDown = cfg.onLevelDown;
             }
+            if (cfg.onBuyMax) {
+                this.onBuyMax = cfg.onBuyMax;
+            }
             if (cfg.isUnlocked)
             {
                 this.isUnlocked = cfg.isUnlocked;
@@ -279,13 +282,17 @@ class ScrapUpgrade
 
     }
 
+    onBuyMax() {
+
+    }
 
 
-    buy(round) {
+
+    buy(round, disableOnBuy=false) {
         let resource = getUpgradeResource(this.resource);
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford) {
-            this.onBuy();
+            if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
             resource = resource.sub(p);
             if (isNaN(resource)) //is resource negative

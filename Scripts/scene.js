@@ -26,7 +26,7 @@ var giftNames = {
 var worth1, worth2;
 var multiConvert = 1;
 
-const BARRELS = 850;
+const BARRELS = 950;
 const gameVersionText = "v2.9 (v3.6)";
 
 var timeMode = false;
@@ -1848,7 +1848,16 @@ var scenes =
                     giftMsg = prompt("Message? (Max. 80 characters)").substr(0, 80);
 
                     for (f in filthyWords) {
-                        giftMsg = giftMsg.replace(filthyWords[f], "#".repeat(filthyWords[f].length));
+                        let prev = "";
+                        while (giftMsg != prev) {
+                            prev = giftMsg;
+                            giftMsg = giftMsg.replace(filthyWords[f], "#".repeat(filthyWords[f].length));
+                        }
+                    }
+
+                    if (game.ms.includes(233) == false) {
+                        game.ms.push(233);
+                        GameNotification.create(new MilestoneNotificaion(234));
                     }
                 }, { quadratic: true }),
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
@@ -1878,6 +1887,11 @@ var scenes =
                                 alert("The gift has been copied to your clipboard. Share it with the friend!");
 
                                 game.stats.giftsSent = game.stats.giftsSent.add(1);
+
+                                if (game.ms.includes(231) == false) {
+                                    game.ms.push(231);
+                                    GameNotification.create(new MilestoneNotificaion(232));
+                                }
                             }
                         }
                         else {
@@ -1939,6 +1953,11 @@ var scenes =
                                 GameNotification.create(new TextNotification(giftContent.message, "Important message"));
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);
+
+                                if (game.ms.includes(232) == false) {
+                                    game.ms.push(232);
+                                    GameNotification.create(new MilestoneNotificaion(233));
+                                }
                             }
                             else {
                                 alert("This gift appears to be for someone else, or you already opened a gift from that person today...");

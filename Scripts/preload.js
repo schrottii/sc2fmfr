@@ -25,6 +25,7 @@ var images =
     barrels7: undefined,
     barrels8: undefined,
     barrels9: undefined,
+    barrels10: undefined,
     shadowBarrels: [],
     previewBarrels: [],
     appIcon: loadImage("Images/app-icon.png"),
@@ -353,7 +354,7 @@ function cacheBarrel(id) {
     cacheCanvas.height = BARREL_SPRITE_SIZE + shadowOffset;
     Utils.setCanvasShadow(cacheCanvasCtx, "#00000060", 0, shadowOffset, shadowOffset);
 
-    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % BARRELS) / 100))) % 8, 1);
+    let section = Math.max((Math.max(1, Math.ceil((0.0001 + id % BARRELS) / 100))) % 11, 1); /* Change this when you add new BARRELS files */
     cacheCanvasCtx.drawImage(images["barrels" + section], x, y, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, 0, 0, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE);
 
     let img = new Image();

@@ -190,7 +190,7 @@ function update()
         }
         else if (timeMode && freeSpots == 0) {
             timeMode = false;
-            let cogReward = Math.floor(timeModeTime / 4) * calculateCurrentHighest();
+            let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
             if (game.ms.includes(215) == false && cogReward > 999) {
                 game.ms.push(215);
@@ -203,16 +203,17 @@ function update()
             GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
 
             timeModeTime = 0;
-
+            let Ti = 0;
             while (timeTires >= 0) {
-                movingItemFactory.jumpingTire();
+                stormQueue.push([100 * Ti, "tire", 1]);
                 timeTires -= 1;
+                Ti += 1;
             }
         }
 
         if (timeMode) {
             timeModeTime += delta;
-            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 8);
+            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 4);
         }
 
         if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode)
@@ -513,6 +514,9 @@ function update()
                             let val = stormQueue[q][2];
 
                             switch (stormQueue[q][1]) {
+                                case "tire":
+                                    movingItemFactory.jumpingTire();
+                                    break;
                                 case "goldenbeam":
                                     movingItemFactory.fallingGoldenBeam(val);
                                     break;
@@ -544,13 +548,13 @@ function update()
         }
     }
 
-    
+    /*
     ctx.font = (h * .02) + "px " + fonts.default;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillStyle = "white";
     ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
-    
+    */
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
@@ -664,7 +668,7 @@ var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
 
-const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot"]
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
@@ -876,8 +880,8 @@ function setBarrelQuality(idx, fromScene)
 {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
-    if (game.dimension == 0) {
-        for (i = 1; i < 10; i++) { // Change these two every time you add new BARRELS files
+    if (game.dimension == 0) { /* Change this when you add new BARRELS files */
+        for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
                 "barrels" + i + "_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -886,7 +890,7 @@ function setBarrelQuality(idx, fromScene)
         }
     }
     if (game.dimension == 1) {
-        for (i = 1; i < 10; i++) {
+        for (i = 1; i < 11; i++) {
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
                 "barrels" + i + "b_ulq.png"][idx], () => {
                     barrelsLoaded = true;
@@ -1000,8 +1004,9 @@ function maxScrapUpgrades() {
     for (k in game.scrapUpgrades) {
         let upg = game.scrapUpgrades[k];
         while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
-            upg.buy();
+            upg.buy(false, true);
         }
+        upg.onBuyMax();
     }
 }
 

@@ -15,6 +15,7 @@
     selfMerges: 0,
 
     ms: [],
+    code: undefined,
 
     goldenScrap:
     {
@@ -267,11 +268,11 @@
                 }
             ),
             earth: new GoldenScrapUpgrade(
-                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100][level]),
+                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150][level]),
                 level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory"][level],
+                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts"][level],
                 {
-                    maxLevel: 12,
+                    maxLevel: 13,
                     getEffectDisplay: function () {
                         if (this.level === this.maxLevel) {
                             return "Unlocked everything!";
@@ -482,6 +483,12 @@
             getMagnetBoost: level => new Decimal(1 + 0.01 * level).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryMagnets) + Math.log(level)),
             currentMagnetBoost: () => game.mergeMastery.prestige.getMagnetBoost(game.mergeMastery.prestige.level)
         }
+    },
+    gifts:
+    {
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS,
+        openLimit: 3,
+        sendLimit: 1,
     },
     bricks:
     {
@@ -1385,7 +1392,7 @@
             magnetBoost: new SkillTreeUpgrade(
                 level => new Decimal(1200).mul(level + 1), RESOURCE_SCREW,
 
-                level => new Decimal(4).pow(level),
+                level => new Decimal(16).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
                     maxLevel: 50
@@ -1411,7 +1418,7 @@
             }, ["magnetBoost"]),
 
             unlockTimeMode: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(50000), RESOURCE_MERGE_TOKEN], [new Decimal(6791), RESOURCE_GLITCHBEAM]],
+                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(30000), RESOURCE_MERGE_TOKEN], [new Decimal(6791), RESOURCE_GLITCHBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["newTireUpgrades"]),
@@ -1888,6 +1895,7 @@
                 new Milestone(176, "Scrap Collector", 97, "Unlock Auto Collectors (by buying a Skill Tree upgrade)", () => game.skillTree.upgrades.unlockAutoCollectors.level > 0),
                 new Milestone(177, "Sand For The Crabs", 100, "Craft Buckets", () => game.factory.buckets.gte(1)),
                 new Milestone(178, "Let's Collect Crabs!", 101, "Craft Fishing Nets", () => game.factory.fishingNets.gte(1)),
+                new Milestone(225, "2Master4You", 93, "Unlock the fourth mastery upgrade", () => getTotalLevels(4) > 9),
                 new Milestone(202, "Champion II", 0, () => "150 Achievements", () => game.ms.length > 149),
                 new Milestone(173, "How is this possible?!", 74, "Reduce the costs of Mythus", () => game.skillTree.upgrades.cheaperMythus.level > 0),
                 new Milestone(181, "Anti-Boring", 103, "Max. the first Auto Collector", () => game.collectors.beams.level > 24),
@@ -1917,6 +1925,7 @@
                 new Milestone(153, "Beam Factory", 82, () => "Have 1M normal Beams at once", () => game.beams.amount.gte(1000000)),
                 new Milestone(199, "Screw it, I'm the new King", 107, () => "Earn " + formatNumber(1000000) + " screws (total)", () => game.stats.totalscrews.gte(1000000)),
                 new Milestone(201, "Tire Wire Fire Hire", 26, () => "Unlock a new row of tire upgrades...", () => applyUpgrade(game.skillTree.upgrades.newTireUpgrades)),
+                new Milestone(226, "5 Upgrade Mastery", 92, "Unlock the fifth mastery upgrade", () => getTotalLevels(5) > 9),
                 new Milestone(203, "Champion III", 0, () => "200 Achievements", () => game.ms.length > 199),
                 new Milestone(204, "Everyone can read it", 38, () => "Switch to the ultimate notation\nwhile having at least " + formatNumber(new Decimal(1e182)) + " magnets", () => game.settings.numberFormatType == 12 && game.magnets.gte(new Decimal(1e182))),
                 new Milestone(205, "Scrap Coconut II", 99, () => "Merge coconuts", () => game.settings.coconut == true && (game.mergeQuests.dailyQuest.currentMerges >= 4000 || game.mergeQuests.dailyQuest.active == false)),
@@ -1924,7 +1933,6 @@
                 new Milestone(207, "Schrottii", 109, () => "Find Schrottii", () => game.dimension == 508050),
                 new Milestone(208, "Slower can be better", 87, () => "Make an autobuyer slower", () => game.dimension == 508050),
                 new Milestone(209, "Cooked Crab", 110, () => "Noooooooooo", () => game.stats.totalplasticbags.gte(1200) && game.plasticBags.amount.lte(0)),
-                new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(211, "Falling Magnet Guys", 2, "Make Falling Magnets\nworth 100x more", () => game.skillTree.upgrades.fallingMagnetValue.level > 0),
                 new Milestone(212, "Tim Mode", 112, "Unlock Time Mode", () => game.skillTree.upgrades.unlockTimeMode.level > 0),
                 new Milestone(213, "Third Dimension", 112, () => "Start a run...", () => game.dimension == 508050),
@@ -1939,14 +1947,13 @@
                 new Milestone(222, "This is useless", 2, "Get more passive magnets", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in %", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Efficiency Testing Agency", 95, "Cheaper Plastic Bags", () => game.tires.upgrades[3][2].level > 9),
-                new Milestone(225, "2Master4You", 93, "Unlock the fourth mastery upgrade", () => getTotalLevels(4) > 9),
-                new Milestone(226, "5 Upgrade Mastery", 92, "Unlock the fifth mastery upgrade", () => getTotalLevels(5) > 9),
                 new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 99999),
-                new Milestone(229, "Need more\nNice", 30, () => "First Barrel produces more than " + formatNumber(new Decimal("6e9420")) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(new Decimal("6e9420"))),
-                new Milestone(147, "Time to go AFK...", 87, "Max the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
+                new Milestone(147, "Time to go AFK...", 87, "Max the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
+                new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
                 new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
+                new Milestone(229, "Need more\nNice", 30, () => "First Barrel produces more than " + formatNumber(new Decimal("6e9420")) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(new Decimal("6e9420"))),
                 new Milestone(228, "Nuclear Fusion", 65, "Do 1M self merges\n(Merges from auto merge do not count as self merges)\n(I'm sorry)", () => game.selfMerges > 999999),
                 new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000")),
                 //new Milestone(166, "", 50, "", () => ),

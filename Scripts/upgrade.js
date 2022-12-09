@@ -714,6 +714,7 @@ var EarthLevels =
         ANGEL_BEAMS: 10,
         SECOND_DIMENSION: 11,
         SCRAP_FACTORY: 12,
+        GIFTS: 13,
     };
 
 var effectDisplayTemplates =

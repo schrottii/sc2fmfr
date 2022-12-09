@@ -85,6 +85,7 @@ var images =
     factoryguy: loadImage("Images/Buildings/factoryguy.png"),
     cogwheel: loadImage("Images/Currencies/cogwheel.png"),
     storm: loadImage("Images/storm.png"),
+    gift: loadImage("Images/gift.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

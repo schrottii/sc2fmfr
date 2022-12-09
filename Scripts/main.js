@@ -552,22 +552,22 @@ function update()
 }
 
 function getBeamBaseValue() {
-    return (applyUpgrade(game.beams.upgrades.beamValue)
+    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
         + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1]);
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getAngelBeamValue() {
-    return applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1]);
+    return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getReinforcedBeamValue() {
-    return applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1]);
+    return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
+        * applyUpgrade(game.tires.upgrades[3][1]));
 }
 function getGlitchBeamValue() {
-    return applyUpgrade(game.glitchbeams.upgrades.beamValue)
+    return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
         * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1);
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1));
 }
 
 function getReinforcedTapsNeeded() {
@@ -658,6 +658,8 @@ function renewableEnergy() {
 var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
+
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
@@ -1026,7 +1028,7 @@ function exportCompare() {
     exportCode = "tPt4-" + btoa(JSON.stringify(exportCode));
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The compare code has  been copied to your clipboard. Paste it into a text file and keep the file safe.");
+    alert("The compare code has been copied to your clipboard. Paste it into a text file and keep the file safe.");
 }
 
 function saveGame(exportGame, downloaded=false)
@@ -1259,6 +1261,8 @@ function loadGame(saveCode, isFromFile=false)
 
         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
 
+        if (loadObj.code == undefined) game.code = (Math.random() + 1).toString(36).substring(7);
+        else game.code = loadObj.code;
 
         if (loadObj.goldenScrap !== undefined) {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));

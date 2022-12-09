@@ -12,6 +12,16 @@ var barrelsDisplayMode = 0;
 var selectedConvert = 0;
 var selectedConvertTo = 0;
 
+var giftMsg = "";
+var giftType = "magnets";
+var giftAmount = 0;
+var giftNames = {
+    "magnets": "Magnets",
+    "mergetoken": "Merge Tokens",
+    "masterytoken": "Mastery Tokens",
+    "wrench": "Wrenches"
+}
+
 var worth1, worth2;
 var multiConvert = 1;
 
@@ -990,6 +1000,10 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
+                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("Gifts"), {
+                    quadratic: true,
+                    isVisible: () => game.gifts.isUnlocked()
+                }),
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("OuterSolarSystem"), {
                     quadratic: true,
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
@@ -1263,7 +1277,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "Cheaper\nPlastic Bags", 2.5 / 3, 1.0, "table2"),
                         new UIButton(2.5 / 3 + 0.11, 1.0, 0.05, 0.05, images.buttonMaxAll, () => {
                             game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
-                        }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
+                        }, { quadratic: true, isVisible: () => game.tires.upgrades[3][0].level == game.tires.upgrades[3][0].maxLevel && game.tires.upgrades[3][1].level == game.tires.upgrades[3][1].maxLevel }),
                     ], () => game.tires.milestones[3]())
                 ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.1 })
             ],
@@ -1793,6 +1807,8 @@ var scenes =
                         dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
                         dq.currentMerges = 0;
                         game.cogwheels.timeModeAttempts = 3;
+                        game.gifts.openLimit = 3;
+                        game.gifts.sendLimit = 1;
                         game.mergeQuests.nextDaily = calcTime2;
                     }
                 }
@@ -1801,7 +1817,128 @@ var scenes =
 
                 game.mergeQuests.dailyQuest.render(ctx, w * 0.15, h * (0.225 + 0.13));
             }),
+        new Scene("Gifts",
+            [
+                new UIText("Gifts", 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.scenes.timemode, () => Scene.loadScene("TimeMode"), {
+                    quadratic: true,
+                    isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
+                }),
+
+                new UIText(() => "Friend Code: " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
+                new UIText(() => "Share it with someone so they can send you a gift!\n(If they like you, but they don't)", 0.5, 0.15, 0.03),
+
+                new UIText(() => "Scissors left (to open gifts): " + game.gifts.openLimit, 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "Stamps left (to send gifts): " + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
+
+                // Send Gift
+                new UIText(() => "Send Gift (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
+                new UIText(() => "Up to " + formatNumber(giftAmount), 0.5, 0.375, 0.03),
+
+                new UIButton(0.15, 0.525, 0.05, 0.05, images.gift, () => {
+                    giftMsg = prompt("Message? (Max. 80 characters)").substr(0, 80);
+
+                    for (f in filthyWords) {
+                        giftMsg = giftMsg.replace(filthyWords[f], "#".repeat(filthyWords[f].length));
+                    }
+                }, { quadratic: true }),
+                new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
+                new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
+
+                new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
+                    if (game.gifts.sendLimit > 0) {
+                        let sendTo = prompt("What is the friend code of the player you want to send it to?");
+                        if (sendTo != "" && giftAmount > 0 && sendTo != game.code) {
+                            game.gifts.sendLimit -= 1;
+
+                            let giftContent = {
+                                from: game.code,
+                                to: sendTo,
+                                content: giftType,
+                                amount: giftAmount,
+                                message: giftMsg != "" ? giftMsg : "Example Message... nothing special to see here!"
+                            }
+
+                            let exportCode = btoa(JSON.stringify(giftContent));
+                            document.querySelector("div.absolute textarea").value = exportCode;
+                            Utils.copyToClipboard(exportCode);
+                            alert("The gift has been copied to your clipboard. Share it with the friend!");
+                        }
+                    }
+                    else {
+                        alert("Limit reached!");
+                    }
+                }, { quadratic: true }),
+
+                new UIButton(0.2, 0.6, 0.075, 0.075, images.magnet, () => {
+                    giftType = "magnets"
+                    giftAmount = new Decimal(game.magnets).div(1000);
+                }, { quadratic: true }),
+                new UIButton(0.4, 0.6, 0.075, 0.075, images.mergeToken, () => {
+                    giftType = "mergetoken"
+                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(200);
+                }, { quadratic: true }),
+                new UIButton(0.6, 0.6, 0.075, 0.075, images.masteryToken, () => {
+                    giftType = "masterytoken"
+                    giftAmount = game.barrelMastery.masteryTokens.div(10).min(20);
+                }, { quadratic: true }),
+                new UIButton(0.8, 0.6, 0.075, 0.075, images.wrench, () => {
+                    giftType = "wrench"
+                    giftAmount = game.wrenches.amount.div(10).min(500);
+                }, { quadratic: true }),
+
+                // Open Gift
+                new UIText(() => "Open Gift", 0.5, 0.7, 0.07),
+
+                new UIButton(0.5, 0.8, 0.1, 0.1, images.gift, () => {
+                    if (game.gifts.openLimit > 0) {
+                        let giftCode = prompt("*ahem* Gift code?");
+                        giftCode = atob(giftCode);
+                        let giftContent = JSON.parse(giftCode);
+
+                        if (giftContent.to == game.code) {
+                            game.gifts.openLimit -= 1;
+                            giftMsg = giftContent.message;
+
+                            giftContent.amount = new Decimal(giftContent.amount);
+
+                            switch (giftContent.content) {
+                                case "magnets":
+                                    game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(10)));
+                                    break;
+                                case "mergetoken":
+                                    game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(200));
+                                    break;
+                                case "masterytoken":
+                                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
+                                    break;
+                                case "wrench":
+                                    game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(500));
+                                    break;
+                            }
+                        }
+                        else {
+                            alert("This ain't for ya my bud!");
+                        }
+                    }
+                    else {
+                        alert("Limit reached!");
+                    }
+                }, { quadratic: true }),
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.12);
+            }),
         new Scene("Wrenches",
             [
                 new UIText("Wrenches", 0.5, 0.1, 0.08, "white", {
@@ -1839,7 +1976,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
             }),
-
         new Scene("Statistics",
             [
                 new UIText("Statistics", 0.5, 0.05, 0.08, "white", {

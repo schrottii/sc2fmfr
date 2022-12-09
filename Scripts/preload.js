@@ -86,6 +86,7 @@ var images =
     cogwheel: loadImage("Images/Currencies/cogwheel.png"),
     storm: loadImage("Images/storm.png"),
     gift: loadImage("Images/gift.png"),
+    setmessage: loadImage("Images/Buttons/setmsg.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -227,6 +228,7 @@ var images =
         plasticbags: loadImage("Images/Scenes/plasticbags.png"),
         screws: loadImage("Images/Scenes/screws.png"),
         timemode: loadImage("Images/Scenes/timemode.png"),
+        gifts: loadImage("Images/Scenes/gifts.png"),
     },
     solarSystem:
     {

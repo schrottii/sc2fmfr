@@ -13,9 +13,10 @@ var selectedConvert = 0;
 var selectedConvertTo = 0;
 
 var giftMsg = "";
-var giftType = "magnets";
+var giftType = "none";
 var giftAmount = 0;
 var giftNames = {
+    "none": "???",
     "magnets": "Magnets",
     "mergetoken": "Merge Tokens",
     "masterytoken": "Mastery Tokens",
@@ -30,6 +31,7 @@ const gameVersionText = "v2.9 (v3.6)";
 
 var timeMode = false;
 var timeModeTime = 0;
+var timeTires = 0;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
 var tabYs = [0.2, 0.8, 1.6, 2.0];
@@ -1000,7 +1002,7 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
-                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("Gifts"), {
+                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.gifts, () => Scene.loadScene("Gifts"), {
                     quadratic: true,
                     isVisible: () => game.gifts.isUnlocked()
                 }),
@@ -1808,7 +1810,8 @@ var scenes =
                         dq.currentMerges = 0;
                         game.cogwheels.timeModeAttempts = 3;
                         game.gifts.openLimit = 3;
-                        game.gifts.sendLimit = 1;
+                        game.gifts.sendLimit = 2;
+                        game.gifts.openedToday = [];
                         game.mergeQuests.nextDaily = calcTime2;
                     }
                 }
@@ -1841,7 +1844,7 @@ var scenes =
                 new UIText(() => "Send Gift (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
                 new UIText(() => "Up to " + formatNumber(giftAmount), 0.5, 0.375, 0.03),
 
-                new UIButton(0.15, 0.525, 0.05, 0.05, images.gift, () => {
+                new UIButton(0.15, 0.525, 0.05, 0.05, images.setmessage, () => {
                     giftMsg = prompt("Message? (Max. 80 characters)").substr(0, 80);
 
                     for (f in filthyWords) {
@@ -1852,27 +1855,34 @@ var scenes =
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
 
                 new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
-                    if (game.gifts.sendLimit > 0) {
-                        let sendTo = prompt("What is the friend code of the player you want to send it to?");
-                        if (sendTo != "" && giftAmount > 0 && sendTo != game.code) {
-                            game.gifts.sendLimit -= 1;
+                    if (giftType != "none") {
+                        if (game.gifts.sendLimit > 0) {
+                            let sendTo = prompt("What is the friend code of the player you want to send it to?");
+                            if (sendTo != "" && sendTo != false && giftAmount > 0 && sendTo != game.code) {
+                                game.gifts.sendLimit -= 1;
 
-                            let giftContent = {
-                                from: game.code,
-                                to: sendTo,
-                                content: giftType,
-                                amount: giftAmount,
-                                message: giftMsg != "" ? giftMsg : "Example Message... nothing special to see here!"
+                                let giftContent = {
+                                    from: game.code,
+                                    to: sendTo,
+                                    content: giftType,
+                                    amount: giftAmount,
+                                    date: day,
+                                    message: giftMsg != "" ? giftMsg : "Example Message... nothing special to see here!"
+                                }
+
+                                saveGame();
+
+                                let exportCode = btoa(JSON.stringify(giftContent));
+                                document.querySelector("div.absolute textarea").value = exportCode;
+                                Utils.copyToClipboard(exportCode);
+                                alert("The gift has been copied to your clipboard. Share it with the friend!");
+
+                                game.stats.giftsSent = game.stats.giftsSent.add(1);
                             }
-
-                            let exportCode = btoa(JSON.stringify(giftContent));
-                            document.querySelector("div.absolute textarea").value = exportCode;
-                            Utils.copyToClipboard(exportCode);
-                            alert("The gift has been copied to your clipboard. Share it with the friend!");
                         }
-                    }
-                    else {
-                        alert("Limit reached!");
+                        else {
+                            alert("Limit reached!");
+                        }
                     }
                 }, { quadratic: true }),
 
@@ -1902,29 +1912,40 @@ var scenes =
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
 
-                        if (giftContent.to == game.code) {
-                            game.gifts.openLimit -= 1;
-                            giftMsg = giftContent.message;
+                        if (giftContent.date == day) {
+                            if (giftContent.to == game.code && !game.gifts.openedToday.includes(giftContent.from)) {
+                                game.gifts.openLimit -= 1;
+                                giftMsg = giftContent.message;
+                                game.gifts.openedToday.push(giftContent.from);
 
-                            giftContent.amount = new Decimal(giftContent.amount);
+                                giftContent.amount = new Decimal(giftContent.amount);
 
-                            switch (giftContent.content) {
-                                case "magnets":
-                                    game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(10)));
-                                    break;
-                                case "mergetoken":
-                                    game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(200));
-                                    break;
-                                case "masterytoken":
-                                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
-                                    break;
-                                case "wrench":
-                                    game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(500));
-                                    break;
+                                switch (giftContent.content) {
+                                    case "magnets":
+                                        game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(2)));
+                                        break;
+                                    case "mergetoken":
+                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(200));
+                                        break;
+                                    case "masterytoken":
+                                        game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
+                                        break;
+                                    case "wrench":
+                                        game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(500));
+                                        break;
+                                }
+
+                                GameNotification.create(new TextNotification("+" + giftContent.amount + " " + giftNames[giftContent.content], "Gift opened successfully!"));
+                                GameNotification.create(new TextNotification(giftContent.message, "Important message"));
+
+                                game.stats.giftsReceived = game.stats.giftsReceived.add(1);
+                            }
+                            else {
+                                alert("This gift appears to be for someone else, or you already opened a gift from that person today...");
                             }
                         }
                         else {
-                            alert("This ain't for ya my bud!");
+                            alert("Gift expired!");
                         }
                     }
                     else {
@@ -1933,6 +1954,9 @@ var scenes =
                 }, { quadratic: true }),
             ],
             function () {
+                currentTime = new Date();
+                day = currentTime.getUTCDate();
+
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 

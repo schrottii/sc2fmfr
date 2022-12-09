@@ -203,6 +203,11 @@ function update()
             GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
 
             timeModeTime = 0;
+
+            while (timeTires >= 0) {
+                movingItemFactory.jumpingTire();
+                timeTires -= 1;
+            }
         }
 
         if (timeMode) {
@@ -1263,6 +1268,17 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.code == undefined) game.code = (Math.random() + 1).toString(36).substring(7);
         else game.code = loadObj.code;
+
+        if (loadObj.gifts !== undefined) {
+            game.gifts.openedToday = loadVal(loadObj.gifts.openedToday, []);
+            game.gifts.openLimit = loadVal(loadObj.gifts.openLimit, 3);
+            game.gifts.sendLimit = loadVal(loadObj.gifts.sendLimit, 2);
+        }
+        else {
+            game.gifts.openedToday = [];
+            game.gifts.openLimit = 3;
+            game.gifts.sendLimit = 2;
+        }
 
         if (loadObj.goldenScrap !== undefined) {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));

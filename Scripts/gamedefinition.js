@@ -488,7 +488,8 @@
     {
         isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS,
         openLimit: 3,
-        sendLimit: 1,
+        sendLimit: 2,
+        openedToday: [],
     },
     bricks:
     {
@@ -597,7 +598,8 @@
         },
         onMerge: () => {
             if (Math.random() < applyUpgrade(game.tires.upgrades[1][1])) {
-                movingItemFactory.jumpingTire();
+                if (!timeMode) movingItemFactory.jumpingTire();
+                else timeTires += 1;
             }
         },
         milestones: [new Decimal(0), new Decimal(1e63), Decimal.pow(2, 1024), () => applyUpgrade(game.skillTree.upgrades.newTireUpgrades)],
@@ -1946,10 +1948,10 @@
                 new Milestone(221, "Duck Tales", 115, "Do at least 100k merges on all duck barrels", () => { for (i in [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756]) if (game.barrelMastery.b[i - 1] < 100000) return false; return true; }),
                 new Milestone(222, "This is useless", 2, "Get more passive magnets", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in %", () => game.tires.upgrades[3][1].level > 9),
-                new Milestone(224, "Plastic Efficiency Testing Agency", 95, "Cheaper Plastic Bags", () => game.tires.upgrades[3][2].level > 9),
+                new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags", () => game.tires.upgrades[3][2].level > 9),
                 new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 99999),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
-                new Milestone(147, "Time to go AFK...", 87, "Max the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
+                new Milestone(147, "Time to go AFK...", 87, "Max. the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
                 new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
                 new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),

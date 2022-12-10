@@ -167,15 +167,16 @@ function copyGift() {
     alert("The gift has been copied to your clipboard. Share it with the friend!");
 
     document.querySelector("div.copyGift button#cancelg").style.display = "none";
+    document.querySelector("div.copyGift button#close").style.display = "block";
 }
 
 function cancelGift() {
     giftContent = {};
 
-    document.querySelector("div.copyGift").style.display = "none";
-
     game.gifts.sendLimit += 1;
     game.stats.giftsSent = game.stats.giftsSent.sub(1);
+
+    document.querySelector("div.copyGift").style.display = "none";
 }
 
 function update()

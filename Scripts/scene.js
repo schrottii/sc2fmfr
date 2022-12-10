@@ -1893,6 +1893,7 @@ var scenes =
                                 }
 
                                 document.querySelector("div.copyGift").style.display = "block";
+                                document.querySelector("div.copyGift button#close").style.display = "none";
                                 document.querySelector("div.copyGift button#cancelg").style.display = "block";
 
                                 game.stats.giftsSent = game.stats.giftsSent.add(1);

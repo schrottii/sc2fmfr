@@ -427,7 +427,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gt(resource))
+            if(p[0].gte(resource))
             {
                 return;
             }
@@ -657,7 +657,7 @@ class FactoryUpgrade extends ScrapUpgrade {
 
         for (let p of this.getCurrentPrices()) {
             let resource = getUpgradeResource(p[1]);
-            if (p[0].gt(resource)) {
+            if (p[0].gte(resource)) {
                 return;
             }
         }

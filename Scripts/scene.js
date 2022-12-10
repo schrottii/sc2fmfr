@@ -543,6 +543,8 @@ var scenes =
                 for (let i = 0; i < barrels.length; i++) {
                     let b = barrels[i];
                     if (b != null && b.isClicked()) {
+                        if (draggedBarrel == undefined) undefiner = true;
+                        else undefiner = false;
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
@@ -565,7 +567,7 @@ var scenes =
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
-                            barrels[i] = undefined;
+                            if(undefiner) barrels[i] = undefined;
                             // freeSpots += 1;    NOT HERE!!!
                         }
                     }
@@ -591,7 +593,7 @@ var scenes =
                                 draggedBarrel = undefined;
                             }
                         }
-                        else { // Is empty, but my barrel there
+                        else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
                             draggedBarrel = undefined;
                         }

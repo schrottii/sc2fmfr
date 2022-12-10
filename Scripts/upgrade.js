@@ -427,7 +427,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gte(resource))
+            if(p[0].gt(resource.round()))
             {
                 return;
             }
@@ -436,7 +436,7 @@ class FixedLevelUpgrade
         for(let p of this.getCurrentPrices())
         {
             let resource = getUpgradeResource(p[1]);
-            resource = resource.sub(p[0]);
+            resource = resource.sub(p[0]).max(0);
             assignResourceAfterUpgrade(p[1], resource);
         }
         this.level++;
@@ -657,7 +657,8 @@ class FactoryUpgrade extends ScrapUpgrade {
 
         for (let p of this.getCurrentPrices()) {
             let resource = getUpgradeResource(p[1]);
-            if (p[0].gte(resource)) {
+
+            if (p[0].gt(resource.round())) {
                 return;
             }
         }
@@ -668,7 +669,7 @@ class FactoryUpgrade extends ScrapUpgrade {
 
             for (let p of this.getCurrentPrices()) {
                 let resource = getUpgradeResource(p[1]);
-                resource = resource.sub(p[0]);
+                resource = resource.sub(p[0]).max(0);
                 assignResourceAfterUpgrade(p[1], resource);
             }
 

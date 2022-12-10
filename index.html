@@ -45,7 +45,7 @@
             background-color: black;
             font-family: Helvetica, Arial, sans-serif;
         }
- 
+
         canvas#gameCanvas {
             width: auto;
             height: 100%;
@@ -95,6 +95,35 @@
                 box-shadow: 1px 1px 0px black;
                 padding: 0.5vh;
             }
+
+
+
+        div.copyGift {
+            position: absolute;
+            display: none;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+            div.copyGift > * {
+                transform: translate(-50%, -50%);
+            }
+
+            div.copyGift > button {
+                height: 1.5em;
+                position: absolute;
+                font-size: 3vh;
+                background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+                border: none;
+                box-shadow: 1px 1px 0px black;
+                padding: 0.5vh;
+            }
     </style>
 </head>
 
@@ -115,6 +144,11 @@
         <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
 
         <button style="color: white; left: 50vw; top: 7vh; width: 85%" id="add-button">Add to home screen</button>
+        <button id="close" style="left: 50vw; top: 80vh;">Close</button>
+    </div>
+    <div class="copyGift">
+        <button style="left: 50vw; top: 40vh;" onclick="copyGift()">Copy Gift Code</button>
+        <button style="left: 50vw; top: 60vh;" onclick="cancelGift()" id="cancelg">Cancel Gift</button>
         <button id="close" style="left: 50vw; top: 80vh;">Close</button>
     </div>
 

@@ -1,4 +1,13 @@
-﻿var game =
+﻿let currentTime = new Date();
+let currentMonth = currentTime.getUTCMonth();
+
+const BARRELS = 950;
+const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
+const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
+
+const gameVersionText = "v2.9.1 (v3.6.1)";
+
+var game =
 {
     scrap: 0,
     scrapThisPrestige: new Decimal(0),
@@ -158,7 +167,11 @@
                         }
                     }
 
-                    this.onBuyMax(this.level);
+                    for (let i = 0; i < barrels.length; i++) {
+                        if (barrels[i] !== undefined && barrels[i].level < applyUpgrade(this).toNumber() + 1) {
+                            barrels[i] = new Barrel(applyUpgrade(this).toNumber() + 1);
+                        }
+                    }
 
                 },
                 onLevelDown: function (level) {
@@ -168,8 +181,8 @@
                 },
                 onBuyMax: function (level) {
                     for (let i = 0; i < barrels.length; i++) {
-                        if (barrels[i] !== undefined && barrels[i].level < applyUpgrade(this).toNumber() + 1) {
-                            barrels[i] = new Barrel(applyUpgrade(this).toNumber() + 1);
+                        if (barrels[i] !== undefined && barrels[i].level < applyUpgrade(this).toNumber()) {
+                            barrels[i] = new Barrel(applyUpgrade(this).toNumber());
                         }
                     }
                 },
@@ -490,8 +503,8 @@
     gifts:
     {
         isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS,
-        openLimit: 3,
-        sendLimit: 2,
+        openLimit: CONST_OPENLIMIT,
+        sendLimit: CONST_SENDLIMIT,
         openedToday: [],
     },
     bricks:
@@ -1440,7 +1453,7 @@
                 [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(10000), RESOURCE_BEAM], [new Decimal(200), RESOURCE_WRENCH]],
                     [[new Decimal("1e400"), RESOURCE_GS], [new Decimal(25), RESOURCE_FISHINGNET], [new Decimal(25), RESOURCE_PLASTICBAG]],
                     [[new Decimal("1e750"), RESOURCE_GS], [new Decimal("1e120"), RESOURCE_DARKSCRAP], [new Decimal(250000), RESOURCE_REINFORCEDBEAM]]
-            ], [1, 2, 3, 4, 8], {
+            ], [1, 2, 4, 8, 16], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, ["fallingMagnetValue"]),
 
@@ -1575,7 +1588,7 @@
                         game.factory.blueBricks = game.factory.blueBricks.add(1);
                         game.stats.totalbluebricks = game.stats.totalbluebricks.add(1);
                     }
-                }, level => [[new Decimal("1e10000").mul(new Decimal("1e1000").pow(level * Math.min(10 + Math.max(0, level - 49), Math.max(1, level - 14)))), RESOURCE_BRICK], [new Decimal(75), RESOURCE_AEROBEAM]]),
+                }, level => [[new Decimal("1e10000").mul(new Decimal("1e1000").pow(level * Math.min(10 + Math.max(0, (level / 5) - 10), Math.max(1, level - 14)))), RESOURCE_BRICK], [new Decimal(75), RESOURCE_AEROBEAM]]),
             buckets: new FactoryUpgrade(
                 level => new Decimal(30),
                 level => 1,
@@ -1622,7 +1635,7 @@
             }),
         autoScrapBoost: new AutoUpgrade(
             level => new Decimal(Math.round(level / 4) + 3),
-            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 11, 0))) * Math.min(level, 1),
+            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 12, 0))) * Math.min(level, 1),
             RESOURCE_STEELMAGNET, ["magnetUpgrades", "scrapBoost"],
             time = 0,
             {
@@ -1631,7 +1644,7 @@
             }),
         autoMoreGoldenScrap: new AutoUpgrade(
             level => new Decimal(Math.round(level / 6) + 2),
-            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 11, 0))) * Math.min(level, 1),
+            level => (64 - (4 * level) - (3 * Math.min(level, 4)) + (3 * Math.max(level - 12, 0))) * Math.min(level, 1),
             RESOURCE_STEELMAGNET, ["magnetUpgrades", "moreGoldenScrap"],
             time = 0,
             {
@@ -1649,7 +1662,7 @@
             }),
         autoGetMoreMagnets: new AutoUpgrade(
             level => new Decimal(1).add(Math.floor(level / 12)),
-            level => (305 - (2 * level) - (3 * Math.min(level, 24)) + (1 * Math.max(level - 110, 0))) * Math.min(level, 1),
+            level => (305 - (2 * level) - (3 * Math.min(level, 24)) + (1 * Math.max(level - 112, 0))) * Math.min(level, 1),
             RESOURCE_BLUEBRICK, ["goldenScrap", "upgrades", "magnetBoost"],
             time = 0,
             {
@@ -1881,7 +1894,7 @@
                 new Milestone(156, "RPG v3 (Mastery 2.0)", 92, "Unlock Barrel Mastery", () => game.barrelMastery.isUnlocked()),
                 new Milestone(157, "Influenced by the barrels", 1, "Unlock the first mastery upgrade", () => getTotalLevels(1) > 9),
                 new Milestone(158, "There's more?!", 2, "Unlock the second mastery upgrade", () => getTotalLevels(2) > 9),
-                new Milestone(230, "Scrapmas", 116, "Unlock Gifts (Earth)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS),
+                new Milestone(230, "Scrapmas", 117, "Unlock Gifts (Earth)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS),
                 new Milestone(159, "Uhh, why aren't you using them?", 93, "Refuse to spend your Mastery Tokens\nfor a while", () => game.barrelMastery.masteryTokens.gte(new Decimal(500))),
                 new Milestone(231, "Lots of Love", 116, "Send a gift to someone", () => game.dimension == 508050),
                 new Milestone(160, "Master Builder", 24, "Unlock the third mastery upgrade", () => getTotalLevels(3) > 9),
@@ -1948,18 +1961,18 @@
                 new Milestone(234, "Advent Calendar", 116, "Send some gifts to the people", () => game.stats.giftsSent.gte(24)),
                 new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(0)),
                 new Milestone(215, "Cog, the player?", 111, "Have 1000 cogwheels at once", () => game.cogwheels.amount.gte(1000)),
-                new Milestone(216, "**** wheels", 113, () => "Earn 1000 cogwheels in a single run", () => game.dimension == 508050),
-                new Milestone(217, "More Tokens yay", 14, "Because it was 9000 for so long.", () => game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
+                new Milestone(216, "...wheels", 113, () => "Earn 1000 cogwheels in a single run", () => game.dimension == 508050),
+                new Milestone(217, "More Tokens yay", 14, "Because it has been 9000 for so long.", () => game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
                 new Milestone(218, "F.U.N.", 114, "Make Glitch Beams funnier", () => game.skillTree.upgrades.funnyGlitchBeams.level > 0),
                 new Milestone(219, "H.O.M.L.", 87, "Level the first Auto buyer to at least half of its max. level", () => game.autos.autoBetterBarrels.level >= game.autos.autoBetterBarrels.maxLevel / 2),
                 new Milestone(220, "3.47", 104, "Complete all three paths (again)", () => game.skillTree.upgrades.veryFastCrafting.level > 0 && game.skillTree.upgrades.funnyGlitchBeams.level > 0 && game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
                 new Milestone(221, "Duck Tales", 115, "Do at least 100k merges on all duck barrels", () => { for (i in [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756]) if (game.barrelMastery.b[i - 1] < 100000) return false; return true; }),
-                new Milestone(222, "This is useless", 2, "Get more passive magnets", () => game.tires.upgrades[3][0].level > 9),
-                new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in %", () => game.tires.upgrades[3][1].level > 9),
-                new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags", () => game.tires.upgrades[3][2].level > 9),
+                new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
+                new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
+                new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),
                 new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 99999),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
-                new Milestone(235, "They Call Me Santa", 116, "Send a few gifts to the people", () => game.stats.giftsSent.gte(100)),
+                new Milestone(235, "They Call Me Santa", 117, "Send a few gifts to the people", () => game.stats.giftsSent.gte(100)),
                 new Milestone(147, "Time to go AFK...", 87, "Max. the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
                 new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),

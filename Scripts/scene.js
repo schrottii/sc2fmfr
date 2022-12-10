@@ -13,7 +13,9 @@ var selectedConvert = 0;
 var selectedConvertTo = 0;
 
 var giftMsg = "";
+var sendTo = "";
 var giftType = "none";
+var giftContent;
 var giftAmount = 0;
 var giftNames = {
     "none": "???",
@@ -25,9 +27,6 @@ var giftNames = {
 
 var worth1, worth2;
 var multiConvert = 1;
-
-const BARRELS = 950;
-const gameVersionText = "v2.9 (v3.6)";
 
 var timeMode = false;
 var timeModeTime = 0;
@@ -345,7 +344,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Is for me?", w * 0.49, h - w * 0.1);
+                ctx.fillText("Is for me? (Christmas version)", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -544,6 +543,8 @@ var scenes =
                 for (let i = 0; i < barrels.length; i++) {
                     let b = barrels[i];
                     if (b != null && b.isClicked()) {
+                        if (draggedBarrel == undefined) undefiner = true;
+                        else undefiner = false;
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
@@ -566,7 +567,8 @@ var scenes =
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
-                            barrels[i] = undefined;
+                            if(undefiner) barrels[i] = undefined;
+                            // freeSpots += 1;    NOT HERE!!!
                         }
                     }
                 }
@@ -574,29 +576,29 @@ var scenes =
             function () {
                 if (draggedBarrel != null) {
                     let index = draggedBarrel.getDropIndex();
-                    if (index !== -1) {
+                    if (index !== -1) { // -1 means it's dropped into nowhere
                         let b = barrels[index];
-                        if (b !== undefined) {
+                        if (b !== undefined) { // Place you drag to is not empty
                             let lvl = barrels[index].level;
-                            if (Math.round(lvl) === Math.round(draggedBarrel.level)) {
+                            if (Math.round(lvl) === Math.round(draggedBarrel.level)) { // MERGE
                                 tempDrawnBarrels[index] = draggedBarrel.level;
                                 barrels[index] = new Barrel(draggedBarrel.level + 1);
                                 freeSpots += 1;
                                 onBarrelMerge(false, Math.round(draggedBarrel.level));
                                 draggedBarrel = undefined;
                             }
-                            else {
+                            else { // NOT SAME, BACK TO WHERE IT WAS
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
                                 barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
                             }
                         }
-                        else {
+                        else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
                             draggedBarrel = undefined;
                         }
                     }
-                    else {
+                    else { // put it back man
                         barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
                         barrels[draggedBarrel.originPos].scale = 0.7;
                         draggedBarrel = undefined;
@@ -1766,7 +1768,7 @@ var scenes =
                     if (game.mergeQuests.dailyQuest.active) {
                         if (game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             let buyTo = game.mergeQuests.dailyQuest.barrelLvl;
-                            if (applyUpgrade(game.skillTree.upgrades.starDaily)) buyTo = Math.floor(game.highestBarrelReached / BARRELS) * BARRELS + game.mergeQuests.dailyQuest.barrelLvl;
+                            if (applyUpgrade(game.skillTree.upgrades.starDaily)) buyTo = (Math.floor(game.highestBarrelReached / BARRELS) - 1) * BARRELS + game.mergeQuests.dailyQuest.barrelLvl;
                             game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);
 
                             while (applyUpgrade(game.skillTree.upgrades.starDaily) && game.scrapUpgrades.betterBarrels.level != buyTo) {
@@ -1809,8 +1811,8 @@ var scenes =
                         dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
                         dq.currentMerges = 0;
                         game.cogwheels.timeModeAttempts = 3;
-                        game.gifts.openLimit = 3;
-                        game.gifts.sendLimit = 2;
+                        game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
+                        game.gifts.sendLimit = CONST_SENDLIMIT;
                         game.gifts.openedToday = [];
                         game.mergeQuests.nextDaily = calcTime2;
                     }
@@ -1842,9 +1844,10 @@ var scenes =
 
                 // Send Gift
                 new UIText(() => "Send Gift (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
-                new UIText(() => "Up to " + formatNumber(giftAmount), 0.5, 0.375, 0.03),
+                new UIText(() => (giftType == "magnets" ? "Up to " : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
+                new UIText("(based on your current amount)", 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 
-                new UIButton(0.15, 0.525, 0.05, 0.05, images.setmessage, () => {
+                new UIButton(0.1, 0.525, 0.05, 0.05, images.setmessage, () => {
                     giftMsg = prompt("Message? (Max. 80 characters)").substr(0, 80);
 
                     for (f in filthyWords) {
@@ -1855,22 +1858,34 @@ var scenes =
                         }
                     }
 
-                    if (game.ms.includes(233) == false) {
-                        game.ms.push(233);
-                        GameNotification.create(new MilestoneNotificaion(234));
+                    if (game.ms.includes(232) == false) {
+                        game.ms.push(232);
+                        GameNotification.create(new MilestoneNotificaion(233));
                     }
+                }, { quadratic: true }),
+                new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
+                    sendTo = prompt("What is the friend code of the player you want to send it to?");
                 }, { quadratic: true }),
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
 
+                new UIText(() => "To: " + sendTo, 0.8, 0.45, 0.05),
+
                 new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
                     if (giftType != "none") {
                         if (game.gifts.sendLimit > 0) {
-                            let sendTo = prompt("What is the friend code of the player you want to send it to?");
-                            if (sendTo != "" && sendTo != false && giftAmount > 0 && sendTo != game.code) {
+                            if (sendTo == null) {
+                                alert("You forgot to enter a friend code!");
+                                return false;
+                            }
+                            if (sendTo == game.code) {
+                                alert("You can not send a gift to yourself!");
+                                return false;
+                            }
+                            if (sendTo != "" && sendTo != false && giftAmount > 0) {
                                 game.gifts.sendLimit -= 1;
 
-                                let giftContent = {
+                                giftContent = {
                                     from: game.code,
                                     to: sendTo,
                                     content: giftType,
@@ -1879,18 +1894,15 @@ var scenes =
                                     message: giftMsg != "" ? giftMsg : "Example Message... nothing special to see here!"
                                 }
 
-                                saveGame();
-
-                                let exportCode = btoa(JSON.stringify(giftContent));
-                                document.querySelector("div.absolute textarea").value = exportCode;
-                                Utils.copyToClipboard(exportCode);
-                                alert("The gift has been copied to your clipboard. Share it with the friend!");
+                                document.querySelector("div.copyGift").style.display = "block";
+                                document.querySelector("div.copyGift button#close").style.display = "none";
+                                document.querySelector("div.copyGift button#cancelg").style.display = "block";
 
                                 game.stats.giftsSent = game.stats.giftsSent.add(1);
 
-                                if (game.ms.includes(231) == false) {
-                                    game.ms.push(231);
-                                    GameNotification.create(new MilestoneNotificaion(232));
+                                if (game.ms.includes(230) == false) {
+                                    game.ms.push(230);
+                                    GameNotification.create(new MilestoneNotificaion(231));
                                 }
                             }
                         }
@@ -1898,31 +1910,35 @@ var scenes =
                             alert("Limit reached!");
                         }
                     }
-                }, { quadratic: true }),
+                    else {
+                        alert("You have to set gift content first!")
+                    }
+                }, { quadratic: true, isVisible: () => giftType != "none" }),
 
-                new UIButton(0.2, 0.6, 0.075, 0.075, images.magnet, () => {
+                new UIText(() => "Select Gift Content", 0.5, 0.595, 0.04),
+                new UIButton(0.2, 0.65, 0.075, 0.075, images.magnet, () => {
                     giftType = "magnets"
                     giftAmount = new Decimal(game.magnets).div(1000);
                 }, { quadratic: true }),
-                new UIButton(0.4, 0.6, 0.075, 0.075, images.mergeToken, () => {
+                new UIButton(0.4, 0.65, 0.075, 0.075, images.mergeToken, () => {
                     giftType = "mergetoken"
                     giftAmount = game.mergeQuests.mergeTokens.div(10).min(200);
                 }, { quadratic: true }),
-                new UIButton(0.6, 0.6, 0.075, 0.075, images.masteryToken, () => {
+                new UIButton(0.6, 0.65, 0.075, 0.075, images.masteryToken, () => {
                     giftType = "masterytoken"
                     giftAmount = game.barrelMastery.masteryTokens.div(10).min(20);
                 }, { quadratic: true }),
-                new UIButton(0.8, 0.6, 0.075, 0.075, images.wrench, () => {
+                new UIButton(0.8, 0.65, 0.075, 0.075, images.wrench, () => {
                     giftType = "wrench"
                     giftAmount = game.wrenches.amount.div(10).min(500);
                 }, { quadratic: true }),
 
                 // Open Gift
-                new UIText(() => "Open Gift", 0.5, 0.7, 0.07),
+                new UIText(() => "Open Gift", 0.5, 0.725, 0.07),
 
-                new UIButton(0.5, 0.8, 0.1, 0.1, images.gift, () => {
+                new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
-                        let giftCode = prompt("*ahem* Gift code?");
+                        let giftCode = prompt("Enter the gift code your friend sent to you");
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
 
@@ -1949,14 +1965,14 @@ var scenes =
                                         break;
                                 }
 
-                                GameNotification.create(new TextNotification("+" + giftContent.amount + " " + giftNames[giftContent.content], "Gift opened successfully!"));
+                                GameNotification.create(new TextNotification("+" + formatNumber(giftContent.amount) + " " + giftNames[giftContent.content], "Gift opened successfully!"));
                                 GameNotification.create(new TextNotification(giftContent.message, "Important message"));
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);
 
-                                if (game.ms.includes(232) == false) {
-                                    game.ms.push(232);
-                                    GameNotification.create(new MilestoneNotificaion(233));
+                                if (game.ms.includes(231) == false) {
+                                    game.ms.push(231);
+                                    GameNotification.create(new MilestoneNotificaion(232));
                                 }
                             }
                             else {
@@ -1971,6 +1987,18 @@ var scenes =
                         alert("Limit reached!");
                     }
                 }, { quadratic: true }),
+
+                new UIText(() => "How to send gifts:", 0.01, 0.85, 0.03, "white", {halign: "left"}),
+                new UIText(() => "1. Make sure you have enough stamps", 0.01, 0.875, 0.025, "white", {halign: "left"}),
+                new UIText(() => "2. Select the currency to send (gift content)", 0.01, 0.9, 0.025, "white", {halign: "left"}),
+                new UIText(() => "3. Enter the friend code of", 0.01, 0.925, 0.025, "white", {halign: "left"}),
+                new UIText(() => "the person you want to send the gift to (not yours!)", 0.01, 0.95, 0.025, "white", {halign: "left"}),
+                new UIText(() => "4. Click the gift and send the code to the friend", 0.01, 0.975, 0.025, "white", { halign: "left" }),
+
+                new UIText(() => "How to open gifts:", 0.99, 0.85, 0.03, "white", { halign: "right" }),
+                new UIText(() => "1. Make sure you have enough scissors", 0.99, 0.875, 0.025, "white", { halign: "right" }),
+                new UIText(() => "2. Click the gift", 0.99, 0.9, 0.025, "white", { halign: "right" }),
+                new UIText(() => "3. Enter the gift code your friend gave you", 0.99, 0.925, 0.025, "white", { halign: "right" }),
             ],
             function () {
                 currentTime = new Date();
@@ -1980,7 +2008,29 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.12);
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.1); // should be 0.12 (0.06 * 2) but somehow 0.1 looks much better
+
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0.315 * h, w, 0.005 * h);
+                ctx.fillRect(0, 0.7 * h, w, 0.005 * h);
+
+                let year = currentTime.getUTCFullYear();
+                let month = currentTime.getUTCMonth();
+                month += 1;
+                if (month < 10) month = "0" + month;
+                if (day < 10) day = "0" + day;
+                calcTime = year + "" + (month) + day;
+                
+                if (calcTime >= game.mergeQuests.nextDaily) {
+                    let dq = game.mergeQuests.dailyQuest;
+                    dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
+                    dq.currentMerges = 0;
+                    game.cogwheels.timeModeAttempts = 3;
+                    game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
+                    game.gifts.sendLimit = CONST_SENDLIMIT;
+                    game.gifts.openedToday = [];
+                    game.mergeQuests.nextDaily = calcTime2;
+                }
             }),
         new Scene("Wrenches",
             [
@@ -2129,7 +2179,7 @@ var scenes =
 
                 var compareIDs2 = [];
                 for (c in compareIDs) compareIDs2.push(compareIDs[c]);
-                compareIDs2.unshift("highestMasteryLevel", "highestBarrelReached", "highestScrapReached");
+                if (comparePage == 0) compareIDs2.unshift("highestMasteryLevel", "highestBarrelReached", "highestScrapReached");
 
                 if (comparePage == 0) {
                     for (i = 0; i < 3; i++) {

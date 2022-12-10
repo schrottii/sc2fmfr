@@ -88,6 +88,7 @@ var images =
     storm: loadImage("Images/storm.png"),
     gift: loadImage("Images/gift.png"),
     setmessage: loadImage("Images/Buttons/setmsg.png"),
+    setcode: loadImage("Images/Buttons/setcode.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

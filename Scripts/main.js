@@ -65,6 +65,8 @@ let shortV = {
     "totalAchievements": "ms",
     "selfMerges": "sfm",
     "totalMerges": "ttm",
+    "giftsSent": "gfs",
+    "giftsReceived": "gfo",
 }
 
 var spawnTime =
@@ -153,8 +155,28 @@ function setup()
         }
     };
     document.querySelector("div.absolute button#close").onclick = e => document.querySelector("div.absolute").style.display = "none";
+    document.querySelector("div.copyGift button#close").onclick = e => document.querySelector("div.copyGift").style.display = "none";
 
     requestAnimationFrame(update);
+}
+
+function copyGift() {
+    let exportCode = btoa(JSON.stringify(giftContent));
+    document.querySelector("div.absolute textarea").value = exportCode;
+    Utils.copyToClipboard(exportCode);
+    alert("The gift has been copied to your clipboard. Share it with the friend!");
+
+    document.querySelector("div.copyGift button#cancelg").style.display = "none";
+    document.querySelector("div.copyGift button#close").style.display = "block";
+}
+
+function cancelGift() {
+    giftContent = {};
+
+    game.gifts.sendLimit += 1;
+    game.stats.giftsSent = game.stats.giftsSent.sub(1);
+
+    document.querySelector("div.copyGift").style.display = "none";
 }
 
 function update()
@@ -273,7 +295,7 @@ function update()
 
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
-                if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2))) {
+                if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
                     game.autos[i].time += delta;
                     if (game.autos[i].time >= Math.max(applyUpgrade(game.autos[i]), ((game.autos[i].setTime != undefined) ? game.autos[i].setTime : 0))) {
                         game.autos[i].time = 0.001;
@@ -430,7 +452,7 @@ function update()
                             }
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "angelgoldenbeam", getAngelBeamValue()]);
+                                    stormQueue.push([500 * i, "angelbeam", getAngelBeamValue()]);
                                 }
                             }
                         }
@@ -1278,13 +1300,13 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.gifts !== undefined) {
             game.gifts.openedToday = loadVal(loadObj.gifts.openedToday, []);
-            game.gifts.openLimit = loadVal(loadObj.gifts.openLimit, 3);
-            game.gifts.sendLimit = loadVal(loadObj.gifts.sendLimit, 2);
+            game.gifts.openLimit = loadVal(loadObj.gifts.openLimit, CONST_OPENLIMIT);
+            game.gifts.sendLimit = loadVal(loadObj.gifts.sendLimit, CONST_SENDLIMIT);
         }
         else {
             game.gifts.openedToday = [];
-            game.gifts.openLimit = 3;
-            game.gifts.sendLimit = 2;
+            game.gifts.openLimit = CONST_OPENLIMIT;
+            game.gifts.sendLimit = CONST_SENDLIMIT;
         }
 
         if (loadObj.goldenScrap !== undefined) {

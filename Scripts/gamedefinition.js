@@ -754,16 +754,16 @@ var game =
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1),
                     maxLevel: () => 50 + applyUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax)
-                }),
+                }), // OLD UPGRADE
             goldenScrapBoost: new DarkScrapUpgrade(
                 level => new Decimal(Math.min((100 + (10 * level)) * Math.pow(1.05, Math.max(0, level - 20)), 1000000)),
                 level => 0, //0.01 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
-                }),
+                }), // END OF OLD
             darkScrapGoldenScrap: new DarkScrapUpgrade(
-                level => new Decimal(1000).mul(Math.pow(1.25, level)),
-                level => new Decimal(Math.pow(1.1, level) / 10 - 0.1).mul(Math.max(1, level - 24) * 50 - 49),
+                level => new Decimal(1000).mul(new Decimal(1.25).pow(level)),
+                level => new Decimal(1.1).pow(level).div(10).sub(0.1).mul(Math.max(1, level - 24) * 50 - 49),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                 }),

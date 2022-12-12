@@ -1256,7 +1256,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[0][1], images.upgrades.brickSpeed, "Faster Brick\nLevel Up", 1.5 / 3, 0.4),
                         new UITireUpgrade(game.tires.upgrades[0][2], images.upgrades.fasterMastery, "Faster\nMerge Mastery", 2.5 / 3, 0.4),
                         new UIButton(0.5 / 3 + 0.11, 0.4, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 10000);
+                            game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[0][1].level == game.tires.upgrades[0][1].maxLevel && game.tires.upgrades[0][2].level == game.tires.upgrades[0][2].maxLevel }),
                     ]),
                     new UIGroup([
@@ -1264,7 +1264,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "Tire Chance\nper Merge", 1.5 / 3, 0.6, "table2"),
                         new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, "table2"),
                         new UIButton(0.5 / 3 + 0.11, 0.6, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 10000);
+                            game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[1][1].level == game.tires.upgrades[1][1].maxLevel && game.tires.upgrades[1][2].level == game.tires.upgrades[1][2].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[1])),
                     new UIGroup([
@@ -1272,7 +1272,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[2][1], images.upgrades.fasterAutoMerge, "Faster\nAuto Merge", 1.5 / 3, 0.8),
                         new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "More\nGolden Scrap", 2.5 / 3, 0.8),
                         new UIButton(2.5 / 3 + 0.11, 0.8, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[2])),
                     new UIGroup([
@@ -1280,7 +1280,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[3][1], images.upgrades.beamValue, "More Beams\n(All types)", 1.5 / 3, 1.0, "table2"),
                         new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "Cheaper\nPlastic Bags", 2.5 / 3, 1.0, "table2"),
                         new UIButton(2.5 / 3 + 0.11, 1.0, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                            game.tires.upgrades[3][2].buyToTarget(game.tires.upgrades[3][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[3][0].level == game.tires.upgrades[3][0].maxLevel && game.tires.upgrades[3][1].level == game.tires.upgrades[3][1].maxLevel }),
                     ], () => game.tires.milestones[3]())
                 ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.1 })

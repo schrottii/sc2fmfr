@@ -767,7 +767,7 @@ var scenes =
                 }, 0.5, 0.2, 0.025, "black"),
 
                 new UIText(() => "You get " + formatNumber(applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).toFixed(2)) + "% more Golden Scrap for every Dark Scrap you have.\n" +
-                    "You get a total boost of x" + formatNumber((1 + (applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap) * game.darkscrap.amount))) + "!", 0.5, 0.3, 0.025, "black"),
+                    "You get a total boost of x" + formatNumber(((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).add(1).mul(game.darkscrap.amount)))) + "!", 0.5, 0.3, 0.025, "black"),
 
                 new UIText(() => "$images.darkscrap$" + formatNumber(game.darkscrap.amount, game.settings.numberFormatType, { namesAfter: 1e10 }), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
 

@@ -569,8 +569,10 @@ var scenes =
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
-                            if(undefiner) barrels[i] = undefined;
-                            // freeSpots += 1;    NOT HERE!!!
+                            if (undefiner) {
+                                barrels[i] = undefined;
+                                freeSpots += 1;
+                            }
                         }
                     }
                 }
@@ -578,7 +580,6 @@ var scenes =
             function () {
                 if (draggedBarrel != null) {
                     let index = draggedBarrel.getDropIndex();
-                    alert("test 0 ... " + freeSpots + "|" + index + "|" + draggedBarrel.originPos);
                     if (index !== -1) { // -1 means it's dropped into nowhere
                         let b = barrels[index];
                         if (b !== undefined) { // Place you drag to is not empty
@@ -588,27 +589,23 @@ var scenes =
                                 barrels[index] = new Barrel(draggedBarrel.level + 1);
                                 onBarrelMerge(false, Math.round(draggedBarrel.level));
                                 draggedBarrel = undefined;
-                                alert("test 1 ... " + freeSpots);
                             }
                             else { // NOT SAME, BACK TO WHERE IT WAS
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
                                 if(!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
-                                alert("test 2 ... " + freeSpots);
                             }
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
                             draggedBarrel = undefined;
                             // no need to change freeSpots
-                            alert("test 3 ... " + freeSpots);
                         }
                     }
                     else { // put it back man
                         barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
                         barrels[draggedBarrel.originPos].scale = 0.7;
                         draggedBarrel = undefined;
-                        alert("test 4 ... " + freeSpots);
                     }
                 }
             }),

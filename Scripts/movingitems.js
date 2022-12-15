@@ -115,7 +115,7 @@ class MovingItem
                 }
             }
         }
-        if (this.timeSinceSpawn >= 1 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(1)) {
+        if (this.timeSinceSpawn >= 2 && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(1)) {
             if (Math.random() * 100 <= applyUpgrade(game.collectors[this.autoType])) {
                 if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
                 game.factory.tank = game.factory.tank.sub(1);
@@ -333,7 +333,7 @@ var movingItemFactory =
             }))
     },
     fallingAngelBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.angelbeam, "angelBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.125, h * 0.125, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
+        movingItems.push(new FallingItem(images.movingItems.angelbeam, "angelbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.125, h * 0.125, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), 0, w * 0.2,
             function () {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -348,7 +348,7 @@ var movingItemFactory =
             }))
     },
     fallingReinforcedBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.2, h * 0.2, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.2, h * 0.2, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function () {
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {
@@ -386,7 +386,7 @@ var movingItemFactory =
     },
     fallingGlitchBeam: (value) => {
         let rndm = applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? Math.max(0.75, Math.random() + 0.25) : 1;
-        movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchBeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15 * rndm, h * 0.15 * rndm, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
+        movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15 * rndm, h * 0.15 * rndm, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function () {
                 if (this.cooldown < 0.05) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100) {

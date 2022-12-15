@@ -211,6 +211,7 @@ function update()
             }
         }
         else if (timeMode && freeSpots == 0) {
+            game.goldenScrap.reset();
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
@@ -219,7 +220,6 @@ function update()
                 GameNotification.create(new MilestoneNotificaion(216));
             }
 
-            game.goldenScrap.reset();
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
             GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
@@ -249,7 +249,7 @@ function update()
             }
         }
 
-        if (game.milestones.achievements[7].isUnlocked() && !timeMode)
+        if (game.ms.includes(7) && !timeMode)
         {
             if(game.settings.autoMerge)
             {
@@ -393,7 +393,6 @@ function update()
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
                                     stormQueue.push([500 * i, "beam", getBeamBaseValue()]);
-                                    renewableEnergy();
                                 }
                             }
                         }
@@ -540,21 +539,27 @@ function update()
                                     movingItemFactory.jumpingTire();
                                     break;
                                 case "goldenbeam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingGoldenBeam(val);
                                     break;
                                 case "beam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingBeam(val);
                                     break;
                                 case "aerobeam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingAeroBeam(val);
                                     break;
                                 case "angelbeam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingAngelBeam(val);
                                     break;
                                 case "reinforcedbeam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingReinforcedBeam(val);
                                     break;
                                 case "glitchbeam":
+                                    renewableEnergy();
                                     movingItemFactory.fallingGlitchBeam(val);
                                     break;
                                 case "gs":
@@ -684,14 +689,14 @@ function renewableEnergy() {
     if (!applyUpgrade(game.skillTree.upgrades.renewableEnergy)) return false;
 
     // Upgrade is unlocked
-    if (game.factory.tank.add(1).lte(getTankSize()))game.factory.tank = game.factory.tank.add(1);
+    if (game.factory.tank.lt(getTankSize()))game.factory.tank = game.factory.tank.add(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
 
-const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina"]
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
@@ -885,14 +890,14 @@ function autoMergeBarrel()
 
 function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
+        let Amount = new Decimal(0.1 + barrels[19].level / 10).mul(getFragmentBaseValue());
         if (game.dimension == 0) {
-            let Amount = new Decimal(barrels[19].level / 10).mul(getFragmentBaseValue());
             game.fragment.amount = game.fragment.amount.add(Amount);
             game.stats.totalfragments = game.stats.totalfragments.add(Amount);
         }
         else if (game.dimension == 1) {
-            game.darkfragment.amount = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
-            game.stats.totaldarkfragments = game.darkfragment.amount.add(new Decimal(barrels[19].level / 10).mul(getDarkFragmentBaseValue()));
+            game.darkfragment.amount = game.darkfragment.amount.add(Amount);
+            game.stats.totaldarkfragments = game.darkfragment.amount.add(Amount);
         }
         barrels[19] = undefined;
         freeSpots += 1;
@@ -1016,7 +1021,7 @@ function spawnBarrel() {
         }
     }
 
-    if (idx !== -1 && game.settings.barrelSpawn == true)
+    if (idx !== -1 && (game.settings.barrelSpawn == true || timeMode))
     {
         barrels[idx] = new Barrel(applyUpgrade(game.scrapUpgrades.betterBarrels).toNumber());
         freeSpots -= 1;
@@ -1674,13 +1679,13 @@ function loadGame(saveCode, isFromFile=false)
         if (loadObj.collectors !== undefined) {
             Object.keys(loadObj.collectors).forEach(k => {
                 game.collectors[k].level = loadVal(loadObj.collectors[k].level, 0);
-                game.collectors[k].time = loadVal(loadObj.collectors[k].time, 0);
+                game.collectors[k].time = "b";
             });
         }
         else {
             Object.keys(game.collectors).forEach(k => {
                 game.collectors[k].level = 0;
-                game.collectors[k].time = 0;
+                game.collectors[k].time = "b";
             })
         }
 

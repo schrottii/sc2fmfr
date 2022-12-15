@@ -5,7 +5,7 @@ const BARRELS = 950;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v2.9.1 (v3.6.1)";
+const gameVersionText = "v2.9.2 (v3.6.2)";
 
 var game =
 {
@@ -113,7 +113,12 @@ var game =
                         Decimal.pow(1.2, Math.max(0, level - 500)),
                         Decimal.pow(1.2, Math.max(0, level - 1250)),
                         Decimal.pow(1.2, Math.max(0, level - 2500)),
-                        Decimal.pow(1.2, Math.max(0, level - 5000))
+                        Decimal.pow(1.2, Math.max(0, level - 5000)),
+                        Decimal.pow(1.2, Math.max(0, level - 15000)),
+                        Decimal.pow(1.4, Math.max(0, level - 25000)),
+                        Decimal.pow(1.3, Math.max(0, level - 50000)),
+                        Decimal.pow(1.6, Math.max(0, level - 83000)),
+                        Decimal.pow(10, Math.max(0, level - 225000))
                     ];
 
                 let result = new Decimal(25000);
@@ -178,6 +183,7 @@ var game =
                     for (let i = 0; i < barrels.length; i++) {
                         barrels[i] = new Barrel(level);
                     }
+                    freeSpots = 0;
                 },
                 onBuyMax: function (level) {
                     for (let i = 0; i < barrels.length; i++) {
@@ -1617,7 +1623,7 @@ var game =
     {
         autoBetterBarrels: new AutoUpgrade(
             level => new Decimal(Math.round(level / 60) + 2),
-            level => (60.5 - (0.5 * level) - (0.25 * Math.min(level, 25)) + (0.25 * Math.max(level - 92, 0))) * Math.min(level, 1),
+            level => (60.5 - (0.5 * level) - (0.25 * Math.min(level, 29)) + (0.25 * Math.max(level - 92, 0))) * Math.min(level, 1),
             RESOURCE_LEGENDARYSCRAP, ["scrapUpgrades", "betterBarrels"],
             time = 0,
             {
@@ -1626,7 +1632,7 @@ var game =
             }),
         autoFasterBarrels: new AutoUpgrade(
             level => new Decimal(2),
-            level => (62 - (2 * level) - (1 * Math.min(level, 9)) + (1.5 * Math.max(level - 24, 0))) * Math.min(level, 1),
+            level => (62 - (2 * level) - (1 * Math.min(level, 10)) + (1.5 * Math.max(level - 24, 0))) * Math.min(level, 1),
             RESOURCE_LEGENDARYSCRAP, ["scrapUpgrades", "fasterBarrels"],
             time = 0,
             {
@@ -1662,7 +1668,7 @@ var game =
             }),
         autoGetMoreMagnets: new AutoUpgrade(
             level => new Decimal(1).add(Math.floor(level / 12)),
-            level => (305 - (2 * level) - (3 * Math.min(level, 24)) + (1 * Math.max(level - 112, 0))) * Math.min(level, 1),
+            level => (305 - (2 * level) - (3 * Math.min(level, 24)) - (0.5 * Math.max(level - 119, 0)) + (1 * Math.max(level - 112, 0))) * Math.min(level, 1),
             RESOURCE_BLUEBRICK, ["goldenScrap", "upgrades", "magnetBoost"],
             time = 0,
             {
@@ -1966,7 +1972,7 @@ var game =
                 new Milestone(218, "F.U.N.", 114, "Make Glitch Beams funnier", () => game.skillTree.upgrades.funnyGlitchBeams.level > 0),
                 new Milestone(219, "H.O.M.L.", 87, "Level the first Auto buyer to at least half of its max. level", () => game.autos.autoBetterBarrels.level >= game.autos.autoBetterBarrels.maxLevel / 2),
                 new Milestone(220, "3.47", 104, "Complete all three paths (again)", () => game.skillTree.upgrades.veryFastCrafting.level > 0 && game.skillTree.upgrades.funnyGlitchBeams.level > 0 && game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
-                new Milestone(221, "Duck Tales", 115, "Do at least 100k merges on all duck barrels", () => { for (i in [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756]) if (game.barrelMastery.b[i - 1] < 100000) return false; return true; }),
+                new Milestone(221, "Duck Tales", 115, "Do at least 100k merges on all duck barrels", () => { [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756].forEach(i => { if (game.barrelMastery.b[i - 1] < 100000) { return false } else if(i == 756) return true }) }),
                 new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),

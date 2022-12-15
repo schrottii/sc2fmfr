@@ -565,7 +565,7 @@ var scenes =
                             lastClickedBarrel = -1;
                             freeSpots += 1;
                         }
-                        else {
+                        else { // Pick up a barrel / start dragging it - set draggedBarrel to the now dragged barrel
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
@@ -590,18 +590,16 @@ var scenes =
                                 freeSpots += 1;
                             }
                             else { // NOT SAME, BACK TO WHERE IT WAS
-                                freeSpots -= 1;
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
                                 if(!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
-                                freeSpots += 1;
-                                alert(freeSpots);
-                                game.scrapUpgrades.fasterBarrels.level = 5000
                             }
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
+                            alert("Ohhh ", draggedBarrel, freeSpots, index);
                             draggedBarrel = undefined;
+                            game.scrapUpgrades.fasterBarrels.level = 5000;
                         }
                     }
                     else { // put it back man

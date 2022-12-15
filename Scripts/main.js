@@ -1306,11 +1306,21 @@ function loadGame(saveCode, isFromFile=false)
             game.gifts.openedToday = loadVal(loadObj.gifts.openedToday, []);
             game.gifts.openLimit = loadVal(loadObj.gifts.openLimit, CONST_OPENLIMIT);
             game.gifts.sendLimit = loadVal(loadObj.gifts.sendLimit, CONST_SENDLIMIT);
+
+            if (loadObj.gifts.friends !== undefined) {
+                game.gifts.friends = loadVal(loadObj.gifts.friends, []);
+            }
+            else {
+                game.gifts.friends = [];
+            }
         }
         else {
             game.gifts.openedToday = [];
             game.gifts.openLimit = CONST_OPENLIMIT;
             game.gifts.sendLimit = CONST_SENDLIMIT;
+        }
+        if (loadObj.gifts.friends == undefined) {
+            game.gifts.friends = [];
         }
 
         if (loadObj.goldenScrap !== undefined) {

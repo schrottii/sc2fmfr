@@ -512,6 +512,7 @@ var game =
         openLimit: CONST_OPENLIMIT,
         sendLimit: CONST_SENDLIMIT,
         openedToday: [],
+        friends: [],
     },
     bricks:
     {

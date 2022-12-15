@@ -1841,6 +1841,8 @@ var scenes =
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
                 }),
 
+                new UIButton(0.9, 0.395, 0.07, 0.07, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
+
                 new UIText(() => "Friend Code: " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
                 new UIText(() => "Share it with someone so they can send you a gift!\n(If they like you, but they don't)", 0.5, 0.15, 0.03),
 
@@ -2036,6 +2038,30 @@ var scenes =
                     game.gifts.openedToday = [];
                     game.mergeQuests.nextDaily = calcTime2;
                 }
+            }),
+        new Scene("FriendList",
+            [
+                new UIText("Friend List", 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
+
+                new UIFriend(0.15, 0),
+                new UIFriend(0.25, 1),
+                new UIFriend(0.35, 2),
+                new UIFriend(0.45, 3),
+                new UIFriend(0.55, 4),
+                new UIFriend(0.65, 5),
+                new UIFriend(0.75, 6),
+                new UIFriend(0.85, 7),
+                new UIFriend(0.95, 8),
+            ],
+
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
             }),
         new Scene("Wrenches",
             [

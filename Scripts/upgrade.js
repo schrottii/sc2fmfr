@@ -651,7 +651,6 @@ class FactoryUpgrade extends ScrapUpgrade {
     }
     buy(round) {
         if (game.factory.time > 0) return false;
-        if (game.dimension == 1) return false;
         if (game.factory.tank.round().lt(this.getPrice(0))) return false;
         let resource = getUpgradeResource(this.resource);
 

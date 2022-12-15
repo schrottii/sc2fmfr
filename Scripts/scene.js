@@ -7,6 +7,8 @@ var C = "default";
 var calcTime = "";
 var calcTime2 = "";
 var timeDisplay = "";
+var futureTimeDisplay = "";
+var year = month = "";
 
 var barrelsDisplayMode = 0;
 var selectedConvert = 0;
@@ -344,7 +346,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Is for me? (Christmas version)", w * 0.49, h - w * 0.1);
+                ctx.fillText("Wanna be my friend?", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -445,7 +447,7 @@ var scenes =
 
                 new UIText(() => "+" + formatNumber(Barrel.getGlobalIncome()) + "/s", 0.3, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
-                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) { return "Next Storm Chance In " + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.0775, 0.03, "white", { bold: true }),
+                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return "Next Storm Chance In " + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.0775, 0.03, "white", { bold: true }),
             ],
             function (delta) {
                 for (let i = 0, l = barrels.length; i < l; i++) {
@@ -548,14 +550,14 @@ var scenes =
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
+                                let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getFragmentBaseValue());
                                 if (game.dimension == 0) {
-                                    let Amount = new Decimal(barrels[i].level / 10).mul(getFragmentBaseValue());
                                     game.fragment.amount = game.fragment.amount.add(Amount);
                                     game.stats.totalfragments = game.stats.totalfragments.add(Amount);
                                 }
                                 else if (game.dimension == 1) {
-                                    game.darkfragment.amount = game.darkfragment.amount.add(new Decimal(barrels[i].level / 10).mul(getDarkFragmentBaseValue()));
-                                    game.stats.totaldarkfragments = game.darkfragment.amount.add(new Decimal(barrels[i].level / 10).mul(getDarkFragmentBaseValue()));
+                                    game.darkfragment.amount = game.darkfragment.amount.add(Amount);
+                                    game.stats.totaldarkfragments = game.darkfragment.amount.add(Amount);
                                 }
                             }
                             barrels[i] = undefined;
@@ -563,12 +565,14 @@ var scenes =
                             lastClickedBarrel = -1;
                             freeSpots += 1;
                         }
-                        else {
+                        else { // Pick up a barrel / start dragging it - set draggedBarrel to the now dragged barrel
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
-                            if(undefiner) barrels[i] = undefined;
-                            // freeSpots += 1;    NOT HERE!!!
+                            if (lastClickedBarrel == i && i == draggedBarrel.originPos && !timeMode) {
+                                barrels[i] = undefined;
+                                freeSpots += 1;
+                            }
                         }
                     }
                 }
@@ -583,19 +587,19 @@ var scenes =
                             if (Math.round(lvl) === Math.round(draggedBarrel.level)) { // MERGE
                                 tempDrawnBarrels[index] = draggedBarrel.level;
                                 barrels[index] = new Barrel(draggedBarrel.level + 1);
-                                freeSpots += 1;
                                 onBarrelMerge(false, Math.round(draggedBarrel.level));
                                 draggedBarrel = undefined;
                             }
                             else { // NOT SAME, BACK TO WHERE IT WAS
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
-                                barrels[draggedBarrel.originPos].scale = 0.7;
+                                if(!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
                             }
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
                             draggedBarrel = undefined;
+                            // no need to change freeSpots
                         }
                     }
                     else { // put it back man
@@ -619,7 +623,7 @@ var scenes =
                 new UIGroup(
                     [
                         new UIMagnetUpgrade(game.magnetUpgrades.autoMerger, images.upgrades.fasterAutoMerge, 0.7, "Increase Auto Merge Speed", "table2")
-                    ], () => game.milestones.achievements[6].isUnlocked()),
+                    ], () => game.ms.includes(7)),
                 new UIMagnetUpgrade(game.magnetUpgrades.brickSpeed, images.upgrades.brickSpeed, 0.8, "Less Merges are needed\nto double Brick\nproduction.", "table", () => applyUpgrade(game.skillTree.upgrades.magnetUpgBrickSpeed)),
             ],
             function () {
@@ -767,7 +771,7 @@ var scenes =
                 }, 0.5, 0.2, 0.025, "black"),
 
                 new UIText(() => "You get " + formatNumber(applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).toFixed(2)) + "% more Golden Scrap for every Dark Scrap you have.\n" +
-                    "You get a total boost of x" + formatNumber((1 + (applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap) * game.darkscrap.amount))) + "!", 0.5, 0.3, 0.025, "black"),
+                    "You get a total boost of x" + formatNumber(((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).add(1).mul(game.darkscrap.amount)))) + "!", 0.5, 0.3, 0.025, "black"),
 
                 new UIText(() => "$images.darkscrap$" + formatNumber(game.darkscrap.amount, game.settings.numberFormatType, { namesAfter: 1e10 }), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
 
@@ -795,10 +799,10 @@ var scenes =
 
                 new UIText(() => {
                     if (game.dimension == 0) {
-                        return "Fragments can be earned by destroying barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(game.scrapUpgrades.betterBarrels.level / 10).mul(getFragmentBaseValue())) + " fragments."
+                        return "Fragments can be earned by destroying barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(0.1 + game.scrapUpgrades.betterBarrels.level / 10).mul(getFragmentBaseValue())) + " fragments."
                     }
                     if (game.dimension == 1) {
-                        return "Dark Fragments can be earned by destroying dark barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(game.scrapUpgrades.betterBarrels.level / 10).mul(getDarkFragmentBaseValue())) + " dark fragments."
+                        return "Dark Fragments can be earned by destroying dark barrels.\nFor destroying barrel " + (parseInt(game.scrapUpgrades.betterBarrels.level) + 1) + " you get " + formatNumber(new Decimal(0.1 + game.scrapUpgrades.betterBarrels.level / 10).mul(getDarkFragmentBaseValue())) + " dark fragments."
                     }
                 }, 0.5, 0.2, 0.03, "black"),
 
@@ -1256,7 +1260,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[0][1], images.upgrades.brickSpeed, "Faster Brick\nLevel Up", 1.5 / 3, 0.4),
                         new UITireUpgrade(game.tires.upgrades[0][2], images.upgrades.fasterMastery, "Faster\nMerge Mastery", 2.5 / 3, 0.4),
                         new UIButton(0.5 / 3 + 0.11, 0.4, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 10000);
+                            game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[0][1].level == game.tires.upgrades[0][1].maxLevel && game.tires.upgrades[0][2].level == game.tires.upgrades[0][2].maxLevel }),
                     ]),
                     new UIGroup([
@@ -1264,7 +1268,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "Tire Chance\nper Merge", 1.5 / 3, 0.6, "table2"),
                         new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "Faster\nMerge Quests", 2.5 / 3, 0.6, "table2"),
                         new UIButton(0.5 / 3 + 0.11, 0.6, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 10000);
+                            game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[1][1].level == game.tires.upgrades[1][1].maxLevel && game.tires.upgrades[1][2].level == game.tires.upgrades[1][2].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[1])),
                     new UIGroup([
@@ -1272,7 +1276,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[2][1], images.upgrades.fasterAutoMerge, "Faster\nAuto Merge", 1.5 / 3, 0.8),
                         new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "More\nGolden Scrap", 2.5 / 3, 0.8),
                         new UIButton(2.5 / 3 + 0.11, 0.8, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[2])),
                     new UIGroup([
@@ -1280,7 +1284,7 @@ var scenes =
                         new UITireUpgrade(game.tires.upgrades[3][1], images.upgrades.beamValue, "More Beams\n(All types)", 1.5 / 3, 1.0, "table2"),
                         new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "Cheaper\nPlastic Bags", 2.5 / 3, 1.0, "table2"),
                         new UIButton(2.5 / 3 + 0.11, 1.0, 0.05, 0.05, images.buttonMaxAll, () => {
-                            game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 10000);
+                            game.tires.upgrades[3][2].buyToTarget(game.tires.upgrades[3][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[3][0].level == game.tires.upgrades[3][0].maxLevel && game.tires.upgrades[3][1].level == game.tires.upgrades[3][1].maxLevel }),
                     ], () => game.tires.milestones[3]())
                 ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.1 })
@@ -1786,7 +1790,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                if (calcTime == "" || calcTime >= game.mergeQuests.nextDaily) {
+                if (calcTime == "" || futureTimeDisplay == "" || calcTime >= game.mergeQuests.nextDaily) {
 
                     let currentTime = new Date();
                     let year = currentTime.getUTCFullYear();
@@ -1803,9 +1807,10 @@ var scenes =
                     calcTime2 = year + "" + (month) + tomorrow;
                     if (calcTime == "") {
                         calcTime = year + "" + (month) + day;
-                        timeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + day + ". " + Math.min(12, Math.floor(hour / 12)) + [" AM", " PM"][Math.floor(hour / 12)];
-                        futureTimeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + tomorrow + ". " + "0 AM (UTC)";
                     }
+                    timeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + day + ". " + Math.min(12, Math.floor(hour / 12)) + [" AM", " PM"][Math.floor(hour / 12)];
+                    futureTimeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + tomorrow + ". " + "0 AM (UTC)";
+
                     if (calcTime >= game.mergeQuests.nextDaily) {
                         let dq = game.mergeQuests.dailyQuest;
                         dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
@@ -1835,6 +1840,8 @@ var scenes =
                     quadratic: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
                 }),
+
+                new UIButton(0.9, 0.395, 0.07, 0.07, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
 
                 new UIText(() => "Friend Code: " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
                 new UIText(() => "Share it with someone so they can send you a gift!\n(If they like you, but they don't)", 0.5, 0.15, 0.03),
@@ -1890,7 +1897,7 @@ var scenes =
                                     to: sendTo,
                                     content: giftType,
                                     amount: giftAmount,
-                                    date: day,
+                                    date: year + "" + month + day,
                                     message: giftMsg != "" ? giftMsg : "Example Message... nothing special to see here!"
                                 }
 
@@ -1922,7 +1929,7 @@ var scenes =
                 }, { quadratic: true }),
                 new UIButton(0.4, 0.65, 0.075, 0.075, images.mergeToken, () => {
                     giftType = "mergetoken"
-                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(200);
+                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(400);
                 }, { quadratic: true }),
                 new UIButton(0.6, 0.65, 0.075, 0.075, images.masteryToken, () => {
                     giftType = "masterytoken"
@@ -1930,7 +1937,7 @@ var scenes =
                 }, { quadratic: true }),
                 new UIButton(0.8, 0.65, 0.075, 0.075, images.wrench, () => {
                     giftType = "wrench"
-                    giftAmount = game.wrenches.amount.div(10).min(500);
+                    giftAmount = game.wrenches.amount.div(10).min(1000);
                 }, { quadratic: true }),
 
                 // Open Gift
@@ -1942,7 +1949,7 @@ var scenes =
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
 
-                        if (giftContent.date == day) {
+                        if (giftContent.date == year + "" + month + day) {
                             if (giftContent.to == game.code && !game.gifts.openedToday.includes(giftContent.from)) {
                                 game.gifts.openLimit -= 1;
                                 giftMsg = giftContent.message;
@@ -1955,13 +1962,13 @@ var scenes =
                                         game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(2)));
                                         break;
                                     case "mergetoken":
-                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(200));
+                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(400));
                                         break;
                                     case "masterytoken":
                                         game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
                                         break;
                                     case "wrench":
-                                        game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(500));
+                                        game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(1000));
                                         break;
                                 }
 
@@ -2014,8 +2021,8 @@ var scenes =
                 ctx.fillRect(0, 0.315 * h, w, 0.005 * h);
                 ctx.fillRect(0, 0.7 * h, w, 0.005 * h);
 
-                let year = currentTime.getUTCFullYear();
-                let month = currentTime.getUTCMonth();
+                year = currentTime.getUTCFullYear();
+                month = currentTime.getUTCMonth();
                 month += 1;
                 if (month < 10) month = "0" + month;
                 if (day < 10) day = "0" + day;
@@ -2031,6 +2038,30 @@ var scenes =
                     game.gifts.openedToday = [];
                     game.mergeQuests.nextDaily = calcTime2;
                 }
+            }),
+        new Scene("FriendList",
+            [
+                new UIText("Friend List", 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
+
+                new UIFriend(0.15, 0),
+                new UIFriend(0.25, 1),
+                new UIFriend(0.35, 2),
+                new UIFriend(0.45, 3),
+                new UIFriend(0.55, 4),
+                new UIFriend(0.65, 5),
+                new UIFriend(0.75, 6),
+                new UIFriend(0.85, 7),
+                new UIFriend(0.95, 8),
+            ],
+
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
             }),
         new Scene("Wrenches",
             [
@@ -2686,7 +2717,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
 
-                new UIText(() => "Use 2 currencies and some energy from the generator\n to craft new currencies here!\nOnly available in the first dimension.", 0.5, 0.8, 0.03, "black"),
+                new UIText(() => "Use 2 currencies and some energy from the generator\n to craft new currencies here!", 0.5, 0.8, 0.03, "black"),
 
                 new UIText(() => "$images.legendaryScrap$" + Math.round(game.factory.legendaryScrap), 0.2, 0.15, 0.06, "yellow"),
                 new UIText(() => "$images.steelMagnet$" + Math.round(game.factory.steelMagnets), 0.2, 0.175, 0.06, "yellow"),

@@ -69,9 +69,10 @@ class Barrel
                 .mul(applyUpgrade(game.cogwheels.upgrades.scrapBoost))
         }
         if (game.dimension == 1) {
-            return Decimal.pow(1.1, level)
+            return (Decimal.pow(1.1, level)
                 .mul(new Decimal(1.05).pow(game.mergesThisPrestige))
-                .mul(1 + applyUpgrade(game.darkfragment.upgrades.scrapBoost))
+                .mul(1 + applyUpgrade(game.darkfragment.upgrades.scrapBoost)))
+                .min(new Decimal(game.highestScrapReached).sub(game.scrap))
         }          
     }
 

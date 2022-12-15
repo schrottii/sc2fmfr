@@ -567,7 +567,7 @@ class UIUpgrade3 extends UIGroup {
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => desc + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
-                new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom" }),
+                new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom", isVisible: () => upg.time != "b" }),
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
                 new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
                     let att = prompt("New time? (In seconds, e. g. 8)");
@@ -577,6 +577,27 @@ class UIUpgrade3 extends UIGroup {
                         GameNotification.create(new MilestoneNotificaion(208));
                     }
                 }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
+            ], isVisible);
+    }
+}
+
+class UIFriend extends UIGroup {
+    constructor(y, id, col, isVisible) {
+        super(
+            [
+                new UIRect(0.5, y, 1, 0.0975, col ? col : "table"),
+                new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => { if (game.gifts.friends[id] != undefined) sendTo = game.gifts.friends[id].code }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
+                    let friendCode = prompt("Friend code?");
+                    let friendName = prompt("Friend name?");
+                    game.gifts.friends.push({code: friendCode, name: friendName});
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
+
+                new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => { game.gifts.friends[id].name = prompt("Friend name?") }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.6, y + 0.02, 0.04, 0.04, images.change, () => { game.gifts.friends[id].code = prompt("Friend code?") }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+
+                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].name : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].code : "", 0.975, y, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
             ], isVisible);
     }
 }

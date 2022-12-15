@@ -569,7 +569,7 @@ var scenes =
                             lastClickedBarrel = i;
                             timeSinceLastBarrelClick = 0;
                             draggedBarrel.originPos = i;
-                            if (undefiner) {
+                            if (lastClickedBarrel == i && i == draggedBarrel.originPos && !timeMode) {
                                 barrels[i] = undefined;
                                 freeSpots += 1;
                             }

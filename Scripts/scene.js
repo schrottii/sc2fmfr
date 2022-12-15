@@ -578,6 +578,7 @@ var scenes =
             function () {
                 if (draggedBarrel != null) {
                     let index = draggedBarrel.getDropIndex();
+                    alert(mouseX + "|" + mouseY + "/" + freeSpots)
                     if (index !== -1) { // -1 means it's dropped into nowhere
                         let b = barrels[index];
                         if (b !== undefined) { // Place you drag to is not empty
@@ -597,9 +598,8 @@ var scenes =
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
-                            alert("Ohhh ", draggedBarrel, freeSpots, index);
                             draggedBarrel = undefined;
-                            game.scrapUpgrades.fasterBarrels.level = 5000;
+                            // no need to change freeSpots
                         }
                     }
                     else { // put it back man

@@ -764,9 +764,9 @@ function onBarrelMerge(isAuto, lvl, bx, by)
                 break;
             }
         }
-        let merged = game.mergeQuests.dailyQuest.check(lvl);
     }
 
+    freeSpots += 1;
     game.totalMerges += 1;
     game.mergesThisPrestige += 1;
     if (game.barrelMastery.isUnlocked()) {
@@ -882,7 +882,6 @@ function autoMergeBarrel()
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
             barrels[filtered[1].index] = undefined;
-            freeSpots += 1;
             break;
         }
     }

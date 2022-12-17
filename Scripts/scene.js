@@ -572,16 +572,13 @@ var scenes =
                             freeSpots += 1;
                         }
                         else { // Pick up a barrel / start dragging it - set draggedBarrel to the now dragged barrel
-                            console.log("it does! " + draggedBarrel + "/" + lastClickedBarrel + "/" + undefiner)
                             if (undefiner) {
-                                console.log("SALT: " + draggedBarrel.originPos);
                                 lastClickedBarrel = i;
                                 timeSinceLastBarrelClick = 0;
                                 draggedBarrel.originPos = i;
                                 barrels[i] = undefined;
                             }
                             else {
-                                console.log(undefinerPos + "..." + draggedBarrel.originPos);
                                 barrels[undefinerPos] = new Barrel(undefinerLev);
                                 lastClickedBarrel = -1;
                                 draggedBarrel = undefined;

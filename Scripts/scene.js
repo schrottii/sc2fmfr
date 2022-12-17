@@ -346,7 +346,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Wanna be my friend?", w * 0.49, h - w * 0.1);
+                ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -546,16 +546,22 @@ var scenes =
                     let b = barrels[i];
                     if (b != null && b.isClicked()) {
                         if (draggedBarrel == undefined) undefiner = true;
-                        else undefiner = false;
+                        else {
+                            undefiner = false;
+                            undefinerPos = draggedBarrel.originPos;
+                            undefinerLev = draggedBarrel.level;
+                        }
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
                                 let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getFragmentBaseValue());
                                 if (game.dimension == 0) {
+                                    let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getFragmentBaseValue());
                                     game.fragment.amount = game.fragment.amount.add(Amount);
                                     game.stats.totalfragments = game.stats.totalfragments.add(Amount);
                                 }
                                 else if (game.dimension == 1) {
+                                    let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getDarkFragmentBaseValue());
                                     game.darkfragment.amount = game.darkfragment.amount.add(Amount);
                                     game.stats.totaldarkfragments = game.darkfragment.amount.add(Amount);
                                 }
@@ -566,13 +572,27 @@ var scenes =
                             freeSpots += 1;
                         }
                         else { // Pick up a barrel / start dragging it - set draggedBarrel to the now dragged barrel
-                            lastClickedBarrel = i;
-                            timeSinceLastBarrelClick = 0;
-                            draggedBarrel.originPos = i;
-                            if (lastClickedBarrel == i && i == draggedBarrel.originPos && !timeMode) {
+                            console.log("it does! " + draggedBarrel + "/" + lastClickedBarrel + "/" + undefiner)
+                            if (undefiner) {
+                                console.log("SALT: " + draggedBarrel.originPos);
+                                lastClickedBarrel = i;
+                                timeSinceLastBarrelClick = 0;
+                                draggedBarrel.originPos = i;
                                 barrels[i] = undefined;
-                                freeSpots += 1;
                             }
+                            else {
+                                console.log(undefinerPos + "..." + draggedBarrel.originPos);
+                                barrels[undefinerPos] = new Barrel(undefinerLev);
+                                lastClickedBarrel = -1;
+                                draggedBarrel = undefined;
+                            }
+                            /*if (freeSpots == 0) {
+                                for (b in barrels) {
+                                    if (barrels[b] == undefined) {
+                                        freeSpots += 1;
+                                    }
+                                }
+                            }*/
                         }
                     }
                 }

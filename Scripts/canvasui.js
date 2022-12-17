@@ -593,8 +593,14 @@ class UIFriend extends UIGroup {
                     game.gifts.friends.push({code: friendCode, name: friendName});
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
-                new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => { game.gifts.friends[id].name = prompt("Friend name?") }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
-                new UIButton(0.6, y + 0.02, 0.04, 0.04, images.change, () => { game.gifts.friends[id].code = prompt("Friend code?") }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => {
+                    let newFr = prompt("Friend name?");
+                    if(newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.6, y + 0.02, 0.04, 0.04, images.change, () => {
+                    let newFr = prompt("Friend code?");
+                    if (newFr != null && newFr != false) game.gifts.friends[id].code = newFr;
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
 
                 new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].name : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
                 new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].code : "", 0.975, y, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),

@@ -5,7 +5,7 @@ const BARRELS = 950;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v2.9.2 (v3.6.2)";
+const gameVersionText = "-1.0h7^p#a2r"/*"v2.9.2 (v3.6.2)"*/;
 
 var game =
 {
@@ -75,7 +75,7 @@ var game =
                 .mul(applyUpgrade(game.goldenScrap.upgrades.gsBoost))
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
-                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).add(1).mul(game.darkscrap.amount)));
+                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -844,7 +844,7 @@ var game =
                 level => new Decimal(25 * ((level * Math.min(19, Math.max(9, level))) + 1)),
                 level => 1 + level,
                 {
-                    maxLevel: 12,
+                    maxLevel: () => 12 + game.skillTree.upgrades.higherBeamValueMax.level,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             beamStormChance: new BeamUpgrade(
@@ -1482,8 +1482,8 @@ var game =
     },
     barrelMastery: {
         isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockMastery),
-        b: [], // All ya merges
-        bl: [], // All ya levels
+        b: Array(1000).fill(0), // All ya merges
+        bl: Array(1000).fill(0), // All ya levels
         levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
         masteryTokens: new Decimal(0),
         upgrades:
@@ -1966,7 +1966,7 @@ var game =
                 new Milestone(212, "Tim Mode", 112, "Unlock Time Mode", () => game.skillTree.upgrades.unlockTimeMode.level > 0),
                 new Milestone(213, "Third Dimension", 112, () => "Start a run...", () => game.dimension == 508050),
                 new Milestone(234, "Advent Calendar", 116, "Send some gifts to the people", () => game.stats.giftsSent.gte(24)),
-                new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(0)),
+                new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(1)),
                 new Milestone(215, "Cog, the player?", 111, "Have 1000 cogwheels at once", () => game.cogwheels.amount.gte(1000)),
                 new Milestone(216, "...wheels", 113, () => "Earn 1000 cogwheels in a single run", () => game.dimension == 508050),
                 new Milestone(217, "More Tokens yay", 14, "Because it has been 9000 for so long.", () => game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),

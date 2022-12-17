@@ -890,6 +890,7 @@ function autoMergeBarrel()
 
 function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
+        let Amount = new Decimal(0.1 + barrels[19].level / 10).mul(getFragmentBaseValue());
         if (game.dimension == 0) {
             let Amount = new Decimal(0.1 + barrels[19].level / 10).mul(getFragmentBaseValue());
             game.fragment.amount = game.fragment.amount.add(Amount);
@@ -1317,6 +1318,9 @@ function loadGame(saveCode, isFromFile=false)
             game.gifts.openedToday = [];
             game.gifts.openLimit = CONST_OPENLIMIT;
             game.gifts.sendLimit = CONST_SENDLIMIT;
+            game.gifts.friends = [];
+        }
+        if (loadObj.gifts.friends == undefined) {
             game.gifts.friends = [];
         }
 

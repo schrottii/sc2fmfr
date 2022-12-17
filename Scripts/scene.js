@@ -554,6 +554,7 @@ var scenes =
                         draggedBarrel = b;
                         if (timeSinceLastBarrelClick <= 0.2 && lastClickedBarrel === i && game.settings.destroyBarrels && !timeMode) {
                             if (game.fragment.isUnlocked() == true) {
+                                let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getFragmentBaseValue());
                                 if (game.dimension == 0) {
                                     let Amount = new Decimal(0.1 + barrels[i].level / 10).mul(getFragmentBaseValue());
                                     game.fragment.amount = game.fragment.amount.add(Amount);

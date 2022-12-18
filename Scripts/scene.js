@@ -3069,7 +3069,7 @@ var scenes =
                     "\n+1 Star" +
                     "\n Click the button below to do a Supernova.", 0.5, 0.3, 0.04, "black"),
 
-                new UIButton(0.5, 0.8, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true }),
+                new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => Scene.loadScene("Supernova2"), { quadratic: true }),
             ],
 
             function () {

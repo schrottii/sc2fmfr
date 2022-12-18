@@ -91,6 +91,7 @@ var images =
     setcode: loadImage("Images/Buttons/setcode.png"),
     addfriend: loadImage("Images/Buttons/add_friend.png"),
     change: loadImage("Images/Buttons/change.png"),
+    supernovabutton: loadImage("Images/Buttons/supernova.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

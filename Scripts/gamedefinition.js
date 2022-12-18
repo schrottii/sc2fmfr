@@ -1790,14 +1790,14 @@ var game =
             amount *= game.solarSystem.upgrades.mythus.level / 100;
             amount *= game.solarSystem.upgrades.sun.level / 1000;
 
-            return new Decimal(amount / 1000);
+            return new Decimal(amount / 10);
         },
         getFairyDust: function () {
-            let amount = game.beams.amount.add(1e6).log(1e6);
-            amount += game.aerobeams.amount.add(1e6).log(1e6);
-            amount += game.angelbeams.amount.add(1e6).log(1e6);
-            amount += game.reinforcedbeams.amount.add(1e6).log(1e6);
-            amount += game.glitchbeams.amount.add(1e6).log(1e6);
+            let amount = game.stats.totalbeams.add(1e6).log(1e6);
+            amount += game.stats.totalaerobeams.add(1e6).log(1e6);
+            amount += game.stats.totalangelbeams.add(1e6).log(1e6);
+            amount += game.stats.totalreinforcedbeams.add(1e6).log(1e6);
+            amount += game.stats.totalglitchbeams.add(1e6).log(1e6);
 
             amount *= game.bricks.amount.add("1e2000000").log("1e2000000");
             amount *= game.stats.totalplasticbags.add(3150).log(3150);
@@ -1805,7 +1805,7 @@ var game =
             amount *= game.stats.totalquests.add(100).log(100);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
 
-            return new Decimal(amount / 583);
+            return new Decimal(amount);
         },
     },
     milestones:

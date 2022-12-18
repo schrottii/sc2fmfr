@@ -250,6 +250,7 @@ var images =
         astro: loadImage("Images/SolarSystem/astro.png"),
         mythus: loadImage("Images/SolarSystem/mythus.png"),
         posus: loadImage("Images/SolarSystem/posus.png"),
+        destroyer: loadImage("Images/SolarSystem/destroyer.png"),
     },
     achievements:
     {

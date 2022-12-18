@@ -492,6 +492,10 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
         {
             return true;
         }
+        if (this.cfg.nova == true) {
+            if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA) return true;
+            return false;
+        }
         if (this.cfg.oneDep != true) {
             for (let k of this.deps) {
                 if (game.skillTree.upgrades[k].level === 0) return false;
@@ -722,6 +726,7 @@ var EarthLevels =
         SECOND_DIMENSION: 11,
         SCRAP_FACTORY: 12,
         GIFTS: 13,
+        UNLOCK_NOVA: 14,
     };
 
 var effectDisplayTemplates =

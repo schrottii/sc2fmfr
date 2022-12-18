@@ -609,7 +609,7 @@ var scenes =
                             }
                             else { // NOT SAME, BACK TO WHERE IT WAS
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
-                                if(!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
+                                if (!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
                             }
                         }
@@ -1033,6 +1033,8 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
                 }),
+
+                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
                 new UIPlanet(0.5, 0.5, "Sun\nIncrease Scrap production", game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
                 new UIPlanet(0.7, 0.7, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
@@ -2881,6 +2883,7 @@ var scenes =
                     new UIRect(0.5, 6.1, 1, 0.3, "table2"),
                     new UIRect(0.5, 6.4, 1, 0.3, "table"),
                     new UIRect(0.5, 6.7, 1, 0.3, "table2"),
+                    new UIRect(0.5, 7.0, 1, 0.3, "table"),
 
                     new UISkillTreePath(0.5, 0.4, 0.5, 0.65, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 
@@ -3019,12 +3022,58 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.veryFastCrafting, images.upgrades.fasterFactory, "Faster Crafting", 0.2, 6.65, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.funnyGlitchBeams, images.upgrades.funnyGlitchBeams, "Funny Glitch Beams\n(& x2 worth)", 0.5, 6.65, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax, images.upgrades.moreDarkScrap, "Higher max. for\n2nd Dark Scrap upg.", 0.8, 6.65, "table2"),
+
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockSupernova, images.solarSystem.sun, "Unlock Supernova", 0.5, 6.95, "table"),
                     
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.95})
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 7.15})
             ],
             function ()
             {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
-            })
+            }),
+        new Scene("Supernova",
+                [
+                    new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                        bold: 900,
+                        borderSize: 0.005,
+                        font: fonts.title
+                    }),
+                    new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+                    new UIText("You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun,\ncausing a Supernova, destroying the entire\nsolar system and everything in it.\n" +
+                        "Press the button below to learn more.", 0.5, 0.175, 0.03, "black"),
+
+                    new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true }),
+                ],
+
+                function () {
+                    ctx.fillStyle = colors[C]["bg"];
+                    ctx.fillRect(0, 0, w, h);
+            }),
+        new Scene("Supernova2",
+            [
+                new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+                new UIText(() => "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.", 0.5, 0.175, 0.03, "black"),
+
+                new UIText(() => "You will earn:\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
+                    "\n+" + formatNumber(game.supernova.getStarDust()) + " Star Dust" +
+                    "\n+" + formatNumber(game.supernova.getAlienDust()) + " Alien Dust" +
+                    "\n+" + formatNumber(game.supernova.getFairyDust()) + " Fairy Dust" +
+                    "\n+1 Star" +
+                    "\n Click the button below to do a Supernova.", 0.5, 0.3, 0.04, "black"),
+
+                new UIButton(0.5, 0.8, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true }),
+            ],
+
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+            }),
     ];

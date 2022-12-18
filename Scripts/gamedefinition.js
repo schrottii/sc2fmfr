@@ -290,11 +290,11 @@ var game =
                 }
             ),
             earth: new GoldenScrapUpgrade(
-                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150][level]),
+                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150, "1e500"][level]),
                 level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts"][level],
+                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts", "the final\ntree upgrade"][level],
                 {
-                    maxLevel: 13,
+                    maxLevel: 14,
                     getEffectDisplay: function () {
                         if (this.level === this.maxLevel) {
                             return "Unlocked everything!";
@@ -1478,6 +1478,13 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
                     maxLevel: 14
                 }, ["starDaily"]),
+
+            unlockSupernova: new SkillTreeUpgradeFixed([
+                [[new Decimal(46834), RESOURCE_GLITCHBEAM], [new Decimal(10), RESOURCE_LEGENDARYSCRAP]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock(),
+                nova: true
+            }, ["scrapBoost"]),
         }
     },
     barrelMastery: {
@@ -1741,6 +1748,65 @@ var game =
                 maxLevel: 25,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
             }),
+    },
+    supernova:
+    {
+        cosmicEmblems: new Decimal(0),
+        starDust: new Decimal(0),
+        alienDust: new Decimal(0),
+        fairyDust: new Decimal(0),
+        stars: new Decimal(0),
+
+        getEmblems: function () {
+            return new Decimal(Math.ceil(game.highestBarrelReached / 100000));
+        },
+        getStarDust: function () {
+            let amount = game.goldenScrap.amount.add(1e50).log(1e50);
+            amount += game.magnets.add(1e250).log(1e250);
+            amount += game.fragment.amount.add(1e50).log(1e50);
+            amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
+            amount *= game.tires.amount.add("1e1000000").log("1e1000000");
+            return amount;
+        },
+        getAlienDust: function () {
+            let amount = game.factory.legendaryScrap.add(25).log(25);
+            amount += game.factory.steelMagnets.add(175).log(175);
+            amount += game.factory.blueBricks.add(100).log(100);
+            amount += game.factory.buckets.add(100).log(100);
+            amount += game.factory.fishingNets.add(50).log(50);
+
+            for (i in game.autos) {
+                amount += game.autos[i].level / 25;
+            }
+            for (i in game.collectors) {
+                amount += game.collectors[i].level / 25;
+            }
+
+            amount += game.solarSystem.upgrades.venus.level / 25;
+            amount += game.solarSystem.upgrades.neptune.level / 5;
+            amount += game.solarSystem.upgrades.uranus.level / 5;
+            amount += game.solarSystem.upgrades.posus.level / 100;
+
+            amount *= game.solarSystem.upgrades.mythus.level / 100;
+            amount *= game.solarSystem.upgrades.sun.level / 1000;
+
+            return new Decimal(amount / 1000);
+        },
+        getFairyDust: function () {
+            let amount = game.beams.amount.add(1e6).log(1e6);
+            amount += game.aerobeams.amount.add(1e6).log(1e6);
+            amount += game.angelbeams.amount.add(1e6).log(1e6);
+            amount += game.reinforcedbeams.amount.add(1e6).log(1e6);
+            amount += game.glitchbeams.amount.add(1e6).log(1e6);
+
+            amount *= game.bricks.amount.add("1e2000000").log("1e2000000");
+            amount *= game.stats.totalplasticbags.add(3150).log(3150);
+            amount *= game.screws.amount.add(500000).log(500000);
+            amount *= game.stats.totalquests.add(100).log(100);
+            amount *= game.stats.totalmergetokens.add(10000).log(10000);
+
+            return new Decimal(amount / 583);
+        },
     },
     milestones:
     {

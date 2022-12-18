@@ -62,11 +62,11 @@ class Barrel
                 .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost))
                 .mul(applyUpgrade(game.skillTree.upgrades.scrapBoost2))
                 .mul(applyUpgrade(game.beams.upgrades.moreScrap))
-                .mul(applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost))
+                .mul(game.supernova.stars == 0 || game.highestBarrelReached > 499 ? applyUpgrade(game.wrenches.upgrades.wrenchScrapBoost) : 1)
                 .mul(applyUpgrade(game.fragment.upgrades.scrapBoost))
                 .mul(new Decimal(applyUpgrade(game.barrelMastery.upgrades.scrapBoost)).pow(getTotalLevels(1)))
                 .mul(applyUpgrade(game.plasticBags.upgrades.moreScrap))
-                .mul(applyUpgrade(game.cogwheels.upgrades.scrapBoost))
+                .mul(game.cogwheels.isUnlocked() ? applyUpgrade(game.cogwheels.upgrades.scrapBoost) : 1)
         }
         if (game.dimension == 1) {
             return (Decimal.pow(1.1, level)

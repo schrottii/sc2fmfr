@@ -1801,6 +1801,21 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
+        if (loadObj.supernova !== undefined) {
+            game.supernova.cosmicEmblems = loadVal(new Decimal(loadObj.supernova.cosmicEmblems), new Decimal(0));
+            game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
+            game.supernova.alienDust = loadVal(new Decimal(loadObj.supernova.alienDust), new Decimal(0));
+            game.supernova.fairyDust = loadVal(new Decimal(loadObj.supernova.fairyDust), new Decimal(0));
+            game.supernova.stars = loadVal(new Decimal(loadObj.supernova.stars), new Decimal(0));
+        }
+        else {
+            game.supernova.cosmicEmblems = new Decimal(0);
+            game.supernova.starDust = new Decimal(0);
+            game.supernova.alienDust = new Decimal(0);
+            game.supernova.fairyDust = new Decimal(0);
+            game.supernova.stars = new Decimal(0);
+        }
+
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
         freeSpots = 20;

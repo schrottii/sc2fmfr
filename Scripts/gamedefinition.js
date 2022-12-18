@@ -75,7 +75,8 @@ var game =
                 .mul(applyUpgrade(game.goldenScrap.upgrades.gsBoost))
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
-                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1));
+                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
+                .mul(new Decimal(1000).mul(game.supernova.stars));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -232,7 +233,7 @@ var game =
         moreGoldenScrap: new MagnetUpgrade(
             level => Utils.roundBase(new Decimal(30 + 10 * level).mul(Decimal.pow(1.07, Math.max(0, level - 20))), 1)
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
-            level => new Decimal(1 + 0.3 * level),
+            level => game.supernova.cosmicUpgrades.strongerMagnetGS.level > 0 ? new Decimal(1.3).pow(level / 10).add(0.3 * level) : new Decimal(1 + 0.3 * level),
             {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
             }),
@@ -807,7 +808,7 @@ var game =
     },
     cogwheels:
     {
-        isUnlocked: () => true,
+        isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode),
         timeModeAttempts: 3,
         amount: new Decimal(0),
         upgrades: {
@@ -1758,14 +1759,16 @@ var game =
         stars: new Decimal(0),
 
         getEmblems: function () {
-            return new Decimal(Math.ceil(game.highestBarrelReached / 100000));
+            return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
         },
         getStarDust: function () {
             let amount = game.goldenScrap.amount.add(1e50).log(1e50);
             amount += game.magnets.add(1e250).log(1e250);
             amount += game.fragment.amount.add(1e50).log(1e50);
+            amount *= game.goldenScrap.amount.add("1e500").log("1e500");
+            amount *= game.darkscrap.amount.add(1e50).log(1e50);
             amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
-            amount *= game.tires.amount.add("1e1000000").log("1e1000000");
+            amount += game.tires.amount.add("1e1000000").log("1e1000000");
             return amount;
         },
         getAlienDust: function () {
@@ -1790,23 +1793,164 @@ var game =
             amount *= game.solarSystem.upgrades.mythus.level / 100;
             amount *= game.solarSystem.upgrades.sun.level / 1000;
 
-            return new Decimal(amount / 10);
+            return new Decimal(amount / 8);
         },
         getFairyDust: function () {
-            let amount = game.stats.totalbeams.add(1e6).log(1e6);
-            amount += game.stats.totalaerobeams.add(1e6).log(1e6);
-            amount += game.stats.totalangelbeams.add(1e6).log(1e6);
-            amount += game.stats.totalreinforcedbeams.add(1e6).log(1e6);
-            amount += game.stats.totalglitchbeams.add(1e6).log(1e6);
+            let amount = game.stats.totalbeams.add(5e5).log(5e5);
+            amount += game.stats.totalaerobeams.add(5e5).log(5e5);
+            amount += game.stats.totalangelbeams.add(5e5).log(5e5);
+            amount += game.stats.totalreinforcedbeams.add(5e5).log(5e5);
+            amount += game.stats.totalglitchbeams.add(5e5).log(5e5);
 
-            amount *= game.bricks.amount.add("1e2000000").log("1e2000000");
-            amount *= game.stats.totalplasticbags.add(3150).log(3150);
-            amount *= game.screws.amount.add(500000).log(500000);
-            amount *= game.stats.totalquests.add(100).log(100);
+            amount *= game.bricks.amount.add("1e1000000").log("1e1000000");
+            amount *= game.stats.totalplasticbags.add(2150).log(2150);
+            amount *= game.stats.totalscrews.add(500000).log(500000);
+            amount *= game.stats.totalquests.add(250).log(250);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
 
             return new Decimal(amount);
         },
+        reset: function () {
+            game.supernova.stars = game.supernova.stars.add(1);
+
+            game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(game.supernova.getEmblems());
+            game.supernova.starDust = game.supernova.starDust.add(game.supernova.getStarDust());
+            game.supernova.alienDust = game.supernova.alienDust.add(game.supernova.getAlienDust());
+            game.supernova.fairyDust = game.supernova.fairyDust.add(game.supernova.getFairyDust());
+
+            for (let i = 0; i < barrels.length; i++) {
+                barrels[i] = undefined;
+            }
+            freeSpots = 20;
+            draggedBarrel = undefined;
+
+            game.mergesThisPrestige = 0;
+            game.scrap = new Decimal(0);
+            game.scrapThisPrestige = new Decimal(0);
+            game.magnets = new Decimal(0);
+            game.glitchesCollected = 0;
+            game.highestBarrelReached = 0;
+            game.highestScrapReached = new Decimal(0);
+
+            for (let upg of Object.keys(game.scrapUpgrades)) {
+                game.scrapUpgrades[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.magnetUpgrades)) {
+                game.magnetUpgrades[upg].level = 0;
+            }
+            game.goldenScrap.amount = new Decimal(0);
+            for (let upg of Object.keys(game.goldenScrap.upgrades)) {
+                game.goldenScrap.upgrades[upg].level = 0;
+            }
+            game.tires.amount = new Decimal(0);
+            game.tires.value = new Decimal(0);
+            for (let row = 0; row < game.tires.upgrades.length; row++) {
+                for (let col = 0; col < game.tires.upgrades[row].length; col++) {
+                    game.tires.upgrades[row][col].level = 0;
+                }
+            }
+            game.bricks.amount = new Decimal(0);
+            game.bricks.productionLevel = 0;
+            for (let upg of Object.keys(game.bricks.upgrades)) {
+                game.bricks.upgrades[upg].level = 0;
+            }
+            game.fragment.amount = new Decimal(0);
+            for (let upg of Object.keys(game.fragment.upgrades)) {
+                game.fragment.upgrades[upg].level = 0;
+            }
+            game.darkfragment.amount = new Decimal(0);
+            for (let upg of Object.keys(game.darkfragment.upgrades)) {
+                game.darkfragment.upgrades[upg].level = 0;
+            }
+            game.darkscrap.amount = new Decimal(0);
+            for (let upg of Object.keys(game.darkscrap.upgrades)) {
+                game.darkscrap.upgrades[upg].level = 0;
+            }
+            game.factory.legendaryScrap = new Decimal(0);
+            game.factory.steelMagnets = new Decimal(0);
+            game.factory.blueBricks = new Decimal(0);
+            game.factory.buckets = new Decimal(0);
+            game.factory.fishingNets = new Decimal(0);
+            for (let upg of Object.keys(game.factory.upgrades)) {
+                game.factory.upgrades[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.autos)) {
+                game.autos[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.collectors)) {
+                game.collectors[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.skillTree.upgrades)) {
+                game.skillTree.upgrades[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.solarSystem.upgrades)) {
+                game.solarSystem.upgrades[upg].level = 0;
+            }
+
+            game.beams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.beams.upgrades)) {
+                game.beams.upgrades[upg].level = 0;
+            }
+            game.aerobeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.aerobeams.upgrades)) {
+                game.aerobeams.upgrades[upg].level = 0;
+            }
+            game.angelbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.angelbeams.upgrades)) {
+                game.angelbeams.upgrades[upg].level = 0;
+            }
+            game.reinforcedbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.reinforcedbeams.upgrades)) {
+                game.reinforcedbeams.upgrades[upg].level = 0;
+            }
+            game.glitchbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.glitchbeams.upgrades)) {
+                game.glitchbeams.upgrades[upg].level = 0;
+            }
+
+            game.plasticBags.amount = new Decimal(0);
+            for (let upg of Object.keys(game.plasticBags.upgrades)) {
+                game.plasticBags.upgrades[upg].level = 0;
+            }
+            game.screws.amount = new Decimal(0);
+            for (let upg of Object.keys(game.screws.upgrades)) {
+                game.screws.upgrades[upg].level = 0;
+            }
+
+            game.mergeMastery.level = 1;
+            game.mergeMastery.prestige.level = 0;
+            game.mergeMastery.currentMerges = 0;
+
+            game.mergeQuests.scrapyard.level = 0;
+            game.mergeQuests.mergeTokens = new Decimal(0);
+            for (let upg of Object.keys(game.mergeQuests.upgrades)) {
+                game.mergeQuests.upgrades[upg].level = 0;
+            }
+
+            game.barrelMastery.masteryTokens = new Decimal(0);
+            for (let upg of Object.keys(game.barrelMastery.upgrades)) {
+                game.barrelMastery.upgrades[upg].level = 0;
+            }
+            let bi = 0;
+            for (b in game.barrelMastery.bl) {
+                while (bi <= game.barrelMastery.bl[b]) {
+                    bi += 1;
+                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(bi);
+                }
+                bi = 0;
+            }
+
+            game.settings.barrelGalleryPage = 0;
+            Scene.loadScene("Barrels");
+        },
+
+        cosmicUpgrades: {
+            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+        }
     },
     milestones:
     {
@@ -2117,4 +2261,4 @@ var game =
         musicVolume: 0,
         displayFPS: false,
     }
-};
+}

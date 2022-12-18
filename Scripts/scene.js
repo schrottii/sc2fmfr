@@ -1034,7 +1034,7 @@ var scenes =
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
                 }),
 
-                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
 
                 new UIPlanet(0.5, 0.5, "Sun\nIncrease Scrap production", game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
                 new UIPlanet(0.7, 0.7, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
@@ -1509,7 +1509,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.24);
                 ctx.fillRect(w * 0.05, h * 0.388, w * 0.9, h * 0.06);
@@ -1529,7 +1528,6 @@ var scenes =
                 new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
-
 
                 new UIAerobeamUpgrade(game.aerobeams.upgrades.fasterBeams, images.upgrades.aerobeamChance, 0.45, "Aerobeams spawn more often"),
                 new UIAerobeamUpgrade(game.aerobeams.upgrades.slowerFallingMagnets, images.upgrades.magnetBoost, 0.55, "Falling Magnets are slower", "table2"),
@@ -1560,7 +1558,6 @@ var scenes =
 
                 new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
-
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.beamValue, images.upgrades.angelBeamValue, 0.45, "Angel Beams are worth more"),
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.fasterBeams, images.upgrades.angelBeamChance, 0.55, "Angel Beams spawn more often", "table2"),
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.moreMasteryGS, images.upgrades.goldenScrapBoost, 0.65, "Get more GS from Mastery"),
@@ -1590,7 +1587,6 @@ var scenes =
                 }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
-
 
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.reinforce, images.upgrades.reinforcedBeamValue, 0.45, "Reinforced Beams are worth more,\nbut are harder to collect"),
                 new UIButton(0.775, 0.475, 0.05, 0.05, images.buttonReset, () => {
@@ -1627,7 +1623,6 @@ var scenes =
                 }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
-
 
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.beamValue, images.upgrades.glitchBeamValue, 0.45, "Glitch Beams can be worth more"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", "table2"),
@@ -3042,14 +3037,31 @@ var scenes =
                     new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
                     new UIText("You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun,\ncausing a Supernova, destroying the entire\nsolar system and everything in it.\n" +
-                        "Press the button below to learn more.", 0.5, 0.175, 0.03, "black"),
+                        "Press the button below to learn more.", 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true }),
+                    new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+
+                    new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
+
+                    new UIText(() => "Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
+                    new UIText(() => "Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
+                    new UIText(() => "Fairy Dust: " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
+
+                    new UIText(() => "Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
+
+
+                    new UIButton(0.5, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("EmblemUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
                 ],
 
                 function () {
                     ctx.fillStyle = colors[C]["bg"];
                     ctx.fillRect(0, 0, w, h);
+
+                    ctx.fillStyle = colors[C]["table"];
+                    ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.15);
             }),
         new Scene("Supernova2",
             [
@@ -3069,11 +3081,41 @@ var scenes =
                     "\n+1 Star" +
                     "\n Click the button below to do a Supernova.", 0.5, 0.3, 0.04, "black"),
 
-                new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => Scene.loadScene("Supernova2"), { quadratic: true }),
+                new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {
+                    if (confirm("Do you really want to do a Supernova?")) {
+                        game.supernova.reset();
+                    }
+                }, { quadratic: true }),
             ],
 
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
+            }),
+        new Scene("EmblemUpgrades",
+            [
+                new UIText("Cosmic Emblems", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
+
+                new UIText(() => "$images.glitchbeam$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.3, 0.06, "yellow"),
+
+
+                new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.glitchBeamValue, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45),
+                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", "table2"),
+                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "Chance to get more beams\n(all types)"),
+                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "Chance to get a golden beam\ninstead of any beam\nwhich gives all beams", "table2"),
+                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.minimumValue, images.upgrades.glitchBeamValue, 0.85, "Increases the min. worth of\nGlitch Beams"),
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
             }),
     ];

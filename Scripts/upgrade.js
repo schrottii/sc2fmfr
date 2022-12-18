@@ -22,7 +22,8 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_BUCKET = 21,
     RESOURCE_FISHINGNET = 22,
     RESOURCE_SCREW = 23,
-    RESOURCE_COGWHEEL = 24;
+    RESOURCE_COGWHEEL = 24,
+    RESOURCE_COSMICEMBLEMS = 25;
 
 function applyUpgrade(upg)
 {
@@ -83,6 +84,8 @@ function getUpgradeResource(res)
             return game.screws.amount;
         case RESOURCE_COGWHEEL:
             return game.cogwheels.amount;
+        case RESOURCE_COSMICEMBLEMS:
+            return game.supernova.cosmicEmblems;
         default:
             return null;
     }
@@ -164,6 +167,9 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_COGWHEEL:
             game.cogwheels.amount = res;
             break;
+        case RESOURCE_COSMICEMBLEMS:
+            game.supernova.cosmicEmblems = res;
+            break;
         default:
             break;
     }
@@ -222,6 +228,8 @@ function getResourceImage(res)
         case RESOURCE_SCREW:
             return "$images.screw$";
         case RESOURCE_COGWHEEL:
+            return "$images.cogwheel$";
+        case RESOURCE_COSMICEMBLEMS:
             return "$images.cogwheel$";
         default:
             break;
@@ -508,6 +516,22 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
             return false;
         }
         return true;
+    }
+}
+
+class CosmicEmblemUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg, stars) {
+        super(getPrice, getEffect, cfg);
+        this.cfg = cfg;
+        this.stars = stars;
+    }
+
+    isUnlocked() {
+        if (game.supernova.stars.gte(this.stars)) return true;
+        return false;
+    }
+    getStarRequirement() {
+        return this.stars;
     }
 }
 

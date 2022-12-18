@@ -765,6 +765,19 @@ class UISkillTreeUpgradeNoBG extends UIGroup{
     }
 }
 
+class UIEmblemUpgrade extends UIGroup {
+    constructor(upg, img, title, x, y, col) {
+        super([
+            new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
+            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
+            new UIText(() => upg.getStarRequirement() + " star" + (upg.stars > 1 ? "s" : ""), x, y - 0.065, 0.025, "black", { bold: true, valign: "bottom" }),
+            new UIText(() => "$images.masteryToken$" + upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
+        ], () => upg.isUnlocked());
+    }
+}
+
 class UIPlanet extends UIGroup
 {
     constructor(x, y, title, upg, suffix, image, size, isVisible)

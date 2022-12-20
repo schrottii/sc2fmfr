@@ -1892,6 +1892,8 @@ var game =
                 game.solarSystem.upgrades[upg].level = 0;
             }
 
+            game.beams.time = 0;
+            game.beams.selected = 0;
             game.beams.amount = applyUpgrade(game.supernova.cosmicUpgrades.startBeams);
             for (let upg of Object.keys(game.beams.upgrades)) {
                 game.beams.upgrades[upg].level = 0;
@@ -2006,6 +2008,11 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, 1),
             mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()

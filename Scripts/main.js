@@ -24,6 +24,7 @@ var movingItems = [];
 
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
+var hyperBuy = false;
 
 var FPS = 9999;
 

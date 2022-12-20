@@ -327,9 +327,10 @@ class ScrapUpgrade
         else
         {
             let resource = getUpgradeResource(this.resource);
-            while(this.currentPrice().lt(resource) && this.level < level)
+            while(this.currentPrice().lt(resource) && this.level < level && this.level < this.maxLevel)
             {
                 this.buy(round);
+                resource = getUpgradeResource(this.resource);
             }
         }
     }

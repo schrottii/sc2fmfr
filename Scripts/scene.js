@@ -426,19 +426,24 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1 && !timeMode
                     }),
-                new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
-                    isVisible: () => game.highestBarrelReached >= 300 && !timeMode,
-                    quadratic: true,
-                    off: images.checkbox.autoConvert.off,
-                    on: images.checkbox.autoConvert.on,
-                }),
                 new UICheckbox(0.725, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.ms.includes(5) && !timeMode,
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
                     on: images.checkbox.autoMerge.on,
                 }),
-
+                new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
+                    isVisible: () => game.highestBarrelReached >= 300 && !timeMode,
+                    quadratic: true,
+                    off: images.checkbox.autoConvert.off,
+                    on: images.checkbox.autoConvert.on,
+                }),
+                new UICheckbox(0.875, 0.825, 0.05, 0.05, "hyperBuy", {
+                    isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
+                    quadratic: true,
+                    off: images.checkbox.hyperbuy.off,
+                    on: images.checkbox.hyperbuy.on,
+                }),
 
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
                 new UIText(() => "Better Barrels (" + game.scrapUpgrades.betterBarrels.level.toFixed(0) + "/" + game.scrapUpgrades.betterBarrels.maxLevel + "):\nBarrels spawn 1 Tier higher", 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
@@ -3108,6 +3113,7 @@ var scenes =
                     new UIRect(0.5, 0.8, 1, 0.3, "table2"),
                     new UIRect(0.5, 1.1, 1, 0.3, "table"),
                     new UIRect(0.5, 1.4, 1, 0.3, "table2"),
+                    new UIRect(0.5, 1.7, 1, 0.3, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "Auto Buyers\nbuy max.", 0.2, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45, "table"),
@@ -3121,11 +3127,12 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startScrap, images.upgrades.moreScrap, "Start Scrap\nafter Supernova", 0.5, 1.05, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBeams, images.upgrades.beamValue, "Start Beams\nafter Supernova", 0.8, 1.05, "table"),
 
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 1.35, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
 
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 1.65, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "Hyper Buy", 0.5, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
-                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.05 })
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.85 })
 
             ],
             function () {

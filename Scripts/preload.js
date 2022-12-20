@@ -133,6 +133,11 @@ var images =
         {
             off: loadImage("Images/Checkbox/autoconvert_off.png"),
             on: loadImage("Images/Checkbox/autoconvert_on.png")
+        },
+        hyperbuy:
+        {
+            off: loadImage("Images/Checkbox/hypertap_off.png"),
+            on: loadImage("Images/Checkbox/hypertap_on.png")
         }
     },
     upgrades:

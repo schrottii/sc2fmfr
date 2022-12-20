@@ -360,6 +360,9 @@ var game =
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
+                    onBuy: () => {
+                        if (game.supernova.cosmicUpgrades.mythusMultiBuy.level > 0) game.solarSystem.upgrades.mythus.level += 9;
+                    },
                     afterBuy: () => {
                         if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009) {
                             alert("You have to reach barrel 3010 to upgrade this planet!");
@@ -1990,12 +1993,17 @@ var game =
             startBeams: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => new Decimal(20000).mul(level), {
                 maxLevel: 1,
-                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
             }, 1),
             fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => 1 - (level * 0.25), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
+            }, 1),
+            mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
+                level => 1 - (level * 0.25), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
         }
     },

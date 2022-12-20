@@ -3122,7 +3122,9 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBeams, images.upgrades.beamValue, "Start Beams\nafter Supernova", 0.8, 1.05, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
-                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.75 })
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.05 })
 
             ],
             function () {

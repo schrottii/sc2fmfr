@@ -1947,56 +1947,56 @@ var game =
         },
 
         cosmicUpgrades: {
-            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(1),
+            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(1),
+            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 2),
-            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 2),
-            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => 1 + level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
-            }, 2),
-            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 3),
-            startScrap: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            startScrap: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => new Decimal(1e60).mul(level), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
-            }, 3),
-            startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            startBeams: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => new Decimal(20000).mul(level), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
-            }, 3),
-            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(1),
+            }, 1),
+            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => 1 - (level * 0.25), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
-            }, 4),
+            }, 1),
         }
     },
     milestones:

@@ -29,7 +29,7 @@ class MergeQuest
 
     getCooldown()
     {
-        return this.cooldown * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber();
+        return this.cooldown * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber() * (game.supernova.cosmicUpgrades.fasterMergeQuests.level > 0 ? 0.01 : 1);
     }
 
     getNeededMerges()

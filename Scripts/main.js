@@ -591,20 +591,24 @@ function update()
 function getBeamBaseValue() {
     return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
         + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1]))
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
 }
 function getAngelBeamValue() {
     return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1]))
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
 }
 function getReinforcedBeamValue() {
     return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1]))
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
 }
 function getGlitchBeamValue() {
     return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
         * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1));
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1))
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
 }
 
 function getReinforcedTapsNeeded() {
@@ -798,13 +802,13 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             }
 
             // Double Mastery
-            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery)) {
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery) && game.mergeMastery.isUnlocked()) {
                 game.mergeMastery.currentMerges++;
                 game.mergeMastery.check(); //There is another one below
             }
 
             // Faster Beams
-            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance)) {
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance) && game.beams.isUnlocked()) {
                 game.beams.time += 0.25;
             }
         }
@@ -1807,6 +1811,11 @@ function loadGame(saveCode, isFromFile=false)
             game.supernova.alienDust = loadVal(new Decimal(loadObj.supernova.alienDust), new Decimal(0));
             game.supernova.fairyDust = loadVal(new Decimal(loadObj.supernova.fairyDust), new Decimal(0));
             game.supernova.stars = loadVal(new Decimal(loadObj.supernova.stars), new Decimal(0));
+            if (loadObj.supernova.cosmicUpgrades !== undefined) {
+                Object.keys(loadObj.supernova.cosmicUpgrades).forEach(k => {
+                    game.supernova.cosmicUpgrades[k].level = loadVal(loadObj.supernova.cosmicUpgrades[k].level, 0);
+                });
+            }
         }
         else {
             game.supernova.cosmicEmblems = new Decimal(0);
@@ -1814,6 +1823,9 @@ function loadGame(saveCode, isFromFile=false)
             game.supernova.alienDust = new Decimal(0);
             game.supernova.fairyDust = new Decimal(0);
             game.supernova.stars = new Decimal(0);
+            Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
+                game.supernova.cosmicUpgrades[k].level = 0;
+            })
         }
 
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);

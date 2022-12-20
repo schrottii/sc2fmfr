@@ -44,7 +44,7 @@ var game =
                     return new Decimal(m[Math.min(level, m.length - 1)]).mul(Decimal.pow(10, Math.max(0, level - m.length + 1)));
                 },
                 {
-                    maxLevel: 100,
+                    maxLevel: () => game.supernova.cosmicUpgrades.moreScrapMax.level > 0 ? 5000 : 100,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0)
                 }),
             magnetBoost: new GoldenScrapUpgrade(
@@ -323,7 +323,7 @@ var game =
             saturn: new ScrapUpgrade(
                 level => Decimal.pow(64, Math.pow(level, 1.25)).mul(1e183),
                 level => Decimal.pow(0.9675, level).mul(2).mul(applyUpgrade(game.tires.upgrades[2][1]))
-                    .div(applyUpgrade(game.magnetUpgrades.autoMerger)).div((game.skillTree.upgrades.fasterAutoMerge.level / 2) + 1),
+                    .div(applyUpgrade(game.magnetUpgrades.autoMerger)).div((game.skillTree.upgrades.fasterAutoMerge.level / 2) + 1).mul(applyUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge)),
                 {
                     maxLevel: 40,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
@@ -509,7 +509,7 @@ var game =
     },
     gifts:
     {
-        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS,
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS || game.supernova.stars.gt(0),
         openLimit: CONST_OPENLIMIT,
         sendLimit: CONST_SENDLIMIT,
         openedToday: [],
@@ -586,7 +586,7 @@ var game =
                 .mul(1e30),
                 level => level,
                 {
-                    maxLevel: () => 100 + (game.solarSystem.upgrades.earth.level >= EarthLevels.BRICK_3_LEVELS ? 200 : 0),
+                    maxLevel: () => 100 + (game.solarSystem.upgrades.earth.level >= EarthLevels.BRICK_3_LEVELS ? 200 : 0) + (game.supernova.cosmicUpgrades.moreQuestLevelsMax.level > 0 ? 4700 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+")
                 }),
             fasterCrafting: new BrickUpgrade(level => new Decimal("1e5000").pow(new Decimal(level + Math.pow(Math.max(level - 25, 0), 1.2)))
@@ -1825,7 +1825,7 @@ var game =
             draggedBarrel = undefined;
 
             game.mergesThisPrestige = 0;
-            game.scrap = new Decimal(0);
+            game.scrap = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.scrapThisPrestige = new Decimal(0);
             game.magnets = new Decimal(0);
             game.glitchesCollected = 0;
@@ -1874,8 +1874,10 @@ var game =
             for (let upg of Object.keys(game.factory.upgrades)) {
                 game.factory.upgrades[upg].level = 0;
             }
-            for (let upg of Object.keys(game.autos)) {
-                game.autos[upg].level = 0;
+            if (game.supernova.cosmicUpgrades.keepAutoBuyers.level == 0) {
+                for (let upg of Object.keys(game.autos)) {
+                    game.autos[upg].level = 0;
+                }
             }
             for (let upg of Object.keys(game.collectors)) {
                 game.collectors[upg].level = 0;
@@ -1887,7 +1889,7 @@ var game =
                 game.solarSystem.upgrades[upg].level = 0;
             }
 
-            game.beams.amount = new Decimal(0);
+            game.beams.amount = applyUpgrade(game.supernova.cosmicUpgrades.startBeams);
             for (let upg of Object.keys(game.beams.upgrades)) {
                 game.beams.upgrades[upg].level = 0;
             }
@@ -1950,6 +1952,51 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
+            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 2),
+            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 2),
+            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => 1 + level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+            }, 2),
+            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 3),
+            startScrap: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => new Decimal(1e60).mul(level), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
+            }, 3),
+            startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => new Decimal(20000).mul(level), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
+            }, 3),
+            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => 1 - (level * 0.25), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
+            }, 4),
         }
     },
     milestones:

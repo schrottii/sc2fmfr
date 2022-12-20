@@ -372,7 +372,7 @@ var scenes =
                         alert("Too high!");
                     }
                 }, {
-                    isVisible: () => game.skillTree.upgrades.superEzUpgrader.level > 0 && !timeMode,
+                    isVisible: () => (game.skillTree.upgrades.superEzUpgrader.level > 0 || game.supernova.cosmicUpgrades.keepEZ.level > 0) && !timeMode,
                     quadratic: true
                 }),
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
@@ -1797,7 +1797,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
 
             ],
             function () {
@@ -2489,7 +2489,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
                 new UIButton(0.84, 0.385, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.quests[1].active) {
                         if (game.mergeQuests.quests[1].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
@@ -2497,7 +2497,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
                 new UIButton(0.84, 0.515, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.quests[2].active) {
                         if (game.mergeQuests.quests[2].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
@@ -2505,7 +2505,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) })
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -3101,14 +3101,28 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
 
-                new UIText(() => "$images.glitchbeam$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.3, 0.06, "yellow"),
+                new UIText(() => "$images.glitchbeam$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
 
+                new UIScrollContainerY([
+                    new UIRect(0.5, 0.5, 1, 0.4, "table"),
+                    new UIRect(0.5, 0.8, 1, 0.3, "table2"),
+                    new UIRect(0.5, 1.1, 1, 0.3, "table"),
+                    new UIRect(0.5, 1.4, 1, 0.3, "table2"),
 
-                new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.glitchBeamValue, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45),
-                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", "table2"),
-                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "Chance to get more beams\n(all types)"),
-                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "Chance to get a golden beam\ninstead of any beam\nwhich gives all beams", "table2"),
-                //new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.minimumValue, images.upgrades.glitchBeamValue, 0.85, "Increases the min. worth of\nGlitch Beams"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "Keep EZ Upgrader", 0.8, 0.45, "table"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreScrap, "Merge Quests\nappear faster", 0.2, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.doubleBeams, images.upgrades.beamValue, "2x Beams", 0.5, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreScrapMax, images.upgrades.moreScrap, "Higher Get More\nScrap max.\n(GS upgrade)", 0.8, 0.75, "table2"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoBuyers, images.upgrades.unlockAutos, "Keep Auto Buyers\nafter Supernova", 0.2, 1.05, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startScrap, images.upgrades.moreScrap, "Start Scrap\nafter Supernova", 0.5, 1.05, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBeams, images.upgrades.beamValue, "Start Beams\nafter Supernova", 0.8, 1.05, "table"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.75 })
 
             ],
             function () {
@@ -3116,6 +3130,6 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(w * 0.05, h * 0.288, w * 0.9, h * 0.06);
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
             }),
     ];

@@ -523,15 +523,33 @@ class CosmicEmblemUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg, stars) {
         super(getPrice, getEffect, cfg);
         this.cfg = cfg;
+        this.resource = RESOURCE_COSMICEMBLEMS;
         this.stars = stars;
     }
 
     isUnlocked() {
-        if (game.supernova.stars.gte(this.stars)) return true;
+        if (game.supernova.stars.gte(1)) return true;
         return false;
     }
     getStarRequirement() {
         return this.stars;
+    }
+    buy(round, disableOnBuy = false) {
+        let resource = getUpgradeResource(this.resource);
+        let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
+        if (this.level < this.getMaxLevel() && canAfford && game.supernova.stars.gte(this.stars)) {
+            if (!disableOnBuy) this.onBuy();
+            let p = round ? this.currentPrice().round() : this.currentPrice();
+            resource = resource.sub(p);
+            if (isNaN(resource)) //is resource negative
+            {
+                resource = new Decimal(0);
+            }
+            assignResourceAfterUpgrade(this.resource, resource);
+            this.level++;
+        }
+
+        this.afterBuy();
     }
 }
 

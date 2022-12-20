@@ -302,7 +302,8 @@ function update()
                         if (game.autos[i].auto[1] != "all") {
                             if (game.autos[i].auto[2] == undefined) {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                                game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
+                                if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]].level + 10000, true);
+                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
@@ -311,7 +312,8 @@ function update()
                             }
                             else {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
-                                game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
+                                if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level + 10000, true);
+                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
@@ -1827,6 +1829,8 @@ function loadGame(saveCode, isFromFile=false)
                 game.supernova.cosmicUpgrades[k].level = 0;
             })
         }
+
+        if (game.tires.value.lt(1)) game.tires.value = new Decimal(1);
 
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 

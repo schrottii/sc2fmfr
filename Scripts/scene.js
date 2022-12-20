@@ -3109,7 +3109,7 @@ var scenes =
                     new UIRect(0.5, 1.1, 1, 0.3, "table"),
                     new UIRect(0.5, 1.4, 1, 0.3, "table2"),
 
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "Auto Buyers\nbuy max.", 0.2, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "Keep EZ Upgrader", 0.8, 0.45, "table"),
 
@@ -3123,6 +3123,7 @@ var scenes =
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
 
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
                 ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.05 })
 

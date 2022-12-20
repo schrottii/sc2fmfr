@@ -302,7 +302,7 @@ class ScrapUpgrade
         if (this.level < this.getMaxLevel() && canAfford) {
             if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
-            resource = resource.sub(p);
+            if(p.mul(1000000).lt(resource)) resource = resource.sub(p);
             if (isNaN(resource)) //is resource negative
             {
                 resource = new Decimal(0);
@@ -448,6 +448,24 @@ class FixedLevelUpgrade
             assignResourceAfterUpgrade(p[1], resource);
         }
         this.level++;
+    }
+
+    onLevelDown() {
+
+    }
+
+    buyToTarget(level, round) {
+        if (level <= this.level) {
+            if (level < this.level) {
+                this.onLevelDown(level);
+            }
+            this.level = level;
+        }
+        else {
+            while (this.level < level) {
+                this.buy(round);
+            }
+        }
     }
 }
 

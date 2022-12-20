@@ -1846,7 +1846,7 @@ var game =
                 game.goldenScrap.upgrades[upg].level = 0;
             }
             game.tires.amount = new Decimal(0);
-            game.tires.value = new Decimal(0);
+            game.tires.value = new Decimal(1);
             for (let row = 0; row < game.tires.upgrades.length; row++) {
                 for (let col = 0; col < game.tires.upgrades[row].length; col++) {
                     game.tires.upgrades[row][col].level = 0;
@@ -1960,6 +1960,11 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
+            autoBuyerMax: new CosmicEmblemUpgrade(level => new Decimal(0),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
             keepEZ: new CosmicEmblemUpgrade(level => new Decimal(0),
                 level => level, {
                 maxLevel: 1,
@@ -2001,7 +2006,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, 1),
             mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
-                level => 1 - (level * 0.25), {
+                level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),

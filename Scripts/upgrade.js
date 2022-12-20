@@ -302,7 +302,7 @@ class ScrapUpgrade
         if (this.level < this.getMaxLevel() && canAfford) {
             if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
-            if(p.mul(1000000).lt(resource)) resource = resource.sub(p);
+            if (resource.mul(1000000).gt(p)) resource = resource.sub(p);
             if (isNaN(resource)) //is resource negative
             {
                 resource = new Decimal(0);

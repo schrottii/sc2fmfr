@@ -243,6 +243,10 @@ var images =
         screws: loadImage("Images/Scenes/screws.png"),
         timemode: loadImage("Images/Scenes/timemode.png"),
         gifts: loadImage("Images/Scenes/gifts.png"),
+        stardustupgrades: loadImage("Images/Scenes/stardustupgrades.png"),
+        aliendustupgrades: loadImage("Images/Scenes/aliendustupgrades.png"),
+        fairydustupgrades: loadImage("Images/Scenes/fairydustupgrades.png"),
+        cosmicupgrades: loadImage("Images/Scenes/cosmicupgrades.png"),
     },
     solarSystem:
     {

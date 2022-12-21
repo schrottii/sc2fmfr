@@ -76,7 +76,7 @@ var game =
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
-                .mul(new Decimal(1000).mul(game.supernova.stars))
+                .mul(new Decimal(1000).pow(game.supernova.stars))
                 .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
@@ -427,6 +427,9 @@ var game =
         totalscrewscollected: new Decimal(0),
         giftsSent: new Decimal(0),
         giftsReceived: new Decimal(0),
+        totalstardust: new Decimal(0),
+        totalaliendust: new Decimal(0),
+        totalfairydust: new Decimal(0),
     },
     mergeQuests:
     {
@@ -1821,6 +1824,10 @@ var game =
             game.supernova.starDust = game.supernova.starDust.add(game.supernova.getStarDust());
             game.supernova.alienDust = game.supernova.alienDust.add(game.supernova.getAlienDust());
             game.supernova.fairyDust = game.supernova.fairyDust.add(game.supernova.getFairyDust());
+
+            game.stats.totalstardust = game.stats.totalstardust.add(game.supernova.getStarDust());
+            game.stats.totalaliendust = game.stats.totalaliendust.add(game.supernova.getAlienDust());
+            game.stats.totalfairydust = game.stats.totalfairydust.add(game.supernova.getFairyDust());
 
             for (let i = 0; i < barrels.length; i++) {
                 barrels[i] = undefined;

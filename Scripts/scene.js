@@ -2221,10 +2221,10 @@ var scenes =
                 }
                 else {
                     var compareIDs = [
-                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks"
+                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks", "totalstardust", "totalaliendust", "totalfairydust"
                     ];
-                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks];
-                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills"];
+                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks, game.stats.totalstardust, game.stats.totalaliendust, game.stats.totalfairydust];
+                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust"];
                 }
 
                 var compareIDs2 = [];
@@ -3055,19 +3055,19 @@ var scenes =
                     new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
 
 
-                    new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("StarDustUpgrades"), {
+                    new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
                         quadraticMin: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
-                    new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("EmblemUpgrades"), {
+                    new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
                         quadraticMin: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
-                    new UIButton(0.5 + 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("AlienDustUpgrades"), {
+                    new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
                         quadraticMin: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
-                    new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("FairyDustUpgrades"), {
+                    new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
                         quadraticMin: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
@@ -3158,6 +3158,14 @@ var scenes =
         new Scene("StarDustUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Star Dust Upgrades? (100% refund)")) {
+                        game.supernova.starDust = new Decimal(game.stats.totalstardust);
+                        for (u in game.supernova.starDustUpgrades) {
+                            game.supernova.starDustUpgrades[u].level = 0;
+                        }
+                    }
+                }, { quadratic: true }),
 
                 new UIPlanet(0.4, 0.6, "Ara\nMore GS", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
                 new UIPlanet(0.15, 0.7, "Aries\nMore Magnets", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
@@ -3176,6 +3184,14 @@ var scenes =
         new Scene("AlienDustUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Alien Dust Upgrades? (100% refund)")) {
+                        game.supernova.alienDust = new Decimal(game.stats.totalaliendust);
+                        for (u in game.supernova.alienDustUpgrades) {
+                            game.supernova.alienDustUpgrades[u].level = 0;
+                        }
+                    }
+                }, { quadratic: true }),
 
                 new UIPlanet(0.2, 0.8, "Cetus\nFaster Crafting", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
                 new UIPlanet(0.8, 0.2, "Triangulum\nMore Merge Tokens", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
@@ -3192,6 +3208,14 @@ var scenes =
         new Scene("FairyDustUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Fairy Dust Upgrades? (100% refund)")) {
+                        game.supernova.fairyDust = new Decimal(game.stats.totalfairydust);
+                        for (u in game.supernova.fairyDustUpgrades) {
+                            game.supernova.fairyDustUpgrades[u].level = 0;
+                        }
+                    }
+                }, { quadratic: true }),
 
                 new UIPlanet(0.4, 0.6, "Cancer\nMore Plastic Bags", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
                 new UIPlanet(0.85, 0.2, "Pyxis\nMore Beams", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),

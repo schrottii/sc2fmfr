@@ -2062,18 +2062,25 @@ var game =
             ),
         },
         alienDustUpgrades: {
-            cetus: new FairyDustUpgrade(
+            cetus: new AlienDustUpgrade(
                 level => new Decimal(87).add(13 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
-            triangulum: new FairyDustUpgrade(
+            triangulum: new AlienDustUpgrade(
                 level => new Decimal(13).add(4 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(0.5 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            volans2: new AlienDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(35).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
                 }
             ),
         },

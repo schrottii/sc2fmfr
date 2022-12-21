@@ -634,11 +634,11 @@ function getBrickIncrease() {
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(game.supernova.starDustUpgrades.volans);
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(applyUpgrade(game.supernova.starDustUpgrades.volans));
 }
 
 function getDarkFragmentBaseValue() {
-    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost));
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2));
 }
 
 function getMagnetBaseValue()

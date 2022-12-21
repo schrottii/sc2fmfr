@@ -3179,6 +3179,7 @@ var scenes =
 
                 new UIPlanet(0.2, 0.8, "Cetus\nFaster Crafting", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
                 new UIPlanet(0.8, 0.2, "Triangulum\nMore Merge Tokens", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
+                new UIPlanet(0.5, 0.6, "Volans 2\nMore Dark Fragments", game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";

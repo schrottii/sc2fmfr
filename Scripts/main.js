@@ -212,7 +212,6 @@ function update()
             }
         }
         else if (timeMode && freeSpots == 0) {
-            game.goldenScrap.reset();
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
@@ -225,6 +224,7 @@ function update()
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
             GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
 
+            game.goldenScrap.reset();
             timeModeTime = 0;
             let Ti = 0;
             while (timeTires >= 0) {
@@ -423,7 +423,7 @@ function update()
                             }
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "aerobeam", getBeamBaseValue()]);
+                                    stormQueue.push([500 * i, "aerobeam", getAeroBeamValue()]);
                                 }
                             }
                         }
@@ -432,7 +432,7 @@ function update()
                                 movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
                             else {
-                                movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                                movingItemFactory.fallingAeroBeam(getAeroBeamValue());
                                 if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
                                     movingItemFactory.glitchItem(1);
                                 }
@@ -594,24 +594,35 @@ function update()
 function getBeamBaseValue() {
     return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
         + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1]))
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.pyxis));
+}
+function getAeroBeamValue() {
+    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
+        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.antlia));
 }
 function getAngelBeamValue() {
     return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1]))
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.phoenix));
 }
 function getReinforcedBeamValue() {
     return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1]))
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.orion));
 }
 function getGlitchBeamValue() {
     return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
         * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1))
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams);
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.puppis));
 }
 
 function getReinforcedTapsNeeded() {
@@ -623,7 +634,7 @@ function getBrickIncrease() {
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost));
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(game.supernova.starDustUpgrades.volans);
 }
 
 function getDarkFragmentBaseValue() {
@@ -639,7 +650,8 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.fragment.upgrades.magnetBoost))
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets))
         .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)))
-        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost));
+        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost))
+        .mul(applyUpgrade(game.supernova.starDustUpgrades.aries));
 }
 
 function getDarkScrap(level) {
@@ -649,7 +661,7 @@ function getDarkScrap(level) {
 }
 
 function craftingMulti() {
-    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting);
+    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting) / applyUpgrade(game.supernova.alienDustUpgrades.cetus);
 }
 
 function fallingMagnetWorth() {

@@ -92,6 +92,10 @@ var images =
     addfriend: loadImage("Images/Buttons/add_friend.png"),
     change: loadImage("Images/Buttons/change.png"),
     supernovabutton: loadImage("Images/Buttons/supernova.png"),
+    cosmicemblem: loadImage("Images/Currencies/cosmicemblem.png"),
+    stardust: loadImage("Images/Currencies/stardust.png"),
+    aliendust: loadImage("Images/Currencies/aliendust.png"),
+    fairydust: loadImage("Images/Currencies/fairydust.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -257,6 +261,22 @@ var images =
         mythus: loadImage("Images/SolarSystem/mythus.png"),
         posus: loadImage("Images/SolarSystem/posus.png"),
         destroyer: loadImage("Images/SolarSystem/destroyer.png"),
+    },
+    constellations:
+    {
+        ara: loadImage("Images/Constellations/ara.png"),
+        aries: loadImage("Images/Constellations/aries.png"),
+        corvus: loadImage("Images/Constellations/corvus.png"),
+        volans: loadImage("Images/Constellations/volans.png"),
+        vulpecula: loadImage("Images/Constellations/vulpecula.png"),
+        cancer: loadImage("Images/Constellations/cancer.png"),
+        pyxis: loadImage("Images/Constellations/pyxis.png"),
+        antlia: loadImage("Images/Constellations/antlia.png"),
+        phoenix: loadImage("Images/Constellations/phoenix.png"),
+        orion: loadImage("Images/Constellations/orion.png"),
+        puppis: loadImage("Images/Constellations/puppis.png"),
+        cetus: loadImage("Images/Constellations/cetus.png"),
+        triangulum: loadImage("Images/Constellations/triangulum.png"),
     },
     achievements:
     {

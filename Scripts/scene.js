@@ -242,7 +242,7 @@ function getStonks(swit) {
             worth = getBeamBaseValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = getBeamBaseValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = getAeroBeamValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
             worth = getAngelBeamValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
@@ -1530,7 +1530,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
+                new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getAeroBeamValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1656,7 +1656,7 @@ var scenes =
                 new UIText(() => "Costs: " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
-                        let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level;
+                        let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
                         game.plasticBags.amount = game.plasticBags.amount.add(amount);
                         game.stats.totalplasticbags = game.stats.totalplasticbags.add(amount);
 
@@ -3048,14 +3048,26 @@ var scenes =
 
                     new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
 
-                    new UIText(() => "Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
-                    new UIText(() => "Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
-                    new UIText(() => "Fairy Dust: " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
+                    new UIText(() => "$images.stardust$ Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
+                    new UIText(() => "$images.aliendust$ Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
+                    new UIText(() => "$images.fairydust$ Fairy Dust: " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
 
-                    new UIText(() => "Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
+                    new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
 
 
-                    new UIButton(0.5, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("EmblemUpgrades"), {
+                    new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("StarDustUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("EmblemUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(0.5 + 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("AlienDustUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("FairyDustUpgrades"), {
                         quadraticMin: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
@@ -3117,7 +3129,7 @@ var scenes =
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "Auto Buyers\nbuy max.", 0.2, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45, "table"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "Keep EZ Upgrader", 0.8, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "Keep EZ\nUpgrader", 0.8, 0.45, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreScrap, "Merge Quests\nappear faster", 0.2, 0.75, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.doubleBeams, images.upgrades.beamValue, "2x Beams", 0.5, 0.75, "table2"),
@@ -3128,6 +3140,7 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBeams, images.upgrades.beamValue, "Start Beams\nafter Supernova", 0.8, 1.05, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 1.35, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerCollectors, images.upgrades.unlockAutoCollectors, "Stronger\nAuto Collectors", 0.5, 1.35, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "Hyper Buy", 0.5, 1.65, "table"),
@@ -3141,5 +3154,57 @@ var scenes =
 
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
+            }),
+        new Scene("StarDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+
+                new UIPlanet(0.4, 0.6, "Ara\nMore GS", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
+                new UIPlanet(0.15, 0.7, "Aries\nMore Magnets", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
+                new UIPlanet(0.75, 0.5, "Corvus\nMore Tires", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
+                new UIPlanet(0.85, 0.2, "Volans\nMore Fragments", game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.8, 0.8, "Vulpecula\nFaster Merge Mastery", game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
+        new Scene("AlienDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+
+                new UIPlanet(0.2, 0.8, "Cetus\nFaster Crafting", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
+                new UIPlanet(0.8, 0.2, "Triangulum\nMore Merge Tokens", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
+        new Scene("FairyDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+
+                new UIPlanet(0.4, 0.6, "Cancer\nMore Plastic Bags", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
+                new UIPlanet(0.85, 0.2, "Pyxis\nMore Beams", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
+                new UIPlanet(0.3, 0.4, "Antlia\nMore Aerobeams", game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
+                new UIPlanet(0.6, 0.45, "Phoenix\nMore Angel Beams", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
+                new UIPlanet(0.35, 0.8, "Orion\nMore Reinforced Beams", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.orion, 0.075),
+                new UIPlanet(0.7, 0.85, "Puppis\nMore Glitch Beams", game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
             }),
     ];

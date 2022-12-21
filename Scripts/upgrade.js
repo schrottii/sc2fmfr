@@ -23,7 +23,10 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_FISHINGNET = 22,
     RESOURCE_SCREW = 23,
     RESOURCE_COGWHEEL = 24,
-    RESOURCE_COSMICEMBLEMS = 25;
+    RESOURCE_COSMICEMBLEMS = 25,
+    RESOURCE_STARDUST = 26,
+    RESOURCE_ALIENDUST = 27,
+    RESOURCE_FAIRYDUST = 28;
 
 function applyUpgrade(upg)
 {
@@ -86,6 +89,12 @@ function getUpgradeResource(res)
             return game.cogwheels.amount;
         case RESOURCE_COSMICEMBLEMS:
             return game.supernova.cosmicEmblems;
+        case RESOURCE_STARDUST:
+            return game.supernova.starDust;
+        case RESOURCE_ALIENDUST:
+            return game.supernova.alienDust;
+        case RESOURCE_FAIRYDUST:
+            return game.supernova.fairyDust;
         default:
             return null;
     }
@@ -170,6 +179,15 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_COSMICEMBLEMS:
             game.supernova.cosmicEmblems = res;
             break;
+        case RESOURCE_STARDUST:
+            game.supernova.starDust = res;
+            break;
+        case RESOURCE_ALIENDUST:
+            game.supernova.alienDust = res;
+            break;
+        case RESOURCE_FAIRYDUST:
+            game.supernova.fairyDust = res;
+            break;
         default:
             break;
     }
@@ -230,7 +248,13 @@ function getResourceImage(res)
         case RESOURCE_COGWHEEL:
             return "$images.cogwheel$";
         case RESOURCE_COSMICEMBLEMS:
-            return "$images.cogwheel$";
+            return "$images.cosmicemblem$";
+        case RESOURCE_STARDUST:
+            return "$images.stardust$";
+        case RESOURCE_ALIENDUST:
+            return "$images.aliendust$";
+        case RESOURCE_FAIRYDUST:
+            return "$images.fairydust$";
         default:
             break;
     }
@@ -770,6 +794,24 @@ class CogwheelUpgrade extends ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_COGWHEEL;
+    }
+}
+class StarDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_STARDUST;
+    }
+}
+class AlienDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_ALIENDUST;
+    }
+}
+class FairyDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_FAIRYDUST;
     }
 }
 

@@ -76,7 +76,8 @@ var game =
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
-                .mul(new Decimal(1000).mul(game.supernova.stars));
+                .mul(new Decimal(1000).mul(game.supernova.stars))
+                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -471,7 +472,7 @@ var game =
         level: 0,
         currentMerges: 0,
         getNeededMerges: level => Math.round((100 + 10 * level) * applyUpgrade(game.tires.upgrades[0][2])
-            .toNumber() / ((game.mergeQuests.scrapyard / 100) + 0.99) / (1 + (applyUpgrade(game.skillTree.upgrades.fasterMergeMastery)/100))),
+            .toNumber() / ((game.mergeQuests.scrapyard / 100) + 0.99) / (1 + (applyUpgrade(game.skillTree.upgrades.fasterMergeMastery)/100)) / applyUpgrade(game.supernova.starDustUpgrades.vulpecula)),
         getScrapBoost: level => new Decimal(1 + 0.05 * level).pow(applyUpgrade(game.solarSystem.upgrades.uranus)),
         getMagnetBonus: level => Decimal.round(getMagnetBaseValue().mul(2 + 0.25 * level)),
         check: () => {
@@ -660,7 +661,7 @@ var game =
                 [ //more xTires per collect, Tire chance, faster Merge Quests
                     new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.15) + game.tires.getLevelBias(level))
                         .mul(10e63),
-                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)),
+                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)).pow(applyUpgrade(game.supernova.starDustUpgrades.corvus)),
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                         }),
@@ -1691,7 +1692,7 @@ var game =
     collectors: {
         beams: new AutoUpgrade(
             level => new Decimal(3 + Math.floor(level / 7)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "beams",
             time = "b",
             {
@@ -1700,7 +1701,7 @@ var game =
             }),
         aerobeams: new AutoUpgrade(
             level => new Decimal(6 + Math.floor(level / 3)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "aerobeams",
             time = "b",
             {
@@ -1709,7 +1710,7 @@ var game =
             }),
         angelbeams: new AutoUpgrade(
             level => new Decimal(2 + Math.floor(level / 10)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "angelbeams",
             time = "b",
             {
@@ -1718,7 +1719,7 @@ var game =
             }),
         reinforcedbeams: new AutoUpgrade(
             level => new Decimal(10 + Math.floor(level / 5)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "reinforcedbeams",
             time = "b",
             {
@@ -1727,7 +1728,7 @@ var game =
             }),
         glitchbeams: new AutoUpgrade(
             level => new Decimal(10 + Math.floor(level / 5)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "glitchbeams",
             time = "b",
             {
@@ -1745,7 +1746,7 @@ var game =
             }),
         gold: new AutoUpgrade(
             level => new Decimal(2 + Math.floor(level / 8)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_BUCKET, "gold",
             time = "b",
             {
@@ -2017,6 +2018,108 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
+            strongerCollectors: new CosmicEmblemUpgrade(level => new Decimal(0),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+        },
+        starDustUpgrades: {
+            ara: new StarDustUpgrade(
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(47).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            aries: new StarDustUpgrade(
+                level => new Decimal(9).add(6 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(123).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            corvus: new StarDustUpgrade(
+                level => new Decimal(15).add(25 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.5 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^")
+                }
+            ),
+            volans: new StarDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(35).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            vulpecula: new StarDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.percentStandard(2, "")
+                }
+            ),
+        },
+        alienDustUpgrades: {
+            cetus: new FairyDustUpgrade(
+                level => new Decimal(87).add(13 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            triangulum: new FairyDustUpgrade(
+                level => new Decimal(13).add(4 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.5 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+        },
+        fairyDustUpgrades: {
+            cancer: new FairyDustUpgrade(
+                level => new Decimal(272).add(117 * level).mul(Math.max(1, level - 9)),
+                level => new Decimal(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                }
+            ),
+            pyxis: new FairyDustUpgrade(
+                level => new Decimal(5).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            antlia: new FairyDustUpgrade(
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            phoenix: new FairyDustUpgrade(
+                level => new Decimal(3).add(level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            orion: new FairyDustUpgrade(
+                level => new Decimal(7).add(6 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            puppis: new FairyDustUpgrade(
+                level => new Decimal(9).add(Math.floor(0.4 * level * Math.sin(level))).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
         }
     },
     milestones:

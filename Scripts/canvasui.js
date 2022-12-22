@@ -527,7 +527,7 @@ class UIUpgrade extends UIGroup
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(doround), {quadratic: true}),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), {quadratic: true}),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", {halign: "right"}),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", {halign: "right", valign: "middle", bold: true}),
                 new UIText(() => desc + "\n" +
@@ -562,7 +562,7 @@ class UIUpgrade3 extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(doround), { quadratic: true }),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), { quadratic: true }),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => desc + "\n" +
@@ -630,7 +630,7 @@ class UIMergeTokenUpgrade extends UIGroup
     {
         super([
             new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-            new UIButton(0.1, y, 0.07, 0.07, img, () => upg.buy(true), {quadratic: true}),
+            new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, true) : upg.buy(true), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", {bold: true, halign: "right", valign: "middle"}),
             new UIText(() => desc + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
             new UIText(() => upg.getLevelDisplay(), 0.975, y - 0.045, 0.04, "black", {
@@ -654,7 +654,7 @@ class UITireUpgrade extends UIGroup{
         super([
             new UIRect(x, y, 1 / 3, 0.225, col ? col : "table"),
             new UIText(title, x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
-            new UIButton(x, y, 0.06, 0.06, img, () => upg.buy(), {quadratic: true}),
+            new UIButton(x, y, 0.06, 0.06, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("", "$images.tire$", false), x, y + 0.04, 0.05, "black"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.07, 0.03, "black")
         ]);
@@ -745,7 +745,7 @@ class UISkillTreeUpgrade extends UIGroup{
     {
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
-            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), {quadratic: true}),
             new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
@@ -765,6 +765,19 @@ class UISkillTreeUpgradeNoBG extends UIGroup{
     }
 }
 
+class UIEmblemUpgrade extends UIGroup {
+    constructor(upg, img, title, x, y, col) {
+        super([
+            new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
+            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
+            new UIText(() => upg.getStarRequirement() + " star" + (upg.stars > 1 ? "s" : ""), x, y - 0.065, 0.025, "black", { bold: true, valign: "bottom" }),
+            new UIText(() => "$images.cosmicemblem$" + upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
+        ], () => upg.isUnlocked());
+    }
+}
+
 class UIPlanet extends UIGroup
 {
     constructor(x, y, title, upg, suffix, image, size, isVisible)
@@ -772,7 +785,7 @@ class UIPlanet extends UIGroup
         let s = size ? size : 0.05;
         super([
             new UIText(title, x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
-            new UIButton(x, y, s, s, image, () => upg.buy(), {quadratic: true}),
+            new UIButton(x, y, s, s, image, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),
         ], isVisible !== undefined ? isVisible : () => true);

@@ -242,7 +242,7 @@ function getStonks(swit) {
             worth = getBeamBaseValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = getBeamBaseValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = getAeroBeamValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
             worth = getAngelBeamValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
@@ -344,9 +344,9 @@ var scenes =
                 ctx.textBaseline = "bottom";
                 ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
 
-                ctx.textAlign = "center";
-                ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
+                //ctx.textAlign = "center";
+                //ctx.font = "300 px " + fonts.default;
+                //ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -372,7 +372,7 @@ var scenes =
                         alert("Too high!");
                     }
                 }, {
-                    isVisible: () => game.skillTree.upgrades.superEzUpgrader.level > 0 && !timeMode,
+                    isVisible: () => (game.skillTree.upgrades.superEzUpgrader.level > 0 || game.supernova.cosmicUpgrades.keepEZ.level > 0) && !timeMode,
                     quadratic: true
                 }),
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
@@ -426,19 +426,24 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1 && !timeMode
                     }),
-                new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
-                    isVisible: () => game.highestBarrelReached >= 300 && !timeMode,
-                    quadratic: true,
-                    off: images.checkbox.autoConvert.off,
-                    on: images.checkbox.autoConvert.on,
-                }),
                 new UICheckbox(0.725, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.ms.includes(5) && !timeMode,
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
                     on: images.checkbox.autoMerge.on,
                 }),
-
+                new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
+                    isVisible: () => game.highestBarrelReached >= 300 && !timeMode,
+                    quadratic: true,
+                    off: images.checkbox.autoConvert.off,
+                    on: images.checkbox.autoConvert.on,
+                }),
+                new UICheckbox(0.875, 0.825, 0.05, 0.05, "hyperBuy", {
+                    isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
+                    quadratic: true,
+                    off: images.checkbox.hyperbuy.off,
+                    on: images.checkbox.hyperbuy.on,
+                }),
 
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
                 new UIText(() => "Better Barrels (" + game.scrapUpgrades.betterBarrels.level.toFixed(0) + "/" + game.scrapUpgrades.betterBarrels.maxLevel + "):\nBarrels spawn 1 Tier higher", 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
@@ -609,7 +614,7 @@ var scenes =
                             }
                             else { // NOT SAME, BACK TO WHERE IT WAS
                                 barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
-                                if(!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
+                                if (!game.settings.lowPerformance) barrels[draggedBarrel.originPos].scale = 0.7;
                                 draggedBarrel = undefined;
                             }
                         }
@@ -1033,6 +1038,8 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
                 }),
+
+                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
 
                 new UIPlanet(0.5, 0.5, "Sun\nIncrease Scrap production", game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
                 new UIPlanet(0.7, 0.7, "Mercury\nIncrease Golden\nScrap Boost", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
@@ -1507,7 +1514,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.24);
                 ctx.fillRect(w * 0.05, h * 0.388, w * 0.9, h * 0.06);
@@ -1524,10 +1530,9 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getBeamBaseValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
+                new UIText(() => { return "Aerobeams fall every " + (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) + " seconds and are worth " + getAeroBeamValue() + ".\nThere's a " + applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1) + " % chance of an aerobeam storm\noccuring instead of a single aerobeam, containing " + (5 + applyUpgrade(game.beams.upgrades.beamStormValue)) + " beams." }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.aerobeam$ Aerobeams: " + formatNumber(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
-
 
                 new UIAerobeamUpgrade(game.aerobeams.upgrades.fasterBeams, images.upgrades.aerobeamChance, 0.45, "Aerobeams spawn more often"),
                 new UIAerobeamUpgrade(game.aerobeams.upgrades.slowerFallingMagnets, images.upgrades.magnetBoost, 0.55, "Falling Magnets are slower", "table2"),
@@ -1558,7 +1563,6 @@ var scenes =
 
                 new UIText(() => "$images.angelbeam$ Angel Beams: " + formatNumber(game.angelbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
-
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.beamValue, images.upgrades.angelBeamValue, 0.45, "Angel Beams are worth more"),
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.fasterBeams, images.upgrades.angelBeamChance, 0.55, "Angel Beams spawn more often", "table2"),
                 new UIAngelBeamUpgrade(game.angelbeams.upgrades.moreMasteryGS, images.upgrades.goldenScrapBoost, 0.65, "Get more GS from Mastery"),
@@ -1588,7 +1592,6 @@ var scenes =
                 }, 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.reinforcedbeam$ Reinforced Beams: " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
-
 
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.reinforce, images.upgrades.reinforcedBeamValue, 0.45, "Reinforced Beams are worth more,\nbut are harder to collect"),
                 new UIButton(0.775, 0.475, 0.05, 0.05, images.buttonReset, () => {
@@ -1626,7 +1629,6 @@ var scenes =
 
                 new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
-
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.beamValue, images.upgrades.glitchBeamValue, 0.45, "Glitch Beams can be worth more"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.repeat, images.upgrades.repeatUpgrade, 0.55, "Chance to repeat a beam when\nit falls out of the screen", "table2"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "Chance to get more beams\n(all types)"),
@@ -1654,7 +1656,7 @@ var scenes =
                 new UIText(() => "Costs: " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
-                        let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level;
+                        let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
                         game.plasticBags.amount = game.plasticBags.amount.add(amount);
                         game.stats.totalplasticbags = game.stats.totalplasticbags.add(amount);
 
@@ -1800,7 +1802,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
 
             ],
             function () {
@@ -2219,10 +2221,10 @@ var scenes =
                 }
                 else {
                     var compareIDs = [
-                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks"
+                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks", "totalstardust", "totalaliendust", "totalfairydust"
                     ];
-                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks];
-                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills"];
+                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks, game.stats.totalstardust, game.stats.totalaliendust, game.stats.totalfairydust];
+                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust"];
                 }
 
                 var compareIDs2 = [];
@@ -2492,7 +2494,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
                 new UIButton(0.84, 0.385, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.quests[1].active) {
                         if (game.mergeQuests.quests[1].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
@@ -2500,7 +2502,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) }),
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 }),
                 new UIButton(0.84, 0.515, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.quests[2].active) {
                         if (game.mergeQuests.quests[2].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
@@ -2508,7 +2510,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) })
+                }, { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.ezUpgraderQuests) || game.supernova.cosmicUpgrades.keepEZ.level > 0 })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -2881,6 +2883,7 @@ var scenes =
                     new UIRect(0.5, 6.1, 1, 0.3, "table2"),
                     new UIRect(0.5, 6.4, 1, 0.3, "table"),
                     new UIRect(0.5, 6.7, 1, 0.3, "table2"),
+                    new UIRect(0.5, 7.0, 1, 0.3, "table"),
 
                     new UISkillTreePath(0.5, 0.4, 0.5, 0.65, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 
@@ -3019,12 +3022,218 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.veryFastCrafting, images.upgrades.fasterFactory, "Faster Crafting", 0.2, 6.65, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.funnyGlitchBeams, images.upgrades.funnyGlitchBeams, "Funny Glitch Beams\n(& x2 worth)", 0.5, 6.65, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax, images.upgrades.moreDarkScrap, "Higher max. for\n2nd Dark Scrap upg.", 0.8, 6.65, "table2"),
+
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.unlockSupernova, images.solarSystem.sun, "Unlock Supernova", 0.5, 6.95, "table"),
                     
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 6.95})
+                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 7.15})
             ],
             function ()
             {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
-            })
+            }),
+        new Scene("Supernova",
+                [
+                    new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                        bold: 900,
+                        borderSize: 0.005,
+                        font: fonts.title
+                    }),
+                    new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+                    new UIText("You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun,\ncausing a Supernova, destroying the entire\nsolar system and everything in it.\n" +
+                        "Press the button below to learn more.", 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+
+                    new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+
+                    new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200))) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
+
+                    new UIText(() => "$images.stardust$ Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
+                    new UIText(() => "$images.aliendust$ Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
+                    new UIText(() => "$images.fairydust$ Fairy Dust: " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
+
+                    new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
+
+
+                    new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                    new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
+                        quadraticMin: true,
+                        isVisible: () => game.supernova.stars.gte(1)
+                    }),
+                ],
+
+                function () {
+                    ctx.fillStyle = colors[C]["bg"];
+                    ctx.fillRect(0, 0, w, h);
+
+                    ctx.fillStyle = colors[C]["table"];
+                    ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.15);
+            }),
+        new Scene("Supernova2",
+            [
+                new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+
+                new UIText(() => "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.", 0.5, 0.175, 0.03, "black"),
+                new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
+
+                new UIText(() => "You will earn:\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
+                    "\n+" + formatNumber(game.supernova.getStarDust()) + " Star Dust" +
+                    "\n+" + formatNumber(game.supernova.getAlienDust()) + " Alien Dust" +
+                    "\n+" + formatNumber(game.supernova.getFairyDust()) + " Fairy Dust" +
+                    "\n+1 Star" +
+                    "\n Click the button below to do a Supernova.", 0.5, 0.3, 0.04, "black"),
+
+                new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {
+                    if (confirm("Do you really want to do a Supernova?")) {
+                        game.supernova.reset();
+                    }
+                }, { quadratic: true }),
+            ],
+
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+            }),
+        new Scene("EmblemUpgrades",
+            [
+                new UIText("Cosmic Emblems", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
+
+                new UIText(() => "$images.glitchbeam$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
+
+                new UIScrollContainerY([
+                    new UIRect(0.5, 0.5, 1, 0.4, "table"),
+                    new UIRect(0.5, 0.8, 1, 0.3, "table2"),
+                    new UIRect(0.5, 1.1, 1, 0.3, "table"),
+                    new UIRect(0.5, 1.4, 1, 0.3, "table2"),
+                    new UIRect(0.5, 1.7, 1, 0.3, "table"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "Auto Buyers\nbuy max.", 0.2, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "Stronger More GS\n(Magnet Upgrade)", 0.5, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "Keep EZ\nUpgrader", 0.8, 0.45, "table"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreScrap, "Merge Quests\nappear faster", 0.2, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.doubleBeams, images.upgrades.beamValue, "2x Beams", 0.5, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreScrapMax, images.upgrades.moreScrap, "Higher Get More\nScrap max.\n(GS upgrade)", 0.8, 0.75, "table2"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoBuyers, images.upgrades.unlockAutos, "Keep Auto Buyers\nafter Supernova", 0.2, 1.05, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startScrap, images.upgrades.moreScrap, "Start Scrap\nafter Supernova", 0.5, 1.05, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBeams, images.upgrades.beamValue, "Start Beams\nafter Supernova", 0.8, 1.05, "table"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreQuestLevelsMax, images.upgrades.moreMergeTokens, "Higher 5th Brick\nupgrade max.", 0.2, 1.35, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerCollectors, images.upgrades.unlockAutoCollectors, "Stronger\nAuto Collectors", 0.5, 1.35, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.faster2ndDim, images.upgrades.moreDarkScrap, "Faster\n2nd Dim", 0.2, 1.65, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "Hyper Buy", 0.5, 1.65, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.85 })
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
+            }),
+        new Scene("StarDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Star Dust Upgrades? (100% refund)")) {
+                        game.supernova.starDust = new Decimal(game.stats.totalstardust);
+                        for (u in game.supernova.starDustUpgrades) {
+                            game.supernova.starDustUpgrades[u].level = 0;
+                        }
+                    }
+                }, { quadratic: true }),
+
+                new UIPlanet(0.4, 0.6, "Ara\nMore GS", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
+                new UIPlanet(0.15, 0.7, "Aries\nMore Magnets", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
+                new UIPlanet(0.75, 0.5, "Corvus\nMore Tires", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
+                new UIPlanet(0.85, 0.2, "Volans\nMore Fragments", game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.8, 0.8, "Vulpecula\nFaster Merge Mastery", game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
+        new Scene("AlienDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Alien Dust Upgrades? (100% refund)")) {
+                        game.supernova.alienDust = new Decimal(game.stats.totalaliendust);
+                        for (u in game.supernova.alienDustUpgrades) {
+                            game.supernova.alienDustUpgrades[u].level = 0;
+                        }
+                        updateBetterBarrels();
+                    }
+                }, { quadratic: true }),
+
+                new UIPlanet(0.2, 0.8, "Cetus\nFaster Crafting", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
+                new UIPlanet(0.8, 0.2, "Triangulum\nMore Merge Tokens", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
+                new UIPlanet(0.5, 0.6, "Volans 2\nMore Dark Fragments", game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.7, 0.85, "Aquila\nHigher Better Barrels max.", game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
+        new Scene("FairyDustUpgrades",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
+                new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
+                    if (confirm("Do you really want to reset your Fairy Dust Upgrades? (100% refund)")) {
+                        game.supernova.fairyDust = new Decimal(game.stats.totalfairydust);
+                        for (u in game.supernova.fairyDustUpgrades) {
+                            game.supernova.fairyDustUpgrades[u].level = 0;
+                        }
+                    }
+                }, { quadratic: true }),
+
+                new UIPlanet(0.4, 0.6, "Cancer\nMore Plastic Bags", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
+                new UIPlanet(0.85, 0.2, "Pyxis\nMore Beams", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
+                new UIPlanet(0.3, 0.4, "Antlia\nMore Aerobeams", game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
+                new UIPlanet(0.6, 0.45, "Phoenix\nMore Angel Beams", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
+                new UIPlanet(0.35, 0.8, "Orion\nMore Reinforced Beams", game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
+                new UIPlanet(0.7, 0.85, "Puppis\nMore Glitch Beams", game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+                if (!game.settings.lowPerformance) {
+                    drawStars(100, 0.5);
+                }
+                ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+            }),
     ];

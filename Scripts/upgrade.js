@@ -22,7 +22,11 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_BUCKET = 21,
     RESOURCE_FISHINGNET = 22,
     RESOURCE_SCREW = 23,
-    RESOURCE_COGWHEEL = 24;
+    RESOURCE_COGWHEEL = 24,
+    RESOURCE_COSMICEMBLEMS = 25,
+    RESOURCE_STARDUST = 26,
+    RESOURCE_ALIENDUST = 27,
+    RESOURCE_FAIRYDUST = 28;
 
 function applyUpgrade(upg)
 {
@@ -83,6 +87,14 @@ function getUpgradeResource(res)
             return game.screws.amount;
         case RESOURCE_COGWHEEL:
             return game.cogwheels.amount;
+        case RESOURCE_COSMICEMBLEMS:
+            return game.supernova.cosmicEmblems;
+        case RESOURCE_STARDUST:
+            return game.supernova.starDust;
+        case RESOURCE_ALIENDUST:
+            return game.supernova.alienDust;
+        case RESOURCE_FAIRYDUST:
+            return game.supernova.fairyDust;
         default:
             return null;
     }
@@ -164,6 +176,18 @@ function assignResourceAfterUpgrade(resType, res)
         case RESOURCE_COGWHEEL:
             game.cogwheels.amount = res;
             break;
+        case RESOURCE_COSMICEMBLEMS:
+            game.supernova.cosmicEmblems = res;
+            break;
+        case RESOURCE_STARDUST:
+            game.supernova.starDust = res;
+            break;
+        case RESOURCE_ALIENDUST:
+            game.supernova.alienDust = res;
+            break;
+        case RESOURCE_FAIRYDUST:
+            game.supernova.fairyDust = res;
+            break;
         default:
             break;
     }
@@ -223,6 +247,14 @@ function getResourceImage(res)
             return "$images.screw$";
         case RESOURCE_COGWHEEL:
             return "$images.cogwheel$";
+        case RESOURCE_COSMICEMBLEMS:
+            return "$images.cosmicemblem$";
+        case RESOURCE_STARDUST:
+            return "$images.stardust$";
+        case RESOURCE_ALIENDUST:
+            return "$images.aliendust$";
+        case RESOURCE_FAIRYDUST:
+            return "$images.fairydust$";
         default:
             break;
     }
@@ -294,7 +326,7 @@ class ScrapUpgrade
         if (this.level < this.getMaxLevel() && canAfford) {
             if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
-            resource = resource.sub(p);
+            if (resource.mul(1000000).gt(p)) resource = resource.sub(p);
             if (isNaN(resource)) //is resource negative
             {
                 resource = new Decimal(0);
@@ -319,9 +351,10 @@ class ScrapUpgrade
         else
         {
             let resource = getUpgradeResource(this.resource);
-            while(this.currentPrice().lt(resource) && this.level < level)
+            while(this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel())
             {
                 this.buy(round);
+                resource = getUpgradeResource(this.resource);
             }
         }
     }
@@ -441,6 +474,24 @@ class FixedLevelUpgrade
         }
         this.level++;
     }
+
+    onLevelDown() {
+
+    }
+
+    buyToTarget(level, round) {
+        if (level <= this.level) {
+            if (level < this.level) {
+                this.onLevelDown(level);
+            }
+            this.level = level;
+        }
+        else {
+            while (this.level < level) {
+                this.buy(round);
+            }
+        }
+    }
 }
 
 class SkillTreeUpgrade extends ScrapUpgrade
@@ -492,6 +543,10 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
         {
             return true;
         }
+        if (this.cfg.nova == true) {
+            if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA) return true;
+            return false;
+        }
         if (this.cfg.oneDep != true) {
             for (let k of this.deps) {
                 if (game.skillTree.upgrades[k].level === 0) return false;
@@ -504,6 +559,40 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade
             return false;
         }
         return true;
+    }
+}
+
+class CosmicEmblemUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg, stars) {
+        super(getPrice, getEffect, cfg);
+        this.cfg = cfg;
+        this.resource = RESOURCE_COSMICEMBLEMS;
+        this.stars = stars;
+    }
+
+    isUnlocked() {
+        if (game.supernova.stars.gte(1)) return true;
+        return false;
+    }
+    getStarRequirement() {
+        return this.stars;
+    }
+    buy(round, disableOnBuy = false) {
+        let resource = getUpgradeResource(this.resource);
+        let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
+        if (this.level < this.getMaxLevel() && canAfford && game.supernova.stars.gte(this.stars)) {
+            if (!disableOnBuy) this.onBuy();
+            let p = round ? this.currentPrice().round() : this.currentPrice();
+            resource = resource.sub(p);
+            if (isNaN(resource)) //is resource negative
+            {
+                resource = new Decimal(0);
+            }
+            assignResourceAfterUpgrade(this.resource, resource);
+            this.level++;
+        }
+
+        this.afterBuy();
     }
 }
 
@@ -707,6 +796,24 @@ class CogwheelUpgrade extends ScrapUpgrade {
         this.resource = RESOURCE_COGWHEEL;
     }
 }
+class StarDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_STARDUST;
+    }
+}
+class AlienDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_ALIENDUST;
+    }
+}
+class FairyDustUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
+        super(getPrice, getEffect, cfg);
+        this.resource = RESOURCE_FAIRYDUST;
+    }
+}
 
 var EarthLevels =
     {
@@ -722,6 +829,7 @@ var EarthLevels =
         SECOND_DIMENSION: 11,
         SCRAP_FACTORY: 12,
         GIFTS: 13,
+        UNLOCK_NOVA: 14,
     };
 
 var effectDisplayTemplates =

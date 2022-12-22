@@ -24,6 +24,7 @@ var movingItems = [];
 
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
+var hyperBuy = false;
 
 var FPS = 9999;
 
@@ -211,7 +212,6 @@ function update()
             }
         }
         else if (timeMode && freeSpots == 0) {
-            game.goldenScrap.reset();
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
@@ -224,6 +224,7 @@ function update()
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
             GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
 
+            game.goldenScrap.reset();
             timeModeTime = 0;
             let Ti = 0;
             while (timeTires >= 0) {
@@ -302,7 +303,8 @@ function update()
                         if (game.autos[i].auto[1] != "all") {
                             if (game.autos[i].auto[2] == undefined) {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                                game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
+                                if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]].level + 10000, true);
+                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
@@ -311,7 +313,8 @@ function update()
                             }
                             else {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
-                                game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
+                                if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level + 10000, true);
+                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
@@ -420,7 +423,7 @@ function update()
                             }
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "aerobeam", getBeamBaseValue()]);
+                                    stormQueue.push([500 * i, "aerobeam", getAeroBeamValue()]);
                                 }
                             }
                         }
@@ -429,7 +432,7 @@ function update()
                                 movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
                             else {
-                                movingItemFactory.fallingAeroBeam(getBeamBaseValue());
+                                movingItemFactory.fallingAeroBeam(getAeroBeamValue());
                                 if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
                                     movingItemFactory.glitchItem(1);
                                 }
@@ -591,20 +594,35 @@ function update()
 function getBeamBaseValue() {
     return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
         + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.pyxis));
+}
+function getAeroBeamValue() {
+    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
+        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.antlia));
 }
 function getAngelBeamValue() {
     return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.phoenix));
 }
 function getReinforcedBeamValue() {
     return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1]));
+        * applyUpgrade(game.tires.upgrades[3][1])
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.orion));
 }
 function getGlitchBeamValue() {
     return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
         * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1));
+        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
+        * applyUpgrade(game.supernova.fairyDustUpgrades.puppis));
 }
 
 function getReinforcedTapsNeeded() {
@@ -616,11 +634,11 @@ function getBrickIncrease() {
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost));
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(applyUpgrade(game.supernova.starDustUpgrades.volans));
 }
 
 function getDarkFragmentBaseValue() {
-    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost));
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2));
 }
 
 function getMagnetBaseValue()
@@ -632,7 +650,8 @@ function getMagnetBaseValue()
         .mul(applyUpgrade(game.fragment.upgrades.magnetBoost))
         .mul(applyUpgrade(game.beams.upgrades.moreMagnets))
         .mul(applyUpgrade(game.barrelMastery.upgrades.magnetBoost).pow(getTotalLevels(5)))
-        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost));
+        .mul(applyUpgrade(game.skillTree.upgrades.magnetBoost))
+        .mul(applyUpgrade(game.supernova.starDustUpgrades.aries));
 }
 
 function getDarkScrap(level) {
@@ -642,7 +661,7 @@ function getDarkScrap(level) {
 }
 
 function craftingMulti() {
-    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting);
+    return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting) / applyUpgrade(game.supernova.alienDustUpgrades.cetus);
 }
 
 function fallingMagnetWorth() {
@@ -769,7 +788,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     freeSpots += 1;
     game.totalMerges += 1;
     game.mergesThisPrestige += 1;
-    if (game.barrelMastery.isUnlocked()) {
+    if (game.barrelMastery.isUnlocked() || game.supernova.stars.gt(0)) {
         game.barrelMastery.b[lvl % BARRELS] += 1;
         if (calculateMasteryLevel(game.barrelMastery.b[lvl % BARRELS]) > game.barrelMastery.bl[lvl % BARRELS]) {
             game.barrelMastery.bl[lvl % BARRELS] += 1;
@@ -798,13 +817,13 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             }
 
             // Double Mastery
-            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery)) {
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.doubleMergeMastery) && game.mergeMastery.isUnlocked()) {
                 game.mergeMastery.currentMerges++;
                 game.mergeMastery.check(); //There is another one below
             }
 
             // Faster Beams
-            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance)) {
+            if (Math.random() <= 0.01 * applyUpgrade(game.wrenches.upgrades.fasterBeamChance) && game.beams.isUnlocked()) {
                 game.beams.time += 0.25;
             }
         }
@@ -1801,6 +1820,75 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
+        if (loadObj.supernova !== undefined) {
+            game.supernova.cosmicEmblems = loadVal(new Decimal(loadObj.supernova.cosmicEmblems), new Decimal(0));
+            game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
+            game.supernova.alienDust = loadVal(new Decimal(loadObj.supernova.alienDust), new Decimal(0));
+            game.supernova.fairyDust = loadVal(new Decimal(loadObj.supernova.fairyDust), new Decimal(0));
+            game.supernova.stars = loadVal(new Decimal(loadObj.supernova.stars), new Decimal(0));
+            if (loadObj.supernova.cosmicUpgrades !== undefined) {
+                Object.keys(loadObj.supernova.cosmicUpgrades).forEach(k => {
+                    game.supernova.cosmicUpgrades[k].level = loadVal(loadObj.supernova.cosmicUpgrades[k].level, 0);
+                });
+            }
+            else {
+                Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
+                    game.supernova.cosmicUpgrades[k].level = 0;
+                })
+            }
+            if (loadObj.supernova.starDustUpgrades !== undefined) {
+                Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
+                    game.supernova.starDustUpgrades[k].level = loadVal(loadObj.supernova.starDustUpgrades[k].level, 0);
+                });
+            }
+            else {
+                Object.keys(game.supernova.starDustUpgrades).forEach(k => {
+                    game.supernova.starDustUpgrades[k].level = 0;
+                })
+            }
+            if (loadObj.supernova.alienDustUpgrades !== undefined) {
+                Object.keys(loadObj.supernova.alienDustUpgrades).forEach(k => {
+                    game.supernova.alienDustUpgrades[k].level = loadVal(loadObj.supernova.alienDustUpgrades[k].level, 0);
+                });
+            }
+            else {
+                Object.keys(game.supernova.alienDustUpgrades).forEach(k => {
+                    game.supernova.alienDustUpgrades[k].level = 0;
+                })
+            }
+            if (loadObj.supernova.fairyDustUpgrades !== undefined) {
+                Object.keys(loadObj.supernova.fairyDustUpgrades).forEach(k => {
+                    game.supernova.fairyDustUpgrades[k].level = loadVal(loadObj.supernova.fairyDustUpgrades[k].level, 0);
+                });
+            }
+            else {
+                Object.keys(game.supernova.fairyDustUpgrades).forEach(k => {
+                    game.supernova.fairyDustUpgrades[k].level = 0;
+                })
+            }
+        }
+        else {
+            game.supernova.cosmicEmblems = new Decimal(0);
+            game.supernova.starDust = new Decimal(0);
+            game.supernova.alienDust = new Decimal(0);
+            game.supernova.fairyDust = new Decimal(0);
+            game.supernova.stars = new Decimal(0);
+            Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
+                game.supernova.cosmicUpgrades[k].level = 0;
+            })
+            Object.keys(game.supernova.starDustUpgrades).forEach(k => {
+                game.supernova.starDustUpgrades[k].level = 0;
+            })
+            Object.keys(game.supernova.alienDustUpgrades).forEach(k => {
+                game.supernova.alienDustUpgrades[k].level = 0;
+            })
+            Object.keys(game.supernova.fairyDustUpgrades).forEach(k => {
+                game.supernova.fairyDustUpgrades[k].level = 0;
+            })
+        }
+
+        if (game.tires.value.lt(1)) game.tires.value = new Decimal(1);
+
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
         freeSpots = 20;
@@ -1850,7 +1938,7 @@ btnInstall.style.display = "none";
 
 
 function updateBetterBarrels() {
-    if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
+    if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
     if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.min(3000 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25);
 }
 

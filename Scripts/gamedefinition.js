@@ -1,11 +1,11 @@
 ﻿let currentTime = new Date();
 let currentMonth = currentTime.getUTCMonth();
 
-const BARRELS = 950;
+const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "-1.0h7^p#a2r"/*"v2.9.2 (v3.6.2)"*/;
+const gameVersionText = "v3.0 (v3.7)";
 
 var game =
 {
@@ -44,7 +44,7 @@ var game =
                     return new Decimal(m[Math.min(level, m.length - 1)]).mul(Decimal.pow(10, Math.max(0, level - m.length + 1)));
                 },
                 {
-                    maxLevel: 100,
+                    maxLevel: () => game.supernova.cosmicUpgrades.moreScrapMax.level > 0 ? 5000 : 100,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0)
                 }),
             magnetBoost: new GoldenScrapUpgrade(
@@ -75,7 +75,9 @@ var game =
                 .mul(applyUpgrade(game.goldenScrap.upgrades.gsBoost))
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
-                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1));
+                .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
+                .mul(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200)))
+                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -232,7 +234,7 @@ var game =
         moreGoldenScrap: new MagnetUpgrade(
             level => Utils.roundBase(new Decimal(30 + 10 * level).mul(Decimal.pow(1.07, Math.max(0, level - 20))), 1)
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
-            level => new Decimal(1 + 0.3 * level),
+            level => game.supernova.cosmicUpgrades.strongerMagnetGS.level > 0 ? new Decimal(1.3).pow(level / 10).add(0.3 * level) : new Decimal(1 + 0.3 * level),
             {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
             }),
@@ -290,11 +292,11 @@ var game =
                 }
             ),
             earth: new GoldenScrapUpgrade(
-                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150][level]),
+                level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150, "1e500"][level]),
                 level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts"][level],
+                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts", "the final\ntree upgrade"][level],
                 {
-                    maxLevel: 13,
+                    maxLevel: 14,
                     getEffectDisplay: function () {
                         if (this.level === this.maxLevel) {
                             return "Unlocked everything!";
@@ -322,7 +324,7 @@ var game =
             saturn: new ScrapUpgrade(
                 level => Decimal.pow(64, Math.pow(level, 1.25)).mul(1e183),
                 level => Decimal.pow(0.9675, level).mul(2).mul(applyUpgrade(game.tires.upgrades[2][1]))
-                    .div(applyUpgrade(game.magnetUpgrades.autoMerger)).div((game.skillTree.upgrades.fasterAutoMerge.level / 2) + 1),
+                    .div(applyUpgrade(game.magnetUpgrades.autoMerger)).div((game.skillTree.upgrades.fasterAutoMerge.level / 2) + 1).mul(applyUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge)),
                 {
                     maxLevel: 40,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
@@ -355,10 +357,13 @@ var game =
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)),
+                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
+                    onBuy: () => {
+                        if (game.supernova.cosmicUpgrades.mythusMultiBuy.level > 0) game.solarSystem.upgrades.mythus.level += 9;
+                    },
                     afterBuy: () => {
                         if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009) {
                             alert("You have to reach barrel 3010 to upgrade this planet!");
@@ -422,6 +427,9 @@ var game =
         totalscrewscollected: new Decimal(0),
         giftsSent: new Decimal(0),
         giftsReceived: new Decimal(0),
+        totalstardust: new Decimal(0),
+        totalaliendust: new Decimal(0),
+        totalfairydust: new Decimal(0),
     },
     mergeQuests:
     {
@@ -467,7 +475,7 @@ var game =
         level: 0,
         currentMerges: 0,
         getNeededMerges: level => Math.round((100 + 10 * level) * applyUpgrade(game.tires.upgrades[0][2])
-            .toNumber() / ((game.mergeQuests.scrapyard / 100) + 0.99) / (1 + (applyUpgrade(game.skillTree.upgrades.fasterMergeMastery)/100))),
+            .toNumber() / ((game.mergeQuests.scrapyard / 100) + 0.99) / (1 + (applyUpgrade(game.skillTree.upgrades.fasterMergeMastery)/100)) / applyUpgrade(game.supernova.starDustUpgrades.vulpecula)),
         getScrapBoost: level => new Decimal(1 + 0.05 * level).pow(applyUpgrade(game.solarSystem.upgrades.uranus)),
         getMagnetBonus: level => Decimal.round(getMagnetBaseValue().mul(2 + 0.25 * level)),
         check: () => {
@@ -508,7 +516,7 @@ var game =
     },
     gifts:
     {
-        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS,
+        isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.GIFTS || game.supernova.stars.gt(0),
         openLimit: CONST_OPENLIMIT,
         sendLimit: CONST_SENDLIMIT,
         openedToday: [],
@@ -585,7 +593,7 @@ var game =
                 .mul(1e30),
                 level => level,
                 {
-                    maxLevel: () => 100 + (game.solarSystem.upgrades.earth.level >= EarthLevels.BRICK_3_LEVELS ? 200 : 0),
+                    maxLevel: () => 100 + (game.solarSystem.upgrades.earth.level >= EarthLevels.BRICK_3_LEVELS ? 200 : 0) + (game.supernova.cosmicUpgrades.moreQuestLevelsMax.level > 0 ? 4700 : 0),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+")
                 }),
             fasterCrafting: new BrickUpgrade(level => new Decimal("1e5000").pow(new Decimal(level + Math.pow(Math.max(level - 25, 0), 1.2)))
@@ -656,7 +664,7 @@ var game =
                 [ //more xTires per collect, Tire chance, faster Merge Quests
                     new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.15) + game.tires.getLevelBias(level))
                         .mul(10e63),
-                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)),
+                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)).pow(applyUpgrade(game.supernova.starDustUpgrades.corvus)),
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                         }),
@@ -807,7 +815,7 @@ var game =
     },
     cogwheels:
     {
-        isUnlocked: () => true,
+        isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode),
         timeModeAttempts: 3,
         amount: new Decimal(0),
         upgrades: {
@@ -1478,6 +1486,13 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
                     maxLevel: 14
                 }, ["starDaily"]),
+
+            unlockSupernova: new SkillTreeUpgradeFixed([
+                [[new Decimal(46834), RESOURCE_GLITCHBEAM], [new Decimal(10), RESOURCE_LEGENDARYSCRAP]],
+            ], [false, true], {
+                getEffectDisplay: effectDisplayTemplates.unlock(),
+                nova: true
+            }, ["scrapBoost"]),
         }
     },
     barrelMastery: {
@@ -1680,7 +1695,7 @@ var game =
     collectors: {
         beams: new AutoUpgrade(
             level => new Decimal(3 + Math.floor(level / 7)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "beams",
             time = "b",
             {
@@ -1689,7 +1704,7 @@ var game =
             }),
         aerobeams: new AutoUpgrade(
             level => new Decimal(6 + Math.floor(level / 3)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "aerobeams",
             time = "b",
             {
@@ -1698,7 +1713,7 @@ var game =
             }),
         angelbeams: new AutoUpgrade(
             level => new Decimal(2 + Math.floor(level / 10)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "angelbeams",
             time = "b",
             {
@@ -1707,7 +1722,7 @@ var game =
             }),
         reinforcedbeams: new AutoUpgrade(
             level => new Decimal(10 + Math.floor(level / 5)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "reinforcedbeams",
             time = "b",
             {
@@ -1716,7 +1731,7 @@ var game =
             }),
         glitchbeams: new AutoUpgrade(
             level => new Decimal(10 + Math.floor(level / 5)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_FISHINGNET, "glitchbeams",
             time = "b",
             {
@@ -1734,13 +1749,405 @@ var game =
             }),
         gold: new AutoUpgrade(
             level => new Decimal(2 + Math.floor(level / 8)),
-            level => level,
+            level => level * (game.supernova.cosmicUpgrades.strongerCollectors.level + 1),
             RESOURCE_BUCKET, "gold",
             time = "b",
             {
                 maxLevel: 25,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
             }),
+    },
+    supernova:
+    {
+        cosmicEmblems: new Decimal(0),
+        starDust: new Decimal(0),
+        alienDust: new Decimal(0),
+        fairyDust: new Decimal(0),
+        stars: new Decimal(0),
+
+        getEmblems: function () {
+            return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
+        },
+        getStarDust: function () {
+            let amount = game.goldenScrap.amount.add(1e50).log(1e50);
+            amount *= game.magnets.add(1e200).log(1e200);
+            amount *= game.fragment.amount.add(1e50).log(1e50);
+            amount *= game.goldenScrap.amount.add("1e500").log("1e500");
+            amount *= game.darkscrap.amount.add(1e20).log(1e20);
+            amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
+            amount += game.tires.amount.add("1e1000000").log("1e1000000");
+            return amount;
+        },
+        getAlienDust: function () {
+            let amount = game.factory.legendaryScrap.add(25).log(25);
+            amount += game.factory.steelMagnets.add(175).log(175);
+            amount += game.factory.blueBricks.add(100).log(100);
+            amount += game.factory.buckets.add(100).log(100);
+            amount += game.factory.fishingNets.add(50).log(50);
+
+            for (i in game.autos) {
+                amount += game.autos[i].level / 10;
+            }
+            for (i in game.collectors) {
+                amount += game.collectors[i].level / 10;
+            }
+
+            amount += game.solarSystem.upgrades.venus.level / 25;
+            amount += game.solarSystem.upgrades.neptune.level / 5;
+            amount += game.solarSystem.upgrades.uranus.level / 5;
+            amount += game.solarSystem.upgrades.posus.level / 100;
+
+            amount *= game.solarSystem.upgrades.mythus.level / 100;
+            amount *= game.solarSystem.upgrades.sun.level / 1000;
+
+            return new Decimal(amount / 8);
+        },
+        getFairyDust: function () {
+            let amount = game.stats.totalbeams.add(1e5).log(1e5);
+            amount += game.stats.totalaerobeams.add(1e5).log(1e5);
+            amount += game.stats.totalangelbeams.add(1e5).log(1e5);
+            amount += game.stats.totalreinforcedbeams.add(1e5).log(1e5);
+            amount += game.stats.totalglitchbeams.add(1e5).log(1e5);
+
+            amount *= game.bricks.amount.add("1e1000000").log("1e1000000");
+            amount *= game.stats.totalplasticbags.add(2150).log(2150);
+            amount *= game.stats.totalscrews.add(500000).log(500000);
+            amount *= game.stats.totalquests.add(250).log(250);
+            amount *= game.stats.totalmergetokens.add(10000).log(10000);
+
+            return new Decimal(amount);
+        },
+        reset: function () {
+            game.supernova.stars = game.supernova.stars.add(1);
+
+            game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(game.supernova.getEmblems());
+            game.supernova.starDust = game.supernova.starDust.add(game.supernova.getStarDust());
+            game.supernova.alienDust = game.supernova.alienDust.add(game.supernova.getAlienDust());
+            game.supernova.fairyDust = game.supernova.fairyDust.add(game.supernova.getFairyDust());
+
+            game.stats.totalstardust = game.stats.totalstardust.add(game.supernova.getStarDust());
+            game.stats.totalaliendust = game.stats.totalaliendust.add(game.supernova.getAlienDust());
+            game.stats.totalfairydust = game.stats.totalfairydust.add(game.supernova.getFairyDust());
+
+            for (let i = 0; i < barrels.length; i++) {
+                barrels[i] = undefined;
+            }
+            freeSpots = 20;
+            draggedBarrel = undefined;
+
+            game.mergesThisPrestige = 0;
+            game.scrap = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
+            game.scrapThisPrestige = new Decimal(0);
+            game.magnets = new Decimal(0);
+            game.glitchesCollected = 0;
+            game.highestBarrelReached = 0;
+            game.highestScrapReached = new Decimal(0);
+
+            for (let upg of Object.keys(game.scrapUpgrades)) {
+                game.scrapUpgrades[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.magnetUpgrades)) {
+                game.magnetUpgrades[upg].level = 0;
+            }
+            game.goldenScrap.amount = new Decimal(0);
+            for (let upg of Object.keys(game.goldenScrap.upgrades)) {
+                game.goldenScrap.upgrades[upg].level = 0;
+            }
+            game.tires.amount = new Decimal(0);
+            game.tires.value = new Decimal(1);
+            for (let row = 0; row < game.tires.upgrades.length; row++) {
+                for (let col = 0; col < game.tires.upgrades[row].length; col++) {
+                    game.tires.upgrades[row][col].level = 0;
+                }
+            }
+            game.bricks.amount = new Decimal(0);
+            game.bricks.productionLevel = 0;
+            for (let upg of Object.keys(game.bricks.upgrades)) {
+                game.bricks.upgrades[upg].level = 0;
+            }
+            game.fragment.amount = new Decimal(0);
+            for (let upg of Object.keys(game.fragment.upgrades)) {
+                game.fragment.upgrades[upg].level = 0;
+            }
+            game.darkfragment.amount = new Decimal(0);
+            for (let upg of Object.keys(game.darkfragment.upgrades)) {
+                game.darkfragment.upgrades[upg].level = 0;
+            }
+            game.darkscrap.amount = new Decimal(0);
+            for (let upg of Object.keys(game.darkscrap.upgrades)) {
+                game.darkscrap.upgrades[upg].level = 0;
+            }
+            game.factory.legendaryScrap = new Decimal(0);
+            game.factory.steelMagnets = new Decimal(0);
+            game.factory.blueBricks = new Decimal(0);
+            game.factory.buckets = new Decimal(0);
+            game.factory.fishingNets = new Decimal(0);
+            for (let upg of Object.keys(game.factory.upgrades)) {
+                game.factory.upgrades[upg].level = 0;
+            }
+            if (game.supernova.cosmicUpgrades.keepAutoBuyers.level == 0) {
+                for (let upg of Object.keys(game.autos)) {
+                    game.autos[upg].level = 0;
+                }
+            }
+            for (let upg of Object.keys(game.collectors)) {
+                game.collectors[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.skillTree.upgrades)) {
+                game.skillTree.upgrades[upg].level = 0;
+            }
+            for (let upg of Object.keys(game.solarSystem.upgrades)) {
+                game.solarSystem.upgrades[upg].level = 0;
+            }
+
+            game.beams.time = 0;
+            game.beams.selected = 0;
+            game.beams.amount = applyUpgrade(game.supernova.cosmicUpgrades.startBeams);
+            for (let upg of Object.keys(game.beams.upgrades)) {
+                game.beams.upgrades[upg].level = 0;
+            }
+            game.aerobeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.aerobeams.upgrades)) {
+                game.aerobeams.upgrades[upg].level = 0;
+            }
+            game.angelbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.angelbeams.upgrades)) {
+                game.angelbeams.upgrades[upg].level = 0;
+            }
+            game.reinforcedbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.reinforcedbeams.upgrades)) {
+                game.reinforcedbeams.upgrades[upg].level = 0;
+            }
+            game.glitchbeams.amount = new Decimal(0);
+            for (let upg of Object.keys(game.glitchbeams.upgrades)) {
+                game.glitchbeams.upgrades[upg].level = 0;
+            }
+
+            game.plasticBags.amount = new Decimal(0);
+            for (let upg of Object.keys(game.plasticBags.upgrades)) {
+                game.plasticBags.upgrades[upg].level = 0;
+            }
+            game.screws.amount = new Decimal(0);
+            for (let upg of Object.keys(game.screws.upgrades)) {
+                game.screws.upgrades[upg].level = 0;
+            }
+
+            game.mergeMastery.level = 1;
+            game.mergeMastery.prestige.level = 0;
+            game.mergeMastery.currentMerges = 0;
+
+            game.mergeQuests.scrapyard.level = 0;
+            game.mergeQuests.mergeTokens = new Decimal(0);
+            for (let upg of Object.keys(game.mergeQuests.upgrades)) {
+                game.mergeQuests.upgrades[upg].level = 0;
+            }
+
+            game.barrelMastery.masteryTokens = new Decimal(0);
+            for (let upg of Object.keys(game.barrelMastery.upgrades)) {
+                game.barrelMastery.upgrades[upg].level = 0;
+            }
+            let bi = 0;
+            for (b in game.barrelMastery.bl) {
+                while (bi <= game.barrelMastery.bl[b]) {
+                    bi += 1;
+                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(bi);
+                }
+                bi = 0;
+            }
+
+            game.settings.barrelGalleryPage = 0;
+            Scene.loadScene("Barrels");
+        },
+
+        cosmicUpgrades: {
+            autoBuyerMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 1),
+            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 2),
+            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => 1 + level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+            }, 2),
+            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 2),
+            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 3),
+            startScrap: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => new Decimal(1e60).mul(level), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
+            }, 3),
+            startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => new Decimal(20000).mul(level), {
+                maxLevel: 1,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+            }, 3),
+            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 4),
+            strongerCollectors: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 4),
+            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => 1 - (level * 0.25), {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
+            }, 4),
+            faster2ndDim: new CosmicEmblemUpgrade(level => new Decimal(2),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 5),
+            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(3),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 5),
+            mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(2),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 5),
+        },
+        starDustUpgrades: {
+            ara: new StarDustUpgrade(
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(47).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            aries: new StarDustUpgrade(
+                level => new Decimal(9).add(6 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(123).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            corvus: new StarDustUpgrade(
+                level => new Decimal(15).add(25 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.5 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^")
+                }
+            ),
+            volans: new StarDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(35).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            vulpecula: new StarDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.percentStandard(2, "")
+                }
+            ),
+        },
+        alienDustUpgrades: {
+            cetus: new AlienDustUpgrade(
+                level => new Decimal(87).add(13 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            triangulum: new AlienDustUpgrade(
+                level => new Decimal(13).add(4 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.5 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            volans2: new AlienDustUpgrade(
+                level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(35).pow(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            aquila: new AlienDustUpgrade(
+                level => new Decimal(1),
+                level => new Decimal(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
+                    afterBuy: () => updateBetterBarrels(),
+                }
+            ),
+        },
+        fairyDustUpgrades: {
+            cancer: new FairyDustUpgrade(
+                level => new Decimal(272).add(117 * level).mul(Math.max(1, level - 9)),
+                level => new Decimal(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                }
+            ),
+            pyxis: new FairyDustUpgrade(
+                level => new Decimal(5).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            antlia: new FairyDustUpgrade(
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            phoenix: new FairyDustUpgrade(
+                level => new Decimal(3).add(level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            orion: new FairyDustUpgrade(
+                level => new Decimal(7).add(6 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+            puppis: new FairyDustUpgrade(
+                level => new Decimal(9).add(Math.floor(0.4 * level * Math.sin(level))).mul(Math.max(1, level - 24)),
+                level => new Decimal(1).add(0.05 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                }
+            ),
+        }
     },
     milestones:
     {
@@ -1965,6 +2372,7 @@ var game =
                 new Milestone(211, "Falling Magnet Guys", 2, "Make Falling Magnets\nworth 100x more", () => game.skillTree.upgrades.fallingMagnetValue.level > 0),
                 new Milestone(212, "Tim Mode", 112, "Unlock Time Mode", () => game.skillTree.upgrades.unlockTimeMode.level > 0),
                 new Milestone(213, "Third Dimension", 112, () => "Start a run...", () => game.dimension == 508050),
+                new Milestone(236, "Infinite GS", 4, () => "Reach " + formatNumber(new Decimal("2e308")) + " Golden Scrap", () => game.goldenScrap.amount.gte("2e308")),
                 new Milestone(234, "Advent Calendar", 116, "Send some gifts to the people", () => game.stats.giftsSent.gte(24)),
                 new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(1)),
                 new Milestone(215, "Cog, the player?", 111, "Have 1000 cogwheels at once", () => game.cogwheels.amount.gte(1000)),
@@ -1977,16 +2385,30 @@ var game =
                 new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),
+                new Milestone(237, "500 Golden", 4, () => "Reach " + formatNumber(new Decimal("1e500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e500")),
+                new Milestone(238, "The Final Unlock", 2, "Max. Earth", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA),
+                new Milestone(239, "The Final Tree Upgrade", 2, "Buy the final tree upgrade", () => game.skillTree.upgrades.unlockSupernova.level > 0),
                 new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 99999),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
                 new Milestone(235, "They Call Me Santa", 117, "Send a few gifts to the people", () => game.stats.giftsSent.gte(100)),
                 new Milestone(147, "Time to go AFK...", 87, "Max. the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
                 new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
-                new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
                 new Milestone(229, "Need more\nNice", 30, () => "First Barrel produces more than " + formatNumber(new Decimal("6e9420")) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(new Decimal("6e9420"))),
+                new Milestone(240, "A new prestige layer?!", 118, "Do a supernova.", () => game.supernova.cosmicEmblems.gt(0)),
+                new Milestone(241, "I'm a star", 7, "Get your first star!", () => game.supernova.stars.gt(0)),
+                new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
+                new Milestone(244, "Who needs crazy boosts?", 118, "Have 3 Cosmic Emblems at the same time", () => game.supernova.cosmicEmblems.gt(2)),
+                new Milestone(242, "Scrap 2 Moment", 7, "Get your tenth star!", () => game.supernova.stars.gte(10)),
+                new Milestone(245, "Blessing from\nthe Stars", 119, () => "Have " + formatNumber(100000) + " total Star Dust", () => game.stats.totalstardust.gte(100000)),
+                new Milestone(246, "Blessing from\nthe Aliens", 119, () => "Have " + formatNumber(100000) + " total Alien Dust", () => game.stats.totalaliendust.gte(100000)),
+                new Milestone(247, "Blessing from\nthe Fairies", 119, () => "Have " + formatNumber(100000) + " total Fairy Dust", () => game.stats.totalfairydust.gte(100000)),
+                new Milestone(243, "Scrapstar", 7, "Get your 100th star!", () => game.supernova.stars.gte(100)),
                 new Milestone(228, "Nuclear Fusion", 65, "Do 1M self merges\n(Merges from auto merge do not count as self merges)\n(I'm sorry)", () => game.selfMerges > 999999),
                 new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(248, "Not even aliens\ncan touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(327680)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 327680))),
+                new Milestone(249, "Yellow", 4, () => "Reach " + formatNumber(new Decimal("1e2500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e2500")),
+                new Milestone(250, "The End", 0, () => "Get All Achievements", () => game.ms.length > 248),
                 //new Milestone(166, "", 50, "", () => ),
                 ],
         highlighted: 0, 
@@ -2051,4 +2473,4 @@ var game =
         musicVolume: 0,
         displayFPS: false,
     }
-};
+}

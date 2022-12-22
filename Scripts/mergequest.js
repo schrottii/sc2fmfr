@@ -20,8 +20,8 @@ class MergeQuest
         if (tier != 5) this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
         else this.barrelLvl = (calcTime * (28643 * calcTime)) % BARRELS; //Amount of barrels
         this.neededMerges = [100, 250, 500, 1000, 2500, 10000][tier];
-        if(this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens))));
-        else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber() ));
+        if(this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens)))).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).round();
+        else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber())).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).round();
         // merges/token:  100, 125, 125, 125, 100, 40
         this.active = true;
         this.currentCooldown = 0;
@@ -29,7 +29,7 @@ class MergeQuest
 
     getCooldown()
     {
-        return this.cooldown * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber();
+        return this.cooldown * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber() * (game.supernova.cosmicUpgrades.fasterMergeQuests.level > 0 ? 0.01 : 1);
     }
 
     getNeededMerges()

@@ -281,6 +281,7 @@ var images =
         puppis: loadImage("Images/Constellations/puppis.png"),
         cetus: loadImage("Images/Constellations/cetus.png"),
         triangulum: loadImage("Images/Constellations/triangulum.png"),
+        aquila: loadImage("Images/Constellations/aquila.png"),
     },
     achievements:
     {

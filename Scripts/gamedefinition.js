@@ -1,11 +1,11 @@
 ﻿let currentTime = new Date();
 let currentMonth = currentTime.getUTCMonth();
 
-const BARRELS = 950;
+const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "-1.0h7^p#a2r"/*"v2.9.2 (v3.6.2)"*/;
+const gameVersionText = "v3.0 (v3.7)";
 
 var game =
 {
@@ -357,7 +357,7 @@ var game =
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)),
+                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -1960,76 +1960,81 @@ var game =
         },
 
         cosmicUpgrades: {
-            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(0),
+            autoBuyerMax: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(0),
+            strongerMagnetGS: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            autoBuyerMax: new CosmicEmblemUpgrade(level => new Decimal(0),
+            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 1),
-            keepEZ: new CosmicEmblemUpgrade(level => new Decimal(0),
+            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(0),
-                level => level, {
-                maxLevel: 1,
-                getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            fasterMergeQuests: new CosmicEmblemUpgrade(level => new Decimal(0),
-                level => level, {
-                maxLevel: 1,
-                getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 2),
+            doubleBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => 1 + level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
-            }, 1),
-            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 2),
+            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            startScrap: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 2),
+            keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 3),
+            startScrap: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => new Decimal(1e60).mul(level), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
-            }, 1),
-            startBeams: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 3),
+            startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => new Decimal(20000).mul(level), {
                 maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
-            }, 1),
-            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 3),
+            moreQuestLevelsMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 4),
+            strongerCollectors: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 4),
+            fasterAutoMerge: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => 1 - (level * 0.25), {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
-            }, 1),
-            mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 4),
+            faster2ndDim: new CosmicEmblemUpgrade(level => new Decimal(2),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 5),
+            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(3),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
-            strongerCollectors: new CosmicEmblemUpgrade(level => new Decimal(0),
+            }, 5),
+            mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(2),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
+            }, 5),
         },
         starDustUpgrades: {
             ara: new StarDustUpgrade(
@@ -2088,6 +2093,14 @@ var game =
                 level => new Decimal(35).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                }
+            ),
+            aquila: new AlienDustUpgrade(
+                level => new Decimal(1),
+                level => new Decimal(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
+                    afterBuy: () => updateBetterBarrels(),
                 }
             ),
         },
@@ -2359,6 +2372,7 @@ var game =
                 new Milestone(211, "Falling Magnet Guys", 2, "Make Falling Magnets\nworth 100x more", () => game.skillTree.upgrades.fallingMagnetValue.level > 0),
                 new Milestone(212, "Tim Mode", 112, "Unlock Time Mode", () => game.skillTree.upgrades.unlockTimeMode.level > 0),
                 new Milestone(213, "Third Dimension", 112, () => "Start a run...", () => game.dimension == 508050),
+                new Milestone(236, "Infinite GS", 4, () => "Reach " + formatNumber(new Decimal(2e308)) + " Golden Scrap", () => game.goldenScrap.amount.gte(2e308)),
                 new Milestone(234, "Advent Calendar", 116, "Send some gifts to the people", () => game.stats.giftsSent.gte(24)),
                 new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(1)),
                 new Milestone(215, "Cog, the player?", 111, "Have 1000 cogwheels at once", () => game.cogwheels.amount.gte(1000)),
@@ -2371,16 +2385,30 @@ var game =
                 new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),
+                new Milestone(237, "500 Golden", 4, () => "Reach " + formatNumber(new Decimal("1e500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e500")),
+                new Milestone(238, "The Final Unlock", 2, "Max. Earth", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA),
+                new Milestone(239, "The Final Tree Upgrade", 2, "Buy the final tree upgrade", () => game.skillTree.upgrades.unlockSupernova.level > 0),
                 new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 99999),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
                 new Milestone(235, "They Call Me Santa", 117, "Send a few gifts to the people", () => game.stats.giftsSent.gte(100)),
                 new Milestone(147, "Time to go AFK...", 87, "Max. the first auto buyer", () => game.autos.autoBetterBarrels.level > 116),
                 new Milestone(210, "It's been 84 years...", 27, "Level the fourth tire row to 50", () => game.tires.upgrades[3][0].level > 49 && game.tires.upgrades[3][1].level > 49 && game.tires.upgrades[3][2].level > 49),
                 new Milestone(165, "Nobody can touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(40960)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 40960))),
-                new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
                 new Milestone(229, "Need more\nNice", 30, () => "First Barrel produces more than " + formatNumber(new Decimal("6e9420")) + " Scrap", () => Barrel.getIncomeForLevel(0).gte(new Decimal("6e9420"))),
+                new Milestone(240, "A new prestige layer?!", 118, "Do a supernova.", () => game.supernova.cosmicEmblems.gt(0)),
+                new Milestone(241, "I'm a star", 7, "Get your first star!", () => game.supernova.stars.gt(0)),
+                new Milestone(200, "Crab Saver VII", 96, "Buy 10000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(10000)),
+                new Milestone(244, "Who needs crazy boosts?", 118, "Have 3 Cosmic Emblems at the same time", () => game.supernova.cosmicEmblems.gt(2)),
+                new Milestone(242, "Scrap 2 Moment", 7, "Get your tenth star!", () => game.supernova.stars.gte(10)),
+                new Milestone(245, "Blessing from\nthe Stars", 119, () => "Have " + formatNumber(100000) + " total Star Dust", () => game.stats.totalstardust.gte(100000)),
+                new Milestone(246, "Blessing from\nthe Aliens", 119, () => "Have " + formatNumber(100000) + " total Alien Dust", () => game.stats.totalaliendust.gte(100000)),
+                new Milestone(247, "Blessing from\nthe Fairies", 119, () => "Have " + formatNumber(100000) + " total Fairy Dust", () => game.stats.totalfairydust.gte(100000)),
+                new Milestone(243, "Scrapstar", 7, "Get your 100th star!", () => game.supernova.stars.gte(100)),
                 new Milestone(228, "Nuclear Fusion", 65, "Do 1M self merges\n(Merges from auto merge do not count as self merges)\n(I'm sorry)", () => game.selfMerges > 999999),
                 new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000")),
+                new Milestone(248, "Not even aliens\ncan touch this", 69, () => "Reach " + formatNumber(new Decimal(2).pow(327680)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 327680))),
+                new Milestone(249, "Yellow", 4, () => "Reach " + formatNumber(new Decimal("1e2500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e2500")),
+                new Milestone(250, "The End", 0, () => "Get All Achievements", () => game.ms.length > 248),
                 //new Milestone(166, "", 50, "", () => ),
                 ],
         highlighted: 0, 

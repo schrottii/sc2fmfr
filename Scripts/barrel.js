@@ -70,7 +70,7 @@ class Barrel
         }
         if (game.dimension == 1) {
             return (Decimal.pow(1.1, level)
-                .mul(new Decimal(1.05).pow(game.mergesThisPrestige))
+                .mul(new Decimal(1.05 + ((game.highestBarrelReached / 100000) * game.supernova.cosmicUpgrades.faster2ndDim.level)).pow(game.mergesThisPrestige))
                 .mul(1 + applyUpgrade(game.darkfragment.upgrades.scrapBoost)))
                 .min(new Decimal(game.highestScrapReached).sub(game.scrap))
         }          

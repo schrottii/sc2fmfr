@@ -788,7 +788,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     freeSpots += 1;
     game.totalMerges += 1;
     game.mergesThisPrestige += 1;
-    if (game.barrelMastery.isUnlocked()) {
+    if (game.barrelMastery.isUnlocked() || game.supernova.stars.gt(0)) {
         game.barrelMastery.b[lvl % BARRELS] += 1;
         if (calculateMasteryLevel(game.barrelMastery.b[lvl % BARRELS]) > game.barrelMastery.bl[lvl % BARRELS]) {
             game.barrelMastery.bl[lvl % BARRELS] += 1;
@@ -1918,7 +1918,7 @@ btnInstall.style.display = "none";
 
 
 function updateBetterBarrels() {
-    if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20;
+    if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
     if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.min(3000 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25);
 }
 

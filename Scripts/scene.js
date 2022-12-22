@@ -344,9 +344,9 @@ var scenes =
                 ctx.textBaseline = "bottom";
                 ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
 
-                ctx.textAlign = "center";
-                ctx.font = "300 px " + fonts.default;
-                ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
+                //ctx.textAlign = "center";
+                //ctx.font = "300 px " + fonts.default;
+                //ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -3143,6 +3143,7 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerCollectors, images.upgrades.unlockAutoCollectors, "Stronger\nAuto Collectors", 0.5, 1.35, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "Faster Auto Merge", 0.8, 1.35, "table2"),
 
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.faster2ndDim, images.upgrades.moreDarkScrap, "Faster\n2nd Dim", 0.2, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "Hyper Buy", 0.5, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
                 ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.85 })
@@ -3190,12 +3191,14 @@ var scenes =
                         for (u in game.supernova.alienDustUpgrades) {
                             game.supernova.alienDustUpgrades[u].level = 0;
                         }
+                        updateBetterBarrels();
                     }
                 }, { quadratic: true }),
 
                 new UIPlanet(0.2, 0.8, "Cetus\nFaster Crafting", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
                 new UIPlanet(0.8, 0.2, "Triangulum\nMore Merge Tokens", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
                 new UIPlanet(0.5, 0.6, "Volans 2\nMore Dark Fragments", game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.7, 0.85, "Aquila\nHigher Better Barrels max.", game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -3221,7 +3224,7 @@ var scenes =
                 new UIPlanet(0.85, 0.2, "Pyxis\nMore Beams", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
                 new UIPlanet(0.3, 0.4, "Antlia\nMore Aerobeams", game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
                 new UIPlanet(0.6, 0.45, "Phoenix\nMore Angel Beams", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
-                new UIPlanet(0.35, 0.8, "Orion\nMore Reinforced Beams", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.orion, 0.075),
+                new UIPlanet(0.35, 0.8, "Orion\nMore Reinforced Beams", game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
                 new UIPlanet(0.7, 0.85, "Puppis\nMore Glitch Beams", game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
             ],
             function () {

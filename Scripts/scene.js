@@ -3046,7 +3046,7 @@ var scenes =
 
                     new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
+                    new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200))) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
 
                     new UIText(() => "$images.stardust$ Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
                     new UIText(() => "$images.aliendust$ Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
@@ -3090,6 +3090,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
                 new UIText(() => "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.", 0.5, 0.175, 0.03, "black"),
+                new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
                 new UIText(() => "You will earn:\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " Star Dust" +

@@ -76,7 +76,7 @@ var game =
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
-                .mul(new Decimal(1000).pow(game.supernova.stars))
+                .mul(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200)))
                 .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
@@ -1770,10 +1770,10 @@ var game =
         },
         getStarDust: function () {
             let amount = game.goldenScrap.amount.add(1e50).log(1e50);
-            amount += game.magnets.add(1e250).log(1e250);
-            amount += game.fragment.amount.add(1e50).log(1e50);
+            amount *= game.magnets.add(1e200).log(1e200);
+            amount *= game.fragment.amount.add(1e50).log(1e50);
             amount *= game.goldenScrap.amount.add("1e500").log("1e500");
-            amount *= game.darkscrap.amount.add(1e50).log(1e50);
+            amount *= game.darkscrap.amount.add(1e20).log(1e20);
             amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
             amount += game.tires.amount.add("1e1000000").log("1e1000000");
             return amount;
@@ -1786,10 +1786,10 @@ var game =
             amount += game.factory.fishingNets.add(50).log(50);
 
             for (i in game.autos) {
-                amount += game.autos[i].level / 25;
+                amount += game.autos[i].level / 10;
             }
             for (i in game.collectors) {
-                amount += game.collectors[i].level / 25;
+                amount += game.collectors[i].level / 10;
             }
 
             amount += game.solarSystem.upgrades.venus.level / 25;
@@ -1803,11 +1803,11 @@ var game =
             return new Decimal(amount / 8);
         },
         getFairyDust: function () {
-            let amount = game.stats.totalbeams.add(5e5).log(5e5);
-            amount += game.stats.totalaerobeams.add(5e5).log(5e5);
-            amount += game.stats.totalangelbeams.add(5e5).log(5e5);
-            amount += game.stats.totalreinforcedbeams.add(5e5).log(5e5);
-            amount += game.stats.totalglitchbeams.add(5e5).log(5e5);
+            let amount = game.stats.totalbeams.add(1e5).log(1e5);
+            amount += game.stats.totalaerobeams.add(1e5).log(1e5);
+            amount += game.stats.totalangelbeams.add(1e5).log(1e5);
+            amount += game.stats.totalreinforcedbeams.add(1e5).log(1e5);
+            amount += game.stats.totalglitchbeams.add(1e5).log(1e5);
 
             amount *= game.bricks.amount.add("1e1000000").log("1e1000000");
             amount *= game.stats.totalplasticbags.add(2150).log(2150);
@@ -2372,7 +2372,7 @@ var game =
                 new Milestone(211, "Falling Magnet Guys", 2, "Make Falling Magnets\nworth 100x more", () => game.skillTree.upgrades.fallingMagnetValue.level > 0),
                 new Milestone(212, "Tim Mode", 112, "Unlock Time Mode", () => game.skillTree.upgrades.unlockTimeMode.level > 0),
                 new Milestone(213, "Third Dimension", 112, () => "Start a run...", () => game.dimension == 508050),
-                new Milestone(236, "Infinite GS", 4, () => "Reach " + formatNumber(new Decimal(2e308)) + " Golden Scrap", () => game.goldenScrap.amount.gte(2e308)),
+                new Milestone(236, "Infinite GS", 4, () => "Reach " + formatNumber(new Decimal("2e308")) + " Golden Scrap", () => game.goldenScrap.amount.gte("2e308")),
                 new Milestone(234, "Advent Calendar", 116, "Send some gifts to the people", () => game.stats.giftsSent.gte(24)),
                 new Milestone(214, "Hot Wheels", 111, "Earn your first cogwheels!", () => game.cogwheels.amount.gte(1)),
                 new Milestone(215, "Cog, the player?", 111, "Have 1000 cogwheels at once", () => game.cogwheels.amount.gte(1000)),

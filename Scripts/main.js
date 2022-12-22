@@ -1831,20 +1831,40 @@ function loadGame(saveCode, isFromFile=false)
                     game.supernova.cosmicUpgrades[k].level = loadVal(loadObj.supernova.cosmicUpgrades[k].level, 0);
                 });
             }
+            else {
+                Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
+                    game.supernova.cosmicUpgrades[k].level = 0;
+                })
+            }
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
                     game.supernova.starDustUpgrades[k].level = loadVal(loadObj.supernova.starDustUpgrades[k].level, 0);
                 });
+            }
+            else {
+                Object.keys(game.supernova.starDustUpgrades).forEach(k => {
+                    game.supernova.starDustUpgrades[k].level = 0;
+                })
             }
             if (loadObj.supernova.alienDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.alienDustUpgrades).forEach(k => {
                     game.supernova.alienDustUpgrades[k].level = loadVal(loadObj.supernova.alienDustUpgrades[k].level, 0);
                 });
             }
+            else {
+                Object.keys(game.supernova.alienDustUpgrades).forEach(k => {
+                    game.supernova.alienDustUpgrades[k].level = 0;
+                })
+            }
             if (loadObj.supernova.fairyDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.fairyDustUpgrades).forEach(k => {
                     game.supernova.fairyDustUpgrades[k].level = loadVal(loadObj.supernova.fairyDustUpgrades[k].level, 0);
                 });
+            }
+            else {
+                Object.keys(game.supernova.fairyDustUpgrades).forEach(k => {
+                    game.supernova.fairyDustUpgrades[k].level = 0;
+                })
             }
         }
         else {

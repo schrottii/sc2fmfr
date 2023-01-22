@@ -586,11 +586,16 @@ class UIFriend extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.0975, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => { if (game.gifts.friends[id] != undefined) sendTo = game.gifts.friends[id].code }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => {
+                    if (game.gifts.friends[id] != undefined) {
+                        sendTo = game.gifts.friends[id].code;
+                        Scene.loadScene("Gifts");
+                    }
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
                 new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
                     let friendCode = prompt("Friend code?");
                     let friendName = prompt("Friend name?");
-                    game.gifts.friends.push({code: friendCode, name: friendName});
+                    if (friendCode != "" && friendCode != null && friendName != "" && friendName != null)game.gifts.friends.push({code: friendCode, name: friendName});
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
                 new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => {

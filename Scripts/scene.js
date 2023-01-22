@@ -344,9 +344,9 @@ var scenes =
                 ctx.textBaseline = "bottom";
                 ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
 
-                //ctx.textAlign = "center";
-                //ctx.font = "300 px " + fonts.default;
-                //ctx.fillText("Hopefully bug free?", w * 0.49, h - w * 0.1);
+                ctx.textAlign = "center";
+                ctx.font = "300 px " + fonts.default;
+                ctx.fillText("Now with 200000% less achievements", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",

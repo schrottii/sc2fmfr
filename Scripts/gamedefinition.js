@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.0 (v3.7)";
+const gameVersionText = "v3.1 (v3.8)";
 
 var game =
 {
@@ -370,7 +370,7 @@ var game =
                         }
                         else {
                             try {
-                                updateBetterBarrels()
+                                updateBetterBarrels();
                             }
                             finally {
 
@@ -508,9 +508,9 @@ var game =
                     game.mergeMastery.currentMerges = 0;
                 }
             },
-            getGoldenScrapBoost: level => new Decimal(1 + 0.02 * level).mul(applyUpgrade(game.angelbeams.upgrades.moreMasteryGS)).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryGS)),
+            getGoldenScrapBoost: level => new Decimal(0.02 * level).mul(applyUpgrade(game.angelbeams.upgrades.moreMasteryGS)).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryGS)).add(1),
             currentGSBoost: () => game.mergeMastery.prestige.getGoldenScrapBoost(game.mergeMastery.prestige.level),
-            getMagnetBoost: level => new Decimal(1 + 0.01 * level).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryMagnets)),
+            getMagnetBoost: level => new Decimal(0.01 * level).pow(applyUpgrade(game.skillTree.upgrades.strongerMasteryMagnets)).add(1),
             currentMagnetBoost: () => game.mergeMastery.prestige.getMagnetBoost(game.mergeMastery.prestige.level)
         }
     },
@@ -758,8 +758,8 @@ var game =
         upgrades:
         {
             darkScrapBoost: new DarkScrapUpgrade(
-                level => new Decimal(100 + (level * 13 * Math.pow(1.3, level)) * Math.pow(1.2, Math.max(0, level - 49)) * Math.pow(1.7, Math.max(0, level - 99))),
-                level => 1 + (0.3 * level) * Math.pow(1.2, Math.max(0, level - 15)),
+                level => new Decimal(100).add(new Decimal(1.3).pow(level).mul(13).mul(level)).mul(new Decimal(1.2).pow(Math.max(0, level - 49))).mul(new Decimal(1.7).pow(Math.max(0, level - 99))),
+                level => new Decimal(1).add(0.3 * level).mul(new Decimal(1.2).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
@@ -1869,6 +1869,7 @@ var game =
             for (let upg of Object.keys(game.fragment.upgrades)) {
                 game.fragment.upgrades[upg].level = 0;
             }
+            game.dimension = 0;
             game.darkfragment.amount = new Decimal(0);
             for (let upg of Object.keys(game.darkfragment.upgrades)) {
                 game.darkfragment.upgrades[upg].level = 0;
@@ -1877,6 +1878,7 @@ var game =
             for (let upg of Object.keys(game.darkscrap.upgrades)) {
                 game.darkscrap.upgrades[upg].level = 0;
             }
+            game.factory.tank = new Decimal(0);
             game.factory.legendaryScrap = new Decimal(0);
             game.factory.steelMagnets = new Decimal(0);
             game.factory.blueBricks = new Decimal(0);
@@ -1955,6 +1957,12 @@ var game =
                 bi = 0;
             }
 
+            // new quests
+            for (let q of game.mergeQuests.quests) {
+                q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);
+            }
+
+            updateBetterBarrels();
             game.settings.barrelGalleryPage = 0;
             Scene.loadScene("Barrels");
         },
@@ -2141,7 +2149,7 @@ var game =
                 }
             ),
             puppis: new FairyDustUpgrade(
-                level => new Decimal(9).add(Math.floor(0.4 * level * Math.sin(level))).mul(Math.max(1, level - 24)),
+                level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(0.05 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")

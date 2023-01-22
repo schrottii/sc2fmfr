@@ -293,10 +293,7 @@ function update()
             // Updating it every tick killed the performance. this should be much better
             secondTime = 0;
             Milestone.check(true);
-            currentScene.update(delta);
         }
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, 200, 200);
         if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
             game.tires.time -= delta;
         }
@@ -356,7 +353,7 @@ function update()
         
         if(game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
-        //currentScene.update(delta);
+        currentScene.update(delta);
         
         if (gameNotifications.length > 0)
         {
@@ -716,7 +713,7 @@ function renewableEnergy() {
     if (!applyUpgrade(game.skillTree.upgrades.renewableEnergy)) return false;
 
     // Upgrade is unlocked
-    if (game.factory.tank.lt(getTankSize()))game.factory.tank = game.factory.tank.add(1);
+    if (game.factory.tank.lt(getTankSize())) game.factory.tank = game.factory.tank.add(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,
@@ -1965,7 +1962,7 @@ btnInstall.style.display = "none";
 
 function updateBetterBarrels() {
     if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
-    if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.min(3000 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25);
+    if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25));
 }
 
 function calculateCurrentHighest() {

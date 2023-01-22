@@ -1120,6 +1120,7 @@ var game =
     plasticBags:
     {
         amount: new Decimal(0),
+        total: new Decimal(0),
         currentResource: RESOURCE_MERGE_TOKEN,
         currentCosts: new Decimal(100),
         upgrades:
@@ -1810,7 +1811,7 @@ var game =
             amount += game.stats.totalglitchbeams.add(1e5).log(1e5);
 
             amount *= game.bricks.amount.add("1e1000000").log("1e1000000");
-            amount *= game.stats.totalplasticbags.add(2150).log(2150);
+            amount *= game.plasticBags.total.add(2150).log(2150);
             amount *= game.stats.totalscrews.add(500000).log(500000);
             amount *= game.stats.totalquests.add(250).log(250);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
@@ -1926,6 +1927,7 @@ var game =
             }
 
             game.plasticBags.amount = new Decimal(0);
+            game.plasticBags.total = new Decimal(0);
             for (let upg of Object.keys(game.plasticBags.upgrades)) {
                 game.plasticBags.upgrades[upg].level = 0;
             }

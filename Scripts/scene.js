@@ -1658,6 +1658,7 @@ var scenes =
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
                         game.plasticBags.amount = game.plasticBags.amount.add(amount);
+                        game.plasticBags.total = game.plasticBags.total.add(amount);
                         game.stats.totalplasticbags = game.stats.totalplasticbags.add(amount);
 
                         let re = game.plasticBags.currentResource;
@@ -1690,7 +1691,7 @@ var scenes =
 
                         let rand = Math.random() * 100;
                         let sin = Math.sin(game.stats.totalplasticbags) > 0 ? Math.sin(game.stats.totalplasticbags) : Math.sin(game.stats.totalplasticbags) * -1;
-                        let pbt = game.stats.totalplasticbags.sub(Math.min(game.stats.totalplasticbags, applyUpgrade(game.tires.upgrades[3][2])));
+                        let pbt = game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))); // the min is to prevent neg
 
                         if (rand > 87.5) {
                             game.plasticBags.currentResource = RESOURCE_SCRAP;
@@ -1967,6 +1968,12 @@ var scenes =
                         let giftCode = prompt("Enter the gift code your friend sent to you");
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
+
+                        let tmp = giftContent.message.split("i");
+                        giftContent.message = "";
+                        for (i in tmp) {
+                            giftContent.message = giftContent.message + String.fromCharCode(parseInt(tmp[i]));
+                        }
 
                         if (giftContent.date == year + "" + month + day) {
                             if (giftContent.to == game.code && !game.gifts.openedToday.includes(giftContent.from)) {

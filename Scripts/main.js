@@ -163,7 +163,16 @@ function setup()
 }
 
 function copyGift() {
+    let msgTemp = "";
+    let temp2 = giftContent.message;
+
+    for (i in giftContent.message) {
+        msgTemp = msgTemp + "i" + giftContent.message[i].codePointAt(0);
+    }
+
+    giftContent.message = msgTemp;
     let exportCode = btoa(JSON.stringify(giftContent));
+    giftContent.message = temp2;
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
     alert("The gift has been copied to your clipboard. Share it with the friend!");
@@ -1795,6 +1804,7 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.plasticBags !== undefined) {
             game.plasticBags.amount = loadVal(new Decimal(loadObj.plasticBags.amount), new Decimal(0));
+            game.plasticBags.total = loadVal(new Decimal(loadObj.plasticBags.total), new Decimal(0));
             game.plasticBags.currentResource = loadVal(loadObj.plasticBags.currentResource, RESOURCE_MERGE_TOKEN);
             game.plasticBags.currentCosts = loadVal(new Decimal(loadObj.plasticBags.currentCosts), new Decimal(100));
             if (loadObj.plasticBags.upgrades !== undefined) {
@@ -1962,7 +1972,7 @@ btnInstall.style.display = "none";
 
 function updateBetterBarrels() {
     if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
-    if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25));
+    if (game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila)), game.highestBarrelReached - 25));
 }
 
 function calculateCurrentHighest() {

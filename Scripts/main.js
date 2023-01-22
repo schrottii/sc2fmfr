@@ -86,7 +86,8 @@ var saveTime =
     {
         cd: 10,
         time: 0
-    };
+};
+var secondTime = 0;
 
 var autoMergeTime = 0;
 var autoConvertTime = 0;
@@ -287,6 +288,11 @@ function update()
         {
             saveTime.time = 0;
             saveGame();
+        }
+        if (secondTime >= 1) {
+            // Updating it every tick killed the performance. this should be much better
+            secondTime = 0;
+            Milestone.check(true);
         }
         if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
             game.tires.time -= delta;
@@ -877,6 +883,23 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             }));
         }
     }
+}
+
+function duckTales() {
+    let duckCheck = true;
+
+    [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756].forEach(i => {
+        if (game.barrelMastery.b[i - 1] < 100000) {
+            duckCheck = false;
+            return false;
+        }
+        else if (i == 756) {
+            duckCheck = true;
+        }
+        return false;
+    });
+
+    return duckCheck;
 }
 
 function autoMergeBarrel()

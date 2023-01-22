@@ -582,8 +582,8 @@ function update()
                 }
             }
         }
-    }
     */
+    }
     if (game.settings.displayFPS) {
         ctx.font = (h * .02) + "px " + fonts.default;
         ctx.textAlign = "left";

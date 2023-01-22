@@ -1331,7 +1331,10 @@ function loadGame(saveCode, isFromFile=false)
             }
             else {
                 game.gifts.friends = [];
-            }
+            }        
+		if (loadObj.gifts.friends == undefined) {
+            	game.gifts.friends = [];
+        	}
         }
         else {
             game.gifts.openedToday = [];
@@ -1339,9 +1342,7 @@ function loadGame(saveCode, isFromFile=false)
             game.gifts.sendLimit = CONST_SENDLIMIT;
             game.gifts.friends = [];
         }
-        if (loadObj.gifts.friends == undefined) {
-            game.gifts.friends = [];
-        }
+
 
         if (loadObj.goldenScrap !== undefined) {
             game.goldenScrap.amount = loadVal(new Decimal(loadObj.goldenScrap.amount), new Decimal(0));

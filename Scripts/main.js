@@ -293,13 +293,16 @@ function update()
             // Updating it every tick killed the performance. this should be much better
             secondTime = 0;
             Milestone.check(true);
+            currentScene.update(delta);
         }
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, 200, 200);
         if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
             game.tires.time -= delta;
         }
         game.factory.time -= delta;
         game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
-        /*
+        
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
                 if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
@@ -350,11 +353,11 @@ function update()
                 }
             }
         }
-        */
+        
         if(game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
-        currentScene.update(delta);
-        /*
+        //currentScene.update(delta);
+        
         if (gameNotifications.length > 0)
         {
             gameNotifications[0].render(ctx);
@@ -582,7 +585,6 @@ function update()
                 }
             }
         }
-    */
     }
     if (game.settings.displayFPS) {
         ctx.font = (h * .02) + "px " + fonts.default;

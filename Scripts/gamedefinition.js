@@ -1838,7 +1838,7 @@ var game =
 
             game.mergesThisPrestige = 0;
             game.scrap = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
-            game.scrapThisPrestige = new Decimal(0);
+            game.scrapThisPrestige = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.magnets = new Decimal(0);
             game.glitchesCollected = 0;
             game.highestBarrelReached = 0;
@@ -2391,7 +2391,7 @@ var game =
                 new Milestone(218, "F.U.N.", 114, "Make Glitch Beams funnier", () => game.skillTree.upgrades.funnyGlitchBeams.level > 0),
                 new Milestone(219, "H.O.M.L.", 87, "Level the first Auto buyer to at least half of its max. level", () => game.autos.autoBetterBarrels.level >= game.autos.autoBetterBarrels.maxLevel / 2),
                 new Milestone(220, "3.47", 104, "Complete all three paths (again)", () => game.skillTree.upgrades.veryFastCrafting.level > 0 && game.skillTree.upgrades.funnyGlitchBeams.level > 0 && game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
-                new Milestone(221, "Duck Tales", 115, "Do at least 100k merges on all duck barrels", () => duckTales()),
+                new Milestone(221, "Duck Tales", 115, () => "Do at least 100k merges on all\nduck barrels (Progress: " + duckTales(1) +  "/32)\n" + duckTales(2), () => duckTales()),
                 new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),

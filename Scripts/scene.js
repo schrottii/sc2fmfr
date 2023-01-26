@@ -366,7 +366,6 @@ var scenes =
                     }
                     if (GoTo < game.scrapUpgrades.betterBarrels.maxLevel) {
                         game.scrapUpgrades.betterBarrels.buyToTarget(GoTo);
-                        Scene.loadScene("Barrels");
                     }
                     else {
                         alert("Too high!");
@@ -2824,7 +2823,7 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
-                new UIText(() => "Auto Buyers need energy to run!\nOne upgrade costs 2 energy.", 0.5, 0.2, 0.04, "white"),
+                new UIText(() => "Auto Buyers need energy to run!\nOne upgrade costs " + (game.skillTree.upgrades.efficientEnergy.level > 0 ? "1" : "2") + " energy.", 0.5, 0.2, 0.04, "white"),
 
                 new UIAutoUpgrade(game.autos.autoBetterBarrels, images.legendaryScrap, 0.3, "Auto: Better Barrels"),
                 new UIAutoUpgrade(game.autos.autoFasterBarrels, images.legendaryScrap, 0.4, "Auto: Faster Barrels", "table2"),
@@ -3126,7 +3125,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
 
-                new UIText(() => "$images.glitchbeam$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
 
                 new UIScrollContainerY([
                     new UIRect(0.5, 0.5, 1, 0.4, "table"),

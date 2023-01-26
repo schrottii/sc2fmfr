@@ -893,21 +893,36 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 }
 
-function duckTales() {
-    let duckCheck = true;
+const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756];
 
-    [141, 301, 308, 309, 315, 319, 323, 371, 381, 384, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 485, 498, 508, 580, 586, 664, 729, 756].forEach(i => {
+function duckTales(type=0) {
+    let duckCheck = true;
+    let duckAmount = 0;
+    // new: 162, 388, 478, 743
+    duckBarrels.forEach(i => {
         if (game.barrelMastery.b[i - 1] < 100000) {
             duckCheck = false;
             return false;
         }
-        else if (i == 756) {
-            duckCheck = true;
+        else {
+            duckAmount += 1;
+            if (i == 756) duckCheck = true;
         }
         return false;
     });
 
-    return duckCheck;
+    if (type == 0) return duckCheck;
+    if (type == 1) return duckAmount
+    if (type == 2) {
+        if (duckAmount >= 28 && duckAmount < 32) {
+            let missingDucks = Object.assign([], duckBarrels);
+            duckBarrels.forEach(i => {
+                if (game.barrelMastery.b[i - 1] >= 100000) missingDucks.splice(missingDucks.indexOf(i), 1);
+            });
+            return "Missing ducks: " + missingDucks;
+        }
+        else return "";
+    }
 }
 
 function autoMergeBarrel()

@@ -487,8 +487,15 @@ class FixedLevelUpgrade
             this.level = level;
         }
         else {
-            while (this.level < level) {
+            while (this.level < level && this.level < this.getMaxLevel()) {
+                for (let p of this.getCurrentPrices()) {
+                    let resource = getUpgradeResource(p[1]);
+                    if (p[0].gt(resource.round())) {
+                        return;
+                    }
+                }
                 this.buy(round);
+                resource = getUpgradeResource(this.resource);
             }
         }
     }

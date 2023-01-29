@@ -430,7 +430,6 @@ class UICheckbox extends UIElement
         if (this.isVisible())
         {
             let coords = this.absCoords();
-
             ctx.drawImage(this.checked ? this.imgChecked : this.imgUnchecked, coords.x, coords.y, coords.width, coords.height);
         }
     }
@@ -805,7 +804,7 @@ class UIToggleOption extends UIGroup
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
             new UICheckbox(0.1, y, 0.07, 0.07, prop, {
-                quadratic: true
+                quadratic: true,
             }),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",

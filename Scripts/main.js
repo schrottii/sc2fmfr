@@ -291,6 +291,7 @@ function update()
         timeSinceLastBarrelClick += delta;
 
         saveTime.time += delta;
+        secondTime += delta;
         if (saveTime.time >= saveTime.cd)
         {
             saveTime.time = 0;
@@ -300,7 +301,6 @@ function update()
             // Updating it every tick killed the performance. this should be much better
             secondTime = 0;
             Milestone.check(true);
-            if (document.visibilityState !== "visible") musicPlayer.pause();
         }
         if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
             game.tires.time -= delta;
@@ -688,7 +688,8 @@ function getTankSize() {
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
-        autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
+        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 6000) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 6000; // Max. 6k merges
+        else autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }
 }
@@ -1957,6 +1958,7 @@ function loadGame(saveCode, isFromFile=false)
         }
 
         updateBetterBarrels();
+        movingItems = [];
 
         if (isFromFile) alert("The file has been imported successfully!");
 

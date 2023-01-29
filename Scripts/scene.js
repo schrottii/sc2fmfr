@@ -426,7 +426,7 @@ var scenes =
                         isVisible: () => game.solarSystem.upgrades.earth.level >= 1 && !timeMode
                     }),
                 new UICheckbox(0.725, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
-                    isVisible: () => game.ms.includes(5) && !timeMode,
+                    isVisible: () => game.ms.includes(7) && !timeMode,
                     quadratic: true,
                     off: images.checkbox.autoMerge.off,
                     on: images.checkbox.autoMerge.on,
@@ -2381,7 +2381,10 @@ var scenes =
                     }),
 
                     // Enable or disable music
-                    new UIToggleOption(tabYs[2] + 0.1, "game.settings.musicOnOff", "Music", "table"),
+                    new UIOption(tabYs[2] + 0.1, images.change, () => {
+                        game.settings.musicOnOff = !game.settings.musicOnOff;
+                        playMusic();
+                    }, () => game.settings.musicOnOff ? "Music: ON (Click to disable)" : "Music: OFF (Click to enable)", "table"),
 
                     // Select song
                     new UIOption(tabYs[2] + 0.2, images.options.numberFormat, () => {

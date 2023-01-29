@@ -2160,7 +2160,7 @@ var scenes =
                 new UIText(() => "Total Achievements: " + game.ms.length + "/" + game.milestones.achievements.length, 0.5, 0.6, 0.04, "black"),
                 new UIText(() => "Total Tires Collected: " + formatNumber(game.stats.totaltirescollected), 0.5, 0.625, 0.04, "black"),
                 new UIText(() => "Total GS Resets: " + formatNumber(game.stats.totalgsresets), 0.5, 0.65, 0.04, "black"),
-                new UIText(() => "Play Time: " + formatNumber(game.stats.playtime), 0.5, 0.675, 0.04, "black"),
+                new UIText(() => "Play Time: " + formatSuperTime(game.stats.playtime), 0.5, 0.675, 0.04, "black"),
                 new UIText(() => "Total Daily Quests completed: " + game.stats.totaldailyquests.toFixed(0), 0.5, 0.7, 0.04, "black"),
 
                 new UIText(() => "Total Merges: " + game.totalMerges, 0.5, 0.75, 0.04, "black"),
@@ -2225,7 +2225,7 @@ var scenes =
                     ];
                     var compareNums = [new Decimal(game.highestMasteryLevel), new Decimal(game.highestBarrelReached), new Decimal(game.highestScrapReached), game.stats.totalwrenches, game.stats.totalbeams, game.stats.totalaerobeams, game.stats.totalangelbeams, game.stats.totalreinforcedbeams, game.stats.totalglitchbeams, game.stats.totalbeamscollected, game.stats.totalaerobeamscollected, game.stats.totalangelbeamscollected, game.stats.totalreinforcedbeamscollected, game.stats.totalglitchbeamscollected, game.stats.totalquests, game.stats.totalmergetokens, game.stats.totaldarkscrap, game.stats.totalfragments, game.stats.totaldarkfragments, game.stats.totaltirescollected, game.stats.totalgsresets, game.stats.playtime, game.stats.totaldailyquests, game.stats.totalmasterytokens, game.stats.totalplasticbags, game.stats.totalscrews, game.stats.totalscrewscollected, game.stats.giftsSent, game.stats.giftsReceived, new Decimal(game.totalMerges), new Decimal(game.selfMerges)];
                     var textDisplays = [
-                        "Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total quests completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"
+                        "Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"
                     ];
                 }
                 else {
@@ -2249,8 +2249,9 @@ var scenes =
                     }
                 }
                 for (i = 0; i < compareIDs.length; i++) {
-                    ctx.fillText(formatNumber(game.stats[compareIDs[i]]), w * 0.01, h * (0.2 + (0.025 * i)));
+                    if(i != 18) ctx.fillText(formatNumber(game.stats[compareIDs[i]]), w * 0.01, h * (0.2 + (0.025 * i)));
                 }
+                ctx.fillText(formatSuperTime(game.stats[compareIDs[18]]), w * 0.01, h * (0.2 + (0.025 * 18)));
 
                 ctx.textAlign = "right";
 
@@ -2263,14 +2264,14 @@ var scenes =
                     }
                 }
                 for (i = 0; i < compareIDs.length; i++) {
-                    ctx.fillText(formatNumber(compareStats[compareIDs[i]]), w * 0.99, h * (0.2 + (0.025 * i)));
+                    if(i != 18) ctx.fillText(formatNumber(compareStats[compareIDs[i]]), w * 0.99, h * (0.2 + (0.025 * i)));
                 }
+                ctx.fillText(formatSuperTime(compareStats[compareIDs[18]] != undefined ? compareStats[compareIDs[18]] : 0), w * 0.99, h * (0.2 + (0.025 * 18)));
 
                 ctx.textAlign = "center";
 
                 for (i = 0; i < compareNums.length; i++) {
-                    ctx.fillStyle = compareNums
-                    [i].gte(compareStats[compareIDs2[i]]) ? "lightgreen" : colors[C]["text"];
+                    ctx.fillStyle = compareNums[i].gte(compareStats[compareIDs2[i]]) ? "lightgreen" : colors[C]["text"];
                     ctx.fillText(textDisplays[i], w * 0.5, h * (0.125 + (0.025 * i) + (comparePage > 0 ? 0.075 : 0)));
                 }
             }

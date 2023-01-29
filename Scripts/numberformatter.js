@@ -174,3 +174,7 @@ function formatTime(s)
         return [Math.floor(s / 60).toFixed(0), ("0" + Math.floor(s % 60).toFixed(0)).slice(-2)].join(":");
     }
 }
+
+function formatSuperTime(t) {
+    return (t / 86400).toFixed(0) + "d, " + ((t % 86400) / 3600).toFixed(0) + "h, " + (((t % 86400) % 3600) / 60).toFixed(0) + "m";
+}

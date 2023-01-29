@@ -688,7 +688,7 @@ function getTankSize() {
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
-        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 6000) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 6000; // Max. 6k merges
+        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 600) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 600; // Max. 6k merges
         else autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }
@@ -894,12 +894,12 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 }
 
-const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756];
+const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994];
 
 function duckTales(type=0) {
     let duckCheck = true;
     let duckAmount = 0;
-    // new: 162, 388, 478, 743
+    // new: 162, 388, 478, 743, 994
     duckBarrels.forEach(i => {
         if (game.barrelMastery.b[i - 1] < 100000) {
             duckCheck = false;
@@ -915,7 +915,7 @@ function duckTales(type=0) {
     if (type == 0) return duckCheck;
     if (type == 1) return duckAmount
     if (type == 2) {
-        if (duckAmount >= 28 && duckAmount < 32) {
+        if (duckAmount >= duckBarrels.length - 6 && duckAmount < duckBarrels.length) {
             let missingDucks = Object.assign([], duckBarrels);
             duckBarrels.forEach(i => {
                 if (game.barrelMastery.b[i - 1] >= 100000) missingDucks.splice(missingDucks.indexOf(i), 1);
@@ -1264,8 +1264,8 @@ function loadCompare(compareCode) {
     if (compareCodeType == 3) {
         for (i in importCode) {
             compareStats[i] = importCode[i];
-            if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
         }
+        if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
     }
     if (compareCodeType == 4) {
         let sic = {};

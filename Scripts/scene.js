@@ -352,7 +352,7 @@ var scenes =
         new Scene("Barrels",
             [
                 new UIButton(0.125, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
-                    game.scrapUpgrades.betterBarrels.buy();
+                    game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget(game.scrapUpgrades.betterBarrels.level + 50000, false) : game.scrapUpgrades.betterBarrels.buy();
                 }, {
                     isVisible: () => !timeMode,
                     quadratic: true
@@ -375,7 +375,7 @@ var scenes =
                     quadratic: true
                 }),
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
-                    game.scrapUpgrades.fasterBarrels.buy();
+                    game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget(game.scrapUpgrades.fasterBarrels.level + 5000, false) : game.scrapUpgrades.fasterBarrels.buy();
                 }, {
                     isVisible: () => !timeMode,
                     quadratic: true
@@ -437,7 +437,7 @@ var scenes =
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
                 }),
-                new UICheckbox(0.875, 0.825, 0.05, 0.05, "hyperBuy", {
+                new UICheckbox(0.875, 0.825, 0.05, 0.05, "game.settings.hyperBuy", {
                     isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
                     quadratic: true,
                     off: images.checkbox.hyperbuy.off,

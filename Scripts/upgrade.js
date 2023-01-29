@@ -495,7 +495,7 @@ class FixedLevelUpgrade
                     }
                 }
                 this.buy(round);
-                resource = getUpgradeResource(this.resource);
+                //resource = getUpgradeResource(this.resource);
             }
         }
     }

@@ -2482,5 +2482,6 @@ var game =
         coconut: false,
         musicVolume: 0,
         displayFPS: false,
+        hyperBuy: false,
     }
 }

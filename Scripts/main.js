@@ -1359,6 +1359,7 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.displayFPS = loadVal(loadObj.settings.displayFPS, false);
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
+        game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;

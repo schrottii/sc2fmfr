@@ -288,8 +288,6 @@ function update()
             //game.mergeQuests.dailyQuest.tick(delta);
         }
 
-        Milestone.check(true);
-
         timeSinceLastBarrelClick += delta;
 
         saveTime.time += delta;
@@ -302,6 +300,7 @@ function update()
             // Updating it every tick killed the performance. this should be much better
             secondTime = 0;
             Milestone.check(true);
+            if (document.visibilityState !== "visible") musicPlayer.pause();
         }
         if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
             game.tires.time -= delta;
@@ -723,13 +722,14 @@ function renewableEnergy() {
 
     // Upgrade is unlocked
     if (game.factory.tank.lt(getTankSize())) game.factory.tank = game.factory.tank.add(1);
+    if (!game.factory.tank.lt(getTankSize()) && !game.factory.tank.gt(getTankSize()) && !game.factory.tank.eq(getTankSize())) game.factory.tank = game.factory.tank.sub(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
 
-const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi"]
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi", "fag", "tranny", "shemale", "heshe", "trap", "transvestite"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {

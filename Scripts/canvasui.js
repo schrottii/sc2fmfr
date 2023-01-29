@@ -183,10 +183,12 @@ class UIScrollContainer2D extends UIGroup
         {
             ui.update();
         }
-        if (mousePressed && this.isVisiible())
+        if (mousePressed && this.isVisiible() &&
+            mouseY > this.y * h && mouseY < (this.y + this.h) * h) // lord blessed me with insane coding skills
         {
             let mx = Math.abs(mouseMoveX) > 1 ? mouseMoveX : 0;
             let my = Math.abs(mouseMoveY) > 1 ? mouseMoveY : 0;
+
             this.scrollX -= this.axis.x ? mx / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
             this.scrollY -= this.axis.y ? my / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
             if(this.axis.x)
@@ -421,7 +423,6 @@ class UICheckbox extends UIElement
             eval(this.prop + " = !" + this.prop);
             this.customClick();
         }
-        playMusic();
     }
 
     render(ctx)

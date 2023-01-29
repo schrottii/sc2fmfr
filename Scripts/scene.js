@@ -879,16 +879,19 @@ var scenes =
                     isVisible: () => game.settings.barrelGalleryPage < game.barrelGallery.getMaxPage()
                 }),
                 new UIButton(0.5, 0.9, 0.1, 0.1, images.searchbutton, () => {
-                    let GoTo = parseInt(prompt("Which barrel do you want to go to?"));
-                    GoTo = Math.floor(GoTo);
-                    if (GoTo < 1) GoTo = 1;
-                    if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
-                        if (game.ms.includes(120) == false) {
-                            game.ms.push(120);
-                            GameNotification.create(new MilestoneNotificaion(121));
+                    let GoTo = prompt("Which barrel do you want to go to?");
+                    if (GoTo > -1) {
+                        GoTo = Math.floor(GoTo);
+                        if (GoTo < 1) GoTo = 1;
+                        if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
+                            if (game.ms.includes(120) == false) {
+                                game.ms.push(120);
+                                GameNotification.create(new MilestoneNotificaion(121));
+                            }
                         }
+                        game.settings.barrelGalleryPage = Math.floor((GoTo - 1) / 20);
                     }
-                    game.settings.barrelGalleryPage = Math.floor((GoTo - 1) / 20);
+                    else alert("Invalid number!");
                 }, {
                     quadratic: true,
                     isVisible: () => game.highestBarrelReached > 99

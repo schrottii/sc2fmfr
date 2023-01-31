@@ -302,7 +302,7 @@ function update()
             secondTime = 0;
             Milestone.check(true);
         }
-        if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
+        if (game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600) {
             game.tires.time -= delta;
         }
         game.factory.time -= delta;

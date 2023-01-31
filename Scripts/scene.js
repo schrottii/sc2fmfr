@@ -1262,7 +1262,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
                 new UIButton(0.1, 0.125, 0.07, 0.07, images.scenes.tires, () => Scene.loadScene("Tire Club"), {
-                    isVisible: () => game.tires.amount.gte(new Decimal("1e1000000000")),
+                    isVisible: () => game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600,
                     quadratic: true,
                 }),
                 new UIText("Tires", 0.5, 0.1, 0.12, "white", {
@@ -2577,18 +2577,22 @@ var scenes =
                 new UIText(() => "We worship the tires", 0.5, 0.2, 0.06),
                 new UIText(() => {
                     if (game.tires.time >= 0) return "Time to next tire shower: " + (game.tires.time).toFixed(1);
-                    if (game.tires.time >= -800) return "Tire shower is ready!";
-                    else return "Big tire shower is ready!";
+                    if (game.tires.time >= -60) return "Tire shower is ready!";
+                    if (game.tires.time >= -240) return "Big tire shower is ready!";
+                    else return "Massive tire shower is ready!";
                 }, 0.5, 0.3, 0.035),
 
                 new UIButton(0.5, 0.5, 0.25, 0.25, images.tire, () => {
                     if (game.tires.time <= 0) {
-                        game.tires.time = 600;
-                        let amount = 10;
-                        if (game.tires.time <= -800) amount = 20;
+                        let amount = 20;
+                        if (game.tires.time >= -60) amount = 20;
+                        else if (game.tires.time >= -240) amount = 40;
+                        else amount = 60;
+
+                        game.tires.time = 60;
 
                         for (i = 0; i < amount; i++) {
-                            setTimeout("movingItemFactory.jumpingTire()", 500 * i);
+                            stormQueue.push([200 * i, "tire", 1]);
                         }
                     }
                 }, { quadratic: true }),
@@ -2596,6 +2600,11 @@ var scenes =
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
+                if (Math.random() > 0.9999) {
+                    for (i = 0; i < 3; i++) {
+                        stormQueue.push([300 * i, "tire", 1]);
+                    }
+                }
             }),
         new Scene("Milestones",
             [

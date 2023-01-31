@@ -391,7 +391,9 @@ var scenes =
                     isVisible: () => !timeMode,
                     quadraticMin: true
                 }),
-                new UIButton(0.35, 0.97, 0.15, 0.06, images.scenes.steelBeams, () => Scene.loadScene("Beams"), {
+                new UIButton(0.35, 0.97, 0.15, 0.06, images.scenes.steelBeams, () => {
+                    Scene.loadScene(["Beams", "Aerobeams", "AngelBeams", "ReinforcedBeams", "GlitchBeams"][game.beams.selected]);
+                }, {
                     isVisible: () => game.beams.isUnlocked() && !timeMode,
                     quadraticMin: true
                 }),
@@ -451,7 +453,7 @@ var scenes =
 
                 new UIText(() => "+" + formatNumber(Barrel.getGlobalIncome()) + "/s", 0.3, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
-                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return "Next Storm Chance In " + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.0775, 0.03, "white", { bold: true }),
+                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return "Next Storm Chance In " + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
             ],
             function (delta) {
                 for (let i = 0, l = barrels.length; i < l; i++) {
@@ -2600,11 +2602,15 @@ var scenes =
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(images.club, 0, 0, w, h);
+
+
                 if (Math.random() > 0.9999) {
                     for (i = 0; i < 3; i++) {
                         stormQueue.push([300 * i, "tire", 1]);
                     }
                 }
+                if (Math.random() > 0.95) movingItemFactory.fallingTireBG(0);
             }),
         new Scene("Milestones",
             [

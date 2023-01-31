@@ -75,6 +75,7 @@ var images =
     fillthetank: loadImage("Images/Buttons/fillthetank.png"),
     onoffbutton: loadImage("Images/Buttons/onoff.png"),
     shrine: loadImage("Images/shrinebydec.png"),
+    club: loadImage("Images/clubbyfrank.png"),
     masteryToken: loadImage("Images/Currencies/masterytoken.png"),
     plasticBag: loadImage("Images/Currencies/plasticbag.png"),
     bucket: loadImage("Images/Currencies/bucket.png"),
@@ -292,6 +293,7 @@ var images =
     {
         magnet: loadImage("Images/MovingItems/magnet.png"),
         tire: loadImage("Images/MovingItems/tire.png"),
+        tirebg: loadImage("Images/MovingItems/tirebg.png"),
         beam: loadImage("Images/MovingItems/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         angelbeam: loadImage("Images/Currencies/angelbeam.png"),

@@ -302,6 +302,12 @@ var movingItemFactory =
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, {color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005}))
             }))
     },
+    fallingTireBG: (value) => {
+        movingItems.push(new FallingItem(images.movingItems.tirebg, "tirebg", w * 0.15 + Math.random() * w * 1.2, -100, h * 0.125, h * 0.15, h * 0.75, h * 0.25, 0,
+            function (isAuto = false) {
+                
+            }))
+    },
     fallingBeam: (value) => {
         movingItems.push(new FallingItem(images.movingItems.beam, "beams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.75 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function (isAuto = false) {

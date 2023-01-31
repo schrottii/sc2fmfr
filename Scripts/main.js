@@ -542,7 +542,7 @@ function update()
                 }
 
                 for (i in movingItems) movingItems[i].cooldown += delta;
-                if (stormQueue.length > 0 || movingItems.length > 4) {
+                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club") {
                     ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
 
                     for (q in stormQueue) {

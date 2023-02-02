@@ -438,7 +438,7 @@ var movingItemFactory =
                 this.collected = true;
                 game.glitchesCollected += 1;
                 if (game.glitchesCollected == 10) {
-                    GameNotification.create(new TextNotification("Glitches", "Glitch Beams unlocked!"));
+                    GameNotification.create(new TextNotification(tt("not_glitch"), tt("not_glitch2")));
                 }
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))

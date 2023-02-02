@@ -149,9 +149,9 @@ function setup()
     document.querySelector("div.absolute button#export").onclick = e => exportGame();
     document.querySelector("div.absolute button#import").onclick = e =>
     {
-        thebool = confirm("Do you really want to import?");
+        thebool = confirm(tt("importconfirm"));
         if (thebool == true) {
-            alert("importing game (from text field)...");
+            alert(tt("importing"));
             if (importType == 0) loadGame(document.querySelector("div.absolute textarea").value);
             if (importType == 1) loadCompare(document.querySelector("div.absolute textarea").value);
         }
@@ -232,7 +232,7 @@ function update()
 
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
-            GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
+            GameNotification.create(new TextNotification(tt("not_timeover2").replace("<amount>", cogReward), tt("not_timeover")));
 
             game.goldenScrap.reset();
             timeModeTime = 0;
@@ -389,7 +389,7 @@ function update()
                     }
                 }
                 else {
-                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification("So unlucky", "No storm! :("));
+                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm2"), tt("not_storm")));
                 }
             }
         }
@@ -814,7 +814,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification("Level " + game.barrelMastery.bl[lvl % BARRELS] + " (+ " + game.barrelMastery.bl[lvl % BARRELS] + " Tokens!)", "Mastery level up!", "barrel", ((lvl % BARRELS) + 1)));
+            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrel", ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {
@@ -1131,7 +1131,7 @@ function exportCompare() {
     exportCode = "tPt4-" + btoa(JSON.stringify(exportCode));
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The compare code has been copied to your clipboard. Paste it into a text file and keep the file safe.");
+    alert(tt("codecopied"));
 }
 
 function saveGame(exportGame, downloaded=false)
@@ -1226,14 +1226,14 @@ function saveGame(exportGame, downloaded=false)
         document.querySelector("div.absolute textarea").value = save;
         if (!downloaded) {
             Utils.copyToClipboard(save);
-            alert("The save code has also been copied to your clipboard. Paste it into a text file and keep the file safe.");
+            alert(tt("codecopied"));
         }
         // Still put it into the text area, but not copy to the clipboard, when downloading
     }
     else
     {
         localStorage.setItem("ScrapFanmade", JSON.stringify(saveObj));
-        currentScene.popupTexts.push(new PopUpText("Saved", w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
+        currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
     }
 }
 
@@ -1250,14 +1250,14 @@ function loadCompare(compareCode) {
         importCode = atob(importCode);
     }
     catch {
-        alert("The provided Save Code could not be decoded.");
+        alert(tt("decodeerror"));
         return false;
     }
     try {
         importCode = JSON.parse(importCode);
     }
     catch {
-        alert("An error occured while parsing the save code");
+        alert(tt("parseerror"));
         return false;
     }
     compareStats = {};
@@ -1297,7 +1297,7 @@ function loadGame(saveCode, isFromFile=false)
                 loadObj = atob(saveCode);
             }
             catch (e) {
-                alert("The provided Save Code could not be decoded.");
+                alert(tt("decodeerror"));
                 return;
             }
         }
@@ -1314,11 +1314,11 @@ function loadGame(saveCode, isFromFile=false)
         catch (e) {
             if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
                 document.querySelector("div.absolute textarea").value = "";
-                alert("Reset your highest barrel reached successfully!");
+                alert(tt("resethbr"));
             }
             else {
                 console.log(e);
-                alert("An error occured while parsing the save code");
+                alert(tt("parseerror"));
             }
             return;
         }
@@ -1360,6 +1360,7 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
         game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
+        game.settings.lang = loadVal(loadObj.settings.lang, "en");
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;
@@ -1973,7 +1974,7 @@ function exportGame(downloaded=false)
 
 function importGame()
 {
-    alert("Copy the save code you want to import to your clipboard. It will be inserted into the game automatically.")
+    alert(tt("copied"));
     navigator.clipboard.readText().then(text =>
     {
         loadGame(text);

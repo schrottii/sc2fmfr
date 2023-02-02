@@ -126,7 +126,7 @@ class MergeQuest
             else ctx.fillText(futureTimeDisplay, x + h * 0.1, y + h * 0.02, w * 0.55);
 
             ctx.font = "bold " + (h * 0.02) + "px " + fonts.default;
-            ctx.fillText("Next Quest in", x + h * 0.1, y - h * 0.02);
+            ctx.fillText(tt("nextquest"), x + h * 0.1, y - h * 0.02);
         }
     }
 }

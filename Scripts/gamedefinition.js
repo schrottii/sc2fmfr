@@ -210,15 +210,15 @@ var game =
                         return s.toFixed(2) + "s";
                     }
                     if (s > 0.01) {
-                        return (s * 1000).toFixed(0) + "ms";
+                        return (s * 1000).toFixed(0) + tt("ms");
                     }
                     if (s > 0.001) {
-                        return (s * 1000).toFixed(2) + "ms";
+                        return (s * 1000).toFixed(2) + tt("ms");
                     }
                     if (s > 0.00001) {
-                        return (s * 1000000).toFixed(0) + "µs";
+                        return (s * 1000000).toFixed(0) + tt("µs");
                     }
-                    return "Insanely fast!";
+                    return tt("Insanely fast!");
                 }
             })
     },
@@ -733,7 +733,7 @@ var game =
     },
     fragment:
     {
-        isUnlocked: () => game.highestBarrelReached >= 100,
+        isUnlocked: () => game.highestBarrelReached >= 99,
         amount: new Decimal(0),
         upgrades:
         {
@@ -2483,5 +2483,6 @@ var game =
         musicVolume: 0,
         displayFPS: false,
         hyperBuy: false,
+        lang: "en",
     }
 }

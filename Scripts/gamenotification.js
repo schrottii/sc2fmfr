@@ -113,7 +113,7 @@ class MilestoneNotificaion extends GameNotification
         for (i in game.milestones.achievements) {
             if (game.milestones.achievements[i].id == milestone) milestone = game.milestones.achievements[i];
         }
-        super("Achievement Unlocked");
+        super(tt("not_achievement"));
         this.title = milestone.title;
         this.iid = milestone.imageId;
     }

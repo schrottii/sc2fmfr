@@ -1650,6 +1650,7 @@ var scenes =
 
                 new UIText(() => tt("crabs"), 0.575, 0.3, 0.04, "yellow"),
                 new UIText(() => tt("costs") + ": " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
+                new UIText(() => " (" + tt("level") + " " + Math.floor(game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))).add(1)) + ")", 0.85, 0.34, 0.03, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
@@ -1893,7 +1894,7 @@ var scenes =
                     }
                 }, { quadratic: true }),
                 new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
-                    sendTo = prompt(tt("gifttext4"));
+                    sendTo = prompt(tt("gifttext4")).substr(0, 5);
                 }, { quadratic: true }),
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
@@ -3152,7 +3153,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
 
-                new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + ": " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
 
                 new UIScrollContainerY([
                     new UIRect(0.5, 0.5, 1, 0.4, "table"),
@@ -3180,7 +3181,10 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.faster2ndDim, images.upgrades.moreDarkScrap, "Faster\n2nd Dim", 0.2, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "Hyper Buy", 0.5, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "Get 10 Mythus\nLevels at once", 0.8, 1.65, "table"),
-                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 1.85 })
+
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreDust, images.upgrades.efficientenergy, "Earn 20% More Dust", 0.2, 1.95, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoCollectors, images.upgrades.unlockAutos, "Keep Auto Collectors\nafter Supernova", 0.5, 1.95, "table"),
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.15 })
 
             ],
             function () {

@@ -1777,7 +1777,7 @@ var game =
             amount *= game.darkscrap.amount.add(1e20).log(1e20);
             amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
             amount += game.tires.amount.add("1e1000000").log("1e1000000");
-            return amount;
+            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getAlienDust: function () {
             let amount = game.factory.legendaryScrap.add(25).log(25);
@@ -1798,10 +1798,10 @@ var game =
             amount += game.solarSystem.upgrades.uranus.level / 5;
             amount += game.solarSystem.upgrades.posus.level / 100;
 
-            amount *= game.solarSystem.upgrades.mythus.level / 100;
-            amount *= game.solarSystem.upgrades.sun.level / 1000;
+            amount *= 1 + (game.solarSystem.upgrades.mythus.level / 100);
+            amount *= 1 + (game.solarSystem.upgrades.sun.level / 1000);
 
-            return new Decimal(amount / 8);
+            return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getFairyDust: function () {
             let amount = game.stats.totalbeams.add(1e5).log(1e5);
@@ -1816,9 +1816,10 @@ var game =
             amount *= game.stats.totalquests.add(250).log(250);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
 
-            return new Decimal(amount);
+            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         reset: function () {
+            // BOOSTS
             game.supernova.stars = game.supernova.stars.add(1);
 
             game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(game.supernova.getEmblems());
@@ -1830,6 +1831,10 @@ var game =
             game.stats.totalaliendust = game.stats.totalaliendust.add(game.supernova.getAlienDust());
             game.stats.totalfairydust = game.stats.totalfairydust.add(game.supernova.getFairyDust());
 
+            // REMOVE YOUR STUFF
+            game.dimension = 0;
+
+            setBarrelQuality(game.settings.barrelQuality);
             for (let i = 0; i < barrels.length; i++) {
                 barrels[i] = undefined;
             }
@@ -1870,7 +1875,6 @@ var game =
             for (let upg of Object.keys(game.fragment.upgrades)) {
                 game.fragment.upgrades[upg].level = 0;
             }
-            game.dimension = 0;
             game.darkfragment.amount = new Decimal(0);
             for (let upg of Object.keys(game.darkfragment.upgrades)) {
                 game.darkfragment.upgrades[upg].level = 0;
@@ -1893,8 +1897,10 @@ var game =
                     game.autos[upg].level = 0;
                 }
             }
-            for (let upg of Object.keys(game.collectors)) {
-                game.collectors[upg].level = 0;
+            if (game.supernova.cosmicUpgrades.keepAutoCollectors.level == 0) {
+                for (let upg of Object.keys(game.collectors)) {
+                    game.collectors[upg].level = 0;
+                }
             }
             for (let upg of Object.keys(game.skillTree.upgrades)) {
                 game.skillTree.upgrades[upg].level = 0;
@@ -2045,6 +2051,16 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 5),
+            moreDust: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => 1 + 0.2 * level, {
+                maxLevel: 20,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 10),
+            keepAutoCollectors: new CosmicEmblemUpgrade(level => new Decimal(3),
+                level => level, {
+                maxLevel: 1,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 15),
         },
         starDustUpgrades: {
             ara: new StarDustUpgrade(

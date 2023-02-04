@@ -141,7 +141,7 @@ function setup()
     }
     catch(e)
     {
-        alert("An error has occured:\n" + e.stack + "\n\nPlease contact the developer.");
+        alert(tt("generalerror").replace("<estack>", e.stack));
         return;
     }
     setBarrelQuality(game.settings.barrelQuality);
@@ -175,7 +175,7 @@ function copyGift() {
     giftContent.message = temp2;
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The gift has been copied to your clipboard. Share it with the friend!");
+    alert(tt("giftcopied"));
 
     document.querySelector("div.copyGift button#cancelg").style.display = "none";
     document.querySelector("div.copyGift button#close").style.display = "block";
@@ -1216,7 +1216,7 @@ function saveGame(exportGame, downloaded=false)
     catch{
         // for the case your javascript is so old it doesn't have Object.entries...
         // it will just skip the entire try part and well, not shorten it at all.
-        console.log("Your device might have old JavaScript!");
+        console.log(tt("oldjs"));
     }
 
 

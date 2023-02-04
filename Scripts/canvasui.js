@@ -570,7 +570,7 @@ class UIUpgrade3 extends UIGroup {
                 new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom", isVisible: () => upg.time != "b" }),
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
                 new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
-                    let att = prompt("New time? (In seconds, e. g. 8)");
+                    let att = prompt(tt("buyertimetext"));
                     if (parseInt(att) > 0) upg.setTime = att;
                     if (game.ms.includes(207) == false) {
                         game.ms.push(207);

@@ -214,7 +214,7 @@ function drawCurrencyBar(val, img, offY, width)
 
 function getBeamTime() {
     if (timeMode) {
-        return "Time: " + formatTime(timeModeTime);
+        return tt("time") + formatTime(timeModeTime);
     }
     else {
         if (game.beams.selected == 0) {
@@ -704,13 +704,13 @@ var scenes =
                         }
                     }
                 }, { quadratic: true }),
-                new UIText("Race Against Time", 0.5, 0.1, 0.1, "white", {
+                new UIText(() => tt("timemode"), 0.5, 0.1, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIText(() => "Race against the time\nDon't let the entire field fill up! Earn cogwheels\nDaily attempts left: " + game.cogwheels.timeModeAttempts, 0.5, 0.2, 0.04, "black"),
-                new UIText(() => "$images.cogwheel$" + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
+                new UIText(() => tt("timetext") + game.cogwheels.timeModeAttempts, 0.5, 0.2, 0.04, "black"),
+                new UIText(() => "$images.cogwheel$ Cog Wheels: " + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
                 new UICogwheelUpgrade(game.cogwheels.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "Get More Scrap"),
                 new UICogwheelUpgrade(game.cogwheels.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.75, "Get More Dark Scrap", "table2"),
             ],
@@ -1220,7 +1220,7 @@ var scenes =
         new Scene("Bricks",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
-                new UIText("Bricks", 0.5, 0.1, 0.12, "white", {
+                new UIText(() => tt("bricks"), 0.5, 0.1, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1263,7 +1263,7 @@ var scenes =
                     isVisible: () => game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600,
                     quadratic: true,
                 }),
-                new UIText("Tires", 0.5, 0.1, 0.12, "white", {
+                new UIText(() => tt("tires"), 0.5, 0.1, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1641,15 +1641,15 @@ var scenes =
             }),
         new Scene("PlasticBags",
             [
-                new UIText("Plastic Bags", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("plasticbags"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                new UIText(() => "Buy a Plastic Bag and save the crabs!", 0.575, 0.3, 0.04, "yellow"),
-                new UIText(() => "Costs: " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
+                new UIText(() => tt("crabs"), 0.575, 0.3, 0.04, "yellow"),
+                new UIText(() => tt("costs") + ": " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
@@ -1725,7 +1725,7 @@ var scenes =
                     }
                 }),
 
-                new UIText(() => "$images.plasticBag$ Plastic Bags: " + Math.round(game.plasticBags.amount), 0.5, 0.4, 0.06, "yellow"),
+                new UIText(() => "$images.plasticBag$ " + tt("plasticbags") + ": " + Math.round(game.plasticBags.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.moreScrap, images.upgrades.moreScrap, 0.55, "Get more Scrap"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.moreTires, images.upgrades.tireBoost, 0.65, "Tire Value per Collect", "table2"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.higherEasierReinforced, images.upgrades.reinforcedBeamPower, 0.75, "Higher max. level for\n2nd upgrade"),
@@ -1741,7 +1741,7 @@ var scenes =
             }),
         new Scene("Screws",
             [
-                new UIText("Screws", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("screws"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1770,7 +1770,7 @@ var scenes =
             }),
         new Scene("Daily",
             [
-                new UIText("Daily", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("daily"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1782,7 +1782,7 @@ var scenes =
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
                 }),
 
-                new UIText(() => "Current Time: " + timeDisplay, 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => tt("currenttime") + ": " + timeDisplay, 0.5, 0.2, 0.06, "yellow"),
 
                 new UIButton(0.84, 0.435, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.dailyQuest.active) {
@@ -1809,23 +1809,21 @@ var scenes =
                 if (calcTime == "" || futureTimeDisplay == "" || calcTime >= game.mergeQuests.nextDaily) {
 
                     let currentTime = new Date();
-                    let year = currentTime.getUTCFullYear();
-                    let month = currentTime.getUTCMonth();
-                    let puremonth = month;
+                    year = currentTime.getUTCFullYear();
+                    month = currentTime.getUTCMonth();
+                    puremonth = month;
                     month += 1;
                     if (month < 10) month = "0" + month;
-                    let day = currentTime.getUTCDate();
-                    let tomorrow = day + 1;
+                    day = currentTime.getUTCDate();
+                    tomorrow = day + 1;
                     if (day < 10) day = "0" + day;
                     if (tomorrow < 10) tomorrow = "0" + tomorrow;
-                    let hour = currentTime.getUTCHours();
+                    hour = currentTime.getUTCHours();
                     if (hour.length == 1) hour = "0" + month;
                     calcTime2 = year + "" + (month) + tomorrow;
                     if (calcTime == "") {
                         calcTime = year + "" + (month) + day;
                     }
-                    timeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + day + ". " + Math.min(12, Math.floor(hour / 12)) + [" AM", " PM"][Math.floor(hour / 12)];
-                    futureTimeDisplay = "" + ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][puremonth] + " " + tomorrow + ". " + "0 AM (UTC)";
 
                     if (calcTime >= game.mergeQuests.nextDaily) {
                         let dq = game.mergeQuests.dailyQuest;
@@ -1839,13 +1837,21 @@ var scenes =
                     }
                 }
 
+                monthsL = tto({
+                    default: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                    de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+                    ru: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+                })
+                timeDisplay = "" + monthsL[puremonth] + " " + day + ". " + Math.min(12, Math.floor(hour / 12)) + [" AM", " PM"][Math.floor(hour / 12)];
+                futureTimeDisplay = "" + monthsL[puremonth] + " " + tomorrow + ". " + "0 AM (UTC)";
+
                 drawCurrencyBar(game.mergeQuests.mergeTokens, images.mergeToken, -h * 0.125);
 
                 game.mergeQuests.dailyQuest.render(ctx, w * 0.15, h * (0.225 + 0.13));
             }),
         new Scene("Gifts",
             [
-                new UIText("Gifts", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("gifts"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1859,19 +1865,19 @@ var scenes =
 
                 new UIButton(0.9, 0.395, 0.07, 0.07, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
 
-                new UIText(() => "Friend Code: " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
-                new UIText(() => "Share it with someone so they can send you a gift!\n(If they like you, but they don't)", 0.5, 0.15, 0.03),
+                new UIText(() => tt("friendcode") + ": " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
+                new UIText(() => tt("gifttext1"), 0.5, 0.15, 0.03),
 
-                new UIText(() => "Scissors left (to open gifts): " + game.gifts.openLimit, 0.5, 0.2, 0.06, "yellow"),
-                new UIText(() => "Stamps left (to send gifts): " + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
+                new UIText(() => tt("scissors") + game.gifts.openLimit, 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => tt("stamps") + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
 
                 // Send Gift
-                new UIText(() => "Send Gift (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
+                new UIText(() => tt("sendgift") + " (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
                 new UIText(() => (giftType == "magnets" ? "Up to " : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
-                new UIText("(based on your current amount)", 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
+                new UIText(tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 
                 new UIButton(0.1, 0.525, 0.05, 0.05, images.setmessage, () => {
-                    giftMsg = prompt("Message? (Max. 80 characters)").substr(0, 80);
+                    giftMsg = prompt(tt("gifttext3")).substr(0, 80);
 
                     for (f in filthyWords) {
                         let prev = "";
@@ -1887,7 +1893,7 @@ var scenes =
                     }
                 }, { quadratic: true }),
                 new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
-                    sendTo = prompt("What is the friend code of the player you want to send it to?");
+                    sendTo = prompt(tt("gifttext4"));
                 }, { quadratic: true }),
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
@@ -2017,17 +2023,9 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIText(() => "How to send gifts:", 0.01, 0.85, 0.03, "white", { halign: "left" }),
-                new UIText(() => "1. Make sure you have enough stamps", 0.01, 0.875, 0.025, "white", { halign: "left" }),
-                new UIText(() => "2. Select the currency to send (gift content)", 0.01, 0.9, 0.025, "white", { halign: "left" }),
-                new UIText(() => "3. Enter the friend code of", 0.01, 0.925, 0.025, "white", { halign: "left" }),
-                new UIText(() => "the person you want to send the gift to (not yours!)", 0.01, 0.95, 0.025, "white", { halign: "left" }),
-                new UIText(() => "4. Click the gift and send the code to the friend", 0.01, 0.975, 0.025, "white", { halign: "left" }),
+                new UIText(() => tt("sendtext"), 0.01, 0.85, 0.03, "white", { halign: "left" }),
 
-                new UIText(() => "How to open gifts:", 0.99, 0.85, 0.03, "white", { halign: "right" }),
-                new UIText(() => "1. Make sure you have enough scissors", 0.99, 0.875, 0.025, "white", { halign: "right" }),
-                new UIText(() => "2. Click the gift", 0.99, 0.9, 0.025, "white", { halign: "right" }),
-                new UIText(() => "3. Enter the gift code your friend gave you", 0.99, 0.925, 0.025, "white", { halign: "right" }),
+                new UIText(() => tt("opentext"), 0.99, 0.85, 0.03, "white", { halign: "right" }),
             ],
             function () {
                 currentTime = new Date();
@@ -2063,7 +2061,7 @@ var scenes =
             }),
         new Scene("FriendList",
             [
-                new UIText("Friend List", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("friendlist"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2087,7 +2085,7 @@ var scenes =
             }),
         new Scene("Wrenches",
             [
-                new UIText("Wrenches", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("wrenches"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2106,8 +2104,8 @@ var scenes =
 
                 //new UIText(() => "Total Scrap Boost: x" + formatNumber(game.wrenches.amount.pow(((1 + game.wrenches.upgrades.wrenchScrapBoost.level / 100) * (100 / (1 + Math.pow(2.71828, (-0.000003 * game.wrenches.amount))) - 50))) )/*.toFixed(1)*/, 0.5, 0.7, 0.03, "black"),
 
-                new UIText(() => "Total Merges: " + game.totalMerges + "\nSelf Merges: " + game.selfMerges, 0.5, 0.8, 0.06, "black"),
-                new UIText(() => "Self merges -> Merges done by the player!", 0.5, 0.9, 0.03, "black"),
+                new UIText(() => tt("totalmerges") + ": " + game.totalMerges + "\n" + tt("selfmerges") + ": " + game.selfMerges, 0.5, 0.8, 0.06, "black"),
+                new UIText(() => tt("mergeexplanation"), 0.5, 0.9, 0.03, "black"),
 
                 new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.35, "x2 Merge Mastery progress\nfrom self merges", "table", game.mergeMastery.isUnlocked),
                 new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.45, "x16 brick progress\nfrom self merges", "table2", game.bricks.isUnlocked),
@@ -2124,7 +2122,7 @@ var scenes =
             }),
         new Scene("Statistics",
             [
-                new UIText("Statistics", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("statistics"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2160,11 +2158,8 @@ var scenes =
                 new UIText(() => "Total Merges: " + game.totalMerges, 0.5, 0.75, 0.04, "black"),
                 new UIText(() => "Self Merges: " + game.selfMerges, 0.5, 0.775, 0.04, "black"),
 
-
-                new UIText(() => "Please note: Many of these stats were not\ntracked prior to update 2.2!", 0.5, 0.825, 0.04, "black"),
-
                 new UIButton(0.8, 0.95, 0.3, 0.07, images.buttonEmpty, () => Scene.loadScene("StatCompare")),
-                new UIText("Compare", 0.8, 0.95, 0.06, "white", {
+                new UIText(() => tt("compare"), 0.8, 0.95, 0.06, "white", {
                     bold: true, valign: "middle",
                 }),
             ],
@@ -2175,7 +2170,7 @@ var scenes =
 
         new Scene("StatCompare",
             [
-                new UIText("Statistics", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("statistics"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2218,9 +2213,12 @@ var scenes =
                         "totalwrenches", "totalbeams", "totalaerobeams", "totalangelbeams", "totalreinforcedbeams", "totalglitchbeams", "totalbeamscollected", "totalaerobeamscollected", "totalangelbeamscollected", "totalreinforcedbeamscollected", "totalglitchbeamscollected", "totalquests", "totalmergetokens", "totaldarkscrap", "totalfragments", "totaldarkfragments", "totaltirescollected", "totalgsresets", "playtime", "totaldailyquests", "totalmasterytokens", "totalplasticbags", "totalscrews", "totalscrewscollected", "giftsSent", "giftsReceived"
                     ];
                     var compareNums = [new Decimal(game.highestMasteryLevel), new Decimal(game.highestBarrelReached), new Decimal(game.highestScrapReached), game.stats.totalwrenches, game.stats.totalbeams, game.stats.totalaerobeams, game.stats.totalangelbeams, game.stats.totalreinforcedbeams, game.stats.totalglitchbeams, game.stats.totalbeamscollected, game.stats.totalaerobeamscollected, game.stats.totalangelbeamscollected, game.stats.totalreinforcedbeamscollected, game.stats.totalglitchbeamscollected, game.stats.totalquests, game.stats.totalmergetokens, game.stats.totaldarkscrap, game.stats.totalfragments, game.stats.totaldarkfragments, game.stats.totaltirescollected, game.stats.totalgsresets, game.stats.playtime, game.stats.totaldailyquests, game.stats.totalmasterytokens, game.stats.totalplasticbags, game.stats.totalscrews, game.stats.totalscrewscollected, game.stats.giftsSent, game.stats.giftsReceived, new Decimal(game.totalMerges), new Decimal(game.selfMerges)];
-                    var textDisplays = [
-                        "Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"
-                    ];
+                    var textDisplays =
+                        tto({
+                            default: ["Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"],
+                            de: ["Höchstes Merge Mastery Level", "Höchste Tonne", "Meister Schrott", "Schraubenschlüssel", "Stahlträger", "Aerostahl", "Engelstahl", "Stahlstahl", "Glitchstahl", "Stahlträger gefangen", "Aerostahl gefangen", "Engelstahl gefangen", "Stahlstahl gefangen", "Glitchstahl gefangen", "Quests", "Merge Tokens insgesamt", "Dunkler Schrott", "Fragmente", "Dunkle Fragmente", "Reifen eingesammelt", "GS Resets", "Spielzeit", "Quests", "Mastery Tokens", "Plastiktüten", "Schrauben", "Schrauben eingesammelt", "Geschenke gesendet", "Geschenke erhalten", "Verbindungen", "Eigene Verbindungen"],
+                            ru: ["Наивысший уровень Мастерства Слияний", "Наивысшая Бочк", "Наибольший достигнутый Мусо", "Всего Гаечных Ключей", "Всего Балок", "Всего Аэробалок", "Всего Ангельских Балок", "Всего Усиленных Балок", "Всего Глючных Балок", "Всего Собрано Балок", "Всего Собрано Аэробалок", "Всего Собрано Ангельских Балок", "Всего Собрано Усиленных Балок", "Всего Собрано Глючных Балок", "Всего Квестов завершено", "Всего Токенов Слияний", "Всего Тёмного Мусора", "Всего Фрагментов", "Всего Тёмных Фрагментов", "Всего Собрано Покрышек", "Всего Сбросов ЗМ", "Время Игры", "Всего Ежедневных Квестов завершено", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Всего Слияний", "Самослияний"],
+                    });
                 }
                 else {
                     var compareIDs = [
@@ -2245,7 +2243,7 @@ var scenes =
                 for (i = 0; i < compareIDs.length; i++) {
                     if (i != 18) ctx.fillText(formatNumber(game.stats[compareIDs[i]]), w * 0.01, h * (0.2 + (0.025 * i)));
                 }
-                ctx.fillText(formatSuperTime(game.stats[compareIDs[18]]), w * 0.01, h * (0.2 + (0.025 * 18)));
+                if (comparePage == 0) ctx.fillText(formatSuperTime(game.stats[compareIDs[18]]), w * 0.01, h * (0.2 + (0.025 * 18)));
 
                 ctx.textAlign = "right";
 
@@ -2260,7 +2258,7 @@ var scenes =
                 for (i = 0; i < compareIDs.length; i++) {
                     if (i != 18) ctx.fillText(formatNumber(compareStats[compareIDs[i]]), w * 0.99, h * (0.2 + (0.025 * i)));
                 }
-                ctx.fillText(formatSuperTime(compareStats[compareIDs[18]] != undefined ? compareStats[compareIDs[18]] : 0), w * 0.99, h * (0.2 + (0.025 * 18)));
+                if (comparePage == 0) ctx.fillText(formatSuperTime(compareStats[compareIDs[18]] != undefined ? compareStats[compareIDs[18]] : 0), w * 0.99, h * (0.2 + (0.025 * 18)));
 
                 ctx.textAlign = "center";
 
@@ -2313,7 +2311,7 @@ var scenes =
                     new UIToggleOption(tabYs[0] + 0.5, "game.settings.resetConfirmation", () => tt("resetconfirmation"), "table"),
 
                     // Language
-                    new UIOption(tabYs[0] + 0.6, images.options.barrelQuality, () => {
+                    new UIOption(tabYs[0] + 0.6, images.scenes.daily, () => {
                         switch (game.settings.lang) {
                             case "en":
                                 game.settings.lang = "de";
@@ -2325,7 +2323,7 @@ var scenes =
                                 game.settings.lang = "en";
                                 break;
                         }
-                    }, () => tt("language") + ": " + ["English", "Deutsch", "pyccn"][["en", "de", "ru"].indexOf(game.settings.lang)], "table"),
+                    }, () => tt("language") + ": " + ["English", "Deutsch", "Русский"][["en", "de", "ru"].indexOf(game.settings.lang)], "table"),
 
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {
@@ -2746,7 +2744,7 @@ var scenes =
             }),
         new Scene("Shrine",
             [
-                new UIText("Mythic Shrine", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("shrine"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2764,14 +2762,14 @@ var scenes =
             }),
         new Scene("Factory",
             [
-                new UIText("Scrap Factory", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("scrapfactory"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
 
-                new UIText(() => "Use 2 currencies and some energy from the generator\n to craft new currencies here!", 0.5, 0.8, 0.03, "black"),
+                new UIText(() => tt("factorytext"), 0.5, 0.8, 0.03, "black"),
 
                 new UIText(() => "$images.legendaryScrap$" + Math.round(game.factory.legendaryScrap), 0.2, 0.15, 0.06, "yellow"),
                 new UIText(() => "$images.steelMagnet$" + Math.round(game.factory.steelMagnets), 0.2, 0.175, 0.06, "yellow"),
@@ -2793,7 +2791,7 @@ var scenes =
             }),
         new Scene("Generator",
             [
-                new UIText("Generator", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("generator"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2846,7 +2844,7 @@ var scenes =
             }),
         new Scene("Autobuyers",
             [
-                new UIText("Auto Buyers", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("autobuyers"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2867,13 +2865,13 @@ var scenes =
             }),
         new Scene("Autocollectors",
             [
-                new UIText("Auto Collector Garage", 0.5, 0.1, 0.06, "white", {
+                new UIText(() => tt("autocollectors"), 0.5, 0.1, 0.06, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
-                new UIText(() => "Auto Collectors need energy to run!\nOne collect costs 1 energy.", 0.5, 0.2, 0.04, "white"),
+                new UIText(() => tt("collectortext"), 0.5, 0.2, 0.04, "white"),
 
                 new UIAutoUpgrade(game.collectors.beams, images.beam, 0.3, "Auto: Normal Beams"),
                 new UIAutoUpgrade(game.collectors.aerobeams, images.aerobeam, 0.4, "Auto: Aerobeams", "table2"),
@@ -2890,7 +2888,7 @@ var scenes =
         new Scene("SkillTree",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), {quadratic: true}),
-                new UIText("Skill Tree", 0.5, 0.09, 0.12, "white", {
+                new UIText(() => tt("skilltree"), 0.5, 0.09, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -3069,25 +3067,24 @@ var scenes =
             }),
         new Scene("Supernova",
                 [
-                    new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                    new UIText(() => tt("supernova"), 0.5, 0.05, 0.08, "white", {
                         bold: 900,
                         borderSize: 0.005,
                         font: fonts.title
                     }),
                     new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                    new UIText("You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun,\ncausing a Supernova, destroying the entire\nsolar system and everything in it.\n" +
-                        "Press the button below to learn more.", 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                    new UIText(() => tt("supernovatext"), 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
                     new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIText(() => "Stars: " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200))) + " Golden Scrap", 0.5, 0.6, 0.04, "black"),
+                    new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200))) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
 
-                    new UIText(() => "$images.stardust$ Star Dust: " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
-                    new UIText(() => "$images.aliendust$ Alien Dust: " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
-                    new UIText(() => "$images.fairydust$ Fairy Dust: " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
+                    new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
+                    new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
+                    new UIText(() => "$images.fairydust$ " + tt("fairydust") + ": " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
 
-                    new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
+                    new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + ": " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
 
 
                     new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
@@ -3124,15 +3121,16 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                new UIText(() => "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.", 0.5, 0.175, 0.03, "black"),
+                new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
                 new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
-                new UIText(() => "You will earn:\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
+                new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " Star Dust" +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " Alien Dust" +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " Fairy Dust" +
-                    "\n+1 Star" +
-                    "\n Click the button below to do a Supernova.", 0.5, 0.3, 0.04, "black"),
+                    "\n+1 " + tt("stars"), 0.5, 0.3, 0.04, "black"),
+
+                new UIText(() => tt("anothersupernovatext"), 0.5, 0.6, 0.03, "black"),
 
                 new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {
                     if (confirm("Do you really want to do a Supernova?")) {
@@ -3140,21 +3138,21 @@ var scenes =
                     }
                 }, { quadratic: true }),
             ],
-
+            
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
             }),
         new Scene("EmblemUpgrades",
             [
-                new UIText("Cosmic Emblems", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("emblems"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Supernova"), { quadratic: true }),
 
-                new UIText(() => "$images.cosmicemblem$ Cosmic Emblems: " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
 
                 new UIScrollContainerY([
                     new UIRect(0.5, 0.5, 1, 0.4, "table"),
@@ -3196,7 +3194,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
-                    if (confirm("Do you really want to reset your Star Dust Upgrades? (100% refund)")) {
+                    if (confirm(tt("resetstar"))) {
                         game.supernova.starDust = new Decimal(game.stats.totalstardust);
                         for (u in game.supernova.starDustUpgrades) {
                             game.supernova.starDustUpgrades[u].level = 0;
@@ -3222,7 +3220,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
-                    if (confirm("Do you really want to reset your Alien Dust Upgrades? (100% refund)")) {
+                    if (confirm(tt("resetalien"))) {
                         game.supernova.alienDust = new Decimal(game.stats.totalaliendust);
                         for (u in game.supernova.alienDustUpgrades) {
                             game.supernova.alienDustUpgrades[u].level = 0;
@@ -3248,7 +3246,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
-                    if (confirm("Do you really want to reset your Fairy Dust Upgrades? (100% refund)")) {
+                    if (confirm(tt("resetfairy"))) {
                         game.supernova.fairyDust = new Decimal(game.stats.totalfairydust);
                         for (u in game.supernova.fairyDustUpgrades) {
                             game.supernova.fairyDustUpgrades[u].level = 0;

@@ -876,7 +876,7 @@ var effectDisplayTemplates =
         {
             return function()
             {
-                return this.getEffect(this.level) ? "Unlocked" : "Locked";
+                return this.getEffect(this.level) ? tt("unlocked") : tt("locked");
             }
         },
     unlockEffect: function (prefix, suffix)
@@ -885,7 +885,7 @@ var effectDisplayTemplates =
         let s = suffix !== undefined ? suffix : "";
             return function()
             {
-                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : "Locked";
+                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : tt("locked");
             }
         }
     };

@@ -159,17 +159,82 @@ const trans_en = {
     scrapyardtext2: "\nCosts to next level: <n>x <amount>!",
     scrapyardtext3: "Progress to next: <percent>%!",
 
-    bricks: "Bricks",
-    tires: "Tires",
-    skilltree: "Skill Tree",
-    locked: "Locked",
-    unlocked: "Unlocked",
-
     // WRENCHES
     wrenches: "Wrenches",
     totalmerges: "Total Merges",
     selfmerges: "Self Merges",
     mergeexplanation: "Self merges -> Merges done by the player!",
+
+    // DAILY AND STATS
+    daily: "Daily",
+    currenttime: "Current Time",
+    statistics: "Statistics",
+    compare: "Compare",
+
+    // CURRENCIES
+    bricks: "Bricks",
+    tires: "Tires",
+    skilltree: "Skill Tree",
+    locked: "Locked",
+    unlocked: "Unlocked",
+    screws: "Screws",
+    plasticbags: "Plastic Bags",
+    costs: "Costs",
+    crabs: "Buy a Plastic Bag and save the crabs!",
+
+    // GIFTS
+    gifts: "Gifts",
+    friendcode: "Friend Code",
+    scissors: "Scissors left (to open gifts): ",
+    stamps: "Stamps left (to send gifts): ",
+    sendgift: "Send Gift",
+    gifttext1: "Share it with someone so they can send you a gift!\n(If they like you, but they don't)",
+    gifttext2: "(based on your current amount)",
+    gifttext3: "Message? (Max. 80 characters)",
+    gifttext4: "What is the friend code of the player you want to send it to?",
+
+    giftcopied: "The gift has been copied to your clipboard. Share it with the friend!",
+    friendlist: "Friend List",
+
+    sendtext: "How to send gifts:\n\n1. Make sure you have enough stamps\n2. Select the currency to send (gift content)\n3. Enter the friend code of\nthe person you want to send the gift to (not yours!)\n4. Click the gift and send the code to the friend",
+    opentext: "How to open gifts:\n1. Make sure you have enough scissors\n2. Click the gift\n3. Enter the gift code\nyour friend gave you",
+
+    // TIME MODE
+    timemode: "Race Against Time",
+    timetext: "Race against the time\nDon't let the entire field fill up! Earn cogwheels\nDaily attempts left: ",
+    time: "Time: ",
+
+    // FACTORY
+    shrine: "Mythic Shrine",
+    generator: "Generator",
+    scrapfactory: "Scrap Factory",
+    autobuyers: "Auto Buyers",
+    autocollectors: "Auto Collector Garage",
+
+    factorytext: "Use 2 currencies and some energy from the generator\nto craft new currencies here!",
+    buyertimetext: "New time? (In seconds, e. g. 8)",
+    collectortext: "Auto Collectors need energy to run!\nOne collect costs 1 energy.",
+
+    // SUPERNOVA
+    supernova: "Supernova",
+    stardust: "Star Dust",
+    aliendust: "Alien Dust",
+    fairydust: "Fairy Dust",
+    stars: "Stars",
+    emblems: "Cosmic Emblems",
+
+    supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
+    supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, setting and things earned from Supernovas.",
+    youwillearn: "You will earn: ",
+    anothersupernovatext: "Click the button below to do a Supernova.",
+
+    resetstar: "Do you really want to reset your Star Dust Upgrades? (100% refund)",
+    resetalien: "Do you really want to reset your Alien Dust Upgrades? (100% refund)",
+    resetfairy: "Do you really want to reset your Fairy Dust Upgrades? (100% refund)",
+
+    // TECHNICAL
+    generalerror: "An error has occured:\n<estack>\n\nPlease contact the developer.",
+    oldjs: "Your device might have old JavaScript!",
 }
 
 trans_ru = trans_en;

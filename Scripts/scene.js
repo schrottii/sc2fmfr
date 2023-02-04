@@ -821,7 +821,7 @@ var scenes =
                         return tt("fragmentearn").replace("<tier>", (parseInt(game.scrapUpgrades.betterBarrels.level) + 1)).replace("<amount>", formatNumber(new Decimal(0.1 + game.scrapUpgrades.betterBarrels.level / 10).mul(getFragmentBaseValue())));
                     }
                     if (game.dimension == 1) {
-                        return tt("darkfragmentearn").replace("<tier>", (parseInt(game.scrapUpgrades.betterBarrels.level) + 1)).replace("<amount>", formatNumber(new Decimal(0.1 + game.scrapUpgrades.betterBarrels.level / 10).mul(getDarkFragmentBaseValue())));
+                        return tt("dfragmentearn").replace("<tier>", (parseInt(game.scrapUpgrades.betterBarrels.level) + 1)).replace("<amount>", formatNumber(new Decimal(0.1 + game.scrapUpgrades.betterBarrels.level / 10).mul(getDarkFragmentBaseValue())));
                     }
                 }, 0.5, 0.2, 0.03, "black"),
 

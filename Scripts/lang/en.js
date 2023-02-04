@@ -236,5 +236,3 @@ const trans_en = {
     generalerror: "An error has occured:\n<estack>\n\nPlease contact the developer.",
     oldjs: "Your device might have old JavaScript!",
 }
-
-trans_ru = trans_en;

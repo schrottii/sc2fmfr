@@ -12,15 +12,19 @@
 function tt(text) {
     switch (game.settings.lang) {
         case "en":
-            return trans_en[text] != undefined ? trans_en[text] : "MISSING TEXT";
+            return tten(text);
             break;
         case "de":
-            return trans_de[text] != undefined ? trans_de[text] : trans_en[text];
+            return trans_de[text] != undefined ? trans_de[text] : tten(text);
             break;
         case "ru":
-            return trans_ru[text] != undefined ? trans_ru[text] : trans_en[text];
+            return trans_ru[text] != undefined ? trans_ru[text] : tten(text);
             break;
     }
+}
+
+function tten(text) {
+    return trans_en[text] != undefined ? trans_en[text] : "MISSING TEXT";
 }
 
 // "Translation offer" functon

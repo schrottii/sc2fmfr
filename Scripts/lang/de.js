@@ -497,4 +497,14 @@ const trans_de = {
     fd4: "Phoenix\nMehr Engelstahl",
     fd5: "Orion\nMehr Stahlstahl",
     fd6: "Puppis\nMehr Glitchstahl",
+
+    gen1: "Tankgröße erhöhen",
+    gen2: "Schnelleres herstellen",
+
+    tireclub: "Reifenclub",
+    tireclub2: "Reifen sind heilig",
+    showertime: "Zeit zur nächsten Reifendusche: ",
+    shower1: "Reifendusche ist bereit!",
+    shower2: "Große Reifendusche ist bereit!",
+    shower3: "Massive Reifendusche ist bereit!",
 }

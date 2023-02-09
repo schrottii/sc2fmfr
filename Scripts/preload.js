@@ -362,7 +362,7 @@ var colors = {
 var fonts =
 {
     default: "Work Sans, Arial, sans-serif",
-    title: "Work Sans, Arial, sans-serif"
+    title: "Work Sans, Semibold, sans-serif"
 };
 
 var songs =

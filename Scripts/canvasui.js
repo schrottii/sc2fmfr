@@ -658,7 +658,7 @@ class UITireUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col) {
         super([
             new UIRect(x, y, 1 / 3, 0.225, col ? col : "table"),
-            new UIText(tt(title), x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
+            new UIText(() => tt(title), x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
             new UIButton(x, y, 0.06, 0.06, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("", "$images.tire$", false), x, y + 0.04, 0.05, "black"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.07, 0.03, "black")

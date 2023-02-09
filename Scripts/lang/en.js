@@ -113,7 +113,7 @@ const trans_en = {
     aerobeamfalltext: "Aerobeams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Aerobeam storm occuring instead of\na single Aerobeam, containing <amount2> Beams.",
     angelbeamfalltext: "Angel Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Angel Beam storm occuring instead of\na single Angel Beam, containing <amount2> Beams.",
     reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Reinforced Beam storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
-    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
+    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <taps> to <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
 
     // MASTERY
     "Mastery Upgrades": "Mastery Upgrades",
@@ -497,4 +497,14 @@ const trans_en = {
     fd4: "Phoenix\nMore Angel Beams",
     fd5: "Orion\nMore Reinforced Beams",
     fd6: "Puppis\nMore Glitch Beams",
+
+    gen1: "Increase tank size",
+    gen2: "Faster crafting",
+
+    tireclub: "Tire Club",
+    tireclub2: "We worship the tires",
+    showertime: "Time to next tire shower: ",
+    shower1: "Tire shower is ready!",
+    shower2: "Big tire shower is ready!",
+    shower3: "Massive tire shower is ready!",
 }

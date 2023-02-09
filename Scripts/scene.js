@@ -1012,7 +1012,7 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.highestBarrelReached >= 1000
                 }),
-                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.statistics, () => Scene.loadScene("Statistics"), {
+                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.statistics, () => Scene.loadScene("StatCompare"), {
                     quadratic: true
                 }),
                 new UIButton(0.7, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
@@ -1094,7 +1094,7 @@ var scenes =
         new Scene("MergeMastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
-                new UIText("Merge Mastery", 0.5, 0.1, 0.12, "white", {
+                new UIText(() => tt("Merge Mastery"), 0.5, 0.1, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1102,7 +1102,7 @@ var scenes =
                 new UIGroup(
                     [
                         new UIButton(0.5, 0.9, 0.3, 0.07, images.buttonEmpty, () => game.mergeMastery.prestige.reset()),
-                        new UIText("Prestige", 0.5, 0.9, 0.06, "white", { bold: true, valign: "middle" })
+                        new UIText(() => tt("Prestige"), 0.5, 0.9, 0.06, "white", { bold: true, valign: "middle" })
                     ], () => game.mergeMastery.level > 49)
             ],
             function () {
@@ -1158,9 +1158,9 @@ var scenes =
                     ctx.drawImage(images.screw, w * 0.075, h * 0.55, h * 0.075, h * 0.075);
                     ctx.fillText("+" + formatNumber(game.screws.getScrews(lvl)), w * 0.3, h * 0.575, w * 0.68);
                     ctx.font = (h * 0.025) + "px " + fonts.default;
-                    ctx.fillText("Scrap income", w * 0.3, h * 0.45);
-                    ctx.fillText("Magnets on Level Up", w * 0.3, h * 0.525);
-                    ctx.fillText("Screws on Level Up", w * 0.3, h * 0.6);
+                    ctx.fillText(tt("scrapincome"), w * 0.3, h * 0.45);
+                    ctx.fillText(tt("magnetsonlvlup"), w * 0.3, h * 0.525);
+                    ctx.fillText(tt("screwsonlvlup"), w * 0.3, h * 0.6);
                 }
                 else {
                     ctx.font = (h * 0.07) + "px " + fonts.default;
@@ -1172,8 +1172,8 @@ var scenes =
                     ctx.fillText("+" + formatNumber(game.mergeMastery.getMagnetBonus(lvl), game.settings.numberFormatType, { namesAfter: 1e10 }), w * 0.3, h * 0.58, w * 0.68);
 
                     ctx.font = (h * 0.025) + "px " + fonts.default;
-                    ctx.fillText("Scrap income", w * 0.3, h * 0.495);
-                    ctx.fillText("Magnets on Level Up", w * 0.3, h * 0.62);
+                    ctx.fillText(tt("scrapincome"), w * 0.3, h * 0.495);
+                    ctx.fillText(tt("magnetsonlvlup"), w * 0.3, h * 0.62);
                 }
 
                 if (game.mergeMastery.level > 20 || game.mergeMastery.prestige.level > 0) {
@@ -1193,7 +1193,7 @@ var scenes =
                         ctx.fillRect(w * 0.18, h * 0.73, w * 0.64, h * 0.13);
 
                         ctx.fillStyle = colors[C]["text"];
-                        ctx.fillText("Prestige", w * 0.5, h * 0.69);
+                        ctx.fillText(tt("Prestige"), w * 0.5, h * 0.69);
                         ctx.font = (h * 0.035) + "px " + fonts.default;
                         ctx.textAlign = "left";
                         ctx.textBaseline = "top";
@@ -2169,7 +2169,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Statistics"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
 
                 new UIButton(0.2, 0.95, 0.3, 0.07, images.buttonEmpty, () => {
@@ -2211,7 +2211,7 @@ var scenes =
                         tto({
                             default: ["Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"],
                             de: ["Höchstes Merge Mastery Level", "Höchste Tonne", "Meister Schrott", "Schraubenschlüssel", "Stahlträger", "Aerostahl", "Engelstahl", "Stahlstahl", "Glitchstahl", "Stahlträger gefangen", "Aerostahl gefangen", "Engelstahl gefangen", "Stahlstahl gefangen", "Glitchstahl gefangen", "Quests", "Merge Tokens insgesamt", "Schattenschrott", "Fragmente", "Schattenfragmente", "Reifen eingesammelt", "GS Resets", "Spielzeit", "Quests", "Mastery Tokens", "Plastiktüten", "Schrauben", "Schrauben eingesammelt", "Geschenke gesendet", "Geschenke erhalten", "Verbindungen", "Eigene Verbindungen"],
-                            ru: ["Наивысший уровень Мастерства Слияний", "Наивысшая Бочк", "Наибольший достигнутый Мусо", "Всего Гаечных Ключей", "Всего Балок", "Всего Аэробалок", "Всего Ангельских Балок", "Всего Усиленных Балок", "Всего Глючных Балок", "Всего Собрано Балок", "Всего Собрано Аэробалок", "Всего Собрано Ангельских Балок", "Всего Собрано Усиленных Балок", "Всего Собрано Глючных Балок", "Всего Квестов завершено", "Всего Токенов Слияний", "Всего Тёмного Мусора", "Всего Фрагментов", "Всего Тёмных Фрагментов", "Всего Собрано Покрышек", "Всего Сбросов ЗМ", "Время Игры", "Всего Ежедневных Квестов завершено", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Всего Слияний", "Самослияний"],
+                            ru: ["Наивысший уровень Мастерства Слияний", "Наивысшая Бочк", "Наибольший достигнутый Мусо", "Всего Гаечных Ключей", "Всего Балок", "Всего Аэробалок", "Всего Ангельских Балок", "Всего Усиленных Балок", "Всего Глючных Балок", "Всего Собрано Балок", "Всего Собрано Аэробалок", "Всего Собрано Ангельских Балок", "Всего Собрано Усиленных Балок", "Всего Собрано Глючных Балок", "Всего Квестов завершено", "Всего Токенов Слияний", "Всего Тёмного Мусора", "Всего Фрагментов", "Всего Тёмных Фрагментов", "Всего Собрано Покрышек", "Всего Сбросов ЗМ", "Время Игры", "Всего Ежедневных Квестов завершено", "Всего Токенов Мастерства", "Всего Пластиковых Пакетов", "Всего Винтов", "Всего Винтов Собрано", "Подарков Отправлено", "Подарков Получено", "Всего Слияний", "Самослияний"],
                     });
                 }
                 else {
@@ -2219,7 +2219,12 @@ var scenes =
                         "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks", "totalstardust", "totalaliendust", "totalfairydust"
                     ];
                     var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks, game.stats.totalstardust, game.stats.totalaliendust, game.stats.totalfairydust];
-                    var textDisplays = ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust"];
+                    var textDisplays =
+                        tto({
+                            default: ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust"],
+                            de: ["Legendärer Schrott", "Stahlmagnete", "Blaue Ziegel", "Fischernetze", "Eimer", "Tankauffüllungen", "Sternenstaub", "Alienstaub", "Feenstaub"],
+                            ru: ["Всего Легендарного Мусора", "Всего Стальных Магнитов", "Всего Голубых Кирпичей", "Всего Рыболовных Сетей", "Всего Вёдер", "Всего Заполнений Бака", "Всего Звёздной Пыли", "Всего Инопланетной Пыли", "Всего Волшебной Пыли"],
+                        });
                 }
 
                 var compareIDs2 = [];
@@ -2569,18 +2574,18 @@ var scenes =
             }),
         new Scene("Tire Club",
             [
-                new UIText("Tire Club", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("tireclub"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Tires"), { quadratic: true }),
-                new UIText(() => "We worship the tires", 0.5, 0.2, 0.06),
+                new UIText(() => tt("tireclub2"), 0.5, 0.2, 0.06),
                 new UIText(() => {
-                    if (game.tires.time >= 0) return "Time to next tire shower: " + (game.tires.time).toFixed(1);
-                    if (game.tires.time >= -60) return "Tire shower is ready!";
-                    if (game.tires.time >= -240) return "Big tire shower is ready!";
-                    else return "Massive tire shower is ready!";
+                    if (game.tires.time >= 0) return tt("showertime") + (game.tires.time).toFixed(1);
+                    if (game.tires.time >= -60) return tt("shower1");
+                    if (game.tires.time >= -240) return tt("shower2");
+                    else return tt("shower3");
                 }, 0.5, 0.3, 0.035),
 
                 new UIButton(0.5, 0.5, 0.25, 0.25, images.tire, () => {
@@ -2811,8 +2816,8 @@ var scenes =
                 new UIText(() => "Use 5 Glitch Beams to\nfill up the energy tank a bit!", 0.6, 0.4, 0.04, "black"),
                 new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "orange"),
 
-                new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.factoryTankSize, images.upgrades.reinforcedBricks, 0.8, "Increase tank size"),
-                new UIBrickUpgrade(game.bricks.upgrades.fasterCrafting, images.upgrades.reinforcedBricks, 0.9, "Faster crafting", "table2"),
+                new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.factoryTankSize, images.upgrades.reinforcedBricks, 0.8, "gen1"),
+                new UIBrickUpgrade(game.bricks.upgrades.fasterCrafting, images.upgrades.reinforcedBricks, 0.9, "gen2", "table2"),
 
             ],
             function () {
@@ -3201,12 +3206,12 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.4, 0.6, "sd1", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
-                new UIPlanet(0.15, 0.4, "sd2", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
-                new UIPlanet(0.75, 0.5, "sd3", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
-                new UIPlanet(0.85, 0.2, "sd4", game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
-                new UIPlanet(0.8, 0.8, "sd5", game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
-                new UIPlanet(0.2, 0.85, "sd6", game.supernova.starDustUpgrades.caelum, "$images.stardust$", images.constellations.caelum, 0.075),
+                new UIPlanet(0.4, 0.6, () => tt("sd1"), game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
+                new UIPlanet(0.15, 0.4, () => tt("sd2"), game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
+                new UIPlanet(0.75, 0.5, () => tt("sd3"), game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
+                new UIPlanet(0.85, 0.2, () => tt("sd4"), game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.8, 0.8, () => tt("sd5"), game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
+                new UIPlanet(0.2, 0.85, () => tt("sd6"), game.supernova.starDustUpgrades.caelum, "$images.stardust$", images.constellations.caelum, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -3229,10 +3234,10 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.2, 0.8, "ad1", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
-                new UIPlanet(0.8, 0.2, "ad2", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
-                new UIPlanet(0.5, 0.6, "ad3", game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
-                new UIPlanet(0.7, 0.85, "ad4", game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
+                new UIPlanet(0.2, 0.8, () => tt("ad1"), game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
+                new UIPlanet(0.8, 0.2, () => tt("ad2"), game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
+                new UIPlanet(0.5, 0.6, () => tt("ad3"), game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
+                new UIPlanet(0.7, 0.85, () => tt("ad4"), game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -3254,12 +3259,12 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.4, 0.6, "fd1", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
-                new UIPlanet(0.85, 0.2, "fd2", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
-                new UIPlanet(0.3, 0.4, "fd3", game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
-                new UIPlanet(0.6, 0.45, "fd4", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
-                new UIPlanet(0.35, 0.8, "fd5", game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
-                new UIPlanet(0.7, 0.85, "fd6", game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
+                new UIPlanet(0.4, 0.6, () => tt("fd1"), game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
+                new UIPlanet(0.85, 0.2, () => tt("fd2"), game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
+                new UIPlanet(0.3, 0.4, () => tt("fd3"), game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
+                new UIPlanet(0.6, 0.45, () => tt("fd4"), game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
+                new UIPlanet(0.35, 0.8, () => tt("fd5"), game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
+                new UIPlanet(0.7, 0.85, () => tt("fd6"), game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";

@@ -7,7 +7,7 @@ const trans_de = {
     "s": "s",
     "ms": "ms",
     "µs": "µs",
-    "Insanely Fast!": "Unglaublich flott!",
+    "Insanely fast!": "Unglaublich flott!",
     "Better Barrels": "Bessere Tonnen",
     "Faster Barrels": "Schnellere Tonnen",
     "bbdesc": "Tonnen erscheinen 1 Stufe höher",
@@ -187,7 +187,11 @@ const trans_de = {
     friendcode: "Freundescode",
     scissors: "Scheren (zum öffnen): ",
     stamps: "Stempel (zum schicken): ",
-    sendgift: "Geschenk senden",
+    sendgiftnone: "Geschenk senden (???)",
+    sendgiftmagnets: "Geschenk senden (Magnete)",
+    sendgiftmergetoken: "Geschenk senden (Merge Tokens)",
+    sendgiftmasterytoken: "Geschenk senden (Mastery Tokens)",
+    sendgiftwrench: "Geschenk senden (Schraubenschlüssel)",
     gifttext1: "Teile den Freundescode mit jemanden,\ndamit sie dir was schicken können!\n(Wenn sie dich mögen, tun sie aber nicht)",
     gifttext2: "(basierend auf Vorräten)",
     gifttext3: "Nachricht? (Max. 80 Zeichen)",
@@ -236,7 +240,8 @@ const trans_de = {
     generalerror: "Ein Fehler ist aufgetreten:\n<estack>\n\nBitte kontaktiere den Entwickler.",
     oldjs: "Dein Gerät hat möglicherweise sehr altes JavaScript!",
 
-
+    "Unlocked everything!": "Alles freigeschaltet!",
+    "Unlock": "Freischalten",
 
 
 

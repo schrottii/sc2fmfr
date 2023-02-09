@@ -19,13 +19,6 @@ var sendTo = "";
 var giftType = "none";
 var giftContent;
 var giftAmount = 0;
-var giftNames = {
-    "none": "???",
-    "magnets": "Magnets",
-    "mergetoken": "Merge Tokens",
-    "masterytoken": "Mastery Tokens",
-    "wrench": "Wrenches"
-}
 
 var worth1, worth2;
 var multiConvert = 1;
@@ -1041,10 +1034,10 @@ var scenes =
 
                 new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
 
-                new UIPlanet(0.5, 0.5, "planet1", game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
-                new UIPlanet(0.7, 0.7, "planet2", game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
-                new UIPlanet(0.3, 0.325, "planet3", game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
-                new UIPlanet(0.65, 0.2, "planet4", game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
+                new UIPlanet(0.5, 0.5, () => tt("planet1"), game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
+                new UIPlanet(0.7, 0.7, () =>  tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
+                new UIPlanet(0.3, 0.325, () =>  tt("planet3"), game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
+                new UIPlanet(0.65, 0.2, () =>  tt("planet4"), game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
                 new UIPlanet(0.2, 0.825, () => tt("planet5").replace("<amount>", formatNumber(fallingMagnetWorth())), game.solarSystem.upgrades.mars, "$images.fragment$", images.solarSystem.mars, 0.04, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS), //whoever did not put a , there before I hate U!!!
 
                 new UIButton(0.6, 0.5, 0.05, 0.05, images.buttonMaxAll, () => maxSunUpgrades(),
@@ -1065,10 +1058,10 @@ var scenes =
         new Scene("OuterSolarSystem",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
-                new UIPlanet(0.4, 0.6, "planet6", game.solarSystem.upgrades.jupiter, "$images.mergeToken$", images.solarSystem.jupiter, 0.075, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER),
-                new UIPlanet(0.8, 0.7, "planet7", game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
-                new UIPlanet(0.8, 0.25, "planet8", game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
-                new UIPlanet(0.25, 0.3, "planet9", game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
+                new UIPlanet(0.4, 0.6, () => tt("planet6"), game.solarSystem.upgrades.jupiter, "$images.mergeToken$", images.solarSystem.jupiter, 0.075, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER),
+                new UIPlanet(0.8, 0.7, () =>  tt("planet7"), game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
+                new UIPlanet(0.8, 0.25, () =>  tt("planet8"), game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
+                new UIPlanet(0.25, 0.3, () =>  tt("planet9"), game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
 
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("ThirdSolarSystem"), {
                     quadratic: true,
@@ -1086,9 +1079,9 @@ var scenes =
         new Scene("ThirdSolarSystem",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("OuterSolarSystem"), { quadratic: true }),
-                new UIPlanet(0.4, 0.6, "planet10", game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
-                new UIPlanet(0.8, 0.7, "planet11", game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4),
-                new UIPlanet(0.8, 0.15, "planet12", game.solarSystem.upgrades.posus, "$images.magnet$", images.solarSystem.posus, 0.12, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.4, 0.6, () => tt("planet10"), game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.8, 0.7, () =>  tt("planet11"), game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.8, 0.15, () =>  tt("planet12"), game.solarSystem.upgrades.posus, "$images.magnet$", images.solarSystem.posus, 0.12, () => game.solarSystem.upgrades.neptune.level > 4),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -1873,7 +1866,7 @@ var scenes =
                 new UIText(() => tt("stamps") + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
 
                 // Send Gift
-                new UIText(() => tt("sendgift") + " (" + giftNames[giftType] + ")", 0.5, 0.325, 0.07),
+                new UIText(() => tt("sendgift" + giftType), 0.5, 0.325, 0.07),
                 new UIText(() => (giftType == "magnets" ? "Up to " : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
                 new UIText(tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 

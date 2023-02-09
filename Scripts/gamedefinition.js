@@ -293,15 +293,18 @@ var game =
             ),
             earth: new GoldenScrapUpgrade(
                 level => new Decimal([1e5, 250e9, 2e12, 10e12, 50e12, 1e17, 1e24, 5e24, 7.7777e25, 1e27, 1e40, 1e100, 1e150, "1e500"][level]),
-                level => ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade",
-                    "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts", "the final\ntree upgrade"][level],
+                level => tto({
+                    default: ["Nothing", "Buy Max", "Mars", "+20 Levels for\n3rd Magnet Upgrade", "Jupiter", "Saturn", "Uranus", "Neptune", "The Skill Tree", "+200 Levels for\n5th Brick Upgrade", "Angel Beams", "Second Dimension", "Scrap Factory", "Gifts", "the final\ntree upgrade"],
+                    de: ["Nichts", "Max. kaufen", "Mars", "+20 Level für\ndas 3. Magnetupg.", "Jupiter", "Saturn", "Uranus", "Neptun", "Upgrade-Baum", "+200 Level für\n das 5. Ziegelupgrade", "Engelstahl", "Zweite Dimension", "Fabrik", "Geschenke", "das letzte\nupgrade"],
+                    ru: ["Ничего", "Покупку по Максимуму", "Марс", "+20 Уровней для 3-го\nУлучшения Магнитов", "Юпитер", "Сатурн", "Уран", "Нептун", "Дерево Навыков", "+200 Уровней для 5-го\nУлучшения Кирпичей", "Ангельские Балки", "Второе Измерение", "Фабрику Мусора", "Подарки", "финальное улучшение дерева"]
+                })[level],
                 {
                     maxLevel: 14,
                     getEffectDisplay: function () {
                         if (this.level === this.maxLevel) {
-                            return "Unlocked everything!";
+                            return tt("Unlocked everything!");
                         }
-                        return "Unlock " + this.getEffect(this.level + 1);
+                        return tt("Unlock") + " " + this.getEffect(this.level + 1);
                     }
                 }
             ),

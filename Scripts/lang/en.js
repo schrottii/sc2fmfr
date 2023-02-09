@@ -7,7 +7,7 @@ const trans_en = {
     "s": "s",
     "ms": "ms",
     "µs": "µs",
-    "Insanely Fast!": "Insanely Fast!",
+    "Insanely fast!": "Insanely Fast!",
     "Better Barrels": "Better Barrels",
     "Faster Barrels": "Faster Barrels",
     "bbdesc": "Barrels spawn 1 Tier higher",
@@ -187,7 +187,11 @@ const trans_en = {
     friendcode: "Friend Code",
     scissors: "Scissors left (to open gifts): ",
     stamps: "Stamps left (to send gifts): ",
-    sendgift: "Send Gift",
+    sendgiftnone: "Send Gift (???)",
+    sendgiftmagnets: "Send Gift (Magnets)",
+    sendgiftmergetoken: "Send Gift (Merge Tokens)",
+    sendgiftmasterytoken: "Send Gift (Mastery Tokens)",
+    sendgiftwrench: "Send Gift (Wrenches)",
     gifttext1: "Share it with someone so they can send you a gift!\n(If they like you, but they don't)",
     gifttext2: "(based on your current amount)",
     gifttext3: "Message? (Max. 80 characters)",
@@ -236,7 +240,8 @@ const trans_en = {
     generalerror: "An error has occured:\n<estack>\n\nPlease contact the developer.",
     oldjs: "Your device might have old JavaScript!",
 
-
+    "Unlocked everything!": "Unlocked everything!",
+    "Unlock": "Unlock",
 
 
 

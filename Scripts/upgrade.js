@@ -578,8 +578,8 @@ class CosmicEmblemUpgrade extends ScrapUpgrade {
     }
 
     isUnlocked() {
-        if (game.supernova.stars.gte(1)) return true;
-        return false;
+        if (game.supernova.stars.gte(Math.max(0, this.stars - 2))) return true;
+        return true;
     }
     getStarRequirement() {
         return this.stars;

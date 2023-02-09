@@ -109,11 +109,11 @@ const trans_en = {
     "(ON)": "(ON)",
 
     // BEAMS
-    beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance> % chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",
-    aerobeamfalltext: "Aerobeams fall every <interval> seconds and are worth <value>.\nThere's a <chance> % chance of an Aerobeam storm occuring instead of\na single Aerobeam, containing <amount2> Beams.",
-    angelbeamfalltext: "Angel Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance> % chance of an Angel Beam storm occuring instead of\na single Angel Beam, containing <amount2> Beams.",
-    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance> % chance of a Reinforced Beam storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
-    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance> % chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
+    beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",
+    aerobeamfalltext: "Aerobeams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Aerobeam storm occuring instead of\na single Aerobeam, containing <amount2> Beams.",
+    angelbeamfalltext: "Angel Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Angel Beam storm occuring instead of\na single Angel Beam, containing <amount2> Beams.",
+    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Reinforced Beam storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
+    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
 
     // MASTERY
     "Mastery Upgrades": "Mastery Upgrades",
@@ -224,7 +224,7 @@ const trans_en = {
     emblems: "Cosmic Emblems",
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
-    supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, setting and things earned from Supernovas.",
+    supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",
     youwillearn: "You will earn: ",
     anothersupernovatext: "Click the button below to do a Supernova.",
 
@@ -287,7 +287,7 @@ const trans_en = {
     planet2: "Mercury\nIncrease Golden\nScrap Boost",
     planet3: "Venus\nIncrease Double\nSpawn Chance",
     planet4: "Earth\nUnlock new Stuff",
-    planet5: "Mars\nFalling Magnets\n",
+    planet5: "Mars\nFalling Magnets\n<amount> each",
 
     planet6: "Jupiter\nCheaper Magnet Upgrades",
     planet7: "Saturn\nAuto Merge",
@@ -469,4 +469,27 @@ const trans_en = {
     em15: "Get 10 Mythus\nLevels at once",
     em16: "Earn 20% More Dust",
     em17: "Keep Auto Collectors\nafter Supernova",
+    em18: "Start Bricks\nafter Supernova",
+
+    // Star Dust
+    sd1: "Ara\nMore GS",
+    sd2: "Aries\nMore Magnets",
+    sd3: "Corvus\nMore Tires",
+    sd4: "Volans\nMore Fragments",
+    sd5: "Vulpecula\nFaster Merge Mastery",
+    sd6: "Caelum\nMore Bricks",
+
+    // Alien Dust
+    ad1: "Cetus\nFaster Crafting",
+    ad2: "Triangulum\nMore Merge Tokens",
+    ad3: "Volans 2\nMore Dark Fragments",
+    ad4: "Aquila\nHigher Better Barrels max.",
+
+    // Fairy Dust
+    fd1: "Cancer\nMore Plastic Bags",
+    fd2: "Pyxis\nMore Beams",
+    fd3: "Antlia\nMore Aerobeams",
+    fd4: "Phoenix\nMore Angel Beams",
+    fd5: "Orion\nMore Reinforced Beams",
+    fd6: "Puppis\nMore Glitch Beams",
 }

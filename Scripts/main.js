@@ -643,7 +643,7 @@ function getReinforcedTapsNeeded() {
 }
 
 function getBrickIncrease() {
-    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks);
+    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks) + (1 * applyUpgrade(game.supernova.starDustUpgrades.caelum));
 }
 
 function getFragmentBaseValue() {

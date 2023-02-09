@@ -1866,7 +1866,7 @@ var game =
                     game.tires.upgrades[row][col].level = 0;
                 }
             }
-            game.bricks.amount = new Decimal(0);
+            game.bricks.amount = applyUpgrade(game.supernova.cosmicUpgrades.startBricks);
             game.bricks.productionLevel = 0;
             for (let upg of Object.keys(game.bricks.upgrades)) {
                 game.bricks.upgrades[upg].level = 0;
@@ -2061,6 +2061,11 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 15),
+            startBricks: new CosmicEmblemUpgrade(level => new Decimal(1),
+                level => new Decimal("1e500").pow(level * 2).pow(level), {
+                maxLevel: 10,
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, 20),
         },
         starDustUpgrades: {
             ara: new StarDustUpgrade(
@@ -2096,6 +2101,13 @@ var game =
                 level => new Decimal(1).add(0.05 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.percentStandard(2, "")
+                }
+            ),
+            caelum: new StarDustUpgrade(
+                level => new Decimal(160).add(340 * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+")
                 }
             ),
         },

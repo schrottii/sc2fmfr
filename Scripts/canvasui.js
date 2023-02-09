@@ -751,7 +751,7 @@ class UISkillTreeUpgrade extends UIGroup{
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), {quadratic: true}),
-            new UIText(tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());
@@ -763,7 +763,7 @@ class UISkillTreeUpgradeNoBG extends UIGroup{
     {
         super([
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
-            new UIText(tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());
@@ -775,7 +775,7 @@ class UIEmblemUpgrade extends UIGroup {
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
-            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
             new UIText(() => upg.getStarRequirement() + " star" + (upg.stars > 1 ? "s" : ""), x, y - 0.065, 0.025, "black", { bold: true, valign: "bottom" }),
             new UIText(() => "$images.cosmicemblem$" + upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
@@ -789,7 +789,7 @@ class UIPlanet extends UIGroup
     {
         let s = size ? size : 0.05;
         super([
-            new UIText(tt(title), x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
+            new UIText(typeof(title) == "string" ? tt(title) : title, x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
             new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),

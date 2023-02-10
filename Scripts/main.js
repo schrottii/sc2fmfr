@@ -700,6 +700,19 @@ function fillTank() {
     }
 }
 
+function dustReset(upgradeType, dustType, dustStat) {
+    let remDust = new Decimal(0);
+    for (u in game.supernova[upgradeType]) {
+        if (game.supernova[upgradeType][u].lock != true) game.supernova[upgradeType][u].level = 0;
+        else {
+            for (i = 0; i < game.supernova[upgradeType][u].level; i++) {
+                remDust = remDust.add(game.supernova[upgradeType][u].getPrice(i));
+            }
+        }
+    }
+    game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
+}
+
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
@@ -1905,6 +1918,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
                     game.supernova.starDustUpgrades[k].level = loadVal(loadObj.supernova.starDustUpgrades[k].level, 0);
+                    game.supernova.starDustUpgrades[k].lock = loadVal(loadObj.supernova.starDustUpgrades[k].lock, false);
                 });
             }
             else {
@@ -1915,6 +1929,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.alienDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.alienDustUpgrades).forEach(k => {
                     game.supernova.alienDustUpgrades[k].level = loadVal(loadObj.supernova.alienDustUpgrades[k].level, 0);
+                    game.supernova.alienDustUpgrades[k].lock = loadVal(loadObj.supernova.alienDustUpgrades[k].lock, false);
                 });
             }
             else {
@@ -1925,6 +1940,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.fairyDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.fairyDustUpgrades).forEach(k => {
                     game.supernova.fairyDustUpgrades[k].level = loadVal(loadObj.supernova.fairyDustUpgrades[k].level, 0);
+                    game.supernova.fairyDustUpgrades[k].lock = loadVal(loadObj.supernova.fairyDustUpgrades[k].lock, false);
                 });
             }
             else {

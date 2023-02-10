@@ -3198,10 +3198,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetstar"))) {
-                        game.supernova.starDust = new Decimal(game.stats.totalstardust);
-                        for (u in game.supernova.starDustUpgrades) {
-                            if (game.supernova.starDustUpgrades[u].lock != true) game.supernova.starDustUpgrades[u].level = 0;
-                        }
+                        dustReset("starDustUpgrades", "starDust", "totalstardust");
                     }
                 }, { quadratic: true }),
 
@@ -3225,10 +3222,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetalien"))) {
-                        game.supernova.alienDust = new Decimal(game.stats.totalaliendust);
-                        for (u in game.supernova.alienDustUpgrades) {
-                            if (game.supernova.alienDustUpgrades[u].lock != true) game.supernova.alienDustUpgrades[u].level = 0;
-                        }
+                        dustReset("alienDustUpgrades", "alienDust", "totalaliendust");
                         updateBetterBarrels();
                     }
                 }, { quadratic: true }),
@@ -3251,10 +3245,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetfairy"))) {
-                        game.supernova.fairyDust = new Decimal(game.stats.totalfairydust);
-                        for (u in game.supernova.fairyDustUpgrades) {
-                            if (game.supernova.fairyDustUpgrades[u].lock != true) game.supernova.fairyDustUpgrades[u].level = 0;
-                        }
+                        dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),
 

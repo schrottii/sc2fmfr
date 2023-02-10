@@ -94,7 +94,7 @@ const trans_en = {
     // GOLDEN SCRAP
     goldenscrap: "Golden Scrap",
     gsgain: "Reset your Scrap Upgrades\nand current Scrap to get\n+<amount> Golden Scrap",
-    gsboost: "Each Golden Scrap yields +<value>% more Scrap.\nClick the Button below to reset.",
+    gsboost: "Each Golden Scrap yields +<value> more Scrap.\nClick the Button below to reset.",
     gsreset: "Do you want to reset for <amount> Golden Scrap?",
 
     // BEAMS
@@ -107,6 +107,8 @@ const trans_en = {
     glitchbeams: "Glitch Beams",
     selected: "Selected",
     "(ON)": "(ON)",
+    converttto: "to ",
+    convertworth: "<amount> are worth <amount2>",
 
     // BEAMS
     beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",
@@ -181,6 +183,7 @@ const trans_en = {
     plasticbags: "Plastic Bags",
     costs: "Costs",
     crabs: "Buy a Plastic Bag and save the crabs!",
+    cogwheels: "Cog Wheels",
 
     // GIFTS
     gifts: "Gifts",
@@ -196,6 +199,11 @@ const trans_en = {
     gifttext2: "(based on your current amount)",
     gifttext3: "Message? (Max. 80 characters)",
     gifttext4: "What is the friend code of the player you want to send it to?",
+
+    giftcontent: "Select Gift Content",
+    opengift: "Open Gift",
+    to: "To: ",
+    upto: "Up to ",
 
     giftcopied: "The gift has been copied to your clipboard. Share it with the friend!",
     friendlist: "Friend List",
@@ -390,6 +398,11 @@ const trans_en = {
     factory3: "Produce Blue Bricks",
     factory4: "Produce Buckets",
     factory5: "Produce Fishing Nets",
+    factory1e: "+1 Legendary Scrap\n-10 Energy",
+    factory2e: "+1 Steel Magnet\n-20 Energy",
+    factory3e: "+1 Blue Brick\n-15 Energy",
+    factory4e: "+1 Bucket\n-30 Energy",
+    factory5e: "+1 Fishing Net\n-60 Energy",
 
     // Autos
     auto1: "Auto: Better Barrels",

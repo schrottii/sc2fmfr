@@ -1586,7 +1586,7 @@ var game =
                 level => new Decimal(10),
                 level => 1,
                 {
-                    getEffectDisplay: () => "+1 Legendary Scrap\n-10 Energy",
+                    getEffectDisplay: () => tt("factory1e"),
                     onBuy: () => {
                         game.factory.time = 5 * craftingMulti();
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
@@ -1597,7 +1597,7 @@ var game =
                 level => new Decimal(20),
                 level => 1,
                 {
-                    getEffectDisplay: () => "+1 Steel Magnet\n-20 Energy",
+                    getEffectDisplay: () => tt("factory2e"),
                     onBuy: () => {
                         game.factory.time = 10 * craftingMulti();
                         game.factory.steelMagnets = game.factory.steelMagnets.add(1);
@@ -1608,7 +1608,7 @@ var game =
                 level => new Decimal(15),
                 level => 1,
                 {
-                    getEffectDisplay: () => "+1 Blue Brick\n-15 Energy",
+                    getEffectDisplay: () => tt("factory3e"),
                     onBuy: () => {
                         game.factory.time = 45 * craftingMulti();
                         game.factory.blueBricks = game.factory.blueBricks.add(1);
@@ -1619,7 +1619,7 @@ var game =
                 level => new Decimal(30),
                 level => 1,
                 {
-                    getEffectDisplay: () => "+1 Bucket\n-30 Energy",
+                    getEffectDisplay: () => tt("factory4e"),
                     onBuy: () => {
                         game.factory.time = 30 * craftingMulti();
                         game.factory.buckets = game.factory.buckets.add(1);
@@ -1630,7 +1630,7 @@ var game =
                 level => new Decimal(60),
                 level => 1,
                 {
-                    getEffectDisplay: () => "+1 Fishing Net\n-60 Energy",
+                    getEffectDisplay: () => tt("factory5e"),
                     onBuy: () => {
                         game.factory.time = 60 * craftingMulti();
                         game.factory.fishingNets = game.factory.fishingNets.add(1);
@@ -1869,8 +1869,8 @@ var game =
                     game.tires.upgrades[row][col].level = 0;
                 }
             }
-            game.bricks.amount = applyUpgrade(game.supernova.cosmicUpgrades.startBricks);
-            game.bricks.productionLevel = 0;
+            game.bricks.amount = new Decimal(0);
+            game.bricks.productionLevel = applyUpgrade(game.supernova.cosmicUpgrades.startBricks);
             for (let upg of Object.keys(game.bricks.upgrades)) {
                 game.bricks.upgrades[upg].level = 0;
             }
@@ -2065,9 +2065,9 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 15),
             startBricks: new CosmicEmblemUpgrade(level => new Decimal(1),
-                level => new Decimal("1e500").pow(level * 2).pow(level), {
-                maxLevel: 10,
-                getEffectDisplay: effectDisplayTemplates.unlock()
+                level => 1000 * level + (level > 10 ? 4000 * (level - 10) : 0), {
+                maxLevel: 20,
+                getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "L")
             }, 20),
         },
         starDustUpgrades: {

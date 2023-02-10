@@ -94,7 +94,7 @@ const trans_de = {
     // GOLDEN SCRAP
     goldenscrap: "Goldener Schrott",
     gsgain: "Verliere deine Schrottupgrades\nund Schrott für\n+<amount> Goldenen Schrott",
-    gsboost: "Jeder Goldener Schrott gibt +<value>% mehr Schrott.\nKlicke den Knopf zum zurücksetzen.",
+    gsboost: "Jeder Goldener Schrott gibt +<value> mehr Schrott.\nKlicke den Knopf zum zurücksetzen.",
     gsreset: "Möchtest du für <amount> Goldenen Schrott zurücksetzen?",
 
     // BEAMS
@@ -107,6 +107,8 @@ const trans_de = {
     glitchbeams: "Glitchstahl",
     selected: "Ausgewählt",
     "(ON)": "(AN)",
+    convertto: "zu ",
+    convertworth: "<amount> sind <amount2> wert",
 
     // BEAMS
     beamfalltext: "Stahlträger fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlträger enthält.",
@@ -180,7 +182,8 @@ const trans_de = {
     screws: "Schraubenschlüssel",
     plasticbags: "Plastiktüten",
     costs: "Kosten",
-    crabs: "Kaufe eine Plastiktüte und rette die Krabben!",
+    crabs: "Kaufe eine Plastiktüte\nund rette die Krabben!",
+    cogwheels: "Zahnräder",
 
     // GIFTS
     gifts: "Geschenke",
@@ -196,6 +199,11 @@ const trans_de = {
     gifttext2: "(basierend auf Vorräten)",
     gifttext3: "Nachricht? (Max. 80 Zeichen)",
     gifttext4: "Was ist der Freundescode von dem Freund, zu dem du es schicken möchtest?",
+
+    giftcontent: "Wähle den Inhalt aus",
+    opengift: "Geschenk öffnen",
+    to: "Für: ",
+    upto: "Bis zu ",
 
     giftcopied: "Das Geschenk wurde in die Zwischenablage kopiert. Teile es mit dem Freund!",
     friendlist: "Freundesliste",
@@ -390,6 +398,11 @@ const trans_de = {
     factory3: "Blaue Ziegelsteine",
     factory4: "Eimer",
     factory5: "Fischernetz",
+    factory1e: "+1 Legendärer Schrott\n-10 Energie",
+    factory2e: "+1 Stahlmagnete\n-20 Energie",
+    factory3e: "+1 Blaue Ziegel\n-15 Energie",
+    factory4e: "+1 Eimer\n-30 Energie",
+    factory5e: "+1 Fischernetze\n-60 Energie",
 
     // Autos
     auto1: "Auto: Bessere Tonnen",

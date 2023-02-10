@@ -97,6 +97,7 @@ var images =
     stardust: loadImage("Images/Currencies/stardust.png"),
     aliendust: loadImage("Images/Currencies/aliendust.png"),
     fairydust: loadImage("Images/Currencies/fairydust.png"),
+    language: loadImage("Images/Buttons/language.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

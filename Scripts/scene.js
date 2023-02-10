@@ -703,7 +703,7 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIText(() => tt("timetext") + game.cogwheels.timeModeAttempts, 0.5, 0.2, 0.04, "black"),
-                new UIText(() => "$images.cogwheel$ Cog Wheels: " + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
+                new UIText(() => "$images.cogwheel$ " + tt("cogwheels") + ": " + formatNumber(game.cogwheels.amount), 0.1, 0.38, 0.05, "black", { halign: "left", valign: "middle" }),
                 new UICogwheelUpgrade(game.cogwheels.upgrades.scrapBoost, images.upgrades.moreScrap, 0.65, "cog1"),
                 new UICogwheelUpgrade(game.cogwheels.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.75, "cog2", "table2"),
             ],
@@ -1454,8 +1454,8 @@ var scenes =
                 new UIText(() => "$images.angelbeam$ " + tt("angelbeams") + ": " + formatNumber(game.angelbeams.amount), 0.5, 0.28, 0.06, "yellow"),
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow"),
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow"),
-                new UIText(() => tt("selected") + ["Beams", "Aerobeams", "Angel Beams", "Reinforced Beams", "Glitch Beams"][selectedConvert] + " to " + ["Beams", "Aerobeams", "Angel Beams", "Reinforced Beams", "Glitch Beams"][selectedConvertTo], 0.5, 0.4, 0.04, "yellow"),
-                new UIText(() => worth1 + " is worth " + worth2, 0.5, 0.425, 0.04, "yellow"),
+                new UIText(() => tt("selected") + ": " + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] + "\n" + tt("convertto") + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo], 0.5, 0.4, 0.04, "yellow"),
+                new UIText(() => tt("convertworth").replace("<amount>", worth1).replace("<amount2>", worth2), 0.5, 0.435, 0.04, "yellow"),
 
 
                 new UIButton(0.1, 0.5, 0.1, 0.1, images.beam, () => selectedConvert = 0, { quadratic: true }),
@@ -1866,9 +1866,9 @@ var scenes =
                 new UIText(() => tt("stamps") + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
 
                 // Send Gift
-                new UIText(() => tt("sendgift" + giftType), 0.5, 0.325, 0.07),
-                new UIText(() => (giftType == "magnets" ? "Up to " : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
-                new UIText(tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
+                new UIText(() => tt("sendgift" + giftType), 0.5, 0.325, 0.05),
+                new UIText(() => (giftType == "magnets" ? tt("upto") : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
+                new UIText(() => tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 
                 new UIButton(0.1, 0.525, 0.05, 0.05, images.setmessage, () => {
                     giftMsg = prompt(tt("gifttext3")).substr(0, 80);
@@ -1892,7 +1892,7 @@ var scenes =
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
 
-                new UIText(() => "To: " + sendTo, 0.8, 0.45, 0.05),
+                new UIText(() => tt("to") + sendTo, 0.8, 0.45, 0.05),
 
                 new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
                     if (giftType != "none") {
@@ -1938,7 +1938,7 @@ var scenes =
                     }
                 }, { quadratic: true, isVisible: () => giftType != "none" }),
 
-                new UIText(() => "Select Gift Content", 0.5, 0.595, 0.04),
+                new UIText(() => tt("giftcontent"), 0.5, 0.595, 0.04),
                 new UIButton(0.2, 0.65, 0.075, 0.075, images.magnet, () => {
                     giftType = "magnets"
                     giftAmount = new Decimal(game.magnets).div(1000);
@@ -1957,7 +1957,7 @@ var scenes =
                 }, { quadratic: true }),
 
                 // Open Gift
-                new UIText(() => "Open Gift", 0.5, 0.725, 0.07),
+                new UIText(() => tt("opengift"), 0.5, 0.725, 0.07),
 
                 new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
@@ -2310,7 +2310,7 @@ var scenes =
                     new UIToggleOption(tabYs[0] + 0.5, "game.settings.resetConfirmation", () => tt("resetconfirmation"), "table"),
 
                     // Language
-                    new UIOption(tabYs[0] + 0.6, images.scenes.daily, () => {
+                    new UIOption(tabYs[0] + 0.6, images.language, () => {
                         switch (game.settings.lang) {
                             case "en":
                                 game.settings.lang = "de";

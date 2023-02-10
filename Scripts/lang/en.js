@@ -56,8 +56,8 @@ const trans_en = {
     "cp2": "Mod of VeproGames' Scrap 2 Fanmade ©2019",
     "cp3": "Mod SC2FMFR created by Schrottii ©2021",
     "cp4": "Unauthorized mods of this mod are prohibited!",
-    "credit": "Credit to all barrel makers, idea givers, bug finders, beta testers and whoever made the coconut image",
-    "thanks": "Special thanks to elmenda452, DaGame,\nЛюбитель Майнкрафта, DoorHandleSalesMan and MCGamer3005",
+    "credit": "Credit to all barrel makers, idea givers, bug finders,\nbeta testers and whoever made the coconut image",
+    "thanks": "Special thanks to elmenda452, DaGame,\nЛюбитель Майнкрафта, DoorHandleSalesMan\nand MCGamer3005",
     "Libraries used": "Libraries used",
 
     "Export and Import": "Export and Import",

@@ -713,6 +713,41 @@ function dustReset(upgradeType, dustType, dustStat) {
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
 }
 
+function hardReset() {
+    game.supernova.reset();
+    for (i in game.stats) {
+        game.stats[i] = new Decimal(0);
+    }
+    game.ms = [];
+    game.wrenches.amount = new Decimal(0);
+    for (u in game.wrenches.upgrades) {
+        game.wrenches.upgrades[u].level = 0;
+    }
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    for (u in game.barrelMastery.upgrades) {
+        game.barrelMastery.upgrades[u].level = 0;
+    }
+    game.supernova.stars = new Decimal(0);
+    game.supernova.starDust = new Decimal(0);
+    game.supernova.alienDust = new Decimal(0);
+    game.supernova.fairyDust = new Decimal(0);
+    game.supernova.cosmicEmblems = new Decimal(0);
+    for (u in game.supernova.starDustUpgrades) {
+        game.supernova.starDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.alienDustUpgrades) {
+        game.supernova.alienDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.fairyDustUpgrades) {
+        game.supernova.fairyDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.cosmicUpgrades) {
+        game.supernova.cosmicUpgrades[u].level = 0;
+    }
+
+    alert("Hard resetted successfully!");
+}
+
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();

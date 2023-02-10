@@ -2452,7 +2452,20 @@ var scenes =
 
                     new UIText(() => tt("Libraries used") + ":\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.6, 0.04, "white"),
 
-            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.7 }),
+                    new UIOption(tabYs[3] + 0.8, images.buttonReset, () => {
+                        if (confirm("Do you really want to do a Hard Reset? You will lose EVERYTHING")) {
+                            if (confirm("If you press Yes, you will lose EVERYTHING. Only do this if you really want to lose everything!!!")) {
+                                if (confirm("Maybe export your save code before deleting everything, because if you press Yes again, everything will be gone")) {
+                                    if (confirm("Are you 100% sure?")) {
+                                        hardReset();
+                                    }
+                                }
+                            }
+                        }
+                    }, "HARD RESET\n(Reset Everything)", "table"),
+
+
+            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.9 }),
                 /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
                         quadratic: true,

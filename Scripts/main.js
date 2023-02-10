@@ -685,6 +685,21 @@ function getTankSize() {
     return new Decimal(20 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
 }
 
+function fillTank() {
+    if (game.factory.tank.lt(getTankSize())) {
+        if (game.glitchbeams.amount.gte(new Decimal(5))) {
+            game.glitchbeams.amount = game.glitchbeams.amount.sub(new Decimal(5));
+            let amount = 20;
+            game.factory.tank = game.factory.tank.add(20);
+            if (game.factory.tank.gt(getTankSize())) {
+                amount -= game.factory.tank.sub(getTankSize());
+                game.stats.totaltanks = game.stats.totaltanks.add(new Decimal(amount));
+                game.factory.tank = getTankSize();
+            }
+        }
+    }
+}
+
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();

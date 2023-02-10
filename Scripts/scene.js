@@ -350,7 +350,7 @@ var scenes =
                     isVisible: () => !timeMode,
                     quadratic: true
                 }),
-                new UIButton(0.75, 0.73, 0.05, 0.05, images.ezUpgrade, function () {
+                new UIButton(0.875, 0.73, 0.05, 0.05, images.ezUpgrade, function () {
                     let GoTo = prompt(tt("barrelgoto"));
                     GoTo = Math.round(GoTo - 1);
                     if (GoTo < 0) {
@@ -2446,12 +2446,13 @@ var scenes =
                         "\n" + tt("cp3"), 0.5, tabYs[3] + 0.1, 0.035, "white"),
                     new UIText(() => tt("cp4"), 0.5, tabYs[3] + 0.2, 0.035, "white"),
 
-                    new UIText(() => tt("specialcredit"), 0.5, tabYs[3] + 0.3, 0.035, "white"),
-                    new UIText(gameVersionText, 0.5, tabYs[3] + 0.4, 0.05, "white"),
+                    new UIText(() => tt("credit"), 0.5, tabYs[3] + 0.3, 0.035, "white"),
+                    new UIText(() => tt("thanks"), 0.5, tabYs[3] + 0.4, 0.035, "white"),
+                    new UIText(gameVersionText, 0.5, tabYs[3] + 0.5, 0.05, "white"),
 
-                    new UIText(() => tt("Libraries used") + ":\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.5, 0.04, "white"),
+                    new UIText(() => tt("Libraries used") + ":\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.6, 0.04, "white"),
 
-            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.6 }),
+            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.7 }),
                 /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
                         quadratic: true,
@@ -2798,19 +2799,17 @@ var scenes =
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
 
                 new UIButton(0.5, 0.5, 0.07, 0.07, images.fillthetank, () => {
-                    if (game.factory.tank.lt(getTankSize())) {
-                        if (game.glitchbeams.amount.gte(new Decimal(5))) {
-                            game.glitchbeams.amount = game.glitchbeams.amount.sub(new Decimal(5));
-                            let amount = 20;
-                            game.factory.tank = game.factory.tank.add(20);
-                            if (game.factory.tank.gt(getTankSize())) {
-                                amount -= game.factory.tank.sub(getTankSize());
-                                game.stats.totaltanks = game.stats.totaltanks.add(new Decimal(amount));
-                                game.factory.tank = getTankSize();
-                            }
-                        }
-                    }
+                    fillTank();
                 }, { quadratic: true }),
+                new UIButton(0.8, 0.5, 0.07, 0.07, images.fillthetank, () => {
+                    while (game.glitchbeams.amount.gte(5) && game.factory.tank.lt(getTankSize())) {
+                        fillTank();
+                    }
+                }, {
+                    quadratic: true,
+                    isVisible: () => game.supernova.stars.gt(0)
+                }),
+                new UIText(() => "MAX", 0.82, 0.51, 0.04, "white", { isVisible: () => game.supernova.stars.gt(0) }),
 
                 new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => "Use 5 Glitch Beams to\nfill up the energy tank a bit!", 0.6, 0.4, 0.04, "black"),

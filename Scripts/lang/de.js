@@ -56,7 +56,8 @@ const trans_de = {
     "cp2": "Mod von VeproGames Scrap 2 Fanmade ©2019",
     "cp3": "Mod SC2FMFR gemacht von Schrottii ©2021",
     "cp4": "Das modden dieser Mod ohne Erlaubnis ist untersagt!",
-    "specialcredit": "Danke an alle Tonnenersteller, Vorschlägemacher,\nFehlerfinder, Betatester und wer auch immer\ndie Kokosnuss gemacht hat",
+    "credit": "Danke an alle Tonnenersteller, Vorschlägemacher,\nFehlerfinder, Betatester und wer auch immer\ndie Kokosnuss gemacht hat",
+    "thanks": "Besonderen Dank an elmenda452, DaGame,\nDoorHandleSalesMan und MCGamer3005",
     "Libraries used": "Libraries benutzt",
 
     "Export and Import": "Export und Import",
@@ -88,8 +89,8 @@ const trans_de = {
 
     // BARREL FRAGMENTS
     barrelfragments: "Fragmente",
-    fragmentearn: "Fragmente können durch das zerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Fragmente.",
-    dfragmentearn: "Schattenfragmente können durch das zerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Schattenfragmente.",
+    fragmentearn: "Fragmente können durch das\nzerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Fragmente.",
+    dfragmentearn: "Schattenfragmente können durch das\nzerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Schattenfragmente.",
 
     // GOLDEN SCRAP
     goldenscrap: "Goldener Schrott",
@@ -345,10 +346,10 @@ const trans_de = {
     beam7: "Mehr Magnete",
 
     aero1: "Aerostahl erscheint häufiger",
-    aero2: "Fallende Magnete fallen langsamer",
-    aero3: "Fallende Magnete sind mehr wert",
-    aero4: "Chance auf noch einen Reifen\nwenn einer eingesammelt wird",
-    aero5: "Schalte eine neue Art Sturm frei!",
+    aero2: "Fallende Magnete fallen\nlangsamer",
+    aero3: "Fallende Magnete\nsind mehr wert",
+    aero4: "Chance auf noch einen\nReifen, wenn einer\neingesammelt wird",
+    aero5: "Schalte eine neue\nArt Sturm frei!",
     aero6: "Reifen sind mehr wert",
 
     angel1: "Engelstahl ist mehr wert",
@@ -366,9 +367,9 @@ const trans_de = {
     re6: "Mehr Schattenfragmente",
 
     glitch1: "Glitchstahl ist mehr wert",
-    glitch2: "Chance, einen Stahlträger zu wiederholen,\nwenn er aus dem Bildschirm fällt",
+    glitch2: "Chance, einen Stahlträger zu\nwiederholen, wenn er aus\ndem Bildschirm fällt",
     glitch3: "Chance auf mehr Stahlträger\n(alle Sorten)",
-    glitch4: "Chance auf einen goldenen Stahlträger,\nder alle gibt",
+    glitch4: "Chance auf einen goldenen\nStahlträger, der alle gibt",
     glitch5: "Erhöht den min. Wert\nvon Glitchstahl",
 
     // Plastic Bags

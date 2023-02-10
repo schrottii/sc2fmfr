@@ -2688,7 +2688,7 @@ var scenes =
                     ctx.textBaseline = "top";
                     ctx.textAlign = "center";
                     ctx.font = (w * 0.045) + "px " + fonts.default;
-                    ctx.fillText(game.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0")), cx, y + w * 0.02);
+                    ctx.fillText(game.settings.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0")), cx, y + w * 0.02);
                     ctx.fillStyle = "white";
                     Utils.drawEscapedText(ctx, game.milestones.achievements[game.milestones.tooltip].getDescriptionDisplay(), cx, y + w * 0.065, 0.0225, w * 0.6);
                 }

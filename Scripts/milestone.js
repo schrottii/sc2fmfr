@@ -12,7 +12,7 @@ class Milestone
 
     getDescriptionDisplay()
     {
-        if (game.lang == "en") {
+        if (game.settings.lang == "en") {
             return typeof this.description === "function" ? this.description() : this.description
         }
         else {

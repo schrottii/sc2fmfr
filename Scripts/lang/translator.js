@@ -27,6 +27,18 @@ function tten(text) {
     return trans_en[text] != undefined ? trans_en[text] : "MISSING TEXT";
 }
 
+// Achievement
+function tta(type, text) {
+    switch (game.settings.lang) {
+        case "de":
+            return trans_de.ms[text] != undefined ? trans_de.ms[text][type] : tten(text);
+            break;
+        case "ru":
+            return trans_ru.ms[text] != undefined ? trans_ru.ms[text][type] : tten(text);
+            break;
+    }
+}
+
 // "Translation offer" functon
 function tto(offers = { default: "ERROR" }) {
     switch (game.settings.lang) {

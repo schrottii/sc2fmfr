@@ -57,7 +57,7 @@ const trans_en = {
     "cp3": "Mod SC2FMFR created by Schrottii ©2021",
     "cp4": "Unauthorized mods of this mod are prohibited!",
     "credit": "Credit to all barrel makers, idea givers, bug finders, beta testers and whoever made the coconut image",
-    "thanks": "Special thanks to elmenda452, DaGame,\nDoorHandleSalesMan and MCGamer3005",
+    "thanks": "Special thanks to elmenda452, DaGame,\nЛюбитель Майнкрафта, DoorHandleSalesMan and MCGamer3005",
     "Libraries used": "Libraries used",
 
     "Export and Import": "Export and Import",
@@ -233,7 +233,9 @@ const trans_en = {
     stardust: "Star Dust",
     aliendust: "Alien Dust",
     fairydust: "Fairy Dust",
+    star: "Star",
     stars: "Stars",
+    stars2: "Stars",
     emblems: "Cosmic Emblems",
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",

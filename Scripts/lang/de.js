@@ -57,7 +57,7 @@ const trans_de = {
     "cp3": "Mod SC2FMFR gemacht von Schrottii ©2021",
     "cp4": "Das modden dieser Mod ohne Erlaubnis ist untersagt!",
     "credit": "Danke an alle Tonnenersteller, Vorschlägemacher,\nFehlerfinder, Betatester und wer auch immer\ndie Kokosnuss gemacht hat",
-    "thanks": "Besonderen Dank an elmenda452, DaGame,\nDoorHandleSalesMan und MCGamer3005",
+    "thanks": "Besonderen Dank an elmenda452, DaGame,\nЛюбитель Майнкрафта, DoorHandleSalesMan und MCGamer3005",
     "Libraries used": "Libraries benutzt",
 
     "Export and Import": "Export und Import",
@@ -214,7 +214,7 @@ const trans_de = {
     
     // TIME MODE
     timemode: "Rennen gegen die Zeit",
-    timetext: "Renne gegen die Zeit\nLass das Feld sich nicht komplett auffüllen! Verdiene Zahnräder\nVersuche übrig: ",
+    timetext: "Renne gegen die Zeit\nLass das Feld sich nicht komplett auffüllen!\nVerdiene Zahnräder\nVersuche übrig: ",
     time: "Zeit: ",
 
     // FACTORY
@@ -233,10 +233,12 @@ const trans_de = {
     stardust: "Sternenstaub",
     aliendust: "Alienstaub",
     fairydust: "Feenstaub",
+    star: "Stern",
     stars: "Sterne",
+    stars2: "Sterne",
     emblems: "Kosmische Embleme",
 
-    supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören. Dies verursacht eine Supernova,\ndie das gesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
+    supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",
     youwillearn: "Du wirst erhalten: ",
     anothersupernovatext: "Drücke den Knopf, um die Supernova durchzuführen.",
@@ -321,14 +323,14 @@ const trans_de = {
 
     // Tires
     tire11: "Schnellere Tonnen",
-    tire12: "Schnellere Ziegel",
+    tire12: "Schnellere\nZiegelsteine",
     tire13: "Schnellere\nMerge Mastery",
 
     tire21: "Reifenwert\npro Reifen",
     tire22: "Reifenchance\npro Verbindung",
-    tire23: "Schnellere Quests",
+    tire23: "Schnellere\nQuests",
 
-    tire31: "Mehr\nFallende Magnete",
+    tire31: "Mehr\nFallende\nMagnete",
     tire32: "Schnellere\nAuto Verbindung",
     tire33: "Mehr GS",
 
@@ -429,7 +431,7 @@ const trans_de = {
     tree4: "Mehr Ziegelsteine",
     tree5: "Merge Quests\nUpgrade:\nFallende Magnete",
     tree6: "Mehr\nxReifen pro\neinsammeln",
-    tree7: "Magnet\nUpgrade:\nZiegelsteingeschwindigkeit",
+    tree7: "Magnet\nUpgrade:\nZiegelstein-\ngeschwindigkeit",
     tree8: "Mehr Fragmente",
     tree9: "Mehr Schrott 2",
     tree10: "EZ Upgrader\nfür Merge\nQuests",
@@ -444,7 +446,7 @@ const trans_de = {
     tree19: "Spawngeschwindigkeit und Venus\nerhöhen Fragmente",
     tree20: "Tonnen Mastery",
     tree21: "Effiziente Energie\nAutokäufer\nverbrauchen weniger",
-    tree22: "Höheres max. level\nfür das 4. Upgrade\nvon jedem Stahltypen",
+    tree22: "Höheres max. level\nfür das 4. Upgrade\nvon jeder Stahlsorte",
     tree23: "Erneuerbare Energie\n+1 Energie immer wenn\nStahl fällt",
     tree24: "Stahlträger Umwandler",
     tree25: "Plastiktüten",
@@ -461,12 +463,12 @@ const trans_de = {
     tree36: "Mehr Magnete",
     tree37: "Mehr Reifen-\nUpgrades",
     tree38: "Posus beeinflusst\nSchattenfragmente",
-    tree39: "Fallende Magnete sind\nmehr wert",
+    tree39: "Fallende Magnete\nsind mehr\nwert",
     tree40: "Zeitmodus",
     tree41: "Sterntonnen zählen\nfür täglich",
-    tree42: "Schnelleres herstellen",
-    tree43: "Lustiger Glitchstahl\n(und x2 wert)",
-    tree44: "Höheres max. für\ndas 2. Schattenschrott upg.",
+    tree42: "Schnelleres\nherstellen",
+    tree43: "Lustiger\nGlitchstahl\n(und x2 wert)",
+    tree44: "Höheres max.\nfür das 2.\nSchattenschrottupg.",
     tree45: "Supernova",
 
     // Supernova

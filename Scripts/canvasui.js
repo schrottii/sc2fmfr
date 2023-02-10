@@ -776,7 +776,7 @@ class UIEmblemUpgrade extends UIGroup {
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
             new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
-            new UIText(() => upg.getStarRequirement() + " star" + (upg.stars > 1 ? "s" : ""), x, y - 0.065, 0.025, "black", { bold: true, valign: "bottom" }),
+            new UIText(() => upg.getStarRequirement() + " " + (upg.stars > 4 ? tt("stars2") : upg.stars > 1 ? tt("stars") : tt("star")), x, y - 0.075, 0.025, "black", { bold: true, valign: "bottom" }),
             new UIText(() => "$images.cosmicemblem$" + upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
         ], () => upg.isUnlocked());

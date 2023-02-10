@@ -114,7 +114,7 @@ class MilestoneNotificaion extends GameNotification
             if (game.milestones.achievements[i].id == milestone) milestone = game.milestones.achievements[i];
         }
         super(tt("not_achievement"));
-        this.title = game.settings.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0"));
+        this.title = game.settings.lang == "en" ? milestone.title : tta(0, ("" + milestone.id).padStart(3, "0"));
         this.iid = milestone.imageId;
     }
 

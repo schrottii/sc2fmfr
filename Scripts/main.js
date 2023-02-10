@@ -714,18 +714,25 @@ function dustReset(upgradeType, dustType, dustStat) {
 }
 
 function hardReset() {
-    game.supernova.reset();
     for (i in game.stats) {
         game.stats[i] = new Decimal(0);
     }
-    game.ms = [];
     game.wrenches.amount = new Decimal(0);
     for (u in game.wrenches.upgrades) {
         game.wrenches.upgrades[u].level = 0;
     }
+
     game.barrelMastery.masteryTokens = new Decimal(0);
     for (u in game.barrelMastery.upgrades) {
         game.barrelMastery.upgrades[u].level = 0;
+    }
+    game.barrelMastery.b = Array(1000).fill(0);
+    game.barrelMastery.bl = Array(1000).fill(0);
+
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    game.cogwheels.amount = new Decimal(0);
+    for (u in game.cogwheels.upgrades) {
+        game.cogwheels.upgrades[u].level = 0;
     }
     game.supernova.stars = new Decimal(0);
     game.supernova.starDust = new Decimal(0);
@@ -744,6 +751,22 @@ function hardReset() {
     for (u in game.supernova.cosmicUpgrades) {
         game.supernova.cosmicUpgrades[u].level = 0;
     }
+    for (u in game.shrine) {
+        game.shrine[u].level = 0;
+    }
+    game.supernova.reset("norew");
+
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    game.mergeQuests.scrapyard = 0;
+
+    game.highestMasteryLevel = 0;
+    game.highestScrapReached = new Decimal(0);
+    game.tires.totalMerges = 0;
+
+    game.selfMerges = 0;
+    game.totalMerges = 0;
+
+    game.ms = [];
 
     alert("Hard resetted successfully!");
 }

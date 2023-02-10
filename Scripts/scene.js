@@ -3200,17 +3200,17 @@ var scenes =
                     if (confirm(tt("resetstar"))) {
                         game.supernova.starDust = new Decimal(game.stats.totalstardust);
                         for (u in game.supernova.starDustUpgrades) {
-                            game.supernova.starDustUpgrades[u].level = 0;
+                            if (game.supernova.starDustUpgrades[u].lock != true) game.supernova.starDustUpgrades[u].level = 0;
                         }
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.4, 0.6, () => tt("sd1"), game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
-                new UIPlanet(0.15, 0.4, () => tt("sd2"), game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
-                new UIPlanet(0.75, 0.5, () => tt("sd3"), game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
-                new UIPlanet(0.85, 0.2, () => tt("sd4"), game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
-                new UIPlanet(0.8, 0.8, () => tt("sd5"), game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
-                new UIPlanet(0.2, 0.85, () => tt("sd6"), game.supernova.starDustUpgrades.caelum, "$images.stardust$", images.constellations.caelum, 0.075),
+                new UIConstellation(0.4, 0.6, "sd1", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
+                new UIConstellation(0.15, 0.4, "sd2", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
+                new UIConstellation(0.75, 0.5, "sd3", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
+                new UIConstellation(0.85, 0.2, "sd4", game.supernova.starDustUpgrades.volans, "$images.stardust$", images.constellations.volans, 0.075),
+                new UIConstellation(0.8, 0.8, "sd5", game.supernova.starDustUpgrades.vulpecula, "$images.stardust$", images.constellations.vulpecula, 0.075),
+                new UIConstellation(0.2, 0.85, "sd6", game.supernova.starDustUpgrades.caelum, "$images.stardust$", images.constellations.caelum, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -3227,16 +3227,16 @@ var scenes =
                     if (confirm(tt("resetalien"))) {
                         game.supernova.alienDust = new Decimal(game.stats.totalaliendust);
                         for (u in game.supernova.alienDustUpgrades) {
-                            game.supernova.alienDustUpgrades[u].level = 0;
+                            if (game.supernova.alienDustUpgrades[u].lock != true) game.supernova.alienDustUpgrades[u].level = 0;
                         }
                         updateBetterBarrels();
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.2, 0.8, () => tt("ad1"), game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
-                new UIPlanet(0.8, 0.2, () => tt("ad2"), game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
-                new UIPlanet(0.5, 0.6, () => tt("ad3"), game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
-                new UIPlanet(0.7, 0.85, () => tt("ad4"), game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
+                new UIConstellation(0.2, 0.8, "ad1", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
+                new UIConstellation(0.8, 0.2, "ad2", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
+                new UIConstellation(0.5, 0.6, "ad3", game.supernova.alienDustUpgrades.volans2, "$images.aliendust$", images.constellations.volans, 0.075),
+                new UIConstellation(0.7, 0.85, "ad4", game.supernova.alienDustUpgrades.aquila, "$images.aliendust$", images.constellations.aquila, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -3253,17 +3253,17 @@ var scenes =
                     if (confirm(tt("resetfairy"))) {
                         game.supernova.fairyDust = new Decimal(game.stats.totalfairydust);
                         for (u in game.supernova.fairyDustUpgrades) {
-                            game.supernova.fairyDustUpgrades[u].level = 0;
+                            if (game.supernova.fairyDustUpgrades[u].lock != true) game.supernova.fairyDustUpgrades[u].level = 0;
                         }
                     }
                 }, { quadratic: true }),
 
-                new UIPlanet(0.4, 0.6, () => tt("fd1"), game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
-                new UIPlanet(0.85, 0.2, () => tt("fd2"), game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
-                new UIPlanet(0.3, 0.4, () => tt("fd3"), game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
-                new UIPlanet(0.6, 0.45, () => tt("fd4"), game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
-                new UIPlanet(0.35, 0.8, () => tt("fd5"), game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
-                new UIPlanet(0.7, 0.85, () => tt("fd6"), game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
+                new UIConstellation(0.4, 0.6, "fd1", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
+                new UIConstellation(0.85, 0.2, "fd2", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
+                new UIConstellation(0.3, 0.4, "fd3", game.supernova.fairyDustUpgrades.antlia, "$images.fairydust$", images.constellations.antlia, 0.075),
+                new UIConstellation(0.6, 0.45, "fd4", game.supernova.fairyDustUpgrades.phoenix, "$images.fairydust$", images.constellations.phoenix, 0.075),
+                new UIConstellation(0.35, 0.8, "fd5", game.supernova.fairyDustUpgrades.orion, "$images.fairydust$", images.constellations.orion, 0.075),
+                new UIConstellation(0.7, 0.85, "fd6", game.supernova.fairyDustUpgrades.puppis, "$images.fairydust$", images.constellations.puppis, 0.075),
             ],
             function () {
                 ctx.fillStyle = "black";

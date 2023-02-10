@@ -797,6 +797,20 @@ class UIPlanet extends UIGroup
     }
 }
 
+class UIConstellation extends UIGroup { // Almost the same. just the lock
+    constructor(x, y, title, upg, suffix, image, size, isVisible) {
+        let s = size ? size : 0.05;
+        super([
+            new UIText(() => tt(title), x, y - 0.005 - size / 2, 0.0325, "white", { valign: "bottom" }),
+            new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), { quadratic: true }),
+            new UIButton(x + size * 1.4, y, s / 2, s / 2, images.zoomIn, () => upg.lock = true, { quadratic: true, isVisible: () => upg.lock != true }),
+            new UIButton(x + size * 1.4, y - size / 2, s / 2, s / 2, images.locked, () => upg.lock = false, { quadratic: true, isVisible: () => upg.lock == true }),
+            new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),
+        ], isVisible !== undefined ? isVisible : () => true);
+    }
+}
+
 class UIToggleOption extends UIGroup
 {
     constructor(y, prop, desc, color)

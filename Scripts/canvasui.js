@@ -183,10 +183,12 @@ class UIScrollContainer2D extends UIGroup
         {
             ui.update();
         }
-        if (mousePressed && this.isVisiible())
+        if (mousePressed && this.isVisiible() &&
+            mouseY > this.y * h && mouseY < (this.y + this.h) * h) // lord blessed me with insane coding skills
         {
             let mx = Math.abs(mouseMoveX) > 1 ? mouseMoveX : 0;
             let my = Math.abs(mouseMoveY) > 1 ? mouseMoveY : 0;
+
             this.scrollX -= this.axis.x ? mx / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
             this.scrollY -= this.axis.y ? my / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
             if(this.axis.x)
@@ -421,7 +423,6 @@ class UICheckbox extends UIElement
             eval(this.prop + " = !" + this.prop);
             this.customClick();
         }
-        playMusic();
     }
 
     render(ctx)
@@ -429,7 +430,6 @@ class UICheckbox extends UIElement
         if (this.isVisible())
         {
             let coords = this.absCoords();
-
             ctx.drawImage(this.checked ? this.imgChecked : this.imgUnchecked, coords.x, coords.y, coords.width, coords.height);
         }
     }
@@ -527,10 +527,10 @@ class UIUpgrade extends UIGroup
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), {quadratic: true}),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), {quadratic: true}),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", {halign: "right"}),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", {halign: "right", valign: "middle", bold: true}),
-                new UIText(() => desc + "\n" +
+                new UIText(() => tt(desc) + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", {halign: "left", valign: "middle"})
             ], isVisible);
     }
@@ -546,7 +546,7 @@ class UIUpgrade2 extends UIGroup {
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y + 0.025, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => {
                     if (game.factory.time < 0) {
-                        return desc + "\n" + upg.getEffectDisplay();
+                        return tt(desc) + "\n" + upg.getEffectDisplay();
                     }
                     else {
                         return "Cooldown: " + game.factory.time.toFixed(1);
@@ -562,15 +562,15 @@ class UIUpgrade3 extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), { quadratic: true }),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(doround), { quadratic: true }),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
-                new UIText(() => desc + "\n" +
+                new UIText(() => tt(desc) + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
                 new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom", isVisible: () => upg.time != "b" }),
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
                 new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
-                    let att = prompt("New time? (In seconds, e. g. 8)");
+                    let att = prompt(tt("buyertimetext"));
                     if (parseInt(att) > 0) upg.setTime = att;
                     if (game.ms.includes(207) == false) {
                         game.ms.push(207);
@@ -586,19 +586,24 @@ class UIFriend extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.0975, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => { if (game.gifts.friends[id] != undefined) sendTo = game.gifts.friends[id].code }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => {
+                    if (game.gifts.friends[id] != undefined) {
+                        sendTo = game.gifts.friends[id].code;
+                        Scene.loadScene("Gifts");
+                    }
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
                 new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
                     let friendCode = prompt("Friend code?");
                     let friendName = prompt("Friend name?");
-                    game.gifts.friends.push({code: friendCode, name: friendName});
+                    if (friendCode != "" && friendCode != null && friendName != "" && friendName != null)game.gifts.friends.push({code: friendCode, name: friendName});
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
                 new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => {
-                    let newFr = prompt("Friend name?");
+                    let newFr = prompt("Friend name? (Not code)");
                     if(newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
                 new UIButton(0.6, y + 0.02, 0.04, 0.04, images.change, () => {
-                    let newFr = prompt("Friend code?");
+                    let newFr = prompt("Friend code?").substr(0, 5);
                     if (newFr != null && newFr != false) game.gifts.friends[id].code = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
 
@@ -630,9 +635,9 @@ class UIMergeTokenUpgrade extends UIGroup
     {
         super([
             new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-            new UIButton(0.1, y, 0.07, 0.07, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, true) : upg.buy(true), {quadratic: true}),
+            new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, true) : upg.buy(true), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", {bold: true, halign: "right", valign: "middle"}),
-            new UIText(() => desc + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
+            new UIText(() => tt(desc) + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
             new UIText(() => upg.getLevelDisplay(), 0.975, y - 0.045, 0.04, "black", {
                 halign: "right",
                 bold: true
@@ -653,8 +658,8 @@ class UITireUpgrade extends UIGroup{
     constructor(upg, img, title, x, y, col) {
         super([
             new UIRect(x, y, 1 / 3, 0.225, col ? col : "table"),
-            new UIText(title, x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
-            new UIButton(x, y, 0.06, 0.06, img, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
+            new UIText(() => tt(title), x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
+            new UIButton(x, y, 0.06, 0.06, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("", "$images.tire$", false), x, y + 0.04, 0.05, "black"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.07, 0.03, "black")
         ]);
@@ -745,8 +750,8 @@ class UISkillTreeUpgrade extends UIGroup{
     {
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
-            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), {quadratic: true}),
-            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), {quadratic: true}),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());
@@ -758,7 +763,7 @@ class UISkillTreeUpgradeNoBG extends UIGroup{
     {
         super([
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
-            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
             new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
         ], () => upg.isUnlocked());
@@ -770,8 +775,8 @@ class UIEmblemUpgrade extends UIGroup {
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
             new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
-            new UIText(title, x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
-            new UIText(() => upg.getStarRequirement() + " star" + (upg.stars > 1 ? "s" : ""), x, y - 0.065, 0.025, "black", { bold: true, valign: "bottom" }),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
+            new UIText(() => upg.getStarRequirement() + " " + (upg.stars > 4 ? tt("stars2") : upg.stars > 1 ? tt("stars") : tt("star")), x, y - 0.075, 0.025, "black", { bold: true, valign: "bottom" }),
             new UIText(() => "$images.cosmicemblem$" + upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
         ], () => upg.isUnlocked());
@@ -784,8 +789,22 @@ class UIPlanet extends UIGroup
     {
         let s = size ? size : 0.05;
         super([
-            new UIText(title, x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
-            new UIButton(x, y, s, s, image, () => hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
+            new UIText(typeof(title) == "string" ? tt(title) : title, x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
+            new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), {quadratic: true}),
+            new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),
+        ], isVisible !== undefined ? isVisible : () => true);
+    }
+}
+
+class UIConstellation extends UIGroup { // Almost the same. just the lock
+    constructor(x, y, title, upg, suffix, image, size, isVisible) {
+        let s = size ? size : 0.05;
+        super([
+            new UIText(() => tt(title), x, y - 0.005 - size / 2, 0.0325, "white", { valign: "bottom" }),
+            new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, false) : upg.buy(), { quadratic: true }),
+            new UIButton(x + size * 1.4, y, s / 2, s / 2, images.zoomIn, () => upg.lock = true, { quadratic: true, isVisible: () => upg.lock != true }),
+            new UIButton(x + size * 1.4, y - size / 2, s / 2, s / 2, images.locked, () => upg.lock = false, { quadratic: true, isVisible: () => upg.lock == true }),
             new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),
         ], isVisible !== undefined ? isVisible : () => true);
@@ -799,7 +818,7 @@ class UIToggleOption extends UIGroup
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
             new UICheckbox(0.1, y, 0.07, 0.07, prop, {
-                quadratic: true
+                quadratic: true,
             }),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",

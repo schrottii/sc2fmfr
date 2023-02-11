@@ -1,17 +1,28 @@
 class Milestone
 {
-    constructor(id, title, imageId, description, isUnlocked, fontColor) {
+    constructor(id, title, imageId, description, isUnlocked, langConfig, fontColor) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.isUnlocked = isUnlocked;
         this.imageId = imageId;
-        this.fontColor = fontColor ? fontColor: "white";
+        this.langConfig = langConfig;
+        this.fontColor = fontColor ? fontColor : "white";
     }
 
     getDescriptionDisplay()
     {
-        return typeof this.description === "function" ? this.description() : this.description;
+        if (game.settings.lang == "en") {
+            return typeof this.description === "function" ? this.description() : this.description
+        }
+        else {
+            let desc = tta(1, ("" + game.milestones.highlighted).padStart(3, "0"));
+            if (this.langConfig == undefined) return desc;
+            for (let lc = 0; lc < this.langConfig.length; lc += 2) {
+                desc = desc.replace(this.langConfig[lc], eval(this.langConfig[lc + 1]));
+            }
+            return desc;
+        }
     }
 
     static check(createNotifs)

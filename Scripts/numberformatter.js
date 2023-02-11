@@ -106,13 +106,18 @@ function formatNumber(x, type, cfg)
     {
         return x.m.toFixed(x.e < 10000 ? 2 : 0) + "e" + (x.e >= 1e4 ? formatNumber(x.e, game.settings.numberFormatType, {namesAfter: 1e9}) : x.e.toFixed(0));
     }
-    if(type === 10)
-    {
+    if (type === 10) {
         let m = (x.m * Math.pow(10, x.e % 3)).toFixed(sigDigits);
         let e = Math.floor(x.e / 3) * 3;
 
-        let prefixesLong = ["", "Kilo", "Mega", "Giga", "Tera", "Peta", "Exa", "Zetta", "Yotta", "Ronna", "Quecca"];
-        let prefixes = ["K", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q"];
+        let prefixesLong = tto({
+            default: ["", "Kilo", "Mega", "Giga", "Tera", "Peta", "Exa", "Zetta", "Yotta", "Ronna", "Quecca"],
+            ru: ["", "Кило", "Мега", "Гига", "Тера", "Пета", "Экса", "Зетта", "Йотта", "Ронна", "Кветта"]
+        });
+        let prefixes = tto({
+            default: ["K", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q"],
+            ru: ["к", "М", "Г", "Т", "П", "Э", "З", "Й", "Р", "К"]
+        });
 
         if(e <= prefixesLong.length * 3 - 3)
         {
@@ -131,8 +136,16 @@ function formatNumber(x, type, cfg)
         }
     }
     if (type === 11) {
-        if (x > 0) return "yes";
-        else return "no";
+        if (x > 0) return tto({
+            default: "yes",
+            de: "ja",
+            ru: "Да"
+        });
+        else return tto({
+            default: "no",
+            de: "nein",
+            ru: "Нет"
+        });;
     }
     if (type === 12) {
         let suffixes = letters
@@ -173,4 +186,8 @@ function formatTime(s)
     {
         return [Math.floor(s / 60).toFixed(0), ("0" + Math.floor(s % 60).toFixed(0)).slice(-2)].join(":");
     }
+}
+
+function formatSuperTime(t) {
+    return (t / 86400).toFixed(0) + "d, " + ((t % 86400) / 3600).toFixed(0) + "h, " + (((t % 86400) % 3600) / 60).toFixed(0) + "m";
 }

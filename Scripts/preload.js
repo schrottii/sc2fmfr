@@ -75,6 +75,7 @@ var images =
     fillthetank: loadImage("Images/Buttons/fillthetank.png"),
     onoffbutton: loadImage("Images/Buttons/onoff.png"),
     shrine: loadImage("Images/shrinebydec.png"),
+    club: loadImage("Images/clubbyfrank.png"),
     masteryToken: loadImage("Images/Currencies/masterytoken.png"),
     plasticBag: loadImage("Images/Currencies/plasticbag.png"),
     bucket: loadImage("Images/Currencies/bucket.png"),
@@ -96,6 +97,7 @@ var images =
     stardust: loadImage("Images/Currencies/stardust.png"),
     aliendust: loadImage("Images/Currencies/aliendust.png"),
     fairydust: loadImage("Images/Currencies/fairydust.png"),
+    language: loadImage("Images/Buttons/language.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -282,6 +284,7 @@ var images =
         cetus: loadImage("Images/Constellations/cetus.png"),
         triangulum: loadImage("Images/Constellations/triangulum.png"),
         aquila: loadImage("Images/Constellations/aquila.png"),
+        caelum: loadImage("Images/Constellations/caelum.png"),
     },
     achievements:
     {
@@ -292,6 +295,7 @@ var images =
     {
         magnet: loadImage("Images/MovingItems/magnet.png"),
         tire: loadImage("Images/MovingItems/tire.png"),
+        tirebg: loadImage("Images/MovingItems/tirebg.png"),
         beam: loadImage("Images/MovingItems/steelbeam.png"),
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         angelbeam: loadImage("Images/Currencies/angelbeam.png"),
@@ -359,7 +363,7 @@ var colors = {
 var fonts =
 {
     default: "Work Sans, Arial, sans-serif",
-    title: "Work Sans, Arial, sans-serif"
+    title: "Work Sans, Semibold, sans-serif"
 };
 
 var songs =

@@ -86,7 +86,8 @@ var saveTime =
     {
         cd: 10,
         time: 0
-    };
+};
+var secondTime = 0;
 
 var autoMergeTime = 0;
 var autoConvertTime = 0;
@@ -140,7 +141,7 @@ function setup()
     }
     catch(e)
     {
-        alert("An error has occured:\n" + e.stack + "\n\nPlease contact the developer.");
+        alert(tt("generalerror").replace("<estack>", e.stack));
         return;
     }
     setBarrelQuality(game.settings.barrelQuality);
@@ -148,9 +149,9 @@ function setup()
     document.querySelector("div.absolute button#export").onclick = e => exportGame();
     document.querySelector("div.absolute button#import").onclick = e =>
     {
-        thebool = confirm("Do you really want to import?");
+        thebool = confirm(tt("importconfirm"));
         if (thebool == true) {
-            alert("importing game (from text field)...");
+            alert(tt("importing"));
             if (importType == 0) loadGame(document.querySelector("div.absolute textarea").value);
             if (importType == 1) loadCompare(document.querySelector("div.absolute textarea").value);
         }
@@ -162,10 +163,19 @@ function setup()
 }
 
 function copyGift() {
+    let msgTemp = "";
+    let temp2 = giftContent.message;
+
+    for (i in giftContent.message) {
+        msgTemp = msgTemp + "i" + giftContent.message[i].codePointAt(0);
+    }
+
+    giftContent.message = msgTemp;
     let exportCode = btoa(JSON.stringify(giftContent));
+    giftContent.message = temp2;
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The gift has been copied to your clipboard. Share it with the friend!");
+    alert(tt("giftcopied"));
 
     document.querySelector("div.copyGift button#cancelg").style.display = "none";
     document.querySelector("div.copyGift button#close").style.display = "block";
@@ -222,7 +232,7 @@ function update()
 
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
-            GameNotification.create(new TextNotification("+" + cogReward + " cog wheels", "Time Over!"));
+            GameNotification.create(new TextNotification(tt("not_timeover2").replace("<amount>", cogReward), tt("not_timeover")));
 
             game.goldenScrap.reset();
             timeModeTime = 0;
@@ -278,22 +288,26 @@ function update()
             //game.mergeQuests.dailyQuest.tick(delta);
         }
 
-        Milestone.check(true);
-
         timeSinceLastBarrelClick += delta;
 
         saveTime.time += delta;
+        secondTime += delta;
         if (saveTime.time >= saveTime.cd)
         {
             saveTime.time = 0;
             saveGame();
         }
-        if (game.tires.amount.gte(new Decimal("1e1000000000"))) {
+        if (secondTime >= 1) {
+            // Updating it every tick killed the performance. this should be much better
+            secondTime = 0;
+            Milestone.check(true);
+        }
+        if (game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600) {
             game.tires.time -= delta;
         }
         game.factory.time -= delta;
         game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
-
+        
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
                 if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
@@ -344,11 +358,11 @@ function update()
                 }
             }
         }
-
+        
         if(game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
         currentScene.update(delta);
-
+        
         if (gameNotifications.length > 0)
         {
             gameNotifications[0].render(ctx);
@@ -375,7 +389,7 @@ function update()
                     }
                 }
                 else {
-                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification("So unlucky", "No storm! :("));
+                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm2"), tt("not_storm")));
                 }
             }
         }
@@ -528,7 +542,7 @@ function update()
                 }
 
                 for (i in movingItems) movingItems[i].cooldown += delta;
-                if (stormQueue.length > 0 || movingItems.length > 4) {
+                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club") {
                     ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
 
                     for (q in stormQueue) {
@@ -577,7 +591,6 @@ function update()
             }
         }
     }
-
     if (game.settings.displayFPS) {
         ctx.font = (h * .02) + "px " + fonts.default;
         ctx.textAlign = "left";
@@ -630,7 +643,7 @@ function getReinforcedTapsNeeded() {
 }
 
 function getBrickIncrease() {
-    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks);
+    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks) + (1 * applyUpgrade(game.supernova.starDustUpgrades.caelum));
 }
 
 function getFragmentBaseValue() {
@@ -672,10 +685,97 @@ function getTankSize() {
     return new Decimal(20 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
 }
 
+function fillTank() {
+    if (game.factory.tank.lt(getTankSize())) {
+        if (game.glitchbeams.amount.gte(new Decimal(5))) {
+            game.glitchbeams.amount = game.glitchbeams.amount.sub(new Decimal(5));
+            let amount = 20;
+            game.factory.tank = game.factory.tank.add(20);
+            if (game.factory.tank.gt(getTankSize())) {
+                amount -= game.factory.tank.sub(getTankSize());
+                game.stats.totaltanks = game.stats.totaltanks.add(new Decimal(amount));
+                game.factory.tank = getTankSize();
+            }
+        }
+    }
+}
+
+function dustReset(upgradeType, dustType, dustStat) {
+    let remDust = new Decimal(0);
+    for (u in game.supernova[upgradeType]) {
+        if (game.supernova[upgradeType][u].lock != true) game.supernova[upgradeType][u].level = 0;
+        else {
+            for (i = 0; i < game.supernova[upgradeType][u].level; i++) {
+                remDust = remDust.add(game.supernova[upgradeType][u].getPrice(i));
+            }
+        }
+    }
+    game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
+}
+
+function hardReset() {
+    for (i in game.stats) {
+        game.stats[i] = new Decimal(0);
+    }
+    game.wrenches.amount = new Decimal(0);
+    for (u in game.wrenches.upgrades) {
+        game.wrenches.upgrades[u].level = 0;
+    }
+
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    for (u in game.barrelMastery.upgrades) {
+        game.barrelMastery.upgrades[u].level = 0;
+    }
+    game.barrelMastery.b = Array(1000).fill(0);
+    game.barrelMastery.bl = Array(1000).fill(0);
+
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    game.cogwheels.amount = new Decimal(0);
+    for (u in game.cogwheels.upgrades) {
+        game.cogwheels.upgrades[u].level = 0;
+    }
+    game.supernova.stars = new Decimal(0);
+    game.supernova.starDust = new Decimal(0);
+    game.supernova.alienDust = new Decimal(0);
+    game.supernova.fairyDust = new Decimal(0);
+    game.supernova.cosmicEmblems = new Decimal(0);
+    for (u in game.supernova.starDustUpgrades) {
+        game.supernova.starDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.alienDustUpgrades) {
+        game.supernova.alienDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.fairyDustUpgrades) {
+        game.supernova.fairyDustUpgrades[u].level = 0;
+    }
+    for (u in game.supernova.cosmicUpgrades) {
+        game.supernova.cosmicUpgrades[u].level = 0;
+    }
+    for (u in game.shrine) {
+        game.shrine[u].level = 0;
+    }
+    game.supernova.reset("norew");
+
+    game.barrelMastery.masteryTokens = new Decimal(0);
+    game.mergeQuests.scrapyard = 0;
+
+    game.highestMasteryLevel = 0;
+    game.highestScrapReached = new Decimal(0);
+    game.tires.totalMerges = 0;
+
+    game.selfMerges = 0;
+    game.totalMerges = 0;
+
+    game.ms = [];
+
+    alert("Hard resetted successfully!");
+}
+
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
-        autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
+        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 600) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 600; // Max. 600 merges
+        else autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }
 }
@@ -708,14 +808,15 @@ function renewableEnergy() {
     if (!applyUpgrade(game.skillTree.upgrades.renewableEnergy)) return false;
 
     // Upgrade is unlocked
-    if (game.factory.tank.lt(getTankSize()))game.factory.tank = game.factory.tank.add(1);
+    if (game.factory.tank.lt(getTankSize())) game.factory.tank = game.factory.tank.add(1);
+    if (!game.factory.tank.lt(getTankSize()) && !game.factory.tank.gt(getTankSize()) && !game.factory.tank.eq(getTankSize())) game.factory.tank = game.factory.tank.sub(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,
                  5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
 
-const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi"]
+const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi", "fag", "tranny", "shemale", "heshe", "trap", "transvestite"]
 
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
@@ -799,7 +900,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification("Level " + game.barrelMastery.bl[lvl % BARRELS] + " (+ " + game.barrelMastery.bl[lvl % BARRELS] + " Tokens!)", "Mastery level up!", "barrel", ((lvl % BARRELS) + 1)));
+            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrel", ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {
@@ -876,6 +977,38 @@ function onBarrelMerge(isAuto, lvl, bx, by)
                 size: 0.05
             }));
         }
+    }
+}
+
+const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994];
+
+function duckTales(type=0) {
+    let duckCheck = true;
+    let duckAmount = 0;
+    // new: 162, 388, 478, 743, 994
+    duckBarrels.forEach(i => {
+        if (game.barrelMastery.b[i - 1] < 100000) {
+            duckCheck = false;
+            return false;
+        }
+        else {
+            duckAmount += 1;
+            if (i == 756) duckCheck = true;
+        }
+        return false;
+    });
+
+    if (type == 0) return duckCheck;
+    if (type == 1) return duckAmount
+    if (type == 2) {
+        if (duckAmount >= duckBarrels.length - 6 && duckAmount < duckBarrels.length) {
+            let missingDucks = Object.assign([], duckBarrels);
+            duckBarrels.forEach(i => {
+                if (game.barrelMastery.b[i - 1] >= 100000) missingDucks.splice(missingDucks.indexOf(i), 1);
+            });
+            return "Missing ducks: " + missingDucks;
+        }
+        else return "";
     }
 }
 
@@ -1084,7 +1217,7 @@ function exportCompare() {
     exportCode = "tPt4-" + btoa(JSON.stringify(exportCode));
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
-    alert("The compare code has been copied to your clipboard. Paste it into a text file and keep the file safe.");
+    alert(tt("codecopied"));
 }
 
 function saveGame(exportGame, downloaded=false)
@@ -1169,7 +1302,7 @@ function saveGame(exportGame, downloaded=false)
     catch{
         // for the case your javascript is so old it doesn't have Object.entries...
         // it will just skip the entire try part and well, not shorten it at all.
-        console.log("Your device might have old JavaScript!");
+        console.log(tt("oldjs"));
     }
 
 
@@ -1179,14 +1312,14 @@ function saveGame(exportGame, downloaded=false)
         document.querySelector("div.absolute textarea").value = save;
         if (!downloaded) {
             Utils.copyToClipboard(save);
-            alert("The save code has also been copied to your clipboard. Paste it into a text file and keep the file safe.");
+            alert(tt("codecopied"));
         }
         // Still put it into the text area, but not copy to the clipboard, when downloading
     }
     else
     {
         localStorage.setItem("ScrapFanmade", JSON.stringify(saveObj));
-        currentScene.popupTexts.push(new PopUpText("Saved", w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
+        currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
     }
 }
 
@@ -1203,22 +1336,22 @@ function loadCompare(compareCode) {
         importCode = atob(importCode);
     }
     catch {
-        alert("The provided Save Code could not be decoded.");
+        alert(tt("decodeerror"));
         return false;
     }
     try {
         importCode = JSON.parse(importCode);
     }
     catch {
-        alert("An error occured while parsing the save code");
+        alert(tt("parseerror"));
         return false;
     }
     compareStats = {};
     if (compareCodeType == 3) {
         for (i in importCode) {
             compareStats[i] = importCode[i];
-            if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
         }
+        if (compareStats.totaldailyquests == undefined) compareStats.totaldailyquests = new Decimal(0);
     }
     if (compareCodeType == 4) {
         let sic = {};
@@ -1250,7 +1383,7 @@ function loadGame(saveCode, isFromFile=false)
                 loadObj = atob(saveCode);
             }
             catch (e) {
-                alert("The provided Save Code could not be decoded.");
+                alert(tt("decodeerror"));
                 return;
             }
         }
@@ -1267,11 +1400,11 @@ function loadGame(saveCode, isFromFile=false)
         catch (e) {
             if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
                 document.querySelector("div.absolute textarea").value = "";
-                alert("Reset your highest barrel reached successfully!");
+                alert(tt("resethbr"));
             }
             else {
                 console.log(e);
-                alert("An error occured while parsing the save code");
+                alert(tt("parseerror"));
             }
             return;
         }
@@ -1312,6 +1445,8 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.displayFPS = loadVal(loadObj.settings.displayFPS, false);
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
+        game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
+        game.settings.lang = loadVal(loadObj.settings.lang, "en");
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;
@@ -1773,6 +1908,7 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.plasticBags !== undefined) {
             game.plasticBags.amount = loadVal(new Decimal(loadObj.plasticBags.amount), new Decimal(0));
+            game.plasticBags.total = loadVal(new Decimal(loadObj.plasticBags.total), new Decimal(0));
             game.plasticBags.currentResource = loadVal(loadObj.plasticBags.currentResource, RESOURCE_MERGE_TOKEN);
             game.plasticBags.currentCosts = loadVal(new Decimal(loadObj.plasticBags.currentCosts), new Decimal(100));
             if (loadObj.plasticBags.upgrades !== undefined) {
@@ -1840,6 +1976,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
                     game.supernova.starDustUpgrades[k].level = loadVal(loadObj.supernova.starDustUpgrades[k].level, 0);
+                    game.supernova.starDustUpgrades[k].lock = loadVal(loadObj.supernova.starDustUpgrades[k].lock, false);
                 });
             }
             else {
@@ -1850,6 +1987,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.alienDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.alienDustUpgrades).forEach(k => {
                     game.supernova.alienDustUpgrades[k].level = loadVal(loadObj.supernova.alienDustUpgrades[k].level, 0);
+                    game.supernova.alienDustUpgrades[k].lock = loadVal(loadObj.supernova.alienDustUpgrades[k].lock, false);
                 });
             }
             else {
@@ -1860,6 +1998,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.supernova.fairyDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.fairyDustUpgrades).forEach(k => {
                     game.supernova.fairyDustUpgrades[k].level = loadVal(loadObj.supernova.fairyDustUpgrades[k].level, 0);
+                    game.supernova.fairyDustUpgrades[k].lock = loadVal(loadObj.supernova.fairyDustUpgrades[k].lock, false);
                 });
             }
             else {
@@ -1910,6 +2049,7 @@ function loadGame(saveCode, isFromFile=false)
         }
 
         updateBetterBarrels();
+        movingItems = [];
 
         if (isFromFile) alert("The file has been imported successfully!");
 
@@ -1923,7 +2063,7 @@ function exportGame(downloaded=false)
 
 function importGame()
 {
-    alert("Copy the save code you want to import to your clipboard. It will be inserted into the game automatically.")
+    alert(tt("copied"));
     navigator.clipboard.readText().then(text =>
     {
         loadGame(text);
@@ -1940,7 +2080,7 @@ btnInstall.style.display = "none";
 
 function updateBetterBarrels() {
     if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
-    if(game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.min(3000 + game.solarSystem.upgrades.mythus.level * 20, game.highestBarrelReached - 25);
+    if (game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila)), game.highestBarrelReached - 25));
 }
 
 function calculateCurrentHighest() {

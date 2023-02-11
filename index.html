@@ -33,6 +33,12 @@
             font-weight: 900;
         }
 
+        @font-face {
+            font-family: "Semibold";
+            src: url("Fonts/OpenSans-Semibold.ttf");
+            font-weight: 600;
+        }
+
         *, html, body {
             margin: 0;
             padding: 0;
@@ -134,17 +140,17 @@
         <div id="myFhile" style="left: 70vw; top: 70vh;" type="file"></div>
 
         <textarea value="text" id="text-area"></textarea>
-        <button id="export" style="left: 30vw; top: 60vh;">Export</button>
-        <button id="import" style="left: 70vw; top: 60vh;">Import</button>
+        <button id="export" style="left: 30vw; top: 50vh;">Export</button>
+        <button id="import" style="left: 70vw; top: 50vh;">Import</button>
 
-        <button id="save" onclick="saveFile()" style="left: 30vw; top: 70vh;">Export file</button>
+        <button id="save" onclick="saveFile()" style="left: 30vw; top: 60vh;">Export file</button>
         <input id="myFile" style="margin-left: 50%; margin-top: 90%;" type="file">
-        <button style="left: 70vw; top: 70vh;" onclick="openFile()">Import file</button>
+        <button style="left: 70vw; top: 60vh;" onclick="openFile()">Import file</button>
 
         <button style="color: white; left: 50vw; top: 90vh; width: 85%">Select file for "Import file":</button>
 
         <button style="color: white; left: 50vw; top: 7vh; width: 85%" id="add-button">Add to home screen</button>
-        <button id="close" style="left: 50vw; top: 80vh;">Close</button>
+        <button id="close" style="left: 50vw; top: 70vh;">Close</button>
     </div>
 
     <div class="copyGift">
@@ -154,6 +160,11 @@
     </div>
 
     <audio id="audioPlayer"></audio>
+
+    <script src="Scripts/lang/translator.js"></script>
+    <script src="Scripts/lang/en.js"></script>
+    <script src="Scripts/lang/de.js"></script>
+    <script src="Scripts/lang/ru.js"></script>
 
     <script src="Scripts/breakinfinity.js"></script>
     <script src="Scripts/graphemesplitter.js"></script>

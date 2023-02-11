@@ -487,8 +487,15 @@ class FixedLevelUpgrade
             this.level = level;
         }
         else {
-            while (this.level < level) {
+            while (this.level < level && this.level < this.getMaxLevel()) {
+                for (let p of this.getCurrentPrices()) {
+                    let resource = getUpgradeResource(p[1]);
+                    if (p[0].gt(resource.round())) {
+                        return;
+                    }
+                }
                 this.buy(round);
+                //resource = getUpgradeResource(this.resource);
             }
         }
     }
@@ -571,7 +578,7 @@ class CosmicEmblemUpgrade extends ScrapUpgrade {
     }
 
     isUnlocked() {
-        if (game.supernova.stars.gte(1)) return true;
+        if (game.supernova.stars.gte(Math.max(0, this.stars - 2))) return true;
         return false;
     }
     getStarRequirement() {
@@ -869,7 +876,7 @@ var effectDisplayTemplates =
         {
             return function()
             {
-                return this.getEffect(this.level) ? "Unlocked" : "Locked";
+                return this.getEffect(this.level) ? tt("unlocked") : tt("locked");
             }
         },
     unlockEffect: function (prefix, suffix)
@@ -878,7 +885,7 @@ var effectDisplayTemplates =
         let s = suffix !== undefined ? suffix : "";
             return function()
             {
-                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : "Locked";
+                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : tt("locked");
             }
         }
     };

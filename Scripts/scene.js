@@ -2061,6 +2061,7 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("FriendList2"), { quadratic: true }),
 
                 new UIFriend(0.15, 0),
                 new UIFriend(0.25, 1),
@@ -2071,6 +2072,31 @@ var scenes =
                 new UIFriend(0.75, 6),
                 new UIFriend(0.85, 7),
                 new UIFriend(0.95, 8),
+            ],
+
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+            }),
+        new Scene("FriendList2",
+            [
+                new UIText(() => tt("friendlist"), 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("FriendList"), { quadratic: true }),
+
+                new UIFriend(0.15, 9),
+                new UIFriend(0.25, 10),
+                new UIFriend(0.35, 11),
+                new UIFriend(0.45, 12),
+                new UIFriend(0.55, 13),
+                new UIFriend(0.65, 14),
+                new UIFriend(0.75, 15),
+                new UIFriend(0.85, 16),
+                new UIFriend(0.95, 17),
             ],
 
             function () {

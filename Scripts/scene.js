@@ -1314,7 +1314,7 @@ var scenes =
             }),
         new Scene("Beams",
             [
-                new UIText("Steel Beams", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("beams"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1440,14 +1440,14 @@ var scenes =
             }),
         new Scene("Beamconvert",
             [
-                new UIText("Beam Converter", 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("beamconverter"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText("Select which beam type you want to convert!", 0.5, 0.15, 0.03, "black"),
+                new UIText(() => tt("selecttype"), 0.5, 0.15, 0.03, "black"),
 
                 new UIText(() => "$images.beam$ " + tt("beams") + ": " + formatNumber(game.beams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => "$images.aerobeam$ " + tt("aerobeams") + ": " + formatNumber(game.aerobeams.amount), 0.5, 0.24, 0.06, "yellow"),
@@ -2825,7 +2825,7 @@ var scenes =
                 new UIText(() => "MAX", 0.82, 0.51, 0.04, "white", { isVisible: () => game.supernova.stars.gt(0) }),
 
                 new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
-                new UIText(() => "Use 5 Glitch Beams to\nfill up the energy tank a bit!", 0.6, 0.4, 0.04, "black"),
+                new UIText(() => tt("tanktext"), 0.6, 0.4, 0.04, "black"),
                 new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "orange"),
 
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.factoryTankSize, images.upgrades.reinforcedBricks, 0.8, "gen1"),
@@ -3125,7 +3125,7 @@ var scenes =
             }),
         new Scene("Supernova2",
             [
-                new UIText("Supernova", 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("supernova"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -3136,9 +3136,9 @@ var scenes =
                 new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
-                    "\n+" + formatNumber(game.supernova.getStarDust()) + " Star Dust" +
-                    "\n+" + formatNumber(game.supernova.getAlienDust()) + " Alien Dust" +
-                    "\n+" + formatNumber(game.supernova.getFairyDust()) + " Fairy Dust" +
+                    "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
+                    "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
+                    "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
                     "\n+1 " + tt("stars"), 0.5, 0.3, 0.04, "black"),
 
                 new UIText(() => tt("anothersupernovatext"), 0.5, 0.6, 0.03, "black"),

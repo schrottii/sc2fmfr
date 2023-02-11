@@ -110,6 +110,9 @@ const trans_en = {
     "(ON)": "(ON)",
     converttto: "to ",
     convertworth: "<amount> are worth <amount2>",
+    beamconverter: "Beam Converter",
+    selecttype: "Select which type you want to convert!",
+    tanktext: "Use 5 Glitch Beams to\nfill up the energy tank a bit!",
 
     // BEAMS
     beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",

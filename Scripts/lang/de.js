@@ -110,6 +110,9 @@ const trans_de = {
     "(ON)": "(AN)",
     convertto: "zu ",
     convertworth: "<amount> sind <amount2> wert",
+    beamconverter: "Umwandler",
+    selecttype: "Wähle aus, welche Sorte du umwandeln möchtest!",
+    tanktext: "Nutze 5 Glitchstahl, um den Tank aufzufüllen!",
 
     // BEAMS
     beamfalltext: "Stahlträger fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlträger enthält.",

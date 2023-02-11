@@ -774,7 +774,7 @@ function hardReset() {
 function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
-        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 600) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 600; // Max. 6k merges
+        if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 600) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 600; // Max. 600 merges
         else autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }

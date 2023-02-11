@@ -637,7 +637,7 @@ class UIMergeTokenUpgrade extends UIGroup
             new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
             new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 10000, true) : upg.buy(true), {quadratic: true}),
             new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", {bold: true, halign: "right", valign: "middle"}),
-            new UIText(() => desc + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
+            new UIText(() => tt(desc) + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
             new UIText(() => upg.getLevelDisplay(), 0.975, y - 0.045, 0.04, "black", {
                 halign: "right",
                 bold: true

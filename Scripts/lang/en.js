@@ -298,6 +298,12 @@ const trans_en = {
     mastery4: "Get More Fragments for L4 barrels",
     mastery5: "Get More Magnets for L5 barrels",
 
+    // Merge Quests
+    mq1: "Get More Scrap",
+    mq2: "Get More Golden Scrap",
+    mq3: "Get More Magnets",
+    mq4: "Falling Magnets are\nworth more",
+
     // Solar
     planet1: "Sun\nIncrease Scrap production",
     planet2: "Mercury\nIncrease Golden\nScrap Boost",

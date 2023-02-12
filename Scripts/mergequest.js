@@ -97,7 +97,7 @@ class MergeQuest
             ctx.textBaseline = "middle";
             ctx.textAlign = "left";
             ctx.fillStyle = colors[C]["text"];
-            ctx.font = "bold " + (h * 0.05) + "px " + fonts.default;
+            ctx.font = "bold " + (this.getNeededMerges() > 8000 ? (h * 0.035) : (h * 0.05)) + "px " + fonts.default;
             ctx.fillText(formatThousands(this.currentMerges) + " / " + formatThousands(this.getNeededMerges()), x + h * 0.1, y - h * 0.02);
             let rewardText = formatThousands(this.reward);
             ctx.fillText(rewardText, x + h * 0.12, y + h * 0.04);

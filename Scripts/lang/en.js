@@ -5,7 +5,7 @@ const trans_en = {
     "Loading": "Loading",
     "Saved": "Saved",
     "s": "s",
-    "ms": "ms",
+    "msec": "ms",
     "µs": "µs",
     "Insanely fast!": "Insanely Fast!",
     "Better Barrels": "Better Barrels",

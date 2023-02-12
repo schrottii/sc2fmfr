@@ -5,7 +5,7 @@ const trans_de = {
     "Loading": "Lädt...",
     "Saved": "Gespeichert",
     "s": "s",
-    "ms": "ms",
+    "msec": "ms",
     "µs": "µs",
     "Insanely fast!": "Unglaublich flott!",
     "Better Barrels": "Bessere Tonnen",

@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.1 (v3.8)";
+const gameVersionText = "v3.1p (v3.8)";
 
 var game =
 {
@@ -210,10 +210,10 @@ var game =
                         return s.toFixed(2) + "s";
                     }
                     if (s > 0.01) {
-                        return (s * 1000).toFixed(0) + tt("ms");
+                        return (s * 1000).toFixed(0) + tt("msec");
                     }
                     if (s > 0.001) {
-                        return (s * 1000).toFixed(2) + tt("ms");
+                        return (s * 1000).toFixed(2) + tt("msec");
                     }
                     if (s > 0.00001) {
                         return (s * 1000000).toFixed(0) + tt("µs");

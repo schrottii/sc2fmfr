@@ -1994,7 +1994,7 @@ var scenes =
                                         break;
                                 }
 
-                                GameNotification.create(new TextNotification("+" + formatNumber(giftContent.amount) + " " + giftNames[giftContent.content], "Gift opened successfully!"));
+                                GameNotification.create(new TextNotification("+" + formatNumber(giftContent.amount) + " " + tt("sendgift" + giftContent.content), "Gift opened successfully!"));
                                 GameNotification.create(new TextNotification(giftContent.message, "Important message"));
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);

@@ -5,7 +5,7 @@ const trans_ru = {
     "Loading": "Загрузка…",
     "Saved": "Сохранено",
     "s": "с",
-    "ms": "мс",
+    "msec": "мс",
     "µs": "мкс",
     "Insanely fast!": "Безумно быстро!",
     "Better Barrels": "Лучшие Бочки",

@@ -17,6 +17,10 @@ const trans_en = {
     "madeby": "mod made by Schrottii",
     "language": "Language",
 
+    "You have found me": "You have found me",
+    "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
+    autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs ",
+
     // OPTIONS
     "Options": "Options",
     "General Options": "General Options",
@@ -45,6 +49,14 @@ const trans_en = {
     "Coconut": "Coconut",
     "hidesetting": "Hide barrels entirely",
     "Show FPS": "Show FPS",
+    "HARDRESET": "HARD RESET\n(Reset Everything)",
+    "musicon": "ON (Click to disable)",
+    "musicoff": "OFF (Click to enable)",
+    "HR1": "Do you really want to do a Hard Reset? You will lose EVERYTHING",
+    "HR2": "If you press Yes, you will lose EVERYTHING. Only do this if you really want to lose everything!!!",
+    "HR3": "Maybe export your save code before deleting everything, because if you press Yes again, everything will be gone",
+    "HR4": "Are you 100% sure?",
+    "HR_SUCC": "Hard resetted successfully!",
 
     "Audio": "Audio",
     "Music": "Music",
@@ -89,6 +101,7 @@ const trans_en = {
 
     // BARREL FRAGMENTS
     barrelfragments: "Barrel Fragments",
+    darkfragments: "Dark Fragments",
     fragmentearn: "Fragments can be earned by destroying barrels.\nFor destroying barrel <tier> you get <amount> fragments.",
     dfragmentearn: "Dark Fragments can be earned by destroying barrels.\nFor destroying barrel <tier> you get <amount> dark fragments.",
 

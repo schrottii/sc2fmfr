@@ -768,7 +768,7 @@ function hardReset() {
 
     game.ms = [];
 
-    alert("Hard resetted successfully!");
+    alert(tt("HR_SUCC"));
 }
 
 function tryAutoMerge() {

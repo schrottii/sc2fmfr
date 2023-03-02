@@ -319,6 +319,7 @@ var movingItemFactory =
 
                 game.beams.amount = game.beams.amount.add(value);
                 game.stats.totalbeams = game.stats.totalbeams.add(value);
+                game.stats.beamstp = game.stats.beamstp.add(value);
                 game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
@@ -334,6 +335,7 @@ var movingItemFactory =
 
                 game.aerobeams.amount = game.aerobeams.amount.add(value);
                 game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
+                game.stats.aebeamstp = game.stats.aebeamstp.add(value);
                 game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
@@ -349,6 +351,7 @@ var movingItemFactory =
 
                 game.angelbeams.amount = game.angelbeams.amount.add(value);
                 game.stats.totalangelbeams = game.stats.totalangelbeams.add(value);
+                game.stats.abeamstp = game.stats.abeamstp.add(value);
                 game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
             }))
@@ -382,6 +385,7 @@ var movingItemFactory =
 
                     game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value);
                     game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value);
+                    game.stats.rbeamstp = game.stats.rbeamstp.add(value);
                     game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
                     currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
                 }
@@ -423,6 +427,7 @@ var movingItemFactory =
                     else {
                         game.glitchbeams.amount = game.glitchbeams.amount.add(value);
                         game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
+                        game.stats.gbeamstp = game.stats.gbeamstp.add(value);
                         game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
                     }
                     currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))

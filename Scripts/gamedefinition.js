@@ -433,6 +433,11 @@ var game =
         totalstardust: new Decimal(0),
         totalaliendust: new Decimal(0),
         totalfairydust: new Decimal(0),
+        beamstp: new Decimal(0),
+        aebeamstp: new Decimal(0),
+        abeamstp: new Decimal(0),
+        rbeamstp: new Decimal(0),
+        gbeamstp: new Decimal(0),
     },
     mergeQuests:
     {
@@ -1807,15 +1812,15 @@ var game =
             return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getFairyDust: function () {
-            let amount = game.stats.totalbeams.add(1e5).log(1e5);
-            amount += game.stats.totalaerobeams.add(1e5).log(1e5);
-            amount += game.stats.totalangelbeams.add(1e5).log(1e5);
-            amount += game.stats.totalreinforcedbeams.add(1e5).log(1e5);
-            amount += game.stats.totalglitchbeams.add(1e5).log(1e5);
+            let amount = game.stats.beamstp.div(1e6).max(1);
+            amount = amount.mul(game.stats.aebeamstp.div(5e5).max(1));
+            amount = amount.mul(game.stats.abeamstp.div(3e6).max(1));
+            amount = amount.mul(game.stats.rbeamstp.div(6e6).max(1));
+            amount = amount.mul(game.stats.gbeamstp.div(1e6).max(1)).round();
 
-            amount *= game.bricks.amount.add("1e1000000").log("1e1000000");
-            amount *= game.plasticBags.total.add(2150).log(2150);
-            amount *= game.stats.totalscrews.add(500000).log(500000);
+            amount *= game.bricks.amount.add("1e500000").log("1e500000");
+            amount *= game.plasticBags.total.add(450).log(450);
+            amount *= game.stats.totalscrews.add(100000).log(100000);
             amount *= game.stats.totalquests.add(250).log(250);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
 
@@ -1935,6 +1940,12 @@ var game =
             for (let upg of Object.keys(game.glitchbeams.upgrades)) {
                 game.glitchbeams.upgrades[upg].level = 0;
             }
+
+            game.stats.beamstp = new Decimal(0);
+            game.stats.aebeamstp = new Decimal(0);
+            game.stats.abeamstp = new Decimal(0);
+            game.stats.rbeamstp = new Decimal(0);
+            game.stats.gbeamstp = new Decimal(0);
 
             game.plasticBags.amount = new Decimal(0);
             game.plasticBags.total = new Decimal(0);
@@ -2138,7 +2149,7 @@ var game =
                 }
             ),
             aquila: new AlienDustUpgrade(
-                level => new Decimal(1),
+                level => new Decimal(1).add(level > 99999 ? 9 : 0),
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
@@ -2155,36 +2166,36 @@ var game =
                 }
             ),
             pyxis: new FairyDustUpgrade(
-                level => new Decimal(5).add(2 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.05 * level),
+                level => new Decimal(5).add(2 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             antlia: new FairyDustUpgrade(
-                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.05 * level),
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             phoenix: new FairyDustUpgrade(
-                level => new Decimal(3).add(level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.05 * level),
+                level => new Decimal(3).add(level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             orion: new FairyDustUpgrade(
-                level => new Decimal(7).add(6 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.05 * level),
+                level => new Decimal(7).add(6 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             puppis: new FairyDustUpgrade(
-                level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.05 * level),
+                level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }

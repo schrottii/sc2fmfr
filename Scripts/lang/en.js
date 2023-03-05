@@ -16,6 +16,12 @@ const trans_en = {
     "Next Storm Chance in: ": "Next Storm Chance in: ",
     "madeby": "mod made by Schrottii",
     "language": "Language",
+    "achievements": "Achievements",
+    "Barrels": "Barrels",
+
+    "You have found me": "You have found me",
+    "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
+    autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
 
     // OPTIONS
     "Options": "Options",
@@ -45,6 +51,14 @@ const trans_en = {
     "Coconut": "Coconut",
     "hidesetting": "Hide barrels entirely",
     "Show FPS": "Show FPS",
+    "HARDRESET": "HARD RESET\n(Reset Everything)",
+    "musicon": "ON (Click to disable)",
+    "musicoff": "OFF (Click to enable)",
+    "HR1": "Do you really want to do a Hard Reset? You will lose EVERYTHING",
+    "HR2": "If you press Yes, you will lose EVERYTHING. Only do this if you really want to lose everything!!!",
+    "HR3": "Maybe export your save code before deleting everything, because if you press Yes again, everything will be gone",
+    "HR4": "Are you 100% sure?",
+    "HR_SUCC": "Hard resetted successfully!",
 
     "Audio": "Audio",
     "Music": "Music",
@@ -89,6 +103,7 @@ const trans_en = {
 
     // BARREL FRAGMENTS
     barrelfragments: "Barrel Fragments",
+    darkfragments: "Dark Fragments",
     fragmentearn: "Fragments can be earned by destroying barrels.\nFor destroying barrel <tier> you get <amount> fragments.",
     dfragmentearn: "Dark Fragments can be earned by destroying barrels.\nFor destroying barrel <tier> you get <amount> dark fragments.",
 
@@ -108,7 +123,7 @@ const trans_en = {
     glitchbeams: "Glitch Beams",
     selected: "Selected",
     "(ON)": "(ON)",
-    converttto: "to ",
+    convertto: "to ",
     convertworth: "<amount> are worth <amount2>",
     beamconverter: "Beam Converter",
     selecttype: "Select which type you want to convert!",
@@ -118,8 +133,8 @@ const trans_en = {
     beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",
     aerobeamfalltext: "Aerobeams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Aerobeam storm occuring instead of\na single Aerobeam, containing <amount2> Beams.",
     angelbeamfalltext: "Angel Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Angel Beam storm occuring instead of\na single Angel Beam, containing <amount2> Beams.",
-    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Reinforced Beam storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
-    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <taps> to <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
+    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
+    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
 
     // MASTERY
     "Mastery Upgrades": "Mastery Upgrades",
@@ -243,8 +258,10 @@ const trans_en = {
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
     supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",
+    firstsupernova: "I recommend making a backup before doing your first Supernova ;)",
     youwillearn: "You will earn: ",
     anothersupernovatext: "Click the button below to do a Supernova.",
+    supernovagetmore: "Earn more Emblems by reaching very high barrels.\nEarn more dust by collecting certain resources.",
 
     resetstar: "Do you really want to reset your Star Dust Upgrades? (100% refund)",
     resetalien: "Do you really want to reset your Alien Dust Upgrades? (100% refund)",
@@ -382,6 +399,7 @@ const trans_en = {
     glitch3: "Chance to get more beams\n(all types)",
     glitch4: "Chance to get a golden beam\ninstead of any beam\nwhich gives all beams",
     glitch5: "Increases the min. worth of\nGlitch Beams",
+    glitch6: "Get More Alien Dust",
 
     // Plastic Bags
     plastic1: "Get more Scrap",

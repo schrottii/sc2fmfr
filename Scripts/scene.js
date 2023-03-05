@@ -339,7 +339,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.02) + "px " + fonts.default;
-                ctx.fillText("Now with 200000%\nless achievements", w * 0.49, h - w * 0.1);
+                ctx.fillText("π version: 3.1.4.1.5", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -720,7 +720,7 @@ var scenes =
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.dimension, () => {
                     if (game.dimension == 0) { //Enter Dimension
                         if (game.goldenScrap.amount * 2 < new Decimal(1e20) * 2) {
-                            alert("You need at least " + formatNumber(new Decimal(1e20)) + " Golden Scrap to enter!");
+                            alert(tt("enter2nddim").replace("<amount>", formatNumber(new Decimal(1e20))));
                         }
                         else {
                             game.dimension = 1;
@@ -824,7 +824,7 @@ var scenes =
 
                 new UIText(() => {
                     if (game.darkfragment.isUnlocked()) {
-                        return "$images.darkfragment$ Dark Fragments: " + formatNumber(game.darkfragment.amount);
+                        return "$images.darkfragment$ " + tt("darkfragments") + ": " + formatNumber(game.darkfragment.amount);
                     }
                     else {
                         return "";
@@ -898,7 +898,7 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.settings.barrelGalleryPage < game.barrelGallery.getMaxPage()
                 }),
-                new UIText("Barrels", 0.5, 0.05, 0.1, "white", {
+                new UIText(() => tt("Barrels"), 0.5, 0.05, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -943,7 +943,7 @@ var scenes =
         new Scene("Mastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
-                new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.1, "white", {
+                new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1094,7 +1094,7 @@ var scenes =
         new Scene("MergeMastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
-                new UIText(() => tt("Merge Mastery"), 0.5, 0.1, 0.12, "white", {
+                new UIText(() => tt("Merge Mastery"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1623,6 +1623,7 @@ var scenes =
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "glitch3"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "glitch4", "table2"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.minimumValue, images.upgrades.glitchBeamValue, 0.85, "glitch5"),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.alienDustBoost, images.upgrades.glitchBeamValue, 0.95, "glitch6", "table2", () => { return game.reinforcedbeams.upgrades.darkFragmentBoost.level > 9 && game.supernova.stars.gt(0) }),
 
             ],
             function () {
@@ -2112,7 +2113,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                new UIText(() => "$images.wrench$ Wrenches: " + game.wrenches.amount.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.wrench$ " + tt("wrenches") + ": " + game.wrenches.amount.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => {
                     if (isMobile()) {
                         return "You get 1 wrench for every merge!";
@@ -2417,7 +2418,7 @@ var scenes =
                     new UIOption(tabYs[2] + 0.1, images.change, () => {
                         game.settings.musicOnOff = !game.settings.musicOnOff;
                         playMusic();
-                    }, () => game.settings.musicOnOff ? tt("Music") + ": ON (Click to disable)" : tt("Music") + ": OFF (Click to enable)", "table"),
+                    }, () => game.settings.musicOnOff ? tt("Music") + ": " + tt("musicon") : tt("Music") + ": " + tt("musicoff"), "table"),
 
                     // Select song
                     new UIOption(tabYs[2] + 0.2, images.options.numberFormat, () => {
@@ -2429,7 +2430,7 @@ var scenes =
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                         playMusic();
-                    }, () => "Current: " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
+                    }, () => tt("Current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
 
                     // Volume
                     new UIOption(tabYs[2] + 0.3, images.options.numberFormat, () => {
@@ -2479,16 +2480,16 @@ var scenes =
                     new UIText(() => tt("Libraries used") + ":\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.6, 0.04, "white"),
 
                     new UIOption(tabYs[3] + 0.8, images.buttonReset, () => {
-                        if (confirm("Do you really want to do a Hard Reset? You will lose EVERYTHING")) {
-                            if (confirm("If you press Yes, you will lose EVERYTHING. Only do this if you really want to lose everything!!!")) {
-                                if (confirm("Maybe export your save code before deleting everything, because if you press Yes again, everything will be gone")) {
-                                    if (confirm("Are you 100% sure?")) {
+                        if (confirm(tt("HR1"))) {
+                            if (confirm(tt("HR2"))) {
+                                if (confirm(tt("HR3"))) {
+                                    if (confirm(tt("HR4"))) {
                                         hardReset();
                                     }
                                 }
                             }
                         }
-                    }, "HARD RESET\n(Reset Everything)", "table"),
+                    }, () => tt("HARDRESET"), "table"),
 
 
             ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.9 }),
@@ -2502,8 +2503,8 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.settings.optionsPage < 2
                     }),*/
-                new UIButton(0.8, 0.89, 0.1, 0.1, images.logos.schrottii, () => {
-                    GameNotification.create(new TextNotification("You have found me", "Schrottii"))
+                new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
+                    GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"))
                     if (game.ms.includes(206) == false) {
                         game.ms.push(206);
                         GameNotification.create(new MilestoneNotificaion(207));
@@ -2590,7 +2591,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("MergeQuests"), { quadratic: true }),
 
-                new UIText(() => "$images.mergeToken$ Tokens: " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("scrapyardtext").replace("<amount>", (game.mergeQuests.scrapyard - 1)) + tt("scrapyardtext2").replace("<n>", (10 - game.mergeQuests.scrapyardProgress)).replace("<amount>", game.mergeQuests.scrapyard), 0.5, 0.275, 0.03, "black"),
 
                 new UIText(() => tt("level") + ": " + game.mergeQuests.scrapyard + "\n" + tt("scrapyardtext3").replace("<percent>", game.mergeQuests.scrapyardProgress * 10), 0.5, 0.8, 0.06, "black"),
@@ -2669,7 +2670,7 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.milestones.page < game.milestones.maxPage()
                     }),
-                new UIText("Achievements", 0.5, 0.09, 0.12, "white", {
+                new UIText(() => tt("achievements"), 0.5, 0.09, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2850,7 +2851,7 @@ var scenes =
                 }),
                 new UIText(() => "MAX", 0.82, 0.51, 0.04, "white", { isVisible: () => game.supernova.stars.gt(0) }),
 
-                new UIText(() => "$images.glitchbeam$ Glitch Beams: " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("tanktext"), 0.6, 0.4, 0.04, "black"),
                 new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "orange"),
 
@@ -2887,7 +2888,7 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
-                new UIText(() => "Auto Buyers need energy to run!\nOne upgrade costs " + (game.skillTree.upgrades.efficientEnergy.level > 0 ? "1" : "2") + " energy.", 0.5, 0.2, 0.04, "white"),
+                new UIText(() => tt("autobuyertext").replace("<energy>", (game.skillTree.upgrades.efficientEnergy.level > 0 ? "1" : "2")).replace("<ru_energy>", game.skillTree.upgrades.efficientEnergy.level > 0 ? "энергию" : "энергии"), 0.5, 0.2, 0.04, "white"),
 
                 new UIAutoUpgrade(game.autos.autoBetterBarrels, images.legendaryScrap, 0.3, "auto1"),
                 new UIAutoUpgrade(game.autos.autoFasterBarrels, images.legendaryScrap, 0.4, "auto2", "table2"),
@@ -3159,13 +3160,15 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
                 new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
-                new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
+                new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
-                new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
+                new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
                     "\n+1 " + tt("stars"), 0.5, 0.3, 0.04, "black"),
+
+                new UIText(() => tt("supernovagetmore"), 0.5, 0.5, 0.03, "black"),
 
                 new UIText(() => tt("anothersupernovatext"), 0.5, 0.6, 0.03, "black"),
 
@@ -3241,6 +3244,8 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
+                new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
+
                 new UIConstellation(0.4, 0.6, "sd1", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
                 new UIConstellation(0.15, 0.4, "sd2", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
                 new UIConstellation(0.75, 0.5, "sd3", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
@@ -3255,6 +3260,9 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
         new Scene("AlienDustUpgrades",
             [
@@ -3265,6 +3273,8 @@ var scenes =
                         updateBetterBarrels();
                     }
                 }, { quadratic: true }),
+
+                new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
 
                 new UIConstellation(0.2, 0.8, "ad1", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
                 new UIConstellation(0.8, 0.2, "ad2", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
@@ -3278,6 +3288,9 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
         new Scene("FairyDustUpgrades",
             [
@@ -3287,6 +3300,8 @@ var scenes =
                         dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),
+
+                new UIText(() => "$images.fairydust$ " + tt("fairydust") + ": " + formatNumber(game.supernova.fairyDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
 
                 new UIConstellation(0.4, 0.6, "fd1", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
                 new UIConstellation(0.85, 0.2, "fd2", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
@@ -3302,5 +3317,8 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
     ];

@@ -682,7 +682,7 @@ function fallingMagnetWorth() {
 }
 
 function getTankSize() {
-    return new Decimal(20 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
+    return new Decimal(60 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
 }
 
 function fillTank() {
@@ -768,7 +768,7 @@ function hardReset() {
 
     game.ms = [];
 
-    alert("Hard resetted successfully!");
+    alert(tt("HR_SUCC"));
 }
 
 function tryAutoMerge() {
@@ -783,22 +783,27 @@ function tryAutoMerge() {
 function awardGoldenBeam(value) {
     game.beams.amount = game.beams.amount.add(value);
     game.stats.totalbeams = game.stats.totalbeams.add(value);
+    game.stats.beamstp = game.stats.beamstp.add(value);
     game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
 
     game.aerobeams.amount = game.aerobeams.amount.add(value);
     game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
+    game.stats.aebeamstp = game.stats.aebeamstp.add(value);
     game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
 
     game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
     game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
+    game.stats.abeamstp = game.stats.abeamstp.add(value * 3);
     game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
 
     game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
     game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
+    game.stats.rbeamstp = game.stats.rbeamstp.add(value * 3);
     game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
 
     game.glitchbeams.amount = game.glitchbeams.amount.add(value);
     game.stats.totalglitchbeams = game.stats.totalglitchbeams.add(value);
+    game.stats.gbeamstp = game.stats.gbeamstp.add(value);
     game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
 
     game.stats.totalgoldenbeamscollected = game.stats.totalgoldenbeamscollected.add(1);
@@ -809,7 +814,7 @@ function renewableEnergy() {
 
     // Upgrade is unlocked
     if (game.factory.tank.lt(getTankSize())) game.factory.tank = game.factory.tank.add(1);
-    if (!game.factory.tank.lt(getTankSize()) && !game.factory.tank.gt(getTankSize()) && !game.factory.tank.eq(getTankSize())) game.factory.tank = game.factory.tank.sub(1);
+    if (game.factory.tank * 1 > getTankSize() * 1) game.factory.tank = game.factory.tank.sub(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,

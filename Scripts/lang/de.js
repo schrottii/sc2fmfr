@@ -16,6 +16,12 @@ const trans_de = {
     "Next Storm Chance in: ": "Nächste Sturmchance in: ",
     "madeby": "Mod gemacht von Schrottii",
     "language": "Sprache",
+    "achievements": "Erfolge",
+    "Barrels": "Tonnen",
+
+    "You have found me": "Du hast mich gefunden",
+    "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
+    autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -25,7 +31,7 @@ const trans_de = {
     "theme1": "Standard hellblau",
     "theme2": "Dunkelblau",
     "theme3": "Dunkel",
-    "theme4": "Square Pink",
+    "theme4": "Pinke Tonne",
     "convertsetting": "Klicke zweimal auf eine Tonne um\nsie zu entfernen",
     "barrelspawn": "Tonnen spawnen",
     "resetconfirmation": "Reset Bestätigung",
@@ -39,12 +45,20 @@ const trans_de = {
     "High": "Hoch",
     "Low": "Niedrig",
     "Ultra Low": "Ultra Niedrig",
-    "lpm": "Low Performance Mode",
+    "lpm": "Niedrige Leistung-Modus",
     "FPS": "FPS",
     "Unlimited": "Unbegrenzt",
     "Coconut": "Kokosnuss",
     "hidesetting": "Tonnen komplett ausblenden",
     "Show FPS": "FPS anzeigen",
+    "HARDRESET": "HARD RESET\n(Alles zurücksetzen)",
+    "musicon": "AN (Drücken zum deaktivieren)",
+    "musicoff": "AUS  (Drücken zum aktivieren)",
+    "HR1": "Willst du wirklich ALLES zurücksetzen?",
+    "HR2": "Wenn du ja drückst, verlierst du ALLES. Tu dies nur wenn du alles verlieren willst!!!",
+    "HR3": "Mache vielleicht ein Backup, bevor du alles löschst, denn wenn du nochmal ja drückst, ist alles weg!",
+    "HR4": "Bist du dir 100% sicher?",
+    "HR_SUCC": "Erfolgreich alles zurückgesetzt!",
 
     "Audio": "Audio",
     "Music": "Musik",
@@ -89,6 +103,7 @@ const trans_de = {
 
     // BARREL FRAGMENTS
     barrelfragments: "Fragmente",
+    darkfragments: "Schattenfragmente",
     fragmentearn: "Fragmente können durch das\nzerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Fragmente.",
     dfragmentearn: "Schattenfragmente können durch das\nzerstören von Tonnen erhalten werden.\nFür Tonne <tier> gibt es <amount> Schattenfragmente.",
 
@@ -112,14 +127,14 @@ const trans_de = {
     convertworth: "<amount> sind <amount2> wert",
     beamconverter: "Umwandler",
     selecttype: "Wähle aus, welche Sorte du umwandeln möchtest!",
-    tanktext: "Nutze 5 Glitchstahl, um den Tank aufzufüllen!",
+    tanktext: "Nutze 5 Glitchstahl, um\nden Tank aufzufüllen!",
 
     // BEAMS
-    beamfalltext: "Stahlträger fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlträger enthält.",
-    aerobeamfalltext: "Aerostahl fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Aerostahl enthält.",
-    angelbeamfalltext: "Engelstahl fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Engelstahl enthält.",
-    reinforcedbeamfalltext: "Stahlstahl fallen alle <interval> Sekunden und sind <value> wert.\n<taps> Mal tippen zum einsammeln.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlstahl enthält.",
-    glitchbeamfalltext: "Glitchstahl fallen alle <interval> Sekunden und sind <taps> bis <value> wert.\n3 Mal tippen zum einsammeln.\nEs gibt eine <chance>% für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Glitchstahl enthält.",
+    beamfalltext: "Stahlträger fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlträger enthält.",
+    aerobeamfalltext: "Aerostahl fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Aerostahl enthält.",
+    angelbeamfalltext: "Engelstahl fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Engelstahl enthält.",
+    reinforcedbeamfalltext: "Stahlstahl fallen alle <interval> Sekunden und sind <value> wert.\n<taps> Mal tippen zum einsammeln.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlstahl enthält.",
+    glitchbeamfalltext: "Glitchstahl fallen alle <interval> Sekunden und sind <taps> bis <value> wert.\n3 Mal tippen zum einsammeln.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Glitchstahl enthält.",
 
     // MASTERY
     "Mastery Upgrades": "Mastery Upgrades",
@@ -169,7 +184,7 @@ const trans_de = {
     wrenches: "Schraubenschlüssel",
     totalmerges: "Verbindungen insgesamt",
     selfmerges: "Eigene Verbindungen",
-    mergeexplanation: "Eigene Verbindungen -> Verbindungen vom Spieler selbst! (Kein Auto Merge)",
+    mergeexplanation: "Eigene Verbindungen -> Verbindungen vom Spieler selbst!\n(Kein Auto Merge)",
 
     // DAILY AND STATS
     daily: "Täglich",
@@ -243,8 +258,10 @@ const trans_de = {
 
     supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",
+    firstsupernova: "Ich empfehle es, vor der ersten Supernova ein Backup zu machen ;)",
     youwillearn: "Du wirst erhalten: ",
     anothersupernovatext: "Drücke den Knopf, um die Supernova durchzuführen.",
+    supernovagetmore: "Erhalte mehr Embleme durch das erreichen sehr hoher Tonnen.\nErhalte mehr Staub durch sammeln von bestimmten Rohstoffen.",
 
     resetstar: "Möchtest du wirklich deine Sternenstaub-Upgrades zurücksetzen? (100% Erstattung)",
     resetalien: "Möchtest du wirklich deine Alienstaub-Upgrades zurücksetzen? (100% Erstattung)",
@@ -382,6 +399,7 @@ const trans_de = {
     glitch3: "Chance auf mehr Stahlträger\n(alle Sorten)",
     glitch4: "Chance auf einen goldenen\nStahlträger, der alle gibt",
     glitch5: "Erhöht den min. Wert\nvon Glitchstahl",
+    glitch6: "Mehr Alienstaub",
 
     // Plastic Bags
     plastic1: "Mehr Schrott",
@@ -704,7 +722,7 @@ const trans_de = {
         "162": ["Meine erste 1M Tonne", "Mache 1M Mastery Verbindungen auf Tonne 204"],
         "163": ["Noch mehr gelber Stahl", "Sammel einen goldenen Stahlträger"],
         "164": ["ja", "nein"],
-        "165": ["Niemand Kann Touch This", "Erreiche <amount> Schrott\nStop... Schrottzeit!"],
+        "165": ["Niemand Kann Das Anfassen", "Erreiche <amount> Schrott\nStop... Schrottzeit!"],
         "166": ["Rette die Krabben!", "Schalte Plastiktüten frei"],
         "167": ["Krabenretter I", "Kaufe insgesamt 25 Plastiktüten"],
         "168": ["Exponentielle Kraft", "Ich dachte dieses Upgrade wäre schwach,\naber es ist ziemlich stark..."],
@@ -787,10 +805,10 @@ const trans_de = {
         "242": ["Schrotttonne 2 Moment", "Verdiene deinen zehnten Stern!"],
         "243": ["Schrottstar", "Verdiene deinen 100. Stern!"],
         "244": ["Wer braucht verrückte Boosts?", "Habe 3 Kosmische Embleme gleichzeitig"],
-        "245": ["Segen von den Sternen", "Habe 1.000.000 Sternenstaub insgesamt"],
-        "246": ["Segen von den Aliens", "Habe 1.000.000 Alienstaub insgesamt"],
-        "247": ["Segen von den Feen", "Habe 1.000.000 Feenstaub insgesamt"],
-        "248": ["Nichtmal Aliens Touch This", "Erreiche <amount> Schrott\nStop... Schrottzeit!"],
+        "245": ["Segen von den Sternen", "Habe 100.000 Sternenstaub insgesamt"],
+        "246": ["Segen von den Aliens", "Habe 100.000 Alienstaub insgesamt"],
+        "247": ["Segen von den Feen", "Habe 100.000 Feenstaub insgesamt"],
+        "248": ["Nichtmal Aliens Können Es Fassen", "Erreiche <amount> Schrott\nStop... Schrottzeit!"],
         "249": ["Gelb", "Habe <amount> GS"],
         "250": ["Das Ende", "Alle Erfolge"],
     }

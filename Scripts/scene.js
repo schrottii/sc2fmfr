@@ -2430,7 +2430,7 @@ var scenes =
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                         playMusic();
-                    }, () => tt("current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
+                    }, () => tt("Current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
 
                     // Volume
                     new UIOption(tabYs[2] + 0.3, images.options.numberFormat, () => {
@@ -2503,7 +2503,7 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.settings.optionsPage < 2
                     }),*/
-                new UIButton(0.8, 0.89, 0.1, 0.1, images.logos.schrottii, () => {
+                new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"))
                     if (game.ms.includes(206) == false) {
                         game.ms.push(206);

@@ -127,7 +127,7 @@ const trans_de = {
     convertworth: "<amount> sind <amount2> wert",
     beamconverter: "Umwandler",
     selecttype: "Wähle aus, welche Sorte du umwandeln möchtest!",
-    tanktext: "Nutze 5 Glitchstahl, um den Tank aufzufüllen!",
+    tanktext: "Nutze 5 Glitchstahl, um\nden Tank aufzufüllen!",
 
     // BEAMS
     beamfalltext: "Stahlträger fallen alle <interval> Sekunden und sind <value> wert.\nEs gibt eine <chance>% Chance für einen Sturm statt einem einzelnen\nStahlträger, welcher <amount2> Stahlträger enthält.",
@@ -184,7 +184,7 @@ const trans_de = {
     wrenches: "Schraubenschlüssel",
     totalmerges: "Verbindungen insgesamt",
     selfmerges: "Eigene Verbindungen",
-    mergeexplanation: "Eigene Verbindungen -> Verbindungen vom Spieler selbst! (Kein Auto Merge)",
+    mergeexplanation: "Eigene Verbindungen -> Verbindungen vom Spieler selbst!\n(Kein Auto Merge)",
 
     // DAILY AND STATS
     daily: "Täglich",

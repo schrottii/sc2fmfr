@@ -166,12 +166,14 @@ class FallingItem extends MovingItem
                     this.destroy();
                 }
                 else {
+                    // Repeats the beam
                     if (game.ms.includes(142) == false) {
                         game.ms.push(142);
                         GameNotification.create(new MilestoneNotificaion(143));
                     }
                     this.y = -1;
                     this.acc = 0;
+                    this.autoTried = false;
                 }
             }
         }
@@ -463,7 +465,7 @@ var movingItemFactory =
             }))
     },
     fallingScrew: (value) => {
-        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.075, h * 0.075, h * 1, h * 0.2, 0,
+        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.1, h * 0.1, h * 1, h * 0.2, 0,
             function (isAuto = false) {
                 this.collected = true;
                 if (game.settings.lowPerformance) {

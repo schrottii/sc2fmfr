@@ -1027,9 +1027,9 @@ var game =
                 }),
             factoryTankSize: new ReinforcedBeamUpgrade(
                 level => new Decimal(2000 + (100 * level)),
-                level => 10 * level,
+                level => 20 * level,
                 {
-                    maxLevel: 58,
+                    maxLevel: 72,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+", "")
                 }),
             fragmentBoost: new ReinforcedBeamUpgrade(
@@ -2155,7 +2155,7 @@ var game =
                 }
             ),
             aquila: new AlienDustUpgrade(
-                level => new Decimal(1).add(level > 99999 ? 9 : 0),
+                level => new Decimal(1).add(level > 99999 ? Math.pow(10, Math.floor(level / 100000)) - 1 : 0),
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),

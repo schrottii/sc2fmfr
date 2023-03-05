@@ -682,7 +682,7 @@ function fallingMagnetWorth() {
 }
 
 function getTankSize() {
-    return new Decimal(20 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
+    return new Decimal(60 + applyUpgrade(game.reinforcedbeams.upgrades.factoryTankSize));
 }
 
 function fillTank() {

@@ -3168,6 +3168,8 @@ var scenes =
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
                     "\n+1 " + tt("stars"), 0.5, 0.3, 0.04, "black"),
 
+                new UIText(() => tt("supernovagetmore"), 0.5, 0.5, 0.03, "black"),
+
                 new UIText(() => tt("anothersupernovatext"), 0.5, 0.6, 0.03, "black"),
 
                 new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {

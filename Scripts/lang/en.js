@@ -16,10 +16,12 @@ const trans_en = {
     "Next Storm Chance in: ": "Next Storm Chance in: ",
     "madeby": "mod made by Schrottii",
     "language": "Language",
+    "achievements": "Achievements",
+    "Barrels": "Barrels",
 
     "You have found me": "You have found me",
     "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
-    autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs ",
+    autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
 
     // OPTIONS
     "Options": "Options",
@@ -121,7 +123,7 @@ const trans_en = {
     glitchbeams: "Glitch Beams",
     selected: "Selected",
     "(ON)": "(ON)",
-    converttto: "to ",
+    convertto: "to ",
     convertworth: "<amount> are worth <amount2>",
     beamconverter: "Beam Converter",
     selecttype: "Select which type you want to convert!",
@@ -131,8 +133,8 @@ const trans_en = {
     beamfalltext: "Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of a Beam storm occuring instead of\na single Beam, containing <amount2> Beams.",
     aerobeamfalltext: "Aerobeams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Aerobeam storm occuring instead of\na single Aerobeam, containing <amount2> Beams.",
     angelbeamfalltext: "Angel Beams fall every <interval> seconds and are worth <value>.\nThere's a <chance>% chance of an Angel Beam storm occuring instead of\na single Angel Beam, containing <amount2> Beams.",
-    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Reinforced Beam storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
-    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <taps> to <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
+    reinforcedbeamfalltext: "Reinforced Beams fall every <interval> seconds and are worth <value>.\n<taps> taps per beam.\nThere's a <chance>% chance of a storm occuring instead of\na single Reinforced Beam, containing <amount2> Beams.",
+    glitchbeamfalltext: "Glitch Beams fall every <interval> seconds and are worth <taps> to <value>.\n3 taps per beam.\nThere's a <chance>% chance of a Glitch Beam storm occuring instead of\na single Glitch Beam, containing <amount2> Beams.",
 
     // MASTERY
     "Mastery Upgrades": "Mastery Upgrades",

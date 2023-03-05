@@ -16,10 +16,12 @@ const trans_de = {
     "Next Storm Chance in: ": "Nächste Sturmchance in: ",
     "madeby": "Mod gemacht von Schrottii",
     "language": "Sprache",
+    "achievements": "Erfolge",
+    "Barrels": "Tonnen",
 
     "You have found me": "Du hast mich gefunden",
     "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
-    autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet ",
+    autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
 
     // OPTIONS
     "Options": "Einstellungen",

@@ -339,7 +339,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.02) + "px " + fonts.default;
-                ctx.fillText("Now with 200000%\nless achievements", w * 0.49, h - w * 0.1);
+                ctx.fillText("π version: 3.1.4.1.5", w * 0.49, h - w * 0.1);
 
             }),
         new Scene("Barrels",
@@ -898,7 +898,7 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.settings.barrelGalleryPage < game.barrelGallery.getMaxPage()
                 }),
-                new UIText("Barrels", 0.5, 0.05, 0.1, "white", {
+                new UIText(() => tt("Barrels"), 0.5, 0.05, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -943,7 +943,7 @@ var scenes =
         new Scene("Mastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
-                new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.1, "white", {
+                new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1094,7 +1094,7 @@ var scenes =
         new Scene("MergeMastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
-                new UIText(() => tt("Merge Mastery"), 0.5, 0.1, 0.12, "white", {
+                new UIText(() => tt("Merge Mastery"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2429,7 +2429,7 @@ var scenes =
                         }
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                         playMusic();
-                    }, () => "Current: " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
+                    }, () => tt("current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
 
                     // Volume
                     new UIOption(tabYs[2] + 0.3, images.options.numberFormat, () => {
@@ -2488,7 +2488,7 @@ var scenes =
                                 }
                             }
                         }
-                    }, tt("HARDRESET"), "table"),
+                    }, () => tt("HARDRESET"), "table"),
 
 
             ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.9 }),
@@ -2669,7 +2669,7 @@ var scenes =
                         quadratic: true,
                         isVisible: () => game.milestones.page < game.milestones.maxPage()
                     }),
-                new UIText("Achievements", 0.5, 0.09, 0.12, "white", {
+                new UIText(() => tt("achievements"), 0.5, 0.09, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2887,7 +2887,7 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
-                new UIText(() => tt("autobuyertext") + (game.skillTree.upgrades.efficientEnergy.level > 0 ? "1" : "2") + " energy.", 0.5, 0.2, 0.04, "white"),
+                new UIText(() => tt("autobuyertext").replace("<energy>", (game.skillTree.upgrades.efficientEnergy.level > 0 ? "1" : "2")).replace("<ru_energy>", game.skillTree.upgrades.efficientEnergy.level > 0 ? "энергию" : "энергии"), 0.5, 0.2, 0.04, "white"),
 
                 new UIAutoUpgrade(game.autos.autoBetterBarrels, images.legendaryScrap, 0.3, "auto1"),
                 new UIAutoUpgrade(game.autos.autoFasterBarrels, images.legendaryScrap, 0.4, "auto2", "table2"),
@@ -3161,7 +3161,7 @@ var scenes =
                 new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
                 new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
-                new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " Cosmic Emblems" +
+                new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +

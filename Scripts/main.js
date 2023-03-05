@@ -814,7 +814,7 @@ function renewableEnergy() {
 
     // Upgrade is unlocked
     if (game.factory.tank.lt(getTankSize())) game.factory.tank = game.factory.tank.add(1);
-    if (!game.factory.tank.lt(getTankSize()) && !game.factory.tank.gt(getTankSize()) && !game.factory.tank.eq(getTankSize())) game.factory.tank = game.factory.tank.sub(1);
+    if (game.factory.tank * 1 > getTankSize() * 1) game.factory.tank = game.factory.tank.sub(1);
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,

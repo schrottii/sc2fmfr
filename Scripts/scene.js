@@ -1623,6 +1623,7 @@ var scenes =
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.valueGlitch, images.upgrades.valueGlitchUpgrade, 0.65, "glitch3"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.goldenbeam, images.upgrades.goldenBeams, 0.75, "glitch4", "table2"),
                 new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.minimumValue, images.upgrades.glitchBeamValue, 0.85, "glitch5"),
+                new UIGlitchBeamUpgrade(game.glitchbeams.upgrades.alienDustBoost, images.upgrades.glitchBeamValue, 0.95, "glitch6", "table2", () => { return game.reinforcedbeams.upgrades.darkFragmentBoost.level > 9 && game.supernova.stars.gt(0) }),
 
             ],
             function () {
@@ -3159,7 +3160,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
                 new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
-                new UIText(() => "I recommend making a backup before doing your first Supernova ;)", 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
+                new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
@@ -3241,6 +3242,8 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
+                new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
+
                 new UIConstellation(0.4, 0.6, "sd1", game.supernova.starDustUpgrades.ara, "$images.stardust$", images.constellations.ara, 0.075),
                 new UIConstellation(0.15, 0.4, "sd2", game.supernova.starDustUpgrades.aries, "$images.stardust$", images.constellations.aries, 0.075),
                 new UIConstellation(0.75, 0.5, "sd3", game.supernova.starDustUpgrades.corvus, "$images.stardust$", images.constellations.corvus, 0.075),
@@ -3255,6 +3258,9 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
         new Scene("AlienDustUpgrades",
             [
@@ -3265,6 +3271,8 @@ var scenes =
                         updateBetterBarrels();
                     }
                 }, { quadratic: true }),
+
+                new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
 
                 new UIConstellation(0.2, 0.8, "ad1", game.supernova.alienDustUpgrades.cetus, "$images.aliendust$", images.constellations.cetus, 0.075),
                 new UIConstellation(0.8, 0.2, "ad2", game.supernova.alienDustUpgrades.triangulum, "$images.aliendust$", images.constellations.triangulum, 0.075),
@@ -3278,6 +3286,9 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
         new Scene("FairyDustUpgrades",
             [
@@ -3287,6 +3298,8 @@ var scenes =
                         dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),
+
+                new UIText(() => "$images.fairydust$ " + tt("fairydust") + ": " + formatNumber(game.supernova.fairyDust), 0.1, 0.98, 0.05, "black", { halign: "left", valign: "middle" }),
 
                 new UIConstellation(0.4, 0.6, "fd1", game.supernova.fairyDustUpgrades.cancer, "$images.fairydust$", images.constellations.cancer, 0.075),
                 new UIConstellation(0.85, 0.2, "fd2", game.supernova.fairyDustUpgrades.pyxis, "$images.fairydust$", images.constellations.pyxis, 0.075),
@@ -3302,5 +3315,8 @@ var scenes =
                     drawStars(100, 0.5);
                 }
                 ctx.drawImage(images.solarSystem.third, w * 0.45, h * 0.45, h * 0.1, h * 0.1);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
     ];

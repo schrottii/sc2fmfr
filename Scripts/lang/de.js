@@ -258,6 +258,7 @@ const trans_de = {
 
     supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",
+    firstsupernova: "Ich empfehle es, vor der ersten Supernova ein Backup zu machen ;)",
     youwillearn: "Du wirst erhalten: ",
     anothersupernovatext: "Drücke den Knopf, um die Supernova durchzuführen.",
 
@@ -397,6 +398,7 @@ const trans_de = {
     glitch3: "Chance auf mehr Stahlträger\n(alle Sorten)",
     glitch4: "Chance auf einen goldenen\nStahlträger, der alle gibt",
     glitch5: "Erhöht den min. Wert\nvon Glitchstahl",
+    glitch6: "Mehr Alienstaub",
 
     // Plastic Bags
     plastic1: "Mehr Schrott",

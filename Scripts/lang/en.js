@@ -258,6 +258,7 @@ const trans_en = {
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
     supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",
+    firstsupernova: "I recommend making a backup before doing your first Supernova ;)",
     youwillearn: "You will earn: ",
     anothersupernovatext: "Click the button below to do a Supernova.",
 
@@ -397,6 +398,7 @@ const trans_en = {
     glitch3: "Chance to get more beams\n(all types)",
     glitch4: "Chance to get a golden beam\ninstead of any beam\nwhich gives all beams",
     glitch5: "Increases the min. worth of\nGlitch Beams",
+    glitch6: "Get More Alien Dust",
 
     // Plastic Bags
     plastic1: "Get more Scrap",

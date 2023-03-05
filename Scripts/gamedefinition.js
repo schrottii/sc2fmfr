@@ -1081,11 +1081,17 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(100 * level + 200),
+                level => new Decimal(100 * level + 50),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "Min. ")
+                }),
+            alienDustBoost: new GlitchBeamUpgrade(
+                level => new Decimal((50 + (Math.floor(level / 10) * 10)) * Math.floor((level / 78 + 1))),
+                level => new Decimal(1).add(0.02 * level),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }),
         }
     },
@@ -1692,7 +1698,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "s")
             }),
         autoGetMoreMagnets: new AutoUpgrade(
-            level => new Decimal(1).add(Math.floor(level / 12)),
+            level => new Decimal(1).add(Math.floor(level / 36)),
             level => (305 - (2 * level) - (3 * Math.min(level, 24)) - (0.5 * Math.max(level - 119, 0)) + (1 * Math.max(level - 112, 0))) * Math.min(level, 1),
             RESOURCE_BLUEBRICK, ["goldenScrap", "upgrades", "magnetBoost"],
             time = 0,
@@ -1809,7 +1815,7 @@ var game =
             amount *= 1 + (game.solarSystem.upgrades.mythus.level / 100);
             amount *= 1 + (game.solarSystem.upgrades.sun.level / 1000);
 
-            return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+            return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
             let amount = game.stats.beamstp.div(1e6).max(1);

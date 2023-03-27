@@ -205,7 +205,8 @@ function update()
     if (!document.hidden)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
-        game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+        if(game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+        else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
         game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
         game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
 
@@ -998,7 +999,6 @@ function duckTales(type=0) {
         }
         else {
             duckAmount += 1;
-            if (i == 756) duckCheck = true;
         }
         return false;
     });

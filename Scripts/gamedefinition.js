@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.1.1 (v3.8.1)";
+const gameVersionText = "v3.2 (v3.9)";
 
 var game =
 {
@@ -2006,7 +2006,7 @@ var game =
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 1),
+            }, 2),
             keepEZ: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
@@ -2022,11 +2022,11 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
             }, 2),
-            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(1),
+            moreScrapMax: new CosmicEmblemUpgrade(level => new Decimal(3),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 2),
+            }, 5),
             keepAutoBuyers: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
@@ -2062,11 +2062,11 @@ var game =
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 5),
-            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(3),
+            hyperBuy: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => level, {
                 maxLevel: 1,
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, 5),
+            }, 1),
             mythusMultiBuy: new CosmicEmblemUpgrade(level => new Decimal(2),
                 level => level, {
                 maxLevel: 1,
@@ -2440,7 +2440,6 @@ var game =
                 new Milestone(218, "F.U.N.", 114, "Make Glitch Beams funnier", () => game.skillTree.upgrades.funnyGlitchBeams.level > 0),
                 new Milestone(219, "H.O.M.L.", 87, "Level the first Auto buyer\nto at least half of its max. level", () => game.autos.autoBetterBarrels.level >= game.autos.autoBetterBarrels.maxLevel / 2),
                 new Milestone(220, "3.47", 104, "Complete all three paths (again)", () => game.skillTree.upgrades.veryFastCrafting.level > 0 && game.skillTree.upgrades.funnyGlitchBeams.level > 0 && game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
-                new Milestone(221, "Duck Tales", 115, () => "Do at least 100k merges on all\nduck barrels (Progress: " + duckTales(1) + "/" + duckBarrels.length + ")\n" + duckTales(2), () => duckTales(), ["<text>", "duckTales(1)"]),
                 new Milestone(222, "This is useless", 2, "Get more passive magnets (Level 10)", () => game.tires.upgrades[3][0].level > 9),
                 new Milestone(223, "A % Beam Prod Increase?", 47, "Get more beams... in % (Level 10)", () => game.tires.upgrades[3][1].level > 9),
                 new Milestone(224, "Plastic Eff. Testing Agency", 95, "Cheaper Plastic Bags (Level 10)", () => game.tires.upgrades[3][2].level > 9),
@@ -2463,10 +2462,11 @@ var game =
                 new Milestone(246, "Blessing from\nthe Aliens", 119, () => "\n\nHave " + formatNumber(100000) + " total Alien Dust", () => game.stats.totalaliendust.gte(100000)),
                 new Milestone(247, "Blessing from\nthe Fairies", 119, () => "\n\nHave " + formatNumber(100000) + " total Fairy Dust", () => game.stats.totalfairydust.gte(100000)),
                 new Milestone(243, "Scrapstar", 7, "Get your 100th star!", () => game.supernova.stars.gte(100)),
+                new Milestone(249, "Yellow", 4, () => "Reach " + formatNumber(new Decimal("1e2500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e2500"), ["<amount>", "formatNumber(new Decimal('1e2500'))"]),
                 new Milestone(228, "Nuclear Fusion", 65, "Do 1M self merges\n(Merges from auto merge do not count as self merges)\n(I'm sorry)", () => game.selfMerges > 999999),
                 new Milestone(155, "Tire Club", 88, () => "Reach " + formatNumber(new Decimal("1e1e9")) + " tires\nand unlock the Tire Club!", () => game.tires.amount.gte("1e1000000000"), ["<amount>", "formatNumber(new Decimal('1e1e9'))"]),
                 new Milestone(248, "Not even aliens\ncan touch this", 69, () => "\n\nReach " + formatNumber(new Decimal(2).pow(327680)) + " Scrap\nStop... scrap grinding time!", () => game.highestScrapReached.gte(Decimal.pow(2, 327680)), ["<amount>", "formatNumber(new Decimal(2).pow(327680))"]),
-                new Milestone(249, "Yellow", 4, () => "Reach " + formatNumber(new Decimal("1e2500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e2500"), ["<amount>", "formatNumber(new Decimal('1e2500'))"]),
+                new Milestone(221, "Duck Tales", 115, () => "Do at least 100k merges on all\nduck barrels (Progress: " + duckTales(1) + "/" + duckBarrels.length + ")\n" + duckTales(2), () => duckTales(), ["<text>", "duckTales(1)"]),
                 new Milestone(250, "The End", 0, () => "Get All Achievements", () => game.ms.length > 248),
                 //new Milestone(166, "", 50, "", () => ),
                 ],

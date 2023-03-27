@@ -444,7 +444,10 @@ var scenes =
                 new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.125, 0.84, 0.035, "black", { bold: true }),
                 new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.225, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
 
-                new UIText(() => "+" + formatNumber(Barrel.getGlobalIncome()) + "/s", 0.3, 0.02, 0.03, "white", { bold: true }),
+                new UIText(() => {
+                    if(game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
+                    else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
+                }, 0.3, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return tt("Next Storm Chance in: ") + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
             ],
@@ -3203,12 +3206,12 @@ var scenes =
                     new UIRect(0.5, 2.0, 1, 0.3, "table2"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "em1", 0.2, 0.45, "table"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "em2", 0.5, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "em14", 0.5, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "em3", 0.8, 0.45, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreScrap, "em4", 0.2, 0.75, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.doubleBeams, images.upgrades.beamValue, "em5", 0.5, 0.75, "table2"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreScrapMax, images.upgrades.moreScrap, "em6", 0.8, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "em2", 0.8, 0.75, "table2"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoBuyers, images.upgrades.unlockAutos, "em7", 0.2, 1.05, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startScrap, images.upgrades.moreScrap, "em8", 0.5, 1.05, "table"),
@@ -3219,7 +3222,7 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterAutoMerge, images.upgrades.fasterAutoMerge, "em12", 0.8, 1.35, "table2"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.faster2ndDim, images.upgrades.moreDarkScrap, "em13", 0.2, 1.65, "table"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "em14", 0.5, 1.65, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreScrapMax, images.upgrades.moreScrap, "em6", 0.5, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "em15", 0.8, 1.65, "table"),
 
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreDust, images.upgrades.efficientenergy, "em16", 0.2, 1.95, "table2"),

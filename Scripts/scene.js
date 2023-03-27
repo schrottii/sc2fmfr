@@ -309,11 +309,13 @@ function convertButtonConvert(type, amount, type2, amount2) {
     }
 }
 
+let loadDots = 0;
+
 var scenes =
     [
         new Scene("Loading",
             [],
-            function () {
+            function (delta) {
                 ctx.fillStyle = colors[C]["bgFront"];
                 ctx.fillRect(0, 0, w, h);
 
@@ -327,10 +329,18 @@ var scenes =
                 ctx.textBaseline = "top";
                 ctx.font = "300 " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillText("Scrap II Fanmade FR", w * 0.5, h * 0.02, w * 0.9);
-                ctx.fillText(tt("madeby"), w * 0.5, h * 0.075, w * 0.65);
+                ctx.fillText(tt("madeby"), w * 0.5, h * 0.075, w * 0.4);
 
+                // Loading... text
+                loadDots += delta * 1000;
                 ctx.font = "300 " + (h * 0.05) + "px " + fonts.default;
-                ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.6, w * 0.9);
+                if (loadDots > 3999) {
+                    loadDots = 0;
+                }
+                else if (loadDots > 2999) ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.6, w * 0.9);
+                else if (loadDots > 1999) ctx.fillText(tt("Loading") + "..", w * 0.5, h * 0.6, w * 0.9);
+                else if (loadDots > 999) ctx.fillText(tt("Loading") + ".", w * 0.5, h * 0.6, w * 0.9);
+                else ctx.fillText(tt("Loading"), w * 0.5, h * 0.6, w * 0.9);
 
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
@@ -338,8 +348,8 @@ var scenes =
                 ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
 
                 ctx.textAlign = "center";
-                ctx.font = "200 " + (h * 0.02) + "px " + fonts.default;
-                ctx.fillText("π version: 3.1.4.1.5", w * 0.49, h - w * 0.1);
+                ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
+                ctx.fillText("Bonus update 3", w * 0.49, h - w * 0.2);
 
             }),
         new Scene("Barrels",

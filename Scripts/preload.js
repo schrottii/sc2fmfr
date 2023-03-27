@@ -28,7 +28,7 @@ var images =
     barrels10: undefined,
     shadowBarrels: [],
     previewBarrels: [],
-    appIcon: loadImage("Images/app-icon.png"),
+    appIcon: loadImage("Images/app-icon-large.png"),
     scrap: loadImage("Images/Currencies/scrap.png"),
     barrelTemplate: loadImage("Images/barrel_template.png"),
     magnet: loadImage("Images/Currencies/magnet.png"),

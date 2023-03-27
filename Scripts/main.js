@@ -25,6 +25,7 @@ var movingItems = [];
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
 var hyperBuy = false;
+var cloudAlpha = 0;
 
 var FPS = 9999;
 
@@ -188,6 +189,13 @@ function cancelGift() {
     game.stats.giftsSent = game.stats.giftsSent.sub(1);
 
     document.querySelector("div.copyGift").style.display = "none";
+}
+
+function currentSceneNotLoading() {
+    // Returns true if current scene is not the loading scene
+    // otherwise false
+
+    return currentScene.name != "Loading";
 }
 
 function update()
@@ -543,8 +551,11 @@ function update()
                 }
 
                 for (i in movingItems) movingItems[i].cooldown += delta;
-                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club") {
+                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
+                    if (cloudAlpha < 0.8) cloudAlpha += delta;
+                    ctx.globalAlpha = cloudAlpha;
                     ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+                    ctx.globalAlpha = 1;
 
                     for (q in stormQueue) {
                         stormQueue[q][0] -= delta * 1000;
@@ -587,6 +598,14 @@ function update()
 
                             stormQueue.splice(q, 1); // Remove from queue
                         }
+                    }
+                }
+                else {
+                    if (cloudAlpha > 0) {
+                        cloudAlpha = Math.max(cloudAlpha - delta * 2, 0);
+                        ctx.globalAlpha = cloudAlpha;
+                        ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+                        ctx.globalAlpha = 1;
                     }
                 }
             }
@@ -1324,7 +1343,7 @@ function saveGame(exportGame, downloaded=false)
     else
     {
         localStorage.setItem("ScrapFanmade", JSON.stringify(saveObj));
-        currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
+        if (currentSceneNotLoading()) currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
     }
 }
 

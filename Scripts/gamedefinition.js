@@ -19,7 +19,7 @@ var game =
     remainderMagnets: 0,
     dimension: 0,
     glitchesCollected: 0,
-
+     
     totalMerges: 0,
     selfMerges: 0,
 

@@ -2532,6 +2532,7 @@ var game =
         musicVolume: 0,
         displayFPS: false,
         hyperBuy: false,
+        beamRed: 0,
         lang: "en",
     }
 }

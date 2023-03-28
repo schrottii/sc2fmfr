@@ -35,6 +35,10 @@ const trans_en = {
     "convertsetting": "Double Click Barrels to remove them",
     "barrelspawn": "Barrel Spawn",
     "resetconfirmation": "Reset Confirmation",
+    "beamsredirect": "Open Beams",
+    "br1": "Normal Beams",
+    "br2": "Current",
+    "br3": "Selection",
 
     "Performance": "Performance",
     "shadows": "Toggle Barrel Shadows",

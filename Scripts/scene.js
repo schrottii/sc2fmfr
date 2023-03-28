@@ -28,7 +28,7 @@ var timeModeTime = 0;
 var timeTires = 0;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-var tabYs = [0.2, 0.9, 1.8, 2.2];
+var tabYs = [0.2, 1.0, 1.9, 2.3];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
@@ -395,7 +395,17 @@ var scenes =
                     quadraticMin: true
                 }),
                 new UIButton(0.35, 0.97, 0.15, 0.06, images.scenes.steelBeams, () => {
-                    Scene.loadScene(["Beams", "Aerobeams", "AngelBeams", "ReinforcedBeams", "GlitchBeams"][game.beams.selected]);
+                    switch (game.settings.beamRed) {
+                        case 0: // Normal Beams
+                            Scene.loadScene("Beams");
+                            break;
+                        case 1: // Current
+                            Scene.loadScene(["Beams", "Aerobeams", "AngelBeams", "ReinforcedBeams", "GlitchBeams"][game.beams.selected]);
+                            break;
+                        case 2: // Selection
+                            Scene.loadScene("Beamselection");
+                            break;
+                }
                 }, {
                     isVisible: () => game.beams.isUnlocked() && !timeMode,
                     quadraticMin: true
@@ -1334,25 +1344,24 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
-
                 new UIButton(0, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("Beamselection"), {
                     quadraticMin: true,
                     isVisible: () => game.aerobeams.isUnlocked(),
                     anchor: [0, 0.5]
                 }),
-                new UIButton(0.2, 0.97, 0.15, 0.06, images.scenes.aerobeams, () => Scene.loadScene("Aerobeams"), {
+                new UIButton(0.235, 0.97, 0.15, 0.06, images.scenes.aerobeams, () => Scene.loadScene("Aerobeams"), {
                     quadraticMin: true,
                     isVisible: () => game.aerobeams.isUnlocked(),
                 }),
-                new UIButton(0.4, 0.97, 0.15, 0.06, images.scenes.convert, () => Scene.loadScene("Beamconvert"), {
+                new UIButton(0.415, 0.97, 0.15, 0.06, images.scenes.convert, () => Scene.loadScene("Beamconvert"), {
                     quadraticMin: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockBeamConverter),
                 }),
-                new UIButton(0.6, 0.97, 0.15, 0.06, images.scenes.angelbeams, () => Scene.loadScene("AngelBeams"), {
+                new UIButton(0.585, 0.97, 0.15, 0.06, images.scenes.angelbeams, () => Scene.loadScene("AngelBeams"), {
                     quadraticMin: true,
                     isVisible: () => game.angelbeams.isUnlocked(),
                 }),
-                new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.reinforcedbeams, () => Scene.loadScene("ReinforcedBeams"), {
+                new UIButton(0.765, 0.97, 0.15, 0.06, images.scenes.reinforcedbeams, () => Scene.loadScene("ReinforcedBeams"), {
                     quadraticMin: true,
                     isVisible: () => game.reinforcedbeams.isUnlocked(),
                 }),
@@ -1361,6 +1370,7 @@ var scenes =
                     isVisible: () => game.glitchbeams.isUnlocked(),
                     anchor: [1, 0.5]
                 }),
+
 
                 new UIText(() => tt("beamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<value>", getBeamBaseValue()).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
 
@@ -2364,6 +2374,11 @@ var scenes =
                         }
                     }, () => tt("language") + ": " + ["English", "Deutsch", "Русский"][["en", "de", "ru"].indexOf(game.settings.lang)], "table"),
 
+                    // Reset confirmation dialogue
+                    new UIOption(tabYs[0] + 0.7, images.scenes.beamselection, () => {
+                        game.settings.beamRed = (game.settings.beamRed + 1) % 3
+                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table2"),
+
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {
                         bold: 600,
@@ -2411,14 +2426,14 @@ var scenes =
                         else return tt("FPS") + ": " + tt("Unlimited");
                     }, "table"),
 
+                    // FPS
+                    new UIToggleOption(tabYs[1] + 0.6, "game.settings.displayFPS", () => tt("Show FPS"), "table2"),
+
                     // Coconut
-                    new UIToggleOption(tabYs[1] + 0.6, "game.settings.coconut", () => tt("Coconut"), "table"),
+                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.coconut", () => tt("Coconut"), "table"),
 
                     // No Barrels
-                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.nobarrels", () => tt("hidesetting"), "table2"),
-
-                    // FPS
-                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.displayFPS", () => tt("Show FPS")),
+                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.nobarrels", () => tt("hidesetting"), "table2"),
 
 
                     new UIText(() => tt("Audio"), 0.5, tabYs[2], 0.075, "white", {
@@ -3170,7 +3185,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
 
                 new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
                 new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
@@ -3187,14 +3202,28 @@ var scenes =
 
                 new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {
                     if (confirm("Do you really want to do a Supernova?")) {
-                        game.supernova.reset();
+                        supernovaAlpha = 0.001;
                     }
-                }, { quadratic: true }),
+                }, { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
             ],
             
-            function () {
+            function (delta) {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
+
+                if (supernovaAlpha > 0) {
+                    supernovaAlpha += delta / 3;
+                }
+                if (supernovaAlpha >= 1) {
+                    game.supernova.reset();
+                    supernovaAlpha = 0;
+                }
+
+                //ctx.globalAlpha = cloudAlpha;
+                ctx.fillStyle = "#F9F1A4"
+                ctx.globalAlpha = supernovaAlpha;
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalAlpha = 1;
             }),
         new Scene("EmblemUpgrades",
             [

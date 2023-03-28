@@ -26,6 +26,7 @@ var trophyMergeCounter = 0;
 var trophyProgress = 0;
 var hyperBuy = false;
 var cloudAlpha = 0;
+var supernovaAlpha = 0;
 
 var FPS = 9999;
 
@@ -1470,6 +1471,7 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
         game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
+        game.settings.beamRed = loadVal(loadObj.settings.beamRed, 0);
         game.settings.lang = loadVal(loadObj.settings.lang, "en");
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];

@@ -1066,7 +1066,12 @@ var scenes =
                 new UIButton(0.6, 0.5, 0.05, 0.05, images.buttonMaxAll, () => maxSunUpgrades(),
                     {
                         quadratic: true,
-                        isVisible: () => game.solarSystem.upgrades.sun.level >= 250
+                        isVisible: () => game.solarSystem.upgrades.sun.level >= 250 && game.solarSystem.upgrades.sun.level < game.solarSystem.upgrades.sun.maxLevel
+                    }),
+                new UIButton(0.8, 0.7, 0.05, 0.05, images.buttonMaxAll, () => maxMercuryUpgrades(),
+                    {
+                        quadratic: true,
+                        isVisible: () => game.solarSystem.upgrades.mercury.level >= 100 && game.solarSystem.upgrades.mercury.level < game.solarSystem.upgrades.mercury.maxLevel
                     }),
             ],
             function () {

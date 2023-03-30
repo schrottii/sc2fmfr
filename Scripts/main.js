@@ -956,7 +956,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         }
     }
 
-    if (game.scrapUpgrades.betterBarrels.level == 224) {
+    if (game.scrapUpgrades.betterBarrels.level % 1000 == 224 || game.scrapUpgrades.betterBarrels.level % 1000 == 572) {
         if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
@@ -1219,6 +1219,13 @@ function maxSunUpgrades() {
         while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
             upg.buy();
         }
+}
+
+function maxMercuryUpgrades() {
+    let upg = game.solarSystem.upgrades.mercury;
+    while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
+        upg.buy();
+    }
 }
 
 function exportCompare() {

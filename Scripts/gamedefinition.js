@@ -147,15 +147,35 @@ var game =
                     // 69
                     if (game.ms.includes(87) == false & !barrels.includes(undefined)) {
                         if (trophyProgress != 87001) {
-                            if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[12] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
-                                if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0) && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[8].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0) && barrels[11].level.toFixed(0) == barrels[12].level.toFixed(0) && barrels[12].level.toFixed(0) != barrels[13].level.toFixed(0) && barrels[12].level.toFixed(0) == barrels[15].level.toFixed(0) && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[19].level.toFixed(0)) {
+                            if (barrels[0] != undefined
+                                && barrels[4] != undefined
+                                && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined
+                                && barrels[12] != undefined && barrels[15] != undefined
+                                && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
+                                if (barrels[0].level.toFixed(0) == barrels[4].level.toFixed(0)
+                                    && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[8].level.toFixed(0)
+                                    && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0)
+                                    && barrels[11].level.toFixed(0) == barrels[12].level.toFixed(0) && barrels[12].level.toFixed(0) != barrels[13].level.toFixed(0)
+                                    && barrels[12].level.toFixed(0) == barrels[15].level.toFixed(0)
+                                    && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[17].level.toFixed(0) && barrels[17].level.toFixed(0) == barrels[18].level.toFixed(0) && barrels[18].level.toFixed(0) == barrels[19].level.toFixed(0)) {
                                     trophyProgress = 87001;
+                                    GameNotification.create(new TextNotification("?", "6"));
                                 }
                             }
                         }
                         else if (trophyProgress == 87001 & !barrels.includes(undefined)) {
-                            if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined && barrels[15] != undefined && barrels[16] != undefined && barrels[17] != undefined && barrels[18] != undefined && barrels[19] != undefined) {
-                                if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0) && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0) && barrels[4].level.toFixed(0) == barrels[7].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0) && barrels[11].level.toFixed(0) != barrels[12].level.toFixed(0) && barrels[14].level.toFixed(0) != barrels[15].level.toFixed(0) && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[17].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[19].level.toFixed(0)) {
+                            if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined
+                                && barrels[4] != undefined && barrels[7] != undefined
+                                && barrels[8] != undefined && barrels[9] != undefined && barrels[10] != undefined && barrels[11] != undefined
+                                && barrels[15] != undefined
+                                && barrels[19] != undefined) {
+                                if (barrels[0].level.toFixed(0) == barrels[1].level.toFixed(0) && barrels[1].level.toFixed(0) == barrels[2].level.toFixed(0) && barrels[2].level.toFixed(0) == barrels[3].level.toFixed(0)
+                                    && barrels[3].level.toFixed(0) == barrels[4].level.toFixed(0) && barrels[4].level.toFixed(0) != barrels[5].level.toFixed(0)
+                                    && barrels[4].level.toFixed(0) == barrels[7].level.toFixed(0)
+                                    && barrels[7].level.toFixed(0) == barrels[8].level.toFixed(0) && barrels[8].level.toFixed(0) == barrels[9].level.toFixed(0) && barrels[9].level.toFixed(0) == barrels[10].level.toFixed(0) && barrels[10].level.toFixed(0) == barrels[11].level.toFixed(0)
+                                    && barrels[11].level.toFixed(0) != barrels[12].level.toFixed(0) && barrels[14].level.toFixed(0) != barrels[15].level.toFixed(0)
+                                    && barrels[11].level.toFixed(0) == barrels[15].level.toFixed(0)
+                                    && barrels[15].level.toFixed(0) == barrels[19].level.toFixed(0)) {
                                     game.ms.push(87);
                                     GameNotification.create(new MilestoneNotificaion(88));
                                     trophyProgress = 0;
@@ -167,7 +187,10 @@ var game =
                     // Pastaring
                     if (game.ms.includes(88) == false) {
                         if (barrels[0] != undefined && barrels[3] != undefined) {
-                            if ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353) {
+                            if (
+                                ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353)
+                                || ((barrels[3].level.toFixed(0) == 343 || barrels[3].level.toFixed(0) == 344) && barrels[0].level.toFixed(0) == 353)
+                            ) {
                                 game.ms.push(88);
                                 GameNotification.create(new MilestoneNotificaion(89));
                             }
@@ -284,7 +307,7 @@ var game =
                 }
             ),
             venus: new ScrapUpgrade(
-                level => Decimal.pow(10, 50 + level * 5),
+                level => Decimal.pow(10, 50 + level * (5 + Math.max(1, level - 19))),
                 level => new Decimal((1 - Math.pow(0.8, Math.max(0, level - 1))) * 0.3 + (level > 0 ? 0.2 : 0)),
                 {
                     maxLevel: 30,
@@ -723,7 +746,7 @@ var game =
                         maxLevel: 495,
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
                     }),
-                    new TireUpgrade(level => Decimal.pow(Decimal.pow(2, 187500), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level))
+                    new TireUpgrade(level => Decimal.pow(Decimal.pow(2, 18750), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level))
                         .mul("1e750000"),
                         level => 1 + (0.02 * level),
                         {
@@ -747,13 +770,13 @@ var game =
         {
             scrapBoost: new FragmentUpgrade(
                 level => new Decimal(100).mul(new Decimal(1.1).pow(level)),
-                level => new Decimal(1 + (0.5 * level)).mul(new Decimal(1.1).pow(Math.max(0, level - 15))),
+                level => new Decimal(1 + (0.5 * level)).mul(new Decimal(1.2).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
             magnetBoost: new FragmentUpgrade(
                 level => new Decimal(500).mul(new Decimal(1.1).pow(level)),
-                level => new Decimal(1 + (0.2 * level)).mul(new Decimal(1.05).pow(Math.max(0, level - 15))),
+                level => new Decimal(1 + (0.2 * level)).mul(new Decimal(1.07).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
                 }),
@@ -777,7 +800,8 @@ var game =
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1),
                     maxLevel: () => 50 + applyUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax)
-                }), // OLD UPGRADE
+                }),
+            // OLD UPGRADE
             goldenScrapBoost: new DarkScrapUpgrade(
                 level => new Decimal(Math.min((100 + (10 * level)) * Math.pow(1.05, Math.max(0, level - 20)), 1000000)),
                 level => 0, //0.01 * level,
@@ -814,7 +838,7 @@ var game =
                 }),
             moreFragments: new DarkFragmentUpgrade(
                 level => new Decimal(100).mul(new Decimal(1.1).pow(level)),
-                level => new Decimal(1 + (0.3 * level)).mul(Math.max(1, level / 33)),
+                level => new Decimal(1 + (0.3 * level)).pow(Math.min(100, Math.max(1, level / 133))),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1)
@@ -1654,7 +1678,7 @@ var game =
     {
         autoBetterBarrels: new AutoUpgrade(
             level => new Decimal(Math.round(level / 60) + 2),
-            level => (60.5 - (0.5 * level) - (0.25 * Math.min(level, 29)) + (0.25 * Math.max(level - 92, 0))) * Math.min(level, 1),
+            level => (60.5 - (0.5 * level) - (0.25 * Math.min(level, 32)) + (0.25 * Math.max(level - 92, 0))) * Math.min(level, 1),
             RESOURCE_LEGENDARYSCRAP, ["scrapUpgrades", "betterBarrels"],
             time = 0,
             {

@@ -926,7 +926,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrel", ((lvl % BARRELS) + 1)));
+            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrelm", ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {

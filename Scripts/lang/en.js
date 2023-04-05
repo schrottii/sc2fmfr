@@ -171,7 +171,7 @@ const trans_en = {
     not_timeover: "Time Over!",
     not_timeover2: "+<amount> cog wheels",
     not_masteryup: "Mastery level up!",
-    not_masteryup2: "Level <n> (+<amount> Tokens!)",
+    not_masteryup2: "Level <n>: +<amount>",
     not_storm: "No Storm! :(",
     not_storm2: "So unlucky",
     not_glitch: "Glitches",

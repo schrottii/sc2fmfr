@@ -3344,11 +3344,17 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetfairy"))) {
-                        game.beams.hbv = getBeamBaseValue();
-                        game.beams.haebv = getAeroBeamValue();
-                        game.beams.habv = getAngelBeamValue();
-                        game.beams.hrbv = getReinforcedBeamValue();
-                        game.beams.hgbv = getGlitchBeamValue();
+                        if (game.beams.hbv == undefined) game.beams.hbv = 0;
+                        if (game.beams.haebv == undefined) game.beams.haebv = 0;
+                        if (game.beams.habv == undefined) game.beams.habv = 0;
+                        if (game.beams.hrbv == undefined) game.beams.hrbv = 0;
+                        if (game.beams.hgbv == undefined) game.beams.hgbv = 0;
+
+                        game.beams.hbv = Math.max(game.beams.hbv, getBeamBaseValue());
+                        game.beams.haebv = Math.max(game.beams.haebv, getAeroBeamValue());
+                        game.beams.habv = Math.max(game.beams.habv, getAngelBeamValue());
+                        game.beams.hrbv = Math.max(game.beams.hrbv, getReinforcedBeamValue());
+                        game.beams.hgbv = Math.max(game.beams.hgbv, getGlitchBeamValue());
                         dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),

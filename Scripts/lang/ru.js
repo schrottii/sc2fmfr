@@ -167,7 +167,7 @@ const trans_ru = {
     not_timeover: "Время Вышло!",
     not_timeover2: "+<amount> шестерёнок",
     not_masteryup: "Повышение уровня Мастерства!",
-    not_masteryup2: "Уровень <n> (+<amount> Токенов!)",
+    not_masteryup2: "Уровень <n>: +<amount>",
     not_storm: "Нет Шторма!(((",
     not_storm2: "Не повезло",
     not_glitch: "Глюки",

@@ -26,6 +26,8 @@ var multiConvert = 1;
 var timeMode = false;
 var timeModeTime = 0;
 var timeTires = 0;
+var upgradingBarrel = 0;
+var upgradingType = "mas";
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
 var tabYs = [0.2, 1.0, 1.9, 2.3];
@@ -552,6 +554,15 @@ var scenes =
                         if (barrels[i] !== undefined) {
                             barrels[i].setCoord(x, y);
                             barrels[i].render(ctx);
+                        }
+                        if (game.barrelMastery.isUnlocked()) {
+                            Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
+
+                            ctx.fillStyle = colors[C]["text"];
+                            if (upgradingType == "mas") ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.04 * w, 0.65 * h + barrelSize / 2.5, barrelSize / 2.5);
+                            else {
+                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.04 * w, 0.65 * h + barrelSize / 2.5, barrelSize / 2);
+                            }
                         }
                     }
                 }

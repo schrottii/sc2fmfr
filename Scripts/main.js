@@ -983,6 +983,13 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         game.tires.onMerge();
     }
 
+    for (i in game.mergeQuests.quests) {
+        if (game.mergeQuests.quests[i].currentMerges > 0) {
+            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+            upgradingType = i;
+        }
+    }
+
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
 
     if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber())

@@ -134,6 +134,16 @@ var game =
                 onBuy: function () {
                     trophyMergeCounter = 0;
 
+                    upgradingBarrel = 0;
+                    upgradingType = "mas";
+                    for (i in game.mergeQuests.quests) {
+                        if (game.mergeQuests.quests[i].currentMerges > 0) {
+                            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+                            upgradingType = i;
+                        }
+                    }
+                    if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + 1;
+
                     // 1 to 10
                     if (game.ms.includes(85) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {

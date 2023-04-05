@@ -53,11 +53,23 @@ class MergeQuest
             game.stats.totalquests = game.stats.totalquests.add(1);
             if (this.getNeededMerges() > 8000) {
                 game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
+
                 if (game.barrelMastery.isUnlocked()) {
                     game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(25);
                     game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(25);
                 }
             }
+
+            upgradingBarrel = 0;
+            upgradingType = "mas";
+            for (i in game.mergeQuests.quests) {
+                if (game.mergeQuests.quests[i].currentMerges > 0 && game.mergeQuests.quests[i].currentMerges != this.currentMerges) {
+                    upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+                    upgradingType = i;
+                }
+            }
+            if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level;
+
             GameNotification.create(new MergeQuestNotification(this));
             this.active = false;
             this.currentMerges = 0;

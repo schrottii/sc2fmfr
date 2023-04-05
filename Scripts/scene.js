@@ -232,19 +232,19 @@ function getStonks(swit) {
     let worth;
     switch (swit) {
         case 0:
-            worth = getBeamBaseValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hbv != undefined ? game.beams.hbv : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = getAeroBeamValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = (game.beams.haebv != undefined ? game.beams.haebv : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
-            worth = getAngelBeamValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
+            worth = (game.beams.habv != undefined ? game.beams.habv : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
             break;
         case 3:
-            worth = getReinforcedBeamValue() / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hrbv != undefined ? game.beams.hrbv : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 4:
-            worth = getGlitchBeamValue() / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hgbv != undefined ? game.beams.hgbv : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
     }
     return worth;
@@ -3344,6 +3344,11 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetfairy"))) {
+                        game.beams.hbv = getBeamBaseValue();
+                        game.beams.haebv = getAeroBeamValue();
+                        game.beams.habv = getAngelBeamValue();
+                        game.beams.hrbv = getReinforcedBeamValue();
+                        game.beams.hgbv = getGlitchBeamValue();
                         dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),

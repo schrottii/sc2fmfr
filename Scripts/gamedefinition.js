@@ -2010,6 +2010,13 @@ var game =
                 bi = 0;
             }
 
+            // remove hbv etc.
+            delete game.beams.hbv;
+            delete game.beams.haebv;
+            delete game.beams.habv;
+            delete game.beams.hrbv;
+            delete game.beams.hgbv;
+
             // new quests
             for (let q of game.mergeQuests.quests) {
                 q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);

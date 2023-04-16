@@ -371,6 +371,7 @@ var scenes =
                     }
                     if (GoTo < game.scrapUpgrades.betterBarrels.maxLevel) {
                         game.scrapUpgrades.betterBarrels.buyToTarget(GoTo);
+                        updateUpgradingBarrelFromBB();
                     }
                     else {
                         alert(tt("Too high!"));
@@ -492,7 +493,7 @@ var scenes =
                 }
 
                 if (draggedBarrel !== undefined) {
-                    draggedBarrel.scale = 1.1;
+                    draggedBarrel.scale = 1.2;
                 }
 
                 ctx.fillStyle = colors[C]["bg"];
@@ -648,13 +649,14 @@ var scenes =
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
+                            barrels[draggedBarrel.originPos].scale = 1;
                             draggedBarrel = undefined;
                             // no need to change freeSpots
                         }
                     }
                     else { // put it back man
                         barrels[draggedBarrel.originPos] = new Barrel(draggedBarrel.level);
-                        barrels[draggedBarrel.originPos].scale = 0.7;
+                        barrels[draggedBarrel.originPos].scale = 1;
                         draggedBarrel = undefined;
                     }
                 }
@@ -1824,11 +1826,13 @@ var scenes =
                             let buyTo = game.mergeQuests.dailyQuest.barrelLvl;
                             if (applyUpgrade(game.skillTree.upgrades.starDaily)) buyTo = (Math.floor(game.highestBarrelReached / BARRELS) - 1) * BARRELS + game.mergeQuests.dailyQuest.barrelLvl;
                             game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);
+                            updateUpgradingBarrelFromBB();
 
                             while (applyUpgrade(game.skillTree.upgrades.starDaily) && game.scrapUpgrades.betterBarrels.level != buyTo) {
                                 // If star daily tree upg: Go down 1 star every time and keep trying to buy it
                                 buyTo = Math.max(buyTo - BARRELS, 0);
                                 game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);
+                                updateUpgradingBarrelFromBB();
                             }
                             Scene.loadScene("Barrels");
                         }
@@ -2595,6 +2599,7 @@ var scenes =
                     if (game.mergeQuests.quests[0].active) {
                         if (game.mergeQuests.quests[0].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[0].barrelLvl);
+                            updateUpgradingBarrelFromBB();
                             Scene.loadScene("Barrels");
                         }
                     }
@@ -2603,6 +2608,7 @@ var scenes =
                     if (game.mergeQuests.quests[1].active) {
                         if (game.mergeQuests.quests[1].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[1].barrelLvl);
+                            updateUpgradingBarrelFromBB();
                             Scene.loadScene("Barrels");
                         }
                     }
@@ -2611,6 +2617,7 @@ var scenes =
                     if (game.mergeQuests.quests[2].active) {
                         if (game.mergeQuests.quests[2].barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             game.scrapUpgrades.betterBarrels.buyToTarget(game.mergeQuests.quests[2].barrelLvl);
+                            updateUpgradingBarrelFromBB();
                             Scene.loadScene("Barrels");
                         }
                     }

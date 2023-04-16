@@ -754,7 +754,7 @@ class FactoryUpgrade extends ScrapUpgrade {
             let resource = getUpgradeResource(p[1]);
 
             if (p[0].gt(resource.round())) {
-                return;
+                return false;
             }
         }
 
@@ -777,6 +777,23 @@ class FactoryUpgrade extends ScrapUpgrade {
         }
 
         this.afterBuy();
+        return true;
+    }
+
+    buyToTarget(level, round) {
+        if (level <= this.level) {
+            if (level < this.level) {
+                this.onLevelDown(level);
+            }
+            this.level = level;
+        }
+        else {
+            let resource = getUpgradeResource(this.resource);
+            let canAfford = true;
+            while (this.level < this.getMaxLevel() && canAfford && level > this.level) {
+                canAfford = this.buy(round);
+            }
+        }
     }
 }
 

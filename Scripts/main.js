@@ -1556,6 +1556,8 @@ function loadGame(saveCode, isFromFile=false)
                 game.scrapUpgrades[k].level = loadVal(loadObj.scrapUpgrades[k].level, 0);
             });
         }
+        upgradingBarrel = game.scrapUpgrades.betterBarrels.level;
+        upgradingType = "mas";
 
         if (loadObj.magnetUpgrades !== undefined) {
             Object.keys(loadObj.magnetUpgrades).forEach(k => {
@@ -2132,3 +2134,14 @@ function calculateCurrentHighest() {
     return currentHighest;
 }
 
+function updateUpgradingBarrelFromBB(plus=0) {
+    upgradingBarrel = 0;
+    upgradingType = "mas";
+    for (i in game.mergeQuests.quests) {
+        if (game.mergeQuests.quests[i].currentMerges > 0) {
+            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+            upgradingType = i;
+        }
+    }
+    if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + plus;
+}

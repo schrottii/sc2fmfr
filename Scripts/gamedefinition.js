@@ -134,15 +134,7 @@ var game =
                 onBuy: function () {
                     trophyMergeCounter = 0;
 
-                    upgradingBarrel = 0;
-                    upgradingType = "mas";
-                    for (i in game.mergeQuests.quests) {
-                        if (game.mergeQuests.quests[i].currentMerges > 0) {
-                            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
-                            upgradingType = i;
-                        }
-                    }
-                    if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + 1;
+                    updateUpgradingBarrelFromBB(1);
 
                     // 1 to 10
                     if (game.ms.includes(85) == false) {
@@ -219,6 +211,7 @@ var game =
                         barrels[i] = new Barrel(level);
                     }
                     freeSpots = 0;
+                    updateUpgradingBarrelFromBB();
                 },
                 onBuyMax: function (level) {
                     for (let i = 0; i < barrels.length; i++) {
@@ -226,6 +219,7 @@ var game =
                             barrels[i] = new Barrel(applyUpgrade(this).toNumber());
                         }
                     }
+                    updateUpgradingBarrelFromBB();
                 },
                 maxLevel: 3000,
             }),
@@ -1633,7 +1627,7 @@ var game =
                 {
                     getEffectDisplay: () => tt("factory1e"),
                     onBuy: () => {
-                        game.factory.time = 5 * craftingMulti();
+                        if (!game.settings.hyperBuy) game.factory.time = 5 * craftingMulti();
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
@@ -1644,7 +1638,7 @@ var game =
                 {
                     getEffectDisplay: () => tt("factory2e"),
                     onBuy: () => {
-                        game.factory.time = 10 * craftingMulti();
+                        if (!game.settings.hyperBuy) game.factory.time = 10 * craftingMulti();
                         game.factory.steelMagnets = game.factory.steelMagnets.add(1);
                         game.stats.totalsteelmagnets = game.stats.totalsteelmagnets.add(1);
                     }
@@ -1655,7 +1649,7 @@ var game =
                 {
                     getEffectDisplay: () => tt("factory3e"),
                     onBuy: () => {
-                        game.factory.time = 45 * craftingMulti();
+                        if (!game.settings.hyperBuy) game.factory.time = 45 * craftingMulti();
                         game.factory.blueBricks = game.factory.blueBricks.add(1);
                         game.stats.totalbluebricks = game.stats.totalbluebricks.add(1);
                     }
@@ -1666,7 +1660,7 @@ var game =
                 {
                     getEffectDisplay: () => tt("factory4e"),
                     onBuy: () => {
-                        game.factory.time = 30 * craftingMulti();
+                        if (!game.settings.hyperBuy) game.factory.time = 30 * craftingMulti();
                         game.factory.buckets = game.factory.buckets.add(1);
                         game.stats.totalbuckets = game.stats.totalbuckets.add(1);
                     }
@@ -1677,7 +1671,7 @@ var game =
                 {
                     getEffectDisplay: () => tt("factory5e"),
                     onBuy: () => {
-                        game.factory.time = 60 * craftingMulti();
+                        if (!game.settings.hyperBuy) game.factory.time = 60 * craftingMulti();
                         game.factory.fishingNets = game.factory.fishingNets.add(1);
                         game.stats.totalfishingnets = game.stats.totalfishingnets.add(1);
                     }
@@ -1852,11 +1846,11 @@ var game =
             return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
-            let amount = game.stats.beamstp.div(1e6).max(1);
-            amount = amount.mul(game.stats.aebeamstp.div(5e5).max(1));
-            amount = amount.mul(game.stats.abeamstp.div(3e6).max(1));
-            amount = amount.mul(game.stats.rbeamstp.div(6e6).max(1));
-            amount = amount.mul(game.stats.gbeamstp.div(1e6).max(1)).round();
+            let amount = game.stats.beamstp.div(1e4).sqrt().max(1);
+            amount = amount.mul(game.stats.aebeamstp.div(1e4).sqrt().max(1));
+            amount = amount.mul(game.stats.abeamstp.div(1e4).sqrt().max(1));
+            amount = amount.mul(game.stats.rbeamstp.div(1e4).sqrt().max(1));
+            amount = amount.mul(game.stats.gbeamstp.div(1e4).sqrt().max(1)).round();
 
             amount *= game.bricks.amount.add("1e500000").log("1e500000");
             amount *= game.plasticBags.total.add(450).log(450);
@@ -1988,6 +1982,8 @@ var game =
             game.stats.gbeamstp = new Decimal(0);
 
             game.plasticBags.amount = new Decimal(0);
+            game.plasticBags.currentResource = RESOURCE_MERGE_TOKEN;
+            game.plasticBags.currentCosts = new Decimal(100);
             game.plasticBags.total = new Decimal(0);
             for (let upg of Object.keys(game.plasticBags.upgrades)) {
                 game.plasticBags.upgrades[upg].level = 0;
@@ -2213,35 +2209,35 @@ var game =
                 }
             ),
             pyxis: new FairyDustUpgrade(
-                level => new Decimal(5).add(2 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(5).add(2 * level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             antlia: new FairyDustUpgrade(
-                level => new Decimal(4).add(2 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             phoenix: new FairyDustUpgrade(
-                level => new Decimal(3).add(level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(3).add(level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             orion: new FairyDustUpgrade(
-                level => new Decimal(7).add(6 * level).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(7).add(6 * level).mul(Math.max(1, level / 2 - 2)),
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }
             ),
             puppis: new FairyDustUpgrade(
-                level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level / 5 - 5)),
+                level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level / 2 - 2)),
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")

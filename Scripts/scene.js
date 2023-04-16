@@ -408,7 +408,7 @@ var scenes =
                         case 2: // Selection
                             Scene.loadScene("Beamselection");
                             break;
-                }
+                    }
                 }, {
                     isVisible: () => game.beams.isUnlocked() && !timeMode,
                     quadraticMin: true
@@ -468,7 +468,7 @@ var scenes =
                 new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.225, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
 
                 new UIText(() => {
-                    if(game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
+                    if (game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
                     else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
                 }, 0.3, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
@@ -1071,9 +1071,9 @@ var scenes =
                 new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
 
                 new UIPlanet(0.5, 0.5, () => tt("planet1"), game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
-                new UIPlanet(0.7, 0.7, () =>  tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
-                new UIPlanet(0.3, 0.325, () =>  tt("planet3"), game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
-                new UIPlanet(0.65, 0.2, () =>  tt("planet4"), game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
+                new UIPlanet(0.7, 0.7, () => tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
+                new UIPlanet(0.3, 0.325, () => tt("planet3"), game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
+                new UIPlanet(0.65, 0.2, () => tt("planet4"), game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
                 new UIPlanet(0.2, 0.825, () => tt("planet5").replace("<amount>", formatNumber(fallingMagnetWorth())), game.solarSystem.upgrades.mars, "$images.fragment$", images.solarSystem.mars, 0.04, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS), //whoever did not put a , there before I hate U!!!
 
                 new UIButton(0.6, 0.5, 0.05, 0.05, images.buttonMaxAll, () => maxSunUpgrades(),
@@ -1100,9 +1100,9 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
                 new UIPlanet(0.4, 0.6, () => tt("planet6"), game.solarSystem.upgrades.jupiter, "$images.mergeToken$", images.solarSystem.jupiter, 0.075, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER),
-                new UIPlanet(0.8, 0.7, () =>  tt("planet7"), game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
-                new UIPlanet(0.8, 0.25, () =>  tt("planet8"), game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
-                new UIPlanet(0.25, 0.3, () =>  tt("planet9"), game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
+                new UIPlanet(0.8, 0.7, () => tt("planet7"), game.solarSystem.upgrades.saturn, "$images.scrap$", images.solarSystem.saturn, 0.07, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_SATURN),
+                new UIPlanet(0.8, 0.25, () => tt("planet8"), game.solarSystem.upgrades.uranus, "$images.magnet$", images.solarSystem.uranus, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_URANUS),
+                new UIPlanet(0.25, 0.3, () => tt("planet9"), game.solarSystem.upgrades.neptune, "$images.tire$", images.solarSystem.neptune, 0.06, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NEPTUNE),
 
                 new UIButton(0.9, 0.9, 0.07, 0.07, images.zoomOut, () => Scene.loadScene("ThirdSolarSystem"), {
                     quadratic: true,
@@ -1121,8 +1121,8 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("OuterSolarSystem"), { quadratic: true }),
                 new UIPlanet(0.4, 0.6, () => tt("planet10"), game.solarSystem.upgrades.astro, "$images.goldenScrap$", images.solarSystem.astro, 0.075, () => game.solarSystem.upgrades.neptune.level > 4),
-                new UIPlanet(0.8, 0.7, () =>  tt("planet11"), game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4),
-                new UIPlanet(0.8, 0.15, () =>  tt("planet12"), game.solarSystem.upgrades.posus, "$images.magnet$", images.solarSystem.posus, 0.12, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.8, 0.7, () => tt("planet11"), game.solarSystem.upgrades.mythus, "$images.scrap$", images.solarSystem.mythus, 0.07, () => game.solarSystem.upgrades.neptune.level > 4),
+                new UIPlanet(0.8, 0.15, () => tt("planet12"), game.solarSystem.upgrades.posus, "$images.magnet$", images.solarSystem.posus, 0.12, () => game.solarSystem.upgrades.neptune.level > 4),
             ],
             function () {
                 ctx.fillStyle = "black";
@@ -1496,24 +1496,26 @@ var scenes =
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow"),
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow"),
                 new UIText(() => tt("selected") + ": " + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] + "\n" + tt("convertto") + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo], 0.5, 0.4, 0.04, "yellow"),
-                new UIText(() => tt("convertworth").replace("<amount>", worth1).replace("<amount2>", worth2), 0.5, 0.435, 0.04, "yellow"),
+                new UIText(() => tt("convertworth").replace("<amount>", formatNumber(worth1)).replace("<amount2>", formatNumber(worth2)), 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 > 0 && worth2 > 0}),
+                new UIText(() => "Try increasing the value of falling beams\nof that type: " + (worth1 < 1 ? [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] : [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo]) + "!", 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 < 1 || worth2 < 1}),
 
 
-                new UIButton(0.1, 0.5, 0.1, 0.1, images.beam, () => selectedConvert = 0, { quadratic: true }),
-                new UIButton(0.3, 0.5, 0.1, 0.1, images.aerobeam, () => selectedConvert = 1, { quadratic: true }),
-                new UIButton(0.5, 0.5, 0.1, 0.1, images.angelbeam, () => selectedConvert = 2, { quadratic: true }),
-                new UIButton(0.7, 0.5, 0.1, 0.1, images.reinforcedbeam, () => selectedConvert = 3, { quadratic: true }),
-                new UIButton(0.9, 0.5, 0.1, 0.1, images.glitchbeam, () => selectedConvert = 4, { quadratic: true }),
+                new UIButton(0.1, 0.525, 0.1, 0.1, images.beam, () => selectedConvert = 0, { quadratic: true }),
+                new UIButton(0.3, 0.525, 0.1, 0.1, images.aerobeam, () => selectedConvert = 1, { quadratic: true }),
+                new UIButton(0.5, 0.525, 0.1, 0.1, images.angelbeam, () => selectedConvert = 2, { quadratic: true }),
+                new UIButton(0.7, 0.525, 0.1, 0.1, images.reinforcedbeam, () => selectedConvert = 3, { quadratic: true }),
+                new UIButton(0.9, 0.525, 0.1, 0.1, images.glitchbeam, () => selectedConvert = 4, { quadratic: true }),
 
-                new UIButton(0.1, 0.6, 0.1, 0.1, images.beam, () => selectedConvertTo = 0, { quadratic: true }),
-                new UIButton(0.3, 0.6, 0.1, 0.1, images.aerobeam, () => selectedConvertTo = 1, { quadratic: true }),
-                new UIButton(0.5, 0.6, 0.1, 0.1, images.angelbeam, () => selectedConvertTo = 2, { quadratic: true }),
-                new UIButton(0.7, 0.6, 0.1, 0.1, images.reinforcedbeam, () => selectedConvertTo = 3, { quadratic: true }),
-                new UIButton(0.9, 0.6, 0.1, 0.1, images.glitchbeam, () => selectedConvertTo = 4, { quadratic: true }),
+                new UIButton(0.1, 0.65, 0.1, 0.1, images.beam, () => selectedConvertTo = 0, { quadratic: true }),
+                new UIButton(0.3, 0.65, 0.1, 0.1, images.aerobeam, () => selectedConvertTo = 1, { quadratic: true }),
+                new UIButton(0.5, 0.65, 0.1, 0.1, images.angelbeam, () => selectedConvertTo = 2, { quadratic: true }),
+                new UIButton(0.7, 0.65, 0.1, 0.1, images.reinforcedbeam, () => selectedConvertTo = 3, { quadratic: true }),
+                new UIButton(0.9, 0.65, 0.1, 0.1, images.glitchbeam, () => selectedConvertTo = 4, { quadratic: true }),
 
 
+                new UIText(() => "Current convert multi: x" + multiConvert, 0.5, 0.95, 0.04, "yellow"),
 
-                new UIButton(0.5, 0.775, 0.4, 0.1, images.convertbutton, () => {
+                new UIButton(0.5, 0.785, 0.4, 0.1, images.convertbutton, () => {
                     if (convertButtonCheck(selectedConvert, worth1)) {
                         convertButtonConvert(selectedConvert, worth1, selectedConvertTo, worth2);
                     }
@@ -1521,9 +1523,6 @@ var scenes =
                 new UIButton(0.5, 0.9, 0.4, 0.1, images.multibuybutton, () => {
                     switch (multiConvert) {
                         case 1:
-                            multiConvert = 5;
-                            break;
-                        case 5:
                             multiConvert = 10;
                             break;
                         case 10:
@@ -1539,10 +1538,17 @@ var scenes =
                             multiConvert = 10000;
                             break;
                         case 10000:
+                            multiConvert = 100000;
+                            break;
+                        case 100000:
                             multiConvert = 1;
                             break;
                     }
                 }, { quadratic: false }),
+                new UIButton(0.76, 0.9, 0.1, 0.1, images.ezUpgrade, () => {
+                    let newMulti = parseInt(prompt("What multiplier do you want?"));
+                    if (typeof (newMulti) == typeof (1000)) multiConvert = newMulti;
+                }, { quadratic: false })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -3233,6 +3239,28 @@ var scenes =
             function (delta) {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
+
+                lowestbeams = "beam";
+                lowestbeamsa = game.stats.beamstp;
+                if (game.stats.aebeamstp.lt(lowestbeamsa)) {
+                    lowestbeamsa = game.stats.aebeamstp;
+                    lowestbeams = "aerobeam";
+                }
+                if (game.stats.abeamstp.lt(lowestbeamsa)) {
+                    lowestbeamsa = game.stats.abeamstp;
+                    lowestbeams = "angelbeam";
+                }
+                if (game.stats.rbeamstp.lt(lowestbeamsa)) {
+                    lowestbeamsa = game.stats.rbeamstp;
+                    lowestbeams = "reinforcedbeam";
+                }
+                if (game.stats.gbeamstp.lt(lowestbeamsa)) {
+                    lowestbeamsa = game.stats.gbeamstp;
+                    lowestbeams = "glitchbeam";
+                }
+                ctx.drawImage(images[lowestbeams], w * 0.45, h * 0.535, w * 0.1, w * 0.1);
+
+
 
                 if (supernovaAlpha > 0) {
                     supernovaAlpha += delta / 3;

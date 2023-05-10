@@ -246,7 +246,8 @@ var game =
                         return (s * 1000000).toFixed(0) + tt("µs");
                     }
                     return tt("Insanely fast!");
-                }
+                },
+                integral: level => new Decimal(5).pow(3 * Math.max(1, level - 40)).mul(16).div(3 * Math.log(5))
             })
     },
     magnetUpgrades:

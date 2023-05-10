@@ -381,7 +381,7 @@ var scenes =
                     quadratic: true
                 }),
                 new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
-                    game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget(game.scrapUpgrades.fasterBarrels.level + 5000, false) : game.scrapUpgrades.fasterBarrels.buy();
+                    game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.fasterBarrels.buy();
                 }, {
                     isVisible: () => !timeMode,
                     quadratic: true

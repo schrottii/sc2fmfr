@@ -293,6 +293,9 @@ class ScrapUpgrade
             {
                 this.isUnlocked = cfg.isUnlocked;
             }
+            if (cfg.integral) {
+                this.integral = cfg.integral;
+            }
         }
         this.maxLevel = cfg && cfg.maxLevel ? cfg.maxLevel : Infinity;
 
@@ -340,7 +343,8 @@ class ScrapUpgrade
 
     buyToTarget(level, round)
     {
-        if(level <= this.level)
+        //console.log(level)
+        if(level != "hyperbuy" && level <= this.level)
         {
             if(level < this.level)
             {
@@ -351,6 +355,37 @@ class ScrapUpgrade
         else
         {
             let resource = getUpgradeResource(this.resource);
+            if (level == "hyperbuy") {
+                //console.log("yup, is hyper")
+                level = 10000;
+                if (this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+                    //console.log("integral mode");
+
+                    // Keep doubling as long as possible
+                    while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource)) {
+                        level *= 2;
+                        console.log(level);
+                    }
+                    level = level / 2;
+
+                    // Half, now x1.05 as long as possible. Should be fairly accurate
+                    while (this.integral(this.level + level * 1.05).sub(this.integral(this.level)).lt(resource)) {
+                        level = Math.floor(level * 1.05);
+                        console.log(level);
+                    }
+
+                    // Set level, remove currency
+                    this.level = this.level + level;
+                    resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
+                    if (isNaN(resource)) //is resource negative
+                    {
+                        resource = new Decimal(0);
+                    }
+                    assignResourceAfterUpgrade(this.resource, resource);
+
+                    return true;
+                }
+            }
             while(this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel())
             {
                 this.buy(round);

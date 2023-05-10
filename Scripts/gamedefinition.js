@@ -221,6 +221,7 @@ var game =
                     }
                     updateUpgradingBarrelFromBB();
                 },
+                integral: level => new Decimal(5).pow(3 - 7 * level).mul(new Decimal(4).pow(level)).mul(new Decimal(7).pow(level)).mul(new Decimal(8).pow(level)).mul(new Decimal(13).pow(level)).mul(new Decimal(6).pow(5 * level)).mul(new Decimal(2).pow(3 * level + 1)),
                 maxLevel: 3000,
             }),
         fasterBarrels: new ScrapUpgrade(

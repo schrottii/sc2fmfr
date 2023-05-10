@@ -364,17 +364,18 @@ class ScrapUpgrade
                     // Keep doubling as long as possible
                     while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource)) {
                         level *= 2;
-                        console.log(level);
+                        //console.log(level);
                     }
                     level = level / 2;
 
                     // Half, now x1.05 as long as possible. Should be fairly accurate
                     while (this.integral(this.level + level * 1.05).sub(this.integral(this.level)).lt(resource)) {
                         level = Math.floor(level * 1.05);
-                        console.log(level);
+                        //console.log(level);
                     }
 
                     // Set level, remove currency
+                    level = Math.min(this.maxLevel - this.level, level);
                     this.level = this.level + level;
                     resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
                     if (isNaN(resource)) //is resource negative
@@ -382,6 +383,8 @@ class ScrapUpgrade
                         resource = new Decimal(0);
                     }
                     assignResourceAfterUpgrade(this.resource, resource);
+                    this.onBuy();
+                    this.afterBuy();
 
                     return true;
                 }

@@ -357,7 +357,7 @@ var scenes =
         new Scene("Barrels",
             [
                 new UIButton(0.125, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
-                    game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget(game.scrapUpgrades.betterBarrels.level + 50000, false) : game.scrapUpgrades.betterBarrels.buy();
+                    game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.betterBarrels.buy();
                 }, {
                     isVisible: () => !timeMode,
                     quadratic: true

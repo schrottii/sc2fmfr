@@ -9,6 +9,7 @@ var calcTime2 = "";
 var timeDisplay = "";
 var futureTimeDisplay = "";
 var year = month = "";
+var timeOutID = "none";
 
 var barrelsDisplayMode = 0;
 var selectedConvert = 0;
@@ -1548,7 +1549,7 @@ var scenes =
                 new UIButton(0.76, 0.9, 0.1, 0.1, images.ezUpgrade, () => {
                     let newMulti = parseInt(prompt("What multiplier do you want?"));
                     if (typeof (newMulti) == typeof (1000)) multiConvert = newMulti;
-                }, { quadratic: false })
+                }, { quadratic: false, isVisible: () => game.supernova.stars.gt(0) })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -2646,7 +2647,10 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("MergeQuests"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => {
+                    if (timeOutID != "none") clearTimeout(timeOutID);
+                    Scene.loadScene("MergeQuests")
+                }, { quadratic: true }),
 
                 new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("scrapyardtext").replace("<amount>", (game.mergeQuests.scrapyard - 1)) + tt("scrapyardtext2").replace("<n>", (10 - game.mergeQuests.scrapyardProgress)).replace("<amount>", game.mergeQuests.scrapyard), 0.5, 0.275, 0.03, "black"),
@@ -2654,15 +2658,22 @@ var scenes =
                 new UIText(() => tt("level") + ": " + game.mergeQuests.scrapyard + "\n" + tt("scrapyardtext3").replace("<percent>", game.mergeQuests.scrapyardProgress * 10), 0.5, 0.8, 0.06, "black"),
                 new UIButton(0.5, 0.6, 0.4, 0.4, images.scrapyard, () => {
                     // Scrapyard
-                    if (game.mergeQuests.mergeTokens.gte(new Decimal(game.mergeQuests.scrapyard))) { // AAAAAH
-                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(game.mergeQuests.scrapyard);
-                        currentScene.popupTexts.push(new PopUpText("-" + game.mergeQuests.scrapyard, w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
-
-                        game.mergeQuests.scrapyardProgress += 1;
-                        if (game.mergeQuests.scrapyardProgress == 10) {
-                            game.mergeQuests.scrapyardProgress = 0;
-                            game.mergeQuests.scrapyard += 1;
+                    if (game.settings.hyperBuy) {
+                        if (timeOutID != "none") {
+                            clearTimeout(timeOutID);
+                            timeOutID = "none";
                         }
+                        upgradeScrapyard();
+                        timeOutID = setInterval(() => {
+                            upgradeScrapyard();
+                            upgradeScrapyard();
+                            upgradeScrapyard();
+                            upgradeScrapyard();
+                            upgradeScrapyard();
+                        }, 50)
+                    }
+                    else {
+                        upgradeScrapyard();
                     }
                 }, { quadratic: true }),
             ],

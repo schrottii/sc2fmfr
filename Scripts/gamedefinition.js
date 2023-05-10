@@ -1119,7 +1119,7 @@ var game =
                 }),
             alienDustBoost: new GlitchBeamUpgrade(
                 level => new Decimal((50 + (Math.floor(level / 10) * 10)) * Math.floor((level / 78 + 1))),
-                level => new Decimal(1).add(0.02 * level),
+                level => new Decimal(1).add(0.2 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }),
@@ -1825,16 +1825,16 @@ var game =
         },
         getAlienDust: function () {
             let amount = game.factory.legendaryScrap.add(25).log(25);
-            amount += game.factory.steelMagnets.add(175).log(175);
+            amount += game.factory.steelMagnets.add(125).log(125);
             amount += game.factory.blueBricks.add(100).log(100);
-            amount += game.factory.buckets.add(100).log(100);
-            amount += game.factory.fishingNets.add(50).log(50);
+            amount += game.factory.buckets.add(50).log(50);
+            amount += game.factory.fishingNets.add(20).log(20);
 
             for (i in game.autos) {
-                amount += game.autos[i].level / 10;
+                amount += game.autos[i].level / 5;
             }
             for (i in game.collectors) {
-                amount += game.collectors[i].level / 10;
+                amount += game.collectors[i].level / 5;
             }
 
             amount += game.solarSystem.upgrades.venus.level / 25;
@@ -1842,8 +1842,8 @@ var game =
             amount += game.solarSystem.upgrades.uranus.level / 5;
             amount += game.solarSystem.upgrades.posus.level / 100;
 
-            amount *= 1 + (game.solarSystem.upgrades.mythus.level / 100);
-            amount *= 1 + (game.solarSystem.upgrades.sun.level / 1000);
+            amount *= 1 + (game.solarSystem.upgrades.mythus.level / 200);
+            amount *= 1 + (game.solarSystem.upgrades.sun.level / 500);
 
             return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },

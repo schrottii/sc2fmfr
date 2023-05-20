@@ -362,17 +362,17 @@ class ScrapUpgrade
                     //console.log("integral mode");
 
                     // Keep doubling as long as possible
-                    while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource)) {
+                    while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
                         level *= 2;
                         //console.log(level);
                     }
                     level = level / 2;
 
-                    // Half, now x1.05 as long as possible. Should be fairly accurate
-                    while (this.integral(this.level + level * 1.05).sub(this.integral(this.level)).lt(resource)) {
-                        level = Math.floor(level * 1.05);
-                        //console.log(level);
+                    // Half, now x1.03 as long as possible. Should be fairly accurate
+                    while (this.integral(this.level + level * 1.03).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                        level = Math.floor(level * 1.03);
                     }
+                    //console.log(level);
 
                     // Set level, remove currency
                     level = Math.min(this.maxLevel - this.level, level);

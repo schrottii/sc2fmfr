@@ -411,7 +411,8 @@ var game =
 
                             }
                         }
-                    }
+                    },
+                    integral: level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 }
             ),
 
@@ -419,7 +420,8 @@ var game =
                 level => new Decimal(1).mul(new Decimal(10).pow(level)),
                 level => new Decimal(1.2).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(10).pow(level).div(Math.log(10)),
                 }
             ),
 
@@ -682,7 +684,8 @@ var game =
                         .mul(10),
                         level => new Decimal(1 / (1 + 0.03 * level)),
                         {
-                            getEffectDisplay: effectDisplayTemplates.percentStandard(1)
+                            getEffectDisplay: effectDisplayTemplates.percentStandard(1),
+                            integral: level => new Decimal(5).mul(new Decimal(4).pow((level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[0]) * (11 / 10)) / (2 * (11 / 10))))).div(Math.log(4)),
                         }),
                     new TireUpgrade(level => Decimal.pow(4, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[0]) / 2, 1.10) + game.tires.getLevelBias(level))
                         .mul(100),
@@ -706,7 +709,8 @@ var game =
                         .mul(10e63),
                         level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)).pow(applyUpgrade(game.supernova.starDustUpgrades.corvus)),
                         {
-                            getEffectDisplay: effectDisplayTemplates.numberStandard(2)
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(2),
+                            integral: level => new Decimal(20).mul(new Decimal(10).pow(63)).mul(new Decimal(32).pow((level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[1]) * (23 / 20)) / (2 * (23 / 20))))).div(Math.log(32)),
                         }),
                     new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.15) + game.tires.getLevelBias(level))
                         .mul(10e66),
@@ -745,7 +749,8 @@ var game =
                         .mul(Decimal.pow(2, 1234)),
                         level => new Decimal(1 + 0.1 * level + 0.01 * level * level),
                         {
-                            getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                            integral: level => new Decimal(2).mul(new Decimal(2).pow(1234)).mul(new Decimal(32768).pow((level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[2]) * (6 / 5)) / (2 * (6 / 5))))).div(Math.log(32768)),
                         }),
                 ],
                 [ //more passive magnets, more beams, cheaper plastic bags
@@ -766,7 +771,8 @@ var game =
                         .mul("1e1000000"),
                         level => (10 + (level > 99 ? 5 : 0)) * level,
                         {
-                            getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "L")
+                            getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "L"),
+                            integral: level => new Decimal(2).mul(new Decimal(5555).pow(level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[3]) * (5 / 4)) / (2 * (5 / 4)))).div(5555 * Math.log(2)),
                         }),
                 ]
             ]
@@ -2148,42 +2154,48 @@ var game =
                 level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(47).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                    integral: level => new Decimal(2).mul(level).mul(new Decimal(level).pow(2).sub(36 * level).add(6)).div(3),
                 }
             ),
             aries: new StarDustUpgrade(
                 level => new Decimal(9).add(6 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(123).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(72 * level).add(9)),
                 }
             ),
             corvus: new StarDustUpgrade(
                 level => new Decimal(15).add(25 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(0.5 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^"),
+                    integral: level => new Decimal(25).mul(new Decimal(level).pow(3).sub(new Decimal(level).pow(2).mul(36))).div(3).add(15 * level),
                 }
             ),
             volans: new StarDustUpgrade(
                 level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(35).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)),
                 }
             ),
             vulpecula: new StarDustUpgrade(
                 level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(0.05 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.percentStandard(2, "")
+                    getEffectDisplay: effectDisplayTemplates.percentStandard(2, ""),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)),
                 }
             ),
             caelum: new StarDustUpgrade(
                 level => new Decimal(160).add(340 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+"),
+                    integral: level => new Decimal(340).mul(new Decimal(level).pow(3).sub(36 * Math.pow(level, 2))).div(3),
                 }
             ),
         },
@@ -2192,21 +2204,24 @@ var game =
                 level => new Decimal(87).add(13 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(13).mul(new Decimal(level).pow(3)).div(3).sub(new Decimal(level).pow(2).mul(156)).add(87 * level),
                 }
             ),
             triangulum: new AlienDustUpgrade(
                 level => new Decimal(13).add(4 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(1).add(0.5 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(4).mul(new Decimal(level).pow(3)).div(3).sub(new Decimal(level).pow(2).mul(48)).add(13 * level),
                 }
             ),
             volans2: new AlienDustUpgrade(
                 level => new Decimal(3).add(3 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(35).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                    integral: level => new Decimal(level).pow(2).sub(36 * level).add(3).mul(level),
                 }
             ),
             aquila: new AlienDustUpgrade(
@@ -2215,6 +2230,7 @@ var game =
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
                     afterBuy: () => updateBetterBarrels(),
+                    integral: level => new Decimal(10).pow(new Decimal(level).div(100000).add(5)).div(Math.log(10)).add(level),
                 }
             ),
         },
@@ -2223,42 +2239,48 @@ var game =
                 level => new Decimal(272).add(117 * level).mul(Math.max(1, level - 9)),
                 level => new Decimal(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
+                    integral: level => new Decimal(level).pow(3).mul(39).sub(new Decimal(level).pow(2).mul(1053).div(2)).add(272 * level),
                 }
             ),
             pyxis: new FairyDustUpgrade(
                 level => new Decimal(5).add(2 * level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level).pow(3).mul(2).div(9).sub(new Decimal(level).pow(2).mul(3)).add(5 * level),
                 }
             ),
             antlia: new FairyDustUpgrade(
                 level => new Decimal(4).add(2 * level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level - 12).mul(level).mul(2 * level - 3).div(9),
                 }
             ),
             phoenix: new FairyDustUpgrade(
                 level => new Decimal(3).add(level).mul(Math.max(1, level / 3 - 3)),
                 level => new Decimal(1).add(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(27 * level).add(54)).div(18),
                 }
             ),
             orion: new FairyDustUpgrade(
                 level => new Decimal(7).add(6 * level).mul(Math.max(1, level / 2 - 2)),
                 level => new Decimal(1).add(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level).pow(2).sub(6 * level).add(7).mul(level),
                 }
             ),
             puppis: new FairyDustUpgrade(
                 level => new Decimal(9).add(Math.floor(0.4 * level * Math.max(0.5, Math.sin(level)))).mul(Math.max(1, level / 2 - 2)),
                 level => new Decimal(1).add(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(2).mul(level - 2).mul(Math.sin(level)).sub(new Decimal(level).pow(2).sub(4 * level).sub(2)).mul(Math.cos(level)).add(45 + level).div(5),
                 }
             ),
         }

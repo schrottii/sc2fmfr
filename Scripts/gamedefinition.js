@@ -51,7 +51,8 @@ var game =
                 level => Decimal.pow(1.1, level).mul(200).add(50 * level),
                 level => new Decimal(1 + 0.1 * level).mul(Decimal.pow(1.02, Math.max(0, level - 40))),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "", { namesAfter: 1e9 })
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "", { namesAfter: 1e9 }),
+                    integral: level => new Decimal(2).mul(new Decimal(10).pow(2 - level)).mul(new Decimal(11).pow(level)).div(Math.log(11) - Math.log(10)).add(new Decimal(25).mul(new Decimal(level).pow(2))),
                 }),
             gsBoost: new GoldenScrapUpgrade(
                 level => Decimal.pow(1.8, level).mul(200).add(50 * level),
@@ -258,14 +259,16 @@ var game =
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             level => new Decimal(1 + 0.2 * level).mul(Decimal.pow(1.2, Math.max(0, level - 10))),
             {
-                getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                integral: level => new Decimal(5).mul(Math.pow(10, 10)).mul((Math.log(11) - Math.log(10)) * (level + 2) - 1).mul(new Decimal(11).pow(level)).div(new Decimal(Math.log(11) - Math.log(10)).pow(2).mul(Math.pow(11, 10)).mul(Math.pow(10, level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             }),
         moreGoldenScrap: new MagnetUpgrade(
             level => Utils.roundBase(new Decimal(30 + 10 * level).mul(Decimal.pow(1.07, Math.max(0, level - 20))), 1)
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             level => game.supernova.cosmicUpgrades.strongerMagnetGS.level > 0 ? new Decimal(1.3).pow(level / 10).add(0.3 * level) : new Decimal(1 + 0.3 * level),
             {
-                getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                integral: level => new Decimal(10).mul(Math.pow(100, 20)).mul((Math.log(107) - Math.log(100)) * (level + 3) - 1).mul(new Decimal(107).pow(level)).div(new Decimal(Math.log(107) - Math.log(100)).pow(2).mul(Math.pow(107, 20)).mul(Math.pow(100, level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             }),
         magnetMergeChance: new MagnetUpgrade(
             level => new Decimal(10 + level * level).mul(Decimal.pow(2, Math.max(0, level - 20)))
@@ -778,13 +781,15 @@ var game =
                 level => new Decimal(100).mul(new Decimal(1.1).pow(level)),
                 level => new Decimal(1 + (0.5 * level)).mul(new Decimal(1.2).pow(Math.max(0, level - 15))),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    integral: level => new Decimal(10).pow(2 - level).mul(new Decimal(11).pow(level)).div(Math.log(11) - Math.log(10)),
                 }),
             magnetBoost: new FragmentUpgrade(
                 level => new Decimal(500).mul(new Decimal(1.1).pow(level)),
                 level => new Decimal(1 + (0.2 * level)).mul(new Decimal(1.07).pow(Math.max(0, level - 15))),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    integral: level => new Decimal(10).pow(2 - level).mul(5).mul(new Decimal(11).pow(level)).div(Math.log(11) - Math.log(10)),
                 }),
         },
     },
@@ -798,7 +803,8 @@ var game =
                 level => new Decimal(100).add(new Decimal(1.3).pow(level).mul(13).mul(level)).mul(new Decimal(1.2).pow(Math.max(0, level - 49))).mul(new Decimal(1.7).pow(Math.max(0, level - 99))),
                 level => new Decimal(1).add(0.3 * level).mul(new Decimal(1.2).pow(Math.max(0, level - 15))),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    integral: level => new Decimal(13 * Math.pow(5, 49) * Math.pow(10, 99) * (Math.log(663) - Math.log(250)) * new Decimal(663).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.pow(Math.log(663) - Math.log(250), 2)).mul(new Decimal(250).pow(level))).add(new Decimal(4).mul(Math.pow(5, 49)).mul(Math.pow(10, 99)).mul(Math.pow(25, 1 - level)).mul(new Decimal(51).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.log(51) - Math.log(25)))),
                 }),
             mergeTokenBoost: new DarkScrapUpgrade(
                 level => new Decimal(200 + (50 * level)).mul(new Decimal(Math.max(1, level - 10)).pow(1.3, level)).pow(Math.max(1, (level / 4) - 12)),
@@ -818,7 +824,8 @@ var game =
                 level => new Decimal(1000).mul(new Decimal(1.25).pow(level)),
                 level => new Decimal(1.1).pow(level).div(10).sub(0.1).mul(Math.max(1, level - 24) * 50 - 49),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2),
+                    integral: level => new Decimal(2).mul(new Decimal(4).pow(1 - level)).mul(new Decimal(5).pow(level + 3)).div(Math.log(5) - Math.log(4)),
                 }),
             strongerTiers: new DarkScrapUpgrade(
                 level => new Decimal(1e9).mul(Math.pow(2.87, level)),
@@ -840,14 +847,16 @@ var game =
                 level => new Decimal(100).pow(level).mul(new Decimal(1.3).pow(Math.max(0, level - 5))).mul(new Decimal(5.7).pow(Math.max(0, level - 100))),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    integral: level => new Decimal(10).pow(2 - level).mul(new Decimal(11).pow(level)).div(Math.log(11) - Math.log(10)),
                 }),
             moreFragments: new DarkFragmentUpgrade(
                 level => new Decimal(100).mul(new Decimal(1.1).pow(level)),
                 level => new Decimal(1 + (0.3 * level)).pow(Math.min(100, Math.max(1, level / 133))),
                 {
                     isUnlocked: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1),
+                    integral: level => new Decimal(10).pow(2 - level).mul(new Decimal(11).pow(level)).div(Math.log(11) - Math.log(10)),
                 }),
         },
     },
@@ -911,13 +920,15 @@ var game =
                 level => new Decimal(5 + Math.round(level / 10)),
                 level => new Decimal(1.3).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).mul(level + 100).div(20),
                 }),
             moreMagnets: new BeamUpgrade(
                 level => new Decimal(10 + Math.round(level / 10)),
                 level => new Decimal(1.03).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).mul(level + 200).div(20),
                 }),
             slowerBeams: new BeamUpgrade(
                 level => new Decimal(5 * (Math.round(level / 3) + 1)),
@@ -974,7 +985,8 @@ var game =
                 level => new Decimal(5 + Math.round(level / 10)),
                 level => new Decimal(1 + (0.1 * level)).pow(Math.max(1, (level + 400) / 500)),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).mul(level + 100).div(20),
                 }),
         }
     },
@@ -1017,7 +1029,8 @@ var game =
                 level => new Decimal(20 + Math.round(level / 10)),
                 level => new Decimal(1.217).pow(0.1 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level).mul(level + 400).div(20),
                 }),
         }
     },
@@ -1066,13 +1079,15 @@ var game =
                 level => new Decimal(25 + (5 * Math.floor(level / 25))),
                 level => new Decimal(1.08).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x", "")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x", ""),
+                    integral: level => new Decimal(level).mul(level + 250).div(10),
                 }),
             darkFragmentBoost: new ReinforcedBeamUpgrade(
                 level => new Decimal(25 + (5 * Math.floor(level / 25))),
                 level => new Decimal(1.06).pow(level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x", "")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x", ""),
+                    integral: level => new Decimal(level).mul(level + 250).div(10),
                 }),
         }
     },
@@ -1121,7 +1136,8 @@ var game =
                 level => new Decimal((50 + (Math.floor(level / 10) * 10)) * Math.floor((level / 78 + 1))),
                 level => new Decimal(1).add(0.2 * level),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).add(192 * level).add(11700)).div(234),
                 }),
         }
     },

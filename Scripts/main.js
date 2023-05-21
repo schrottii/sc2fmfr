@@ -1999,6 +1999,7 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
+        // Supernova stuff
         if (loadObj.supernova !== undefined) {
             game.supernova.cosmicEmblems = loadVal(new Decimal(loadObj.supernova.cosmicEmblems), new Decimal(0));
             game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
@@ -2014,6 +2015,10 @@ function loadGame(saveCode, isFromFile=false)
                 Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
                     game.supernova.cosmicUpgrades[k].level = 0;
                 })
+            }
+            if (game.supernova.cosmicUpgrades.hyperBuy.stars == 5) {
+                // Cost change refund :-)
+                if (game.supernova.cosmicUpgrades.hyperBuy.level == 1) game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(2);
             }
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {

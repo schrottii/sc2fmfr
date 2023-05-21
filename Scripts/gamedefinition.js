@@ -810,7 +810,7 @@ var game =
                 level => new Decimal(1).add(0.3 * level).mul(new Decimal(1.2).pow(Math.max(0, level - 15))),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1),
-                    integral: level => new Decimal(13 * Math.pow(5, 49) * Math.pow(10, 99) * (Math.log(663) - Math.log(250)) * new Decimal(663).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.pow(Math.log(663) - Math.log(250), 2)).mul(new Decimal(250).pow(level))).add(new Decimal(4).mul(Math.pow(5, 49)).mul(Math.pow(10, 99)).mul(Math.pow(25, 1 - level)).mul(new Decimal(51).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.log(51) - Math.log(25)))),
+                    integral: level => new Decimal(13).mul(Math.pow(5, 49)).mul(Math.pow(10, 99)).mul(Math.log(663) - Math.log(250)).mul(new Decimal(663).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.pow(Math.log(663) - Math.log(250), 2)).mul(new Decimal(250).pow(level))).add(new Decimal(4).mul(Math.pow(5, 49)).mul(Math.pow(10, 99)).mul(Math.pow(25, 1 - level)).mul(new Decimal(51).pow(level)).div(new Decimal(6).pow(49).mul(new Decimal(17).pow(99)).mul(Math.log(51) - Math.log(25)))),
                 }),
             mergeTokenBoost: new DarkScrapUpgrade(
                 level => new Decimal(200 + (50 * level)).mul(new Decimal(Math.max(1, level - 10)).pow(1.3, level)).pow(Math.max(1, (level / 4) - 12)),

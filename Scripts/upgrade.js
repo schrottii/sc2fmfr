@@ -355,6 +355,11 @@ class ScrapUpgrade
         else
         {
             let resource = getUpgradeResource(this.resource);
+
+            // 3.2 - new hyperbuy upgrade buying
+            // Mass calculations using integrals
+            // Made by Schrottii
+
             if (level == "hyperbuy") {
                 //console.log("yup, is hyper")
                 level = 10000;
@@ -387,6 +392,9 @@ class ScrapUpgrade
                     this.afterBuy();
 
                     return true;
+                }
+                else {
+                    level = level + this.level;
                 }
             }
             while(this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel())

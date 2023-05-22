@@ -1212,12 +1212,18 @@ function spawnBarrel() {
 }
 
 function maxScrapUpgrades() {
-    for (k in game.scrapUpgrades) {
-        let upg = game.scrapUpgrades[k];
-        while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
-            upg.buy(false, true);
+    if (!game.settings.hyperBuy) {
+        for (k in game.scrapUpgrades) {
+            let upg = game.scrapUpgrades[k];
+            while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
+                upg.buy(false, true);
+            }
+            upg.onBuyMax();
         }
-        upg.onBuyMax();
+    }
+    else {
+        game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy");
+        setTimeout(() => game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy"), 50);
     }
 }
 

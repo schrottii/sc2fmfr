@@ -412,7 +412,7 @@ class ScrapUpgrade
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
-                if (isNaN(resource)) //is resource negative
+                if (isNaN(resource) && !resource.gte(10)) //is resource negative
                 {
                     resource = new Decimal(0);
                 }

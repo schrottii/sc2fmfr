@@ -1367,7 +1367,7 @@ var game =
                 }, ["unlockScrapyard"]),
             speedBoostsFragments: new SkillTreeUpgrade(
                 level => new Decimal(300), RESOURCE_GLITCHBEAM,
-                level => 1 + (level * 100 * applyUpgrade(game.solarSystem.upgrades.venus) / applyUpgrade(game.scrapUpgrades.fasterBarrels)),
+                level => new Decimal(level).mul(100).mul(applyUpgrade(game.solarSystem.upgrades.venus)).div(applyUpgrade(game.scrapUpgrades.fasterBarrels)),
                 {
                     maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
@@ -1836,10 +1836,10 @@ var game =
             return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
         },
         getStarDust: function () {
-            let amount = game.goldenScrap.amount.add(1e50).log(1e50);
-            amount *= game.magnets.add(1e200).log(1e200);
+            let amount = game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50);
+            amount *= game.magnets.add(1e200).min("1e30050").log(1e200);
             amount *= game.fragment.amount.add(1e50).log(1e50);
-            amount *= game.goldenScrap.amount.add("1e500").log("1e500");
+            amount *= game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500");
             amount *= game.darkscrap.amount.add(1e20).log(1e20);
             amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
             amount += game.tires.amount.add("1e1000000").log("1e1000000");

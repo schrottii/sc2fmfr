@@ -580,9 +580,14 @@ var scenes =
                             Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
 
                             ctx.fillStyle = colors[C]["text"];
-                            if (upgradingType == "mas") ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.04 * w, 0.65 * h + barrelSize / 2.5, barrelSize / 2.5);
+                            ctx.textAlign = "left";
+                            if (upgradingType == "mas") {
+                                ctx.font = (h * 0.02) + "px " + fonts.default;
+                                ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2.5);
+                            }
                             else {
-                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.04 * w, 0.65 * h + barrelSize / 2.5, barrelSize / 2);
+                                ctx.font = (h * 0.015) + "px " + fonts.default;
+                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2.5);
                             }
                         }
                     }

@@ -1491,6 +1491,9 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
         game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
+        game.settings.hyperBuy2 = loadVal(loadObj.settings.hyperBuy2, true);
+        game.settings.hyperBuyCap = loadVal(loadObj.settings.hyperBuyCap, 0);
+        game.settings.hyperBuyPer = loadVal(loadObj.settings.hyperBuyPer, 100);
         game.settings.beamRed = loadVal(loadObj.settings.beamRed, 0);
         game.settings.lang = loadVal(loadObj.settings.lang, "en");
 

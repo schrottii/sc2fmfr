@@ -2609,6 +2609,9 @@ var game =
         musicVolume: 0,
         displayFPS: false,
         hyperBuy: false,
+        hyperBuy2: true,
+        hyperBuyCap: 0,
+        hyperBuyPer: 100,
         beamRed: 0,
         lang: "en",
     }

@@ -1,6 +1,4 @@
-﻿var isPlaying = 0;
-var hePlayed = 0;
-var compareStats = {};
+﻿var compareStats = {};
 var comparePage = 0;
 
 var C = "default";
@@ -31,7 +29,7 @@ var upgradingBarrel = 0;
 var upgradingType = "mas";
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-var tabYs = [0.2, 1.0, 1.9, 2.3];
+const tabYs = [0.2, 1.1, 2.0, 2.4];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
@@ -456,12 +454,33 @@ var scenes =
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
                 }),
-                new UICheckbox(0.875, 0.825, 0.05, 0.05, "game.settings.hyperBuy", {
+
+                new UICheckbox(0.575, 0.825, 0.05, 0.05, "game.settings.hyperBuy", {
                     isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
                     quadratic: true,
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
                 }),
+                new UIText(() => formatNumber(game.settings.hyperBuyCap), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
+                    let newCap = prompt("New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)");
+                    if (Math.round(newCap) > -1) {
+                        game.settings.hyperBuyCap = newCap;
+                    }
+                    else {
+                        alert(tt("Too low!"));
+                    }
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
+                    let newCap = prompt("New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)");
+                    if (Math.round(newCap) > -1) {
+                        game.settings.hyperBuyPer = Math.min(newCap, 100);
+                    }
+                    else {
+                        alert(tt("Too low!"));
+                    }
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
 
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
                 new UIText(() => tt("Better Barrels") + " (" + game.scrapUpgrades.betterBarrels.level.toFixed(0) + "/" + game.scrapUpgrades.betterBarrels.maxLevel + "):\n" + tt("bbdesc"), 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
@@ -2401,10 +2420,13 @@ var scenes =
                         }
                     }, () => tt("language") + ": " + ["English", "Deutsch", "Русский"][["en", "de", "ru"].indexOf(game.settings.lang)], "table"),
 
-                    // Reset confirmation dialogue
+                    // Open Beams
                     new UIOption(tabYs[0] + 0.7, images.scenes.beamselection, () => {
                         game.settings.beamRed = (game.settings.beamRed + 1) % 3
                     }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table2"),
+
+                    // Hyper Buy 2.0
+                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table"),
 
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {

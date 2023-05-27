@@ -352,7 +352,7 @@ class ScrapUpgrade
             this.level = level;
             return true;
         }
-        else if (this.resource == 7)
+        else if (this.resource == 7 && game.settings.hyperBuy2)
         {
             // Mythus
             let resource = getUpgradeResource(this.resource);
@@ -369,6 +369,8 @@ class ScrapUpgrade
             }
             //console.log(level);
 
+            if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
+
             if (level != 10000) {
                 this.level = this.level + level;
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
@@ -384,8 +386,8 @@ class ScrapUpgrade
             }
             // Can't even afford 10k - do the stuff below
         }
-        let resource = getUpgradeResource(this.resource);
-
+        let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
+        let resourceLimit = getUpgradeResource(this.resource);
         // 3.2 - new hyperbuy upgrade buying
         // Mass calculations using integrals
         // Made by Schrottii
@@ -393,7 +395,7 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 10000;
-            if (this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+            if (game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
                 //console.log("integral mode");
 
                 // Keep doubling as long as possible
@@ -411,6 +413,9 @@ class ScrapUpgrade
 
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
+                if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
+
+                resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
                 if (isNaN(resource) && !resource.gte(10)) //is resource negative
                 {
@@ -425,9 +430,11 @@ class ScrapUpgrade
             }
             else {
                 level = level + this.level;
+                resourceLimit = resource;
             }
         }
-        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
+        resource = getUpgradeResource(this.resource);
+        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel() && resource.sub(this.currentPrice()).gte(resource.sub(resourceLimit))) {
             this.buy(round);
             resource = getUpgradeResource(this.resource);
         }

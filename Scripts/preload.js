@@ -98,6 +98,8 @@ var images =
     aliendust: loadImage("Images/Currencies/aliendust.png"),
     fairydust: loadImage("Images/Currencies/fairydust.png"),
     language: loadImage("Images/Buttons/language.png"),
+    hyperbuyLevel: loadImage("Images/Buttons/hyperbuy_level.png"),
+    hyperbuyPercent: loadImage("Images/Buttons/hyperbuy_percent.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -142,8 +144,8 @@ var images =
         },
         hyperbuy:
         {
-            off: loadImage("Images/Checkbox/hypertap_off.png"),
-            on: loadImage("Images/Checkbox/hypertap_on.png")
+            off: loadImage("Images/Checkbox/hyperbuy_off.png"),
+            on: loadImage("Images/Checkbox/hyperbuy_on.png")
         }
     },
     upgrades:

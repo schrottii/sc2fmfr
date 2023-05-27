@@ -39,6 +39,7 @@ const trans_en = {
     "br1": "Normal Beams",
     "br2": "Current",
     "br3": "Selection",
+    "hyperBuy2": "Optimized Hyper Buy (Recommended)",
 
     "Performance": "Performance",
     "shadows": "Toggle Barrel Shadows",

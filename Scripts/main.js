@@ -332,7 +332,7 @@ function update()
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                 }
                             }
                             else {
@@ -342,7 +342,7 @@ function update()
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                 }
                             }
                         }
@@ -359,7 +359,7 @@ function update()
                                 if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
                                     if(applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                     break;
                                 }
                             }
@@ -696,6 +696,10 @@ function getDarkScrap(level) {
 
 function craftingMulti() {
     return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting) / applyUpgrade(game.supernova.alienDustUpgrades.cetus);
+}
+
+function getScrews(isFallingScrew=false) {
+    return new Decimal(Math.ceil(Math.log10(game.stats.totalscrews) * (isFallingScrew ? 3 : 1)));
 }
 
 function fallingMagnetWorth() {
@@ -2106,6 +2110,7 @@ function loadGame(saveCode, isFromFile=false)
 
         updateBetterBarrels();
         movingItems = [];
+        stormQueue = [];
 
         if (isFromFile) alert("The file has been imported successfully!");
 

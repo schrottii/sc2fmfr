@@ -1814,16 +1814,17 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                new UIText("Earn screws by leveling up in the Merge Mastery, tires or screws!", 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("screwstext"), 0.5, 0.2, 0.025, "black"),
 
                 new UIText(() => "Screws from level ups: +" + formatNumber(game.screws.getScrews(game.mergeMastery.level)), 0.5, 0.3, 0.04, "white"),
-                new UIText("Screws from tires: +1", 0.5, 0.325, 0.04, "white"),
-                new UIText("Screws from falling screws: +1", 0.5, 0.35, 0.04, "white"),
+                new UIText(() => "Screws from tires: +" + formatNumber(getScrews()), 0.5, 0.325, 0.04, "white"),
+                new UIText(() => "Screws from falling screws: +" + formatNumber(getScrews(true)), 0.5, 0.35, 0.04, "white"),
 
                 new UIText(() => "$images.screw$ Screws: " + Math.round(game.screws.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIScrewUpgrade(game.screws.upgrades.fallingScrews, images.upgrades.unlockScrews, 0.55, "screw1"),
                 new UIScrewUpgrade(game.screws.upgrades.higherMoreReinforced, images.upgrades.reinforcedBeamValue, 0.65, "screw2", "table2"),
                 new UIScrewUpgrade(game.screws.upgrades.fasterBricks, images.upgrades.brickSpeed, 0.75, "screw3"),
+                new UIScrewUpgrade(game.screws.upgrades.moreMergeTokens, images.upgrades.moreMergeTokens, 0.85, "ds2", "table2"),
 
             ],
             function () {
@@ -3210,7 +3211,7 @@ var scenes =
 
                     new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200))) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
+                    new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
 
                     new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
                     new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),

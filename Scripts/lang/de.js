@@ -35,6 +35,11 @@ const trans_de = {
     "convertsetting": "Klicke zweimal auf eine Tonne um\nsie zu entfernen",
     "barrelspawn": "Tonnen spawnen",
     "resetconfirmation": "Reset Bestätigung",
+    "beamsredirect": "Stahltab öffnen",
+    "br1": "Normale Stahlträger",
+    "br2": "Jetzige Sorte",
+    "br3": "Auswahl",
+    "hyperBuy2": "Optimierter Hyper Buy (Empfohlen)",
 
     "Performance": "Performance",
     "shadows": "Tonnenschatten",
@@ -198,7 +203,7 @@ const trans_de = {
     skilltree: "Baum",
     locked: "Gesperrt",
     unlocked: "Freigeschaltet",
-    screws: "Schraubenschlüssel",
+    screws: "Schrauben",
     plasticbags: "Plastiktüten",
     costs: "Kosten",
     crabs: "Kaufe eine Plastiktüte\nund rette die Krabben!",
@@ -273,6 +278,7 @@ const trans_de = {
 
     "Unlocked everything!": "Alles freigeschaltet!",
     "Unlock": "Freischalten",
+
 
 
 
@@ -550,6 +556,8 @@ const trans_de = {
     shower1: "Reifendusche ist bereit!",
     shower2: "Große Reifendusche ist bereit!",
     shower3: "Massive Reifendusche ist bereit!",
+
+    screwstext: "Verdiene Schrauben in der Merge Mastery, durch Reifen und fallende Schrauben!\nSchrauben können fallen, wenn ein Autokäufer oder Autosammler ausgelöst wird.\nErhalte mehr durch die Erhöhung des Schrauben-Stat",
 
     ms: {
         "001": ["Anfänger", "Erreiche 1000 Schrott"],

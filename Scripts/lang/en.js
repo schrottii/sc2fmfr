@@ -555,4 +555,6 @@ const trans_en = {
     shower1: "Tire shower is ready!",
     shower2: "Big tire shower is ready!",
     shower3: "Massive tire shower is ready!",
+
+    screwstext: "Earn screws by leveling up in the Merge Mastery, by collecting tires or screws!\nFalling screws can appear when an auto buyer or auto collector is triggered.\nGet more screws from tires and falling screws by raising your total screws stat",
 }

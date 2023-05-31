@@ -77,7 +77,7 @@ var game =
                 .mul(applyUpgrade(game.angelbeams.upgrades.gsBoost))
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
-                .mul(new Decimal(1000).pow(Math.min(game.supernova.stars, 1200)))
+                .mul(new Decimal(1000).pow(game.supernova.stars))
                 .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
@@ -1223,13 +1223,13 @@ var game =
         {
             fallingScrews: new ScrewUpgrade(
                 level => new Decimal(5000 + level * 500),
-                level => 2 * level,
+                level => 3 * level,
                 {
                     maxLevel: 10,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             higherMoreReinforced: new ScrewUpgrade(
-                level => new Decimal(100 + level * 20),
+                level => new Decimal(100 + level * 50),
                 level => 2 * level,
                 {
                     maxLevel: 50,
@@ -1241,6 +1241,13 @@ var game =
                 {
                     maxLevel: 200,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "% faster")
+                }),
+            moreMergeTokens: new ScrewUpgrade(
+                level => new Decimal(Math.floor(10 * Math.pow(1.006, level + Math.max((level - 99) / 75, 0)))),
+                level => 1 + (level / 50) + (Math.max(level - 350, 0) / 50) + (Math.max(level - 775, 0) / 16.66) + (Math.max(level - 1025, 0) / 5) + Math.max(level - 2000, 0),
+                {
+                    isUnlocked: () => game.screws.upgrades.fasterBricks.level >= 50,
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x")
                 }),
         }
     },

@@ -117,7 +117,7 @@ class MovingItem
         }
         if ((this.timeSinceSpawn >= 1 || this.y > h / 2) && !this.autoTried && game.collectors[this.autoType] != undefined && game.factory.tank.gte(1)) {
             if (Math.random() * 100 <= applyUpgrade(game.collectors[this.autoType])) {
-                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                 game.factory.tank = game.factory.tank.sub(1);
                 this.oncollect(true);
             }
@@ -289,8 +289,8 @@ var movingItemFactory =
                 game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
 
                 if (game.screws.isUnlocked()) {
-                    game.screws.amount = game.screws.amount.add(1);
-                    game.stats.totalscrews = game.stats.totalscrews.add(1);
+                    game.screws.amount = game.screws.amount.add(getScrews());
+                    game.stats.totalscrews = game.stats.totalscrews.add(getScrews());
                 }
 
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
@@ -465,7 +465,7 @@ var movingItemFactory =
             }))
     },
     fallingScrew: (value) => {
-        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.1, h * 0.1, h * 1, h * 0.2, 0,
+        movingItems.push(new FallingItem(images.screw, "screws", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.125, h * 0.125, h * 0.75, h * 0.2, 0,
             function (isAuto = false) {
                 this.collected = true;
                 if (game.settings.lowPerformance) {

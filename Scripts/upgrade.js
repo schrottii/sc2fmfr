@@ -387,7 +387,6 @@ class ScrapUpgrade
             // Can't even afford 10k - do the stuff below
         }
         let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
-        let resourceLimit = getUpgradeResource(this.resource);
         // 3.2 - new hyperbuy upgrade buying
         // Mass calculations using integrals
         // Made by Schrottii
@@ -395,7 +394,14 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 10000;
-            if (game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+            let isBelowMax = false;
+            if (typeof (this.maxLevel) == "function") {
+                if (this.level + level < this.maxLevel()) isBelowMax = true;
+            }
+            else {
+                if (this.level + level < this.maxLevel) isBelowMax = true;
+            }
+            if (isBelowMax && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
                 //console.log("integral mode");
 
                 // Keep doubling as long as possible
@@ -430,11 +436,11 @@ class ScrapUpgrade
             }
             else {
                 level = level + this.level;
-                resourceLimit = resource;
+                resource = getUpgradeResource(this.resource);
             }
         }
         resource = getUpgradeResource(this.resource);
-        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel() && resource.sub(this.currentPrice()).gte(resource.sub(resourceLimit))) {
+        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
             this.buy(round);
             resource = getUpgradeResource(this.resource);
         }

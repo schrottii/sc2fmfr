@@ -567,7 +567,7 @@ var game =
     bricks:
     {
         amount: new Decimal(0),
-        productionLevel: 0,
+        productionLevel: new Decimal(0),
         currentMergeProgress: 0,
         mergesPerLevel: () => Math.max(8, Math.round((250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() * (1 - game.skillTree.upgrades.fasterBricks.level / 100) / (1 + applyUpgrade(game.screws.upgrades.fasterBricks) / 100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level)+1) )),
         isUnlocked: () => game.highestScrapReached.gte(1e213),
@@ -590,7 +590,7 @@ var game =
                 }
             }
             if (game.bricks.currentMergeProgress >= game.bricks.mergesPerLevel()) {
-                game.bricks.productionLevel += getBrickIncrease() * 1;
+                game.bricks.productionLevel = game.bricks.productionLevel.add(getBrickIncrease());
                 game.bricks.currentMergeProgress = 0;
             }
         },
@@ -2144,7 +2144,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, 15),
             startBricks: new CosmicEmblemUpgrade(level => new Decimal(1),
-                level => 1000 * level + (level > 10 ? 4000 * (level - 10) : 0), {
+                level => new Decimal(1000 * level + (level > 10 ? 4000 * (level - 10) : 0)), {
                 maxLevel: 20,
                 getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "L")
             }, 20),

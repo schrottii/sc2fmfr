@@ -1313,7 +1313,7 @@ var scenes =
                 ctx.fillText(formatThousands(game.bricks.currentMergeProgress) + " / " + formatThousands(game.bricks.mergesPerLevel()), w * 0.5, h * 0.3);
                 ctx.fillStyle = colors[C]["text"];
                 ctx.font = (h * 0.02) + "px " + fonts.default;
-                ctx.fillText(formatNumber(game.bricks.getCurrentProduction()) + " x" + formatNumber(Math.pow(2, getBrickIncrease())) + "/s → " + formatNumber(game.bricks.getProduction(game.bricks.productionLevel + getBrickIncrease())) + "/s", w * 0.5, h * 0.36);
+                ctx.fillText(formatNumber(game.bricks.getCurrentProduction()) + " x" + formatNumber(new Decimal(2).pow(getBrickIncrease())) + "/s → " + formatNumber(game.bricks.getProduction(game.bricks.productionLevel.add(getBrickIncrease()))) + "/s", w * 0.5, h * 0.36);
             }),
         new Scene("Tires",
             [

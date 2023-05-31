@@ -1631,7 +1631,7 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.bricks !== undefined) {
             game.bricks.amount = loadVal(new Decimal(loadObj.bricks.amount), new Decimal(0));
-            game.bricks.productionLevel = loadVal(loadObj.bricks.productionLevel, 0);
+            game.bricks.productionLevel = loadVal(new Decimal(loadObj.bricks.productionLevel), new Decimal(0));
             game.bricks.currentMergeProgress = loadVal(loadObj.bricks.currentMergeProgress, 0);
             if (loadObj.bricks.upgrades !== undefined) {
                 for (let k of Object.keys(loadObj.bricks.upgrades)) {

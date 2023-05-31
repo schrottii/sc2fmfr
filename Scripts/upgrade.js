@@ -396,6 +396,7 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 10000;
+
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
                 //console.log("integral mode");
 

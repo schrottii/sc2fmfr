@@ -590,7 +590,7 @@ var game =
                 }
             }
             if (game.bricks.currentMergeProgress >= game.bricks.mergesPerLevel()) {
-                game.bricks.productionLevel += getBrickIncrease();
+                game.bricks.productionLevel += getBrickIncrease() * 1;
                 game.bricks.currentMergeProgress = 0;
             }
         },

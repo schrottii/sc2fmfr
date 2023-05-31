@@ -343,6 +343,8 @@ class ScrapUpgrade
 
     buyToTarget(level, round)
     {
+        let originHyper = false;
+        if (level == "hyperbuy") originHyper = true;
         if(level != "hyperbuy" && level <= this.level)
         {
             if(level < this.level)
@@ -394,14 +396,7 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 10000;
-            let isBelowMax = false;
-            if (typeof (this.maxLevel) == "function") {
-                if (this.level + level < this.maxLevel()) isBelowMax = true;
-            }
-            else {
-                if (this.level + level < this.maxLevel) isBelowMax = true;
-            }
-            if (isBelowMax && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
                 //console.log("integral mode");
 
                 // Keep doubling as long as possible
@@ -436,13 +431,18 @@ class ScrapUpgrade
             }
             else {
                 level = level + this.level;
-                resource = getUpgradeResource(this.resource);
             }
         }
-        resource = getUpgradeResource(this.resource);
+        else {
+            if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
+            else resource = getUpgradeResource(this.resource);
+        }
+        if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
+
         while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
             this.buy(round);
-            resource = getUpgradeResource(this.resource);
+            if (!originHyper) resource = getUpgradeResource(this.resource);
+            else resource = resource.sub(this.getPrice(this.level - 1));
         }
 
     }

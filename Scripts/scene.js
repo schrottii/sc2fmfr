@@ -1853,7 +1853,11 @@ var scenes =
 
                 new UIButton(0.84, 0.435, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.dailyQuest.active) {
-                        if (game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
+                        if (applyUpgrade(game.skillTree.upgrades.starDaily) && game.highestBarrelReached > 100000) {
+                            game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy");
+                            game.scrapUpgrades.betterBarrels.level = Math.floor(game.scrapUpgrades.betterBarrels.level / BARRELS) * 1000 + game.mergeQuests.dailyQuest.barrelLvl;
+                        }
+                        else if (game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.maxLevel) {
                             let buyTo = game.mergeQuests.dailyQuest.barrelLvl;
                             if (applyUpgrade(game.skillTree.upgrades.starDaily)) buyTo = (Math.floor(game.highestBarrelReached / BARRELS) - 1) * BARRELS + game.mergeQuests.dailyQuest.barrelLvl;
                             game.scrapUpgrades.betterBarrels.buyToTarget(buyTo);

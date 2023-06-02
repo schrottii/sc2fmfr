@@ -2692,11 +2692,7 @@ var scenes =
                         }
                         upgradeScrapyard();
                         timeOutID = setInterval(() => {
-                            upgradeScrapyard();
-                            upgradeScrapyard();
-                            upgradeScrapyard();
-                            upgradeScrapyard();
-                            upgradeScrapyard();
+                            upgradeScrapyard(game.mergeQuests.mergeTokens.gte("1e6") ? 50 : 5);
                         }, 50)
                     }
                     else {

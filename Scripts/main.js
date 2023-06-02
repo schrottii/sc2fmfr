@@ -699,7 +699,7 @@ function craftingMulti() {
 }
 
 function getScrews(isFallingScrew=false) {
-    return new Decimal(Math.ceil(Math.log10(game.stats.totalscrews) * (isFallingScrew ? 3 : 1)));
+    return new Decimal(Math.ceil(2 * Math.log10(game.stats.totalscrews) * (isFallingScrew ? 3 : 1)));
 }
 
 function fallingMagnetWorth() {

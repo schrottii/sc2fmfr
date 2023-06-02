@@ -1848,7 +1848,7 @@ var game =
             amount *= game.fragment.amount.add(1e50).log(1e50);
             amount *= game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500");
             amount *= game.darkscrap.amount.add(1e20).log(1e20);
-            amount *= new Decimal(game.mergeMastery.prestige.level).add(10000).log(10000);
+            amount *= new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000);
             amount += game.tires.amount.add("1e1000000").log("1e1000000");
             return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
@@ -1872,7 +1872,7 @@ var game =
             amount += game.solarSystem.upgrades.posus.level / 100;
 
             amount *= 1 + (game.solarSystem.upgrades.mythus.level / 200);
-            amount *= 1 + (game.solarSystem.upgrades.sun.level / 500);
+            amount *= 1 + (game.solarSystem.upgrades.sun.level / 100);
 
             return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
@@ -1885,7 +1885,7 @@ var game =
 
             amount *= game.bricks.amount.add("1e500000").log("1e500000");
             amount *= game.plasticBags.total.add(450).log(450);
-            amount *= game.stats.totalscrews.add(100000).log(100000);
+            amount *= game.stats.totalscrews.add(10000).log(10000);
             amount *= game.stats.totalquests.add(250).log(250);
             amount *= game.stats.totalmergetokens.add(10000).log(10000);
 

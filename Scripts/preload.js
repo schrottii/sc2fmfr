@@ -100,6 +100,7 @@ var images =
     language: loadImage("Images/Buttons/language.png"),
     hyperbuyLevel: loadImage("Images/Buttons/hyperbuy_level.png"),
     hyperbuyPercent: loadImage("Images/Buttons/hyperbuy_percent.png"),
+    masterytoggle: loadImage("Images/Buttons/masterytoggle.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

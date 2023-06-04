@@ -293,6 +293,9 @@ class ScrapUpgrade
             {
                 this.isUnlocked = cfg.isUnlocked;
             }
+            if (cfg.integral) {
+                this.integral = cfg.integral;
+            }
         }
         this.maxLevel = cfg && cfg.maxLevel ? cfg.maxLevel : Infinity;
 
@@ -340,27 +343,112 @@ class ScrapUpgrade
 
     buyToTarget(level, round)
     {
-        if(level <= this.level)
+        let originHyper = false;
+        if (level == "hyperbuy") originHyper = true;
+        if(level != "hyperbuy" && level <= this.level)
         {
             if(level < this.level)
             {
                 this.onLevelDown(level);
             }
             this.level = level;
+            return true;
         }
-        else
+        else if (this.resource == 7 && game.settings.hyperBuy2)
         {
+            // Mythus
             let resource = getUpgradeResource(this.resource);
-            while(this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel())
-            {
-                this.buy(round);
+            level = 10000;
+
+            while (this.getPrice(this.level + level * 2).lte(resource)) {
+                level *= 2;
+            }
+            while (this.getPrice(this.level + level * 1.01).lte(resource)) {
+                level *= 1.01;
+            }
+            while (this.getPrice(this.level + level * 1.0005).lte(resource)) {
+                level *= 1.0005;
+            }
+            //console.log(level);
+
+            if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
+
+            if (level != 10000) {
+                this.level = this.level + level;
+                resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
+                if (isNaN(resource)) //is resource negative
+                {
+                    resource = new Decimal(0);
+                }
+                assignResourceAfterUpgrade(this.resource, resource);
+                this.onBuy();
+                this.afterBuy();
+
+                return true;
+            }
+            // Can't even afford 10k - do the stuff below
+        }
+        let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
+        // 3.2 - new hyperbuy upgrade buying
+        // Mass calculations using integrals
+        // Made by Schrottii
+
+        if (level == "hyperbuy") {
+            //console.log("yup, is hyper")
+            level = 10000;
+
+            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+                //console.log("integral mode");
+
+                // Keep doubling as long as possible
+                while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                    level *= 2;
+                    //console.log(level);
+                }
+                level = level / 2;
+
+                // Half, now x1.03 as long as possible. Should be fairly accurate
+                while (this.integral(this.level + level * 1.03).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                    level = Math.floor(level * 1.03);
+                }
+                //console.log(level);
+
+                // Set level, remove currency
+                level = Math.min(this.maxLevel - this.level, level);
+                if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
+
                 resource = getUpgradeResource(this.resource);
+                resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
+                if (isNaN(resource) && !resource.gte(10)) //is resource negative
+                {
+                    resource = new Decimal(0);
+                }
+                assignResourceAfterUpgrade(this.resource, resource);
+                this.level = this.level + level; // put it here. grrr
+                this.onBuy();
+                this.afterBuy();
+
+                return true;
+            }
+            else {
+                level = level + this.level;
             }
         }
+        else {
+            if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
+            else resource = getUpgradeResource(this.resource);
+        }
+        if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
+
+        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
+            this.buy(round);
+            if (!originHyper) resource = getUpgradeResource(this.resource);
+            else resource = resource.sub(this.getPrice(this.level - 1));
+        }
+
     }
 
-    currentPrice()
-    {
+    currentPrice() {
         return this.getPrice(this.level);
     }
 
@@ -754,7 +842,7 @@ class FactoryUpgrade extends ScrapUpgrade {
             let resource = getUpgradeResource(p[1]);
 
             if (p[0].gt(resource.round())) {
-                return;
+                return false;
             }
         }
 
@@ -777,6 +865,23 @@ class FactoryUpgrade extends ScrapUpgrade {
         }
 
         this.afterBuy();
+        return true;
+    }
+
+    buyToTarget(level, round) {
+        if (level <= this.level) {
+            if (level < this.level) {
+                this.onLevelDown(level);
+            }
+            this.level = level;
+        }
+        else {
+            let resource = getUpgradeResource(this.resource);
+            let canAfford = true;
+            while (this.level < this.getMaxLevel() && canAfford && level > this.level) {
+                canAfford = this.buy(round);
+            }
+        }
     }
 }
 

@@ -20,8 +20,8 @@ class MergeQuest
         if (tier != 5) this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
         else this.barrelLvl = (calcTime * (28643 * calcTime)) % BARRELS; //Amount of barrels
         this.neededMerges = [100, 250, 500, 1000, 2500, 10000][tier];
-        if(this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1+applyUpgrade(game.skillTree.upgrades.moreMergeTokens)))).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).round();
-        else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber())).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).round();
+        if (this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)))).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).mul(applyUpgrade(game.screws.upgrades.moreMergeTokens)).round();
+        else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber())).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).mul(applyUpgrade(game.screws.upgrades.moreMergeTokens)).round();
         // merges/token:  100, 125, 125, 125, 100, 40
         this.active = true;
         this.currentCooldown = 0;
@@ -53,11 +53,23 @@ class MergeQuest
             game.stats.totalquests = game.stats.totalquests.add(1);
             if (this.getNeededMerges() > 8000) {
                 game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
+
                 if (game.barrelMastery.isUnlocked()) {
                     game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(25);
                     game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(25);
                 }
             }
+
+            upgradingBarrel = 0;
+            upgradingType = "mas";
+            for (i in game.mergeQuests.quests) {
+                if (game.mergeQuests.quests[i].currentMerges > 0 && game.mergeQuests.quests[i].currentMerges != this.currentMerges) {
+                    upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+                    upgradingType = i;
+                }
+            }
+            if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level;
+
             GameNotification.create(new MergeQuestNotification(this));
             this.active = false;
             this.currentMerges = 0;

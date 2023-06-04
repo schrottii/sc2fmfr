@@ -25,6 +25,8 @@ var movingItems = [];
 var trophyMergeCounter = 0;
 var trophyProgress = 0;
 var hyperBuy = false;
+var cloudAlpha = 0;
+var supernovaAlpha = 0;
 
 var FPS = 9999;
 
@@ -190,6 +192,13 @@ function cancelGift() {
     document.querySelector("div.copyGift").style.display = "none";
 }
 
+function currentSceneNotLoading() {
+    // Returns true if current scene is not the loading scene
+    // otherwise false
+
+    return currentScene.name != "Loading";
+}
+
 function update()
 {
     deltaTimeNew = Date.now();
@@ -205,7 +214,8 @@ function update()
     if (!document.hidden)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
-        game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+        if(game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+        else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
         game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
         game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
 
@@ -317,22 +327,22 @@ function update()
                         if (game.autos[i].auto[1] != "all") {
                             if (game.autos[i].auto[2] == undefined) {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                                if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]].level + 10000, true);
+                                if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
                                 else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                 }
                             }
                             else {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
-                                if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget(game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level + 10000, true);
+                                if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget("hyperbuy", true);
                                 else game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
                                 if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                 }
                             }
                         }
@@ -349,7 +359,7 @@ function update()
                                 if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
                                     if(applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(1);
+                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                     break;
                                 }
                             }
@@ -542,8 +552,11 @@ function update()
                 }
 
                 for (i in movingItems) movingItems[i].cooldown += delta;
-                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club") {
+                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
+                    if (cloudAlpha < 0.8) cloudAlpha += delta;
+                    ctx.globalAlpha = cloudAlpha;
                     ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+                    ctx.globalAlpha = 1;
 
                     for (q in stormQueue) {
                         stormQueue[q][0] -= delta * 1000;
@@ -586,6 +599,14 @@ function update()
 
                             stormQueue.splice(q, 1); // Remove from queue
                         }
+                    }
+                }
+                else {
+                    if (cloudAlpha > 0) {
+                        cloudAlpha = Math.max(cloudAlpha - delta * 2, 0);
+                        ctx.globalAlpha = cloudAlpha;
+                        ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+                        ctx.globalAlpha = 1;
                     }
                 }
             }
@@ -643,11 +664,11 @@ function getReinforcedTapsNeeded() {
 }
 
 function getBrickIncrease() {
-    return 1 + applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks) + (1 * applyUpgrade(game.supernova.starDustUpgrades.caelum));
+    return new Decimal(1).add(applyUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks)).add(1 * applyUpgrade(game.supernova.starDustUpgrades.caelum));
 }
 
 function getFragmentBaseValue() {
-    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(applyUpgrade(game.supernova.starDustUpgrades.volans));
+    return new Decimal(game.skillTree.upgrades.moreFragments.getEffect(game.skillTree.upgrades.moreFragments.level)).mul(game.darkfragment.upgrades.moreFragments.getEffect(game.darkfragment.upgrades.moreFragments.level)).mul(applyUpgrade(game.solarSystem.upgrades.posus)).mul(applyUpgrade(game.skillTree.upgrades.speedBoostsFragments).add(1)).mul(applyUpgrade(game.barrelMastery.upgrades.fragmentBoost).pow(getTotalLevels(4))).mul(applyUpgrade(game.reinforcedbeams.upgrades.fragmentBoost)).mul(applyUpgrade(game.supernova.starDustUpgrades.volans));
 }
 
 function getDarkFragmentBaseValue() {
@@ -675,6 +696,10 @@ function getDarkScrap(level) {
 
 function craftingMulti() {
     return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting) / applyUpgrade(game.supernova.alienDustUpgrades.cetus);
+}
+
+function getScrews(isFallingScrew=false) {
+    return new Decimal(Math.ceil(2 * Math.log10(game.stats.totalscrews) * (isFallingScrew ? 3 : 1)));
 }
 
 function fallingMagnetWorth() {
@@ -905,7 +930,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrel", ((lvl % BARRELS) + 1)));
+            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrelm", ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {
@@ -935,7 +960,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         }
     }
 
-    if (game.scrapUpgrades.betterBarrels.level == 224) {
+    if (game.scrapUpgrades.betterBarrels.level % 1000 == 224 || game.scrapUpgrades.betterBarrels.level % 1000 == 572) {
         if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
@@ -960,6 +985,13 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     if(game.tires.isUnlocked())
     {
         game.tires.onMerge();
+    }
+
+    for (i in game.mergeQuests.quests) {
+        if (game.mergeQuests.quests[i].currentMerges > 0) {
+            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+            upgradingType = i;
+        }
     }
 
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
@@ -998,7 +1030,6 @@ function duckTales(type=0) {
         }
         else {
             duckAmount += 1;
-            if (i == 756) duckCheck = true;
         }
         return false;
     });
@@ -1185,12 +1216,18 @@ function spawnBarrel() {
 }
 
 function maxScrapUpgrades() {
-    for (k in game.scrapUpgrades) {
-        let upg = game.scrapUpgrades[k];
-        while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
-            upg.buy(false, true);
+    if (!game.settings.hyperBuy) {
+        for (k in game.scrapUpgrades) {
+            let upg = game.scrapUpgrades[k];
+            while (upg.currentPrice().lte(game.scrap) && upg.level < upg.maxLevel) {
+                upg.buy(false, true);
+            }
+            upg.onBuyMax();
         }
-        upg.onBuyMax();
+    }
+    else {
+        game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy");
+        setTimeout(() => game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy"), 50);
     }
 }
 
@@ -1199,6 +1236,13 @@ function maxSunUpgrades() {
         while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
             upg.buy();
         }
+}
+
+function maxMercuryUpgrades() {
+    let upg = game.solarSystem.upgrades.mercury;
+    while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
+        upg.buy();
+    }
 }
 
 function exportCompare() {
@@ -1324,7 +1368,7 @@ function saveGame(exportGame, downloaded=false)
     else
     {
         localStorage.setItem("ScrapFanmade", JSON.stringify(saveObj));
-        currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
+        if (currentSceneNotLoading()) currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
     }
 }
 
@@ -1451,6 +1495,10 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.nobarrels = loadVal(loadObj.settings.nobarrels, false);
         game.settings.musicVolume = loadVal(loadObj.settings.musicVolume, 0);
         game.settings.hyperBuy = loadVal(loadObj.settings.hyperBuy, false);
+        game.settings.hyperBuy2 = loadVal(loadObj.settings.hyperBuy2, true);
+        game.settings.hyperBuyCap = loadVal(loadObj.settings.hyperBuyCap, 0);
+        game.settings.hyperBuyPer = loadVal(loadObj.settings.hyperBuyPer, 100);
+        game.settings.beamRed = loadVal(loadObj.settings.beamRed, 0);
         game.settings.lang = loadVal(loadObj.settings.lang, "en");
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
@@ -1521,6 +1569,8 @@ function loadGame(saveCode, isFromFile=false)
                 game.scrapUpgrades[k].level = loadVal(loadObj.scrapUpgrades[k].level, 0);
             });
         }
+        upgradingBarrel = game.scrapUpgrades.betterBarrels.level;
+        upgradingType = "mas";
 
         if (loadObj.magnetUpgrades !== undefined) {
             Object.keys(loadObj.magnetUpgrades).forEach(k => {
@@ -1585,7 +1635,7 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.bricks !== undefined) {
             game.bricks.amount = loadVal(new Decimal(loadObj.bricks.amount), new Decimal(0));
-            game.bricks.productionLevel = loadVal(loadObj.bricks.productionLevel, 0);
+            game.bricks.productionLevel = loadVal(new Decimal(loadObj.bricks.productionLevel), new Decimal(0));
             game.bricks.currentMergeProgress = loadVal(loadObj.bricks.currentMergeProgress, 0);
             if (loadObj.bricks.upgrades !== undefined) {
                 for (let k of Object.keys(loadObj.bricks.upgrades)) {
@@ -1962,6 +2012,7 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
+        // Supernova stuff
         if (loadObj.supernova !== undefined) {
             game.supernova.cosmicEmblems = loadVal(new Decimal(loadObj.supernova.cosmicEmblems), new Decimal(0));
             game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
@@ -1977,6 +2028,10 @@ function loadGame(saveCode, isFromFile=false)
                 Object.keys(game.supernova.cosmicUpgrades).forEach(k => {
                     game.supernova.cosmicUpgrades[k].level = 0;
                 })
+            }
+            if (game.supernova.cosmicUpgrades.hyperBuy.stars == 5) {
+                // Cost change refund :-)
+                if (game.supernova.cosmicUpgrades.hyperBuy.level == 1) game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(2);
             }
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
@@ -2055,6 +2110,7 @@ function loadGame(saveCode, isFromFile=false)
 
         updateBetterBarrels();
         movingItems = [];
+        stormQueue = [];
 
         if (isFromFile) alert("The file has been imported successfully!");
 
@@ -2097,3 +2153,29 @@ function calculateCurrentHighest() {
     return currentHighest;
 }
 
+function updateUpgradingBarrelFromBB(plus=0) {
+    upgradingBarrel = 0;
+    upgradingType = "mas";
+    for (i in game.mergeQuests.quests) {
+        if (game.mergeQuests.quests[i].currentMerges > 0) {
+            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
+            upgradingType = i;
+        }
+    }
+    if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + plus;
+}
+
+function upgradeScrapyard(amount=1) {
+    for (sc = 0; sc < amount; sc++) {
+        if (game.mergeQuests.mergeTokens.gte(new Decimal(game.mergeQuests.scrapyard))) { // AAAAAH
+            game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(game.mergeQuests.scrapyard);
+            currentScene.popupTexts.push(new PopUpText("-" + game.mergeQuests.scrapyard, w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
+
+            game.mergeQuests.scrapyardProgress += 1;
+            if (game.mergeQuests.scrapyardProgress == 10) {
+                game.mergeQuests.scrapyardProgress = 0;
+                game.mergeQuests.scrapyard += 1;
+            }
+        }
+    }
+}

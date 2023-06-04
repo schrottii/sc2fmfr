@@ -35,6 +35,11 @@ const trans_en = {
     "convertsetting": "Double Click Barrels to remove them",
     "barrelspawn": "Barrel Spawn",
     "resetconfirmation": "Reset Confirmation",
+    "beamsredirect": "Open Beams",
+    "br1": "Normal Beams",
+    "br2": "Current",
+    "br3": "Selection",
+    "hyperBuy2": "Optimized Hyper Buy (Recommended)",
 
     "Performance": "Performance",
     "shadows": "Toggle Barrel Shadows",
@@ -167,7 +172,7 @@ const trans_en = {
     not_timeover: "Time Over!",
     not_timeover2: "+<amount> cog wheels",
     not_masteryup: "Mastery level up!",
-    not_masteryup2: "Level <n> (+<amount> Tokens!)",
+    not_masteryup2: "Level <n>: +<amount>",
     not_storm: "No Storm! :(",
     not_storm2: "So unlucky",
     not_glitch: "Glitches",
@@ -550,4 +555,9 @@ const trans_en = {
     shower1: "Tire shower is ready!",
     shower2: "Big tire shower is ready!",
     shower3: "Massive tire shower is ready!",
+
+    screwstext: "Earn screws by leveling up in the Merge Mastery, by collecting tires or screws!\nFalling screws can appear when an auto buyer or auto collector is triggered.\nGet more screws from tires and falling screws by raising your total screws stat",
+    screwgain1: "Screws from level ups",
+    screwgain2: "Screws from tires",
+    screwgain3: "Screws from falling screws",
 }

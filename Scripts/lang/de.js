@@ -558,6 +558,9 @@ const trans_de = {
     shower3: "Massive Reifendusche ist bereit!",
 
     screwstext: "Verdiene Schrauben in der Merge Mastery, durch Reifen und fallende Schrauben!\nSchrauben können fallen, wenn ein Autokäufer oder Autosammler ausgelöst wird.\nErhalte mehr durch die Erhöhung des Schrauben-Stat",
+    screwgain1: "Schrauben von Level Ups",
+    screwgain2: "Schrauben von Reifen",
+    screwgain3: "Schrauben von fallenden Schrauben",
 
     ms: {
         "001": ["Anfänger", "Erreiche 1000 Schrott"],

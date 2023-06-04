@@ -1816,9 +1816,9 @@ var scenes =
 
                 new UIText(() => tt("screwstext"), 0.5, 0.2, 0.025, "black"),
 
-                new UIText(() => "Screws from level ups: +" + formatNumber(game.screws.getScrews(game.mergeMastery.level)), 0.5, 0.3, 0.04, "white"),
-                new UIText(() => "Screws from tires: +" + formatNumber(getScrews()), 0.5, 0.325, 0.04, "white"),
-                new UIText(() => "Screws from falling screws: +" + formatNumber(getScrews(true)), 0.5, 0.35, 0.04, "white"),
+                new UIText(() => tt("screwgain1") + ": +" + formatNumber(game.screws.getScrews(game.mergeMastery.level)), 0.5, 0.3, 0.04, "white"),
+                new UIText(() => tt("screwgain2") + ": +" + formatNumber(getScrews()), 0.5, 0.325, 0.04, "white"),
+                new UIText(() => tt("screwgain3") + ": +" + formatNumber(getScrews(true)), 0.5, 0.35, 0.04, "white"),
 
                 new UIText(() => "$images.screw$ " + tt("screws") + ": " + Math.round(game.screws.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIScrewUpgrade(game.screws.upgrades.fallingScrews, images.upgrades.unlockScrews, 0.55, "screw1"),

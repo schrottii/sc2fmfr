@@ -1243,7 +1243,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "% faster")
                 }),
             moreMergeTokens: new ScrewUpgrade(
-                level => new Decimal(Math.floor(10 * Math.pow(1.006, level + Math.max((level - 99) / 75, 0)))),
+                level => new Decimal(Math.floor(100 * Math.pow(1.006, level + Math.max((level - 99) / 75, 0)))),
                 level => 1 + (level / 50) + (Math.max(level - 350, 0) / 50) + (Math.max(level - 775, 0) / 16.66) + (Math.max(level - 1025, 0) / 5) + Math.max(level - 2000, 0),
                 {
                     isUnlocked: () => game.screws.upgrades.fasterBricks.level >= 50,

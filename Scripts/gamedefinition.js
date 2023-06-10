@@ -392,7 +392,7 @@ var game =
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -412,7 +412,7 @@ var game =
                             }
                         }
                     },
-                    integral: level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                    integral: level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 }
             ),
 

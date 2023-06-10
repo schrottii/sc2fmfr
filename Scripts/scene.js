@@ -673,7 +673,7 @@ var scenes =
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
-                            barrels[draggedBarrel.originPos].scale = 1;
+                            barrels[index].scale = 1;
                             draggedBarrel = undefined;
                             // no need to change freeSpots
                         }

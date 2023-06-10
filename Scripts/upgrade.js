@@ -356,37 +356,12 @@ class ScrapUpgrade
         }
         else if (this.resource == 7 && game.settings.hyperBuy2)
         {
-            // Mythus
+            // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
-            level = 10000;
-
-            while (this.getPrice(this.level + level * 2).lte(resource)) {
-                level *= 2;
-            }
-            while (this.getPrice(this.level + level * 1.01).lte(resource)) {
-                level *= 1.01;
-            }
-            while (this.getPrice(this.level + level * 1.0005).lte(resource)) {
-                level *= 1.0005;
-            }
-            //console.log(level);
-
-            if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
-
-            if (level != 10000) {
-                this.level = this.level + level;
-                resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
-                if (isNaN(resource)) //is resource negative
-                {
-                    resource = new Decimal(0);
-                }
-                assignResourceAfterUpgrade(this.resource, resource);
-                this.onBuy();
-                this.afterBuy();
-
-                return true;
-            }
-            // Can't even afford 10k - do the stuff below
+            game.solarSystem.upgrades.mythus.level = Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 40) / 20);
+            this.onBuy();
+            this.afterBuy();
+            return true;
         }
         let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
         // 3.2 - new hyperbuy upgrade buying
@@ -408,8 +383,8 @@ class ScrapUpgrade
                 level = level / 2;
 
                 // Half, now x1.03 as long as possible. Should be fairly accurate
-                while (this.integral(this.level + level * 1.03).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
-                    level = Math.floor(level * 1.03);
+                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                    level = Math.floor(level * 1.02);
                 }
                 //console.log(level);
 

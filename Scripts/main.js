@@ -1282,16 +1282,34 @@ function saveGame(exportGame, downloaded=false)
     // Added in SC2FMFR 2.5 (though I am 99% sure it already existed before and I accidentally deleted it)
     // Save shortener 4000: The ultimate shortness
     delete saveObj.milestones.achievements;
+    delete saveObj.tires.milestones;
 
-    // Bonus (this is new, 11.8k -> 10.2k)
-    for (i in saveObj.skillTree.upgrades) {
-        delete saveObj.skillTree.upgrades[i].levels;
-        delete saveObj.skillTree.upgrades[i].resource;
-        delete saveObj.skillTree.upgrades[i].deps;
+    // Added in 2.5 or so, massively improved in SC2FMFR 3.2.1: The ultimate shortener
+    for (let ob of [saveObj.skillTree.upgrades, saveObj.shrine, saveObj.supernova.cosmicUpgrades, saveObj.supernova.starDustUpgrades, saveObj.supernova.alienDustUpgrades, saveObj.supernova.fairyDustUpgrades, saveObj.autos, saveObj.collectors,
+        saveObj.tires.upgrades[0], saveObj.tires.upgrades[1], saveObj.tires.upgrades[2], saveObj.tires.upgrades[3]    ]) {
+        for (i in ob) {
+            delete ob[i].levels;
+            delete ob[i].currency;
+            delete ob[i].resource;
+            delete ob[i].deps;
+            delete ob[i].cfg;
+            delete ob[i].effects;
+            delete ob[i].maxLevel;
+            delete ob[i].stars;
+            delete ob[i].auto;
+        }
     }
 
+    // Settings shortener (SC2FMFR 3.2.1)
+    let tempSettings = saveObj.settings;
+    saveObj.settings = [];
+    for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
+        "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
+        "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang"]) {
+        saveObj.settings.push(tempSettings[x]);
+    }
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
-    // Reduces save size a bit (~300 chars less, I went from 11060 to 10716)
+    // Reduces save size a bit (~300 chars less)
     for (let i = 0; i < barrels.length; i++)
     {
         saveObj.barrelLvls[i] = barrels[i] !== undefined ? Math.round(barrels[i].level) : undefined;
@@ -1302,17 +1320,15 @@ function saveGame(exportGame, downloaded=false)
     delete saveObj.barrelMastery.levels;
 
     // Added in SC2FMFR 2.1: The save shortener 3000!
-    // It removes the max. levels from most* upgrades in your save code
-    // ...you don't need them in the save code. The game loads them every time anyway.
-    // *afaik only tire upgrades are not affected. they are stored a little bit differently
-    // It's great: I went from 10716 to 9672 (~1k less)   - both together reduce size by ~14%
     try {
-
         for (const [key, value] of Object.entries(saveObj)) {
             if (saveObj[key]["upgrades"] != undefined) { // For normal upgrades
                 for (const [key2, value2] of Object.entries(saveObj[key]["upgrades"])) {
                     if (saveObj[key]["upgrades"][key2]["maxLevel"] != undefined || saveObj[key]["upgrades"][key2]["maxLevel"] == null) {
                         delete saveObj[key]["upgrades"][key2].maxLevel;
+                    }
+                    if (saveObj[key]["upgrades"][key2]["resource"] != undefined || saveObj[key]["upgrades"][key2]["resource"] == null) {
+                        delete saveObj[key]["upgrades"][key2].resource;
                     }
                 }
             }
@@ -1322,6 +1338,9 @@ function saveGame(exportGame, downloaded=false)
                     if (saveObj[key][key2] != undefined) {
                         if (saveObj[key][key2]["maxLevel"] != undefined || saveObj[key][key2]["maxLevel"] == null) {
                             delete saveObj[key][key2].maxLevel;
+                        }
+                        if (saveObj[key][key2]["resource"] != undefined || saveObj[key][key2]["resource"] == null) {
+                            delete saveObj[key][key2].resource;
                         }
                     }
                 }
@@ -1473,6 +1492,16 @@ function loadGame(saveCode, isFromFile=false)
 
         if (loadObj.settings == undefined) {
             loadObj.settings = { "barrelQuality": 1 };
+        }
+        if (loadObj.settings.length != undefined) {
+            let xy = 0;
+            for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
+                "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
+                "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang"]) {
+                game.settings[x] = loadObj.settings[xy];
+                xy += 1;
+            }
+            loadObj.settings = game.settings;
         }
         game.settings.barrelGalleryPage = loadVal(loadObj.settings.barrelGalleryPage, 0);
         game.settings.barrelShadows = loadVal(loadObj.settings.barrelShadows, false);

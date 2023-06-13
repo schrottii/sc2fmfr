@@ -2287,7 +2287,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(2).mul(level - 2).mul(Math.sqrt(Math.pow(Math.sin(level), 2))).sub(new Decimal(level).pow(2).sub(4 * level).sub(2).min(new Decimal(2).mul(level - 2).mul(Math.sqrt(Math.pow(Math.sin(level), 2))).div(2))).mul(Math.sqrt(Math.pow(Math.cos(level), 2))).add(45 + level).div(5),
+                    integral: level => new Decimal(2).mul(level - 2).sub(new Decimal(level).pow(2).sub(4 * level).sub(2).min(new Decimal(2).mul(level - 2).div(2))).add(45 + level).div(5),
                 }
             ),
         }

@@ -2232,12 +2232,12 @@ var game =
                 }
             ),
             aquila: new AlienDustUpgrade(
-                level => new Decimal(1).add(level > 99999 ? Math.pow(10, Math.floor(level / 100000)) - 1 : 0),
+                level => new Decimal(1).add(level > 99999 ? Math.pow(Math.floor(level / 100000), 10) - 1 : 0),
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
                     afterBuy: () => updateBetterBarrels(),
-                    integral: level => new Decimal(10).pow(new Decimal(level).div(100000).add(5)).div(Math.log(10)).add(level),
+                    integral: level => new Decimal(level).pow(11).div(11 * Math.pow(100000, 10)).add(level),
                 }
             ),
         },

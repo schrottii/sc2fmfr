@@ -461,10 +461,13 @@ var scenes =
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
                 }),
-                new UIText(() => formatNumber(game.settings.hyperBuyCap), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : "Unlimited", 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
                     let newCap = prompt("New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)");
-                    if (Math.round(newCap) > -1) {
+                    if (newCap == null || newCap == "" || newCap == null) {
+                        game.settings.hyperBuyCap = 0;
+                    }
+                    else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyCap = newCap;
                     }
                     else {
@@ -474,7 +477,10 @@ var scenes =
                 new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
                     let newCap = prompt("New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)");
-                    if (Math.round(newCap) > -1) {
+                    if (newCap == null || newCap == "" || newCap == null) {
+                        game.settings.hyperBuyPer = 100;
+                    }
+                    else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyPer = Math.min(newCap, 100);
                     }
                     else {
@@ -2701,7 +2707,7 @@ var scenes =
                         }
                         upgradeScrapyard();
                         timeOutID = setInterval(() => {
-                            upgradeScrapyard(game.mergeQuests.mergeTokens.gte("1e6") ? 50 : 5);
+                            upgradeScrapyard(game.mergeQuests.mergeTokens.gte("1e6") ? 500 : 25);
                         }, 50)
                     }
                     else {
@@ -3308,7 +3314,7 @@ var scenes =
                 if (supernovaAlpha > 0) {
                     supernovaAlpha += delta / 3;
                 }
-                if (supernovaAlpha >= 1) {
+                if (supernovaAlpha >= 1 || game.settings.low) {
                     game.supernova.reset();
                     supernovaAlpha = 0;
                 }

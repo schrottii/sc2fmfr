@@ -2041,8 +2041,13 @@ var scenes =
                 new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
                         let giftCode = prompt("Enter the gift code your friend sent to you");
+
+                        giftCode = giftCode.replace("GIFT", "ey");
+                        giftCode = giftCode.replace("i5e", "I6I");
+                        giftCode = giftCode.replace("Y2K", "Y29");
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
+
 
                         let tmp = giftContent.message.split("i");
                         giftContent.message = "";

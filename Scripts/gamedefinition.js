@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.2 (v3.9)";
+const gameVersionText = "v3.2.1 (v3.9.1)";
 
 var game =
 {
@@ -1668,7 +1668,7 @@ var game =
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
-                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
+                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1.3).pow(level).mul(1e6), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
                 level => new Decimal(20),
                 level => 1,
@@ -2164,7 +2164,7 @@ var game =
         },
         starDustUpgrades: {
             ara: new StarDustUpgrade(
-                level => new Decimal(4).add(new Decimal(2).pow(Math.pow(level, 0.25)) * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
                 level => new Decimal(27).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),

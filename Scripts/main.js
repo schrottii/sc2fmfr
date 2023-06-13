@@ -165,16 +165,19 @@ function setup()
 }
 
 function copyGift() {
-    let msgTemp = "";
+    /*let msgTemp = "";
     let temp2 = giftContent.message;
-
+    
     for (i in giftContent.message) {
         msgTemp = msgTemp + "i" + giftContent.message[i].codePointAt(0);
     }
 
-    giftContent.message = msgTemp;
+    giftContent.message = msgTemp;*/
     let exportCode = btoa(JSON.stringify(giftContent));
-    giftContent.message = temp2;
+    exportCode = exportCode.replace("ey", "GIFT");
+    exportCode = exportCode.replace("I6I", "i5e");
+    exportCode = exportCode.replace("Y29", "Y2K");
+    //giftContent.message = temp2;
     document.querySelector("div.absolute textarea").value = exportCode;
     Utils.copyToClipboard(exportCode);
     alert(tt("giftcopied"));

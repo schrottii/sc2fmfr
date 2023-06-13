@@ -2024,11 +2024,11 @@ var scenes =
                 }, { quadratic: true }),
                 new UIButton(0.4, 0.65, 0.075, 0.075, images.mergeToken, () => {
                     giftType = "mergetoken"
-                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(400);
+                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(100000);
                 }, { quadratic: true }),
                 new UIButton(0.6, 0.65, 0.075, 0.075, images.masteryToken, () => {
                     giftType = "masterytoken"
-                    giftAmount = game.barrelMastery.masteryTokens.div(10).min(20);
+                    giftAmount = game.barrelMastery.masteryTokens.div(10).min(30);
                 }, { quadratic: true }),
                 new UIButton(0.8, 0.65, 0.075, 0.075, images.wrench, () => {
                     giftType = "wrench"
@@ -2060,13 +2060,13 @@ var scenes =
 
                                 switch (giftContent.content) {
                                     case "magnets":
-                                        game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(2)));
+                                        game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.mul(4)));
                                         break;
                                     case "mergetoken":
-                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(400));
+                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(game.mergeQuests.mergeTokens.div(10).max(400)));
                                         break;
                                     case "masterytoken":
-                                        game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
+                                        game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(30));
                                         break;
                                     case "wrench":
                                         game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(1000));

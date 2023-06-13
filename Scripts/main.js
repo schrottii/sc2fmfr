@@ -554,7 +554,7 @@ function update()
                 for (i in movingItems) movingItems[i].cooldown += delta;
                 if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
                     if (cloudAlpha < 1) {
-                        cloudAlpha = Math.min(1, cloudAlpha + delta)
+                        cloudAlpha = Math.min(1, cloudAlpha + delta * 1.25)
                         ctx.globalAlpha = cloudAlpha;
                         ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
                         ctx.globalAlpha = 1;
@@ -997,6 +997,10 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
             upgradingType = i;
         }
+    }
+    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
+        upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
+        upgradingType = i;
     }
 
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));

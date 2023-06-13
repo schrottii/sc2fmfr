@@ -772,7 +772,13 @@ var game =
                         level => (10 + (level > 99 ? 5 : 0)) * level,
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "L"),
-                            integral: level => Decimal.pow(Decimal.pow(2, 5555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level)) // new Decimal(2).mul(new Decimal(5555).pow(level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[3]) * (5 / 4)) / (2 * (5 / 4)))).div(5555 * Math.log(2)),
+                            integral: level => Decimal.pow(Decimal.pow(2, 5555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level)), // new Decimal(2).mul(new Decimal(5555).pow(level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[3]) * (5 / 4)) / (2 * (5 / 4)))).div(5555 * Math.log(2)),
+                            onBuy: () => {
+                                if (game.plasticBags.level <= 1) {
+                                    game.plasticBags.currentResource = RESOURCE_TIRE;
+                                    game.plasticBags.currentCosts = new Decimal(1e100);
+                                }
+                            }
                         }),
                 ]
             ]
@@ -1132,7 +1138,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(100 * level + 50),
+                level => new Decimal(50 * level + 25),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,
@@ -2106,7 +2112,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, 3),
             startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
-                level => new Decimal(20000).mul(level), {
+                level => new Decimal(10000).mul(level), {
                 maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
             }, 3),

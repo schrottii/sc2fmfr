@@ -554,9 +554,9 @@ function update()
                 for (i in movingItems) movingItems[i].cooldown += delta;
                 if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
                     if (cloudAlpha < 0.8) cloudAlpha += delta;
-                    ctx.globalAlpha = cloudAlpha;
+                    //ctx.globalAlpha = cloudAlpha;
                     ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
-                    ctx.globalAlpha = 1;
+                    //ctx.globalAlpha = 1;
 
                     for (q in stormQueue) {
                         stormQueue[q][0] -= delta * 1000;

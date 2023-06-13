@@ -2158,8 +2158,8 @@ var game =
         },
         starDustUpgrades: {
             ara: new StarDustUpgrade(
-                level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(47).pow(level),
+                level => new Decimal(4).add(new Decimal(2).pow(Math.pow(level, 0.25)) * level).mul(Math.max(1, level - 24)),
+                level => new Decimal(27).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
                     integral: level => new Decimal(2).mul(level).mul(new Decimal(level).pow(2).sub(36 * level).add(6)).div(3),
@@ -2167,7 +2167,7 @@ var game =
             ),
             aries: new StarDustUpgrade(
                 level => new Decimal(9).add(6 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(123).pow(level),
+                level => new Decimal(41).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
                     integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(72 * level).add(9)),
@@ -2175,7 +2175,7 @@ var game =
             ),
             corvus: new StarDustUpgrade(
                 level => new Decimal(15).add(25 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.5 * level),
+                level => new Decimal(1).add(0.2 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^"),
                     integral: level => new Decimal(25).mul(new Decimal(level).pow(3).sub(new Decimal(level).pow(2).mul(36))).div(3).add(15 * level),

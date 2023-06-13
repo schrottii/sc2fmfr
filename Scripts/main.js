@@ -1557,6 +1557,10 @@ function loadGame(saveCode, isFromFile=false)
 
             if (loadObj.gifts.friends !== undefined) {
                 game.gifts.friends = loadVal(loadObj.gifts.friends, []);
+                for (f in game.gifts.friends) {
+                    if (game.gifts.friends[f].code == null) game.gifts.friends[f].code = "";
+                    if (game.gifts.friends[f].name == null) game.gifts.friends[f].name = "";
+                }
             }
             else {
                 game.gifts.friends = [];

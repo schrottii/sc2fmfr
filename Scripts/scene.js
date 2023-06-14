@@ -2694,21 +2694,24 @@ var scenes =
                     Scene.loadScene("MergeQuests")
                 }, { quadratic: true }),
 
-                new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + formatNumber(game.mergeQuests.mergeTokens), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("scrapyardtext").replace("<amount>", (game.mergeQuests.scrapyard - 1)) + tt("scrapyardtext2").replace("<n>", (10 - game.mergeQuests.scrapyardProgress)).replace("<amount>", game.mergeQuests.scrapyard), 0.5, 0.275, 0.03, "black"),
 
                 new UIText(() => tt("level") + ": " + game.mergeQuests.scrapyard + "\n" + tt("scrapyardtext3").replace("<percent>", game.mergeQuests.scrapyardProgress * 10), 0.5, 0.8, 0.06, "black"),
                 new UIButton(0.5, 0.6, 0.4, 0.4, images.scrapyard, () => {
                     // Scrapyard
                     if (game.settings.hyperBuy) {
-                        if (timeOutID != "none") {
-                            clearTimeout(timeOutID);
-                            timeOutID = "none";
+                        level = 1;
+                        while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level * 2).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            level *= 2;
                         }
-                        upgradeScrapyard();
-                        timeOutID = setInterval(() => {
-                            upgradeScrapyard(game.mergeQuests.mergeTokens.gte("1e6") ? 500 : 25);
-                        }, 50)
+                        while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + Math.floor(level * 1.01) + 1).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            level = Math.floor(level * 1.01) + 1;
+                        }
+                        if (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            game.mergeQuests.scrapyard += level;
+                            game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard))).max(0);
+                        }
                     }
                     else {
                         upgradeScrapyard();

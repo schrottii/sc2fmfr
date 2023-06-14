@@ -2215,16 +2215,20 @@ function updateUpgradingBarrelFromBB(plus=0) {
     if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + plus;
 }
 
-function upgradeScrapyard(amount = 1) {
-    if (game.mergeQuests.mergeTokens.gte(new Decimal(game.mergeQuests.scrapyard).mul(amount))) {
+function upgradeScrapyard() {
+    if (game.mergeQuests.mergeTokens.gte(new Decimal(game.mergeQuests.scrapyard))) {
         game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(game.mergeQuests.scrapyard);
-        currentScene.popupTexts.push(new PopUpText("-" + formatNumber(game.mergeQuests.scrapyard * amount), w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
+        currentScene.popupTexts.push(new PopUpText("-" + formatNumber(game.mergeQuests.scrapyard), w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
 
-        game.mergeQuests.scrapyardProgress += amount;
-        while (game.mergeQuests.scrapyardProgress > 9) {
+        game.mergeQuests.scrapyardProgress += 1;
+        if (game.mergeQuests.scrapyardProgress >= 10) {
             game.mergeQuests.scrapyardProgress -= 10;
             game.mergeQuests.scrapyard += 1;
         }
     }
 
+}
+
+function calcScrapyard(x) {
+    return new Decimal(x).pow(2).add(x).mul(5);
 }

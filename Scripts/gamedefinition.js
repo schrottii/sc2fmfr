@@ -1201,20 +1201,23 @@ var game =
                 level => new Decimal(1).add(Math.floor(level / 7)),
                 level => new Decimal(1).mul(new Decimal(Math.max(1, level * 10)).pow(level).pow(Math.max(1, (level / 40)))).round(),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).pow(2).div(14).add(level),
                 }),
             moreTires: new PlasticBagUpgrade(
                 level => new Decimal(1).add(Math.floor(level / 9)),
                 level => new Decimal(1 + Math.max(level, 1)).pow(level / 33),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).pow(2).div(18).add(level),
                 }),
             higherEasierReinforced: new PlasticBagUpgrade(
                 level => new Decimal(10).add(level * 2),
                 level => level,
                 {
                     maxLevel: 50,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
+                    integral: level => new Decimal(level).add(10).mul(level),
                 }),
         }
     },

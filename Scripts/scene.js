@@ -2700,7 +2700,8 @@ var scenes =
                 new UIText(() => tt("level") + ": " + game.mergeQuests.scrapyard + "\n" + tt("scrapyardtext3").replace("<percent>", game.mergeQuests.scrapyardProgress * 10), 0.5, 0.8, 0.06, "black"),
                 new UIButton(0.5, 0.6, 0.4, 0.4, images.scrapyard, () => {
                     // Scrapyard
-                    if (game.settings.hyperBuy) {
+                    if (game.settings.hyperBuy && !scrapyardBuyProcess) {
+                        scrapyardBuyProcess = true;
                         level = 1;
                         while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level * 2).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
                             level *= 2;
@@ -2712,6 +2713,7 @@ var scenes =
                             game.mergeQuests.scrapyard += level;
                             game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard))).max(0);
                         }
+                        scrapyardBuyProcess = false;
                     }
                     else {
                         upgradeScrapyard();

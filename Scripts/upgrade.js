@@ -330,7 +330,7 @@ class ScrapUpgrade
             if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
             if (resource.mul(1000000).gt(p)) resource = resource.sub(p);
-            if (isNaN(resource)) //is resource negative
+            if (isNaN(resource) && !resource.gte(10)) //is resource negative
             {
                 resource = new Decimal(0);
             }
@@ -339,6 +339,7 @@ class ScrapUpgrade
         }
 
         this.afterBuy();
+        return canAfford;
     }
 
     buyToTarget(level, round)
@@ -370,7 +371,7 @@ class ScrapUpgrade
 
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
-            level = game.settings.hyperBuy2 ? 15 : 10000;
+            level = 10000;
 
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
                 //console.log("integral mode");
@@ -415,8 +416,9 @@ class ScrapUpgrade
         }
         if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
 
-        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
-            this.buy(round);
+        let bought = true;
+        while (bought && this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
+            bought = this.buy(round);
             if (!originHyper) resource = getUpgradeResource(this.resource);
             else resource = resource.sub(this.getPrice(this.level - 1));
         }

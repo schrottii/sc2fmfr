@@ -1852,53 +1852,53 @@ var game =
             return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
         },
         getStarDust: function () {
-            let amount = game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50);
-            amount *= game.magnets.add(1e200).min("1e30050").log(1e200);
-            amount *= game.fragment.amount.add(1e50).log(1e50);
-            amount *= game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500");
-            amount *= game.darkscrap.amount.add(1e20).log(1e20);
-            amount *= new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000);
-            amount += game.tires.amount.add("1e1000000").log("1e1000000");
-            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+            let amount = new Decimal(game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50));
+            amount = amount.mul(game.magnets.add(1e200).min("1e30050").log(1e200));
+            amount = amount.mul(game.fragment.amount.add(1e50).log(1e50));
+            amount = amount.mul(game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500"));
+            amount = amount.mul(game.darkscrap.amount.add(1e20).log(1e20));
+            amount = amount.mul(new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000));
+            amount = amount.add(game.tires.amount.add("1e1000000").log("1e1000000"));
+            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getAlienDust: function () {
-            let amount = game.factory.legendaryScrap.add(25).log(25);
-            amount += game.factory.steelMagnets.add(125).log(125);
-            amount += game.factory.blueBricks.add(100).log(100);
-            amount += game.factory.buckets.add(50).log(50);
-            amount += game.factory.fishingNets.add(20).log(20);
+            let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));
+            amount = amount.add(game.factory.steelMagnets.add(125).log(125));
+            amount = amount.add(game.factory.blueBricks.add(100).log(100));
+            amount = amount.add(game.factory.buckets.add(50).log(50));
+            amount = amount.add(game.factory.fishingNets.add(20).log(20));
 
             for (i in game.autos) {
-                amount += game.autos[i].level / 5;
+                amount = amount.add(game.autos[i].level / 5);
             }
             for (i in game.collectors) {
-                amount += game.collectors[i].level / 5;
+                amount = amount.add(game.collectors[i].level / 5);
             }
 
-            amount += game.solarSystem.upgrades.venus.level / 25;
-            amount += game.solarSystem.upgrades.neptune.level / 5;
-            amount += game.solarSystem.upgrades.uranus.level / 5;
-            amount += game.solarSystem.upgrades.posus.level / 100;
+            amount = amount.add(game.solarSystem.upgrades.venus.level / 25);
+            amount = amount.add(game.solarSystem.upgrades.neptune.level / 5);
+            amount = amount.add(game.solarSystem.upgrades.uranus.level / 5);
+            amount = amount.add(game.solarSystem.upgrades.posus.level / 100);
 
-            amount *= 1 + (game.solarSystem.upgrades.mythus.level / 200);
-            amount *= 1 + (game.solarSystem.upgrades.sun.level / 100);
+            amount = amount.mul(1 + (game.solarSystem.upgrades.mythus.level / 200));
+            amount = amount.mul(1 + (game.solarSystem.upgrades.sun.level / 100));
 
-            return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
+            return amount.ceil().div(6).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
-            let amount = game.stats.beamstp.div(1e4).sqrt().max(1);
+            let amount = new Decimal(game.stats.beamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.aebeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.abeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.rbeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.gbeamstp.div(1e4).sqrt().max(1)).round();
 
-            amount *= game.bricks.amount.add("1e500000").log("1e500000");
-            amount *= game.plasticBags.total.add(450).log(450);
-            amount *= game.stats.totalscrews.add(10000).log(10000);
-            amount *= game.stats.totalquests.add(250).log(250);
-            amount *= game.stats.totalmergetokens.add(10000).log(10000);
+            amount = amount.mul(game.bricks.amount.add("1e500000").log("1e500000"));
+            amount = amount.mul(game.plasticBags.total.add(450).log(450));
+            amount = amount.mul(game.stats.totalscrews.add(10000).log(10000));
+            amount = amount.mul(game.stats.totalquests.add(250).log(250));
+            amount = amount.mul(game.stats.totalmergetokens.add(10000).log(10000));
 
-            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         reset: function (type="default") {
             // BOOSTS

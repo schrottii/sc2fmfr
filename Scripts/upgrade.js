@@ -372,19 +372,18 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 1000;
-
-            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource)) || isNaN(this.integral(this.level + level).sub(this.integral(this.level))))) {
                 //console.log("integral mode");
 
                 // Keep doubling as long as possible
-                while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource) || isNaN(this.integral(this.level + level).sub(this.integral(this.level))) && level < 1e305) {
                     level *= 2;
                     //console.log(level);
                 }
                 level = level / 2;
 
                 // Half, now x1.03 as long as possible. Should be fairly accurate
-                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).lt(resource) || isNaN(this.integral(this.level + level * 1.02).sub(this.integral(this.level))) && level < 1e305) {
                     level = Math.floor(level * 1.02);
                 }
                 //console.log(level);
@@ -414,7 +413,10 @@ class ScrapUpgrade
             if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
             else resource = getUpgradeResource(this.resource);
         }
-        if (this.getMaxLevel() - this.level == 0) this.level = this.getMaxLevel();
+        if (this.getMaxLevel() - this.level == 0) {
+            this.level = this.getMaxLevel();
+            return false;
+        }
         if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
 
         let bought = true;

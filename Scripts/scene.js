@@ -27,6 +27,7 @@ var timeModeTime = 0;
 var timeTires = 0;
 var upgradingBarrel = 0;
 var upgradingType = "mas";
+var scrapyardBuyProcess = false;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
 const tabYs = [0.2, 1.1, 2.0, 2.4];

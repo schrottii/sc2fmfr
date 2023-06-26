@@ -344,7 +344,7 @@ var game =
                 level => new Decimal(1000).mul(level + 1),
                 level => new Decimal(180 / (1 + 0.2 * level)).mul(applyUpgrade(game.tires.upgrades[2][0])),
                 {
-                    maxLevel: 10,
+                    maxLevel: 13,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "s")
                 }
             ),
@@ -612,6 +612,7 @@ var game =
                 .mul(100e3)).pow(Decimal.pow(1.01, Math.max(0, level - 250))),
                 level => Decimal.pow(1.04, level),
                 {
+                    maxLevel: 10000,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                 }),
             brickBoost: new BrickUpgrade(level => Decimal.pow(64, Math.pow(level, 1.1)).mul(1e12),
@@ -1226,7 +1227,7 @@ var game =
         amount: new Decimal(0),
         isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockScrews),
 
-        getScrews: level => new Decimal(2 + Math.floor(level / 100)),
+        getScrews: level => new Decimal(2 + Math.floor(Math.min(23, level / 100))),
 
         upgrades:
         {

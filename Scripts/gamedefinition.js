@@ -1929,7 +1929,7 @@ var game =
             game.scrap = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.scrapThisPrestige = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.magnets = new Decimal(0);
-            game.glitchesCollected = 0;
+            //game.glitchesCollected = 0;
             game.highestBarrelReached = 0;
             game.highestScrapReached = new Decimal(0);
 

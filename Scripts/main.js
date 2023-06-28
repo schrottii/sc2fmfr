@@ -537,7 +537,8 @@ function update()
                             }
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
+                                    if (getGlitchBeamValue().gt(1e200)) stormQueue.push([300 * i, "glitchbeam", getGlitchBeamValue()]);
+                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
                                 }
                             }
                         }

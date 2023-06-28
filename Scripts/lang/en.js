@@ -520,7 +520,7 @@ const trans_en = {
     em13: "Faster\n2nd Dim",
     em14: "Hyper Buy",
     em15: "Get 10 Mythus\nLevels at once",
-    em16: "Earn 20% More Dust",
+    em16: "Earn 20%\nmore Dust",
     em17: "Keep Auto Collectors\nafter Supernova",
     em18: "Start Bricks\nafter Supernova",
 

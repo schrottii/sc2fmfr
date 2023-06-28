@@ -27,6 +27,7 @@ var timeModeTime = 0;
 var timeTires = 0;
 var upgradingBarrel = 0;
 var upgradingType = "mas";
+var scrapyardBuyProcess = false;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
 const tabYs = [0.2, 1.1, 2.0, 2.4];
@@ -461,10 +462,13 @@ var scenes =
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
                 }),
-                new UIText(() => formatNumber(game.settings.hyperBuyCap), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : "Unlimited", 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
                     let newCap = prompt("New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)");
-                    if (Math.round(newCap) > -1) {
+                    if (newCap == null || newCap == "" || newCap == null) {
+                        game.settings.hyperBuyCap = 0;
+                    }
+                    else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyCap = newCap;
                     }
                     else {
@@ -474,7 +478,10 @@ var scenes =
                 new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
                     let newCap = prompt("New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)");
-                    if (Math.round(newCap) > -1) {
+                    if (newCap == null || newCap == "" || newCap == null) {
+                        game.settings.hyperBuyPer = 100;
+                    }
+                    else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyPer = Math.min(newCap, 100);
                     }
                     else {
@@ -483,7 +490,7 @@ var scenes =
                 }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
 
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
-                new UIText(() => tt("Better Barrels") + " (" + game.scrapUpgrades.betterBarrels.level.toFixed(0) + "/" + game.scrapUpgrades.betterBarrels.maxLevel.toFixed(0) + "):\n" + tt("bbdesc"), 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
+                new UIText(() => tt("Better Barrels") + " (" + formatNumber(game.scrapUpgrades.betterBarrels.level) + "/" + formatNumber(game.scrapUpgrades.betterBarrels.maxLevel) + "):\n" + tt("bbdesc"), 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
                 new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.125, 0.84, 0.035, "black", { bold: true }),
                 new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.225, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
 
@@ -565,6 +572,10 @@ var scenes =
 
                     ctx.fillStyle = "rgb(127, 127, 127)";
 
+                    if (barrels[i] !== undefined) {
+                        barrels[i].setCoord(x, y);
+                        barrels[i].render(ctx);
+                    }
                     if (!game.settings.nobarrels) {
                         if (barrels[i] === undefined && tempDrawnBarrels[i] === undefined || (barrels[i] !== undefined && barrels[i].scale < 1) && tempDrawnBarrels[i] === undefined) {
                             ctx.drawImage(images.barrelTemplate, x - barrelSize / 2, y - barrelSize / 2, barrelSize, barrelSize);
@@ -572,9 +583,18 @@ var scenes =
                         if (!game.settings.lowPerformance && tempDrawnBarrels[i] !== undefined && (barrels[i] !== undefined && barrels[i].scale < 1)) {
                             Barrel.renderBarrel(ctx, tempDrawnBarrels[i], x, y, barrelSize);
                         }
-                        if (barrels[i] !== undefined) {
-                            barrels[i].setCoord(x, y);
-                            barrels[i].render(ctx);
+                        if (game.barrelMastery.isUnlocked()) {
+                            Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
+
+                            ctx.fillStyle = colors[C]["text"];
+                            ctx.textAlign = "left";
+                            ctx.font = (h * 0.015) + "px " + fonts.default;
+                            if (upgradingType == "mas") {
+                                ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
+                            }
+                            else {
+                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
+                            }
                         }
                         if (game.barrelMastery.isUnlocked()) {
                             Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
@@ -673,7 +693,7 @@ var scenes =
                         }
                         else { // Is empty, put my barrel there
                             barrels[index] = draggedBarrel;
-                            barrels[draggedBarrel.originPos].scale = 1;
+                            barrels[index].scale = 1;
                             draggedBarrel = undefined;
                             // no need to change freeSpots
                         }
@@ -2024,11 +2044,11 @@ var scenes =
                 }, { quadratic: true }),
                 new UIButton(0.4, 0.65, 0.075, 0.075, images.mergeToken, () => {
                     giftType = "mergetoken"
-                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(400);
+                    giftAmount = game.mergeQuests.mergeTokens.div(10).min(100000);
                 }, { quadratic: true }),
                 new UIButton(0.6, 0.65, 0.075, 0.075, images.masteryToken, () => {
                     giftType = "masterytoken"
-                    giftAmount = game.barrelMastery.masteryTokens.div(10).min(20);
+                    giftAmount = game.barrelMastery.masteryTokens.div(10).min(30);
                 }, { quadratic: true }),
                 new UIButton(0.8, 0.65, 0.075, 0.075, images.wrench, () => {
                     giftType = "wrench"
@@ -2041,8 +2061,13 @@ var scenes =
                 new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
                         let giftCode = prompt("Enter the gift code your friend sent to you");
+
+                        giftCode = giftCode.replace("GIFT", "ey");
+                        giftCode = giftCode.replace("i5e", "I6I");
+                        giftCode = giftCode.replace("Y2K", "Y29");
                         giftCode = atob(giftCode);
                         let giftContent = JSON.parse(giftCode);
+
 
                         let tmp = giftContent.message.split("i");
                         giftContent.message = "";
@@ -2060,13 +2085,13 @@ var scenes =
 
                                 switch (giftContent.content) {
                                     case "magnets":
-                                        game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.div(2)));
+                                        game.magnets = game.magnets.add(giftContent.amount.min(game.magnets.mul(4)));
                                         break;
                                     case "mergetoken":
-                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(400));
+                                        game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.add(giftContent.amount.min(game.mergeQuests.mergeTokens.div(10).max(400)));
                                         break;
                                     case "masterytoken":
-                                        game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(20));
+                                        game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(giftContent.amount.min(30));
                                         break;
                                     case "wrench":
                                         game.wrenches.amount = game.wrenches.amount.add(giftContent.amount.min(1000));
@@ -2683,21 +2708,26 @@ var scenes =
                     Scene.loadScene("MergeQuests")
                 }, { quadratic: true }),
 
-                new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + game.mergeQuests.mergeTokens.toFixed(0), 0.5, 0.2, 0.06, "yellow"),
+                new UIText(() => "$images.mergeToken$ " + tt("tokens") + ": " + formatNumber(game.mergeQuests.mergeTokens), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("scrapyardtext").replace("<amount>", (game.mergeQuests.scrapyard - 1)) + tt("scrapyardtext2").replace("<n>", (10 - game.mergeQuests.scrapyardProgress)).replace("<amount>", game.mergeQuests.scrapyard), 0.5, 0.275, 0.03, "black"),
 
                 new UIText(() => tt("level") + ": " + game.mergeQuests.scrapyard + "\n" + tt("scrapyardtext3").replace("<percent>", game.mergeQuests.scrapyardProgress * 10), 0.5, 0.8, 0.06, "black"),
                 new UIButton(0.5, 0.6, 0.4, 0.4, images.scrapyard, () => {
                     // Scrapyard
-                    if (game.settings.hyperBuy) {
-                        if (timeOutID != "none") {
-                            clearTimeout(timeOutID);
-                            timeOutID = "none";
+                    if (game.settings.hyperBuy && !scrapyardBuyProcess) {
+                        scrapyardBuyProcess = true;
+                        level = 1;
+                        while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level * 2).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            level *= 2;
                         }
-                        upgradeScrapyard();
-                        timeOutID = setInterval(() => {
-                            upgradeScrapyard(game.mergeQuests.mergeTokens.gte("1e6") ? 50 : 5);
-                        }, 50)
+                        while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + Math.floor(level * 1.01) + 1).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            level = Math.floor(level * 1.01) + 1;
+                        }
+                        if (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
+                            game.mergeQuests.scrapyard += level;
+                            game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard))).max(0);
+                        }
+                        scrapyardBuyProcess = false;
                     }
                     else {
                         upgradeScrapyard();
@@ -3303,7 +3333,7 @@ var scenes =
                 if (supernovaAlpha > 0) {
                     supernovaAlpha += delta / 3;
                 }
-                if (supernovaAlpha >= 1) {
+                if (supernovaAlpha >= 1 || game.settings.low) {
                     game.supernova.reset();
                     supernovaAlpha = 0;
                 }

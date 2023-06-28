@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.2 (v3.9)";
+const gameVersionText = "v3.2.1 (v3.9.1)";
 
 var game =
 {
@@ -344,7 +344,7 @@ var game =
                 level => new Decimal(1000).mul(level + 1),
                 level => new Decimal(180 / (1 + 0.2 * level)).mul(applyUpgrade(game.tires.upgrades[2][0])),
                 {
-                    maxLevel: 10,
+                    maxLevel: 13,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "", "s")
                 }
             ),
@@ -392,7 +392,7 @@ var game =
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 level => 20 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
@@ -412,7 +412,7 @@ var game =
                             }
                         }
                     },
-                    integral: level => new Decimal(3010 + (20 * level) - (game.skillTree.upgrades.cheaperMythus.level * 2)).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                    integral: level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 }
             ),
 
@@ -612,6 +612,7 @@ var game =
                 .mul(100e3)).pow(Decimal.pow(1.01, Math.max(0, level - 250))),
                 level => Decimal.pow(1.04, level),
                 {
+                    maxLevel: 10000,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2)
                 }),
             brickBoost: new BrickUpgrade(level => Decimal.pow(64, Math.pow(level, 1.1)).mul(1e12),
@@ -772,7 +773,13 @@ var game =
                         level => (10 + (level > 99 ? 5 : 0)) * level,
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "L"),
-                            integral: level => Decimal.pow(Decimal.pow(2, 5555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level)) // new Decimal(2).mul(new Decimal(5555).pow(level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[3]) * (5 / 4)) / (2 * (5 / 4)))).div(5555 * Math.log(2)),
+                            integral: level => Decimal.pow(Decimal.pow(2, 5555), Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[3]) / 2, 1.25) + game.tires.getLevelBias(level)), // new Decimal(2).mul(new Decimal(5555).pow(level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[3]) * (5 / 4)) / (2 * (5 / 4)))).div(5555 * Math.log(2)),
+                            onBuy: () => {
+                                if (game.plasticBags.level <= 1) {
+                                    game.plasticBags.currentResource = RESOURCE_TIRE;
+                                    game.plasticBags.currentCosts = new Decimal(1e100);
+                                }
+                            }
                         }),
                 ]
             ]
@@ -902,7 +909,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                 }),
             beamValue: new BeamUpgrade(
-                level => new Decimal(25 * ((level * Math.min(19, Math.max(9, level))) + 1)),
+                level => new Decimal(5 * ((level * Math.min(19, Math.max(9, level))) + 1)),
                 level => 1 + level,
                 {
                     maxLevel: () => 12 + game.skillTree.upgrades.higherBeamValueMax.level,
@@ -1004,7 +1011,7 @@ var game =
         upgrades:
         {
             beamValue: new AngelBeamUpgrade(
-                level => new Decimal(20 * (level + 1)),
+                level => new Decimal(10 * (level + 1)),
                 level => 1 + level,
                 {
                     maxLevel: 99,
@@ -1054,7 +1061,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             strength: new ReinforcedBeamUpgrade(
-                level => new Decimal(30 * (level + 1) * Math.pow(1, Math.max(1, (level*2) - 18))),
+                level => new Decimal(20 * (level + 1) * Math.pow(1, Math.max(1, (level*2) - 18))),
                 level => 2 * level,
                 {
                     maxLevel: () => { return 50 + applyUpgrade(game.plasticBags.upgrades.higherEasierReinforced) },
@@ -1104,7 +1111,7 @@ var game =
         upgrades:
         {
             beamValue: new GlitchBeamUpgrade(
-                level => new Decimal(10 * level + 20),
+                level => new Decimal(5 * level + 20),
                 level => 1 + level,
                 {
                     maxLevel: 24,
@@ -1132,7 +1139,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(100 * level + 50),
+                level => new Decimal(50 * level + 25),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,
@@ -1195,20 +1202,23 @@ var game =
                 level => new Decimal(1).add(Math.floor(level / 7)),
                 level => new Decimal(1).mul(new Decimal(Math.max(1, level * 10)).pow(level).pow(Math.max(1, (level / 40)))).round(),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).pow(2).div(14).add(level),
                 }),
             moreTires: new PlasticBagUpgrade(
                 level => new Decimal(1).add(Math.floor(level / 9)),
                 level => new Decimal(1 + Math.max(level, 1)).pow(level / 33),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x"),
+                    integral: level => new Decimal(level).pow(2).div(18).add(level),
                 }),
             higherEasierReinforced: new PlasticBagUpgrade(
                 level => new Decimal(10).add(level * 2),
                 level => level,
                 {
                     maxLevel: 50,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
+                    integral: level => new Decimal(level).add(10).mul(level),
                 }),
         }
     },
@@ -1217,7 +1227,7 @@ var game =
         amount: new Decimal(0),
         isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockScrews),
 
-        getScrews: level => new Decimal(2 + Math.floor(level / 100)),
+        getScrews: level => new Decimal(2 + Math.floor(Math.min(23, level / 100))),
 
         upgrades:
         {
@@ -1662,7 +1672,7 @@ var game =
                         game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
                         game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
                     }
-                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1e6).mul(Math.pow(1.3, level)), RESOURCE_DARKSCRAP]]),
+                }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1.3).pow(level).mul(1e6), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
                 level => new Decimal(20),
                 level => 1,
@@ -1843,53 +1853,53 @@ var game =
             return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
         },
         getStarDust: function () {
-            let amount = game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50);
-            amount *= game.magnets.add(1e200).min("1e30050").log(1e200);
-            amount *= game.fragment.amount.add(1e50).log(1e50);
-            amount *= game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500");
-            amount *= game.darkscrap.amount.add(1e20).log(1e20);
-            amount *= new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000);
-            amount += game.tires.amount.add("1e1000000").log("1e1000000");
-            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+            let amount = new Decimal(game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50));
+            amount = amount.mul(game.magnets.add(1e200).min("1e30050").log(1e200));
+            amount = amount.mul(game.fragment.amount.add(1e50).log(1e50));
+            amount = amount.mul(game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500"));
+            amount = amount.mul(game.darkscrap.amount.add(1e20).log(1e20));
+            amount = amount.mul(new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000));
+            amount = amount.add(game.tires.amount.add("1e1000000").log("1e1000000"));
+            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getAlienDust: function () {
-            let amount = game.factory.legendaryScrap.add(25).log(25);
-            amount += game.factory.steelMagnets.add(125).log(125);
-            amount += game.factory.blueBricks.add(100).log(100);
-            amount += game.factory.buckets.add(50).log(50);
-            amount += game.factory.fishingNets.add(20).log(20);
+            let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));
+            amount = amount.add(game.factory.steelMagnets.add(125).log(125));
+            amount = amount.add(game.factory.blueBricks.add(100).log(100));
+            amount = amount.add(game.factory.buckets.add(50).log(50));
+            amount = amount.add(game.factory.fishingNets.add(20).log(20));
 
             for (i in game.autos) {
-                amount += game.autos[i].level / 5;
+                amount = amount.add(game.autos[i].level / 5);
             }
             for (i in game.collectors) {
-                amount += game.collectors[i].level / 5;
+                amount = amount.add(game.collectors[i].level / 5);
             }
 
-            amount += game.solarSystem.upgrades.venus.level / 25;
-            amount += game.solarSystem.upgrades.neptune.level / 5;
-            amount += game.solarSystem.upgrades.uranus.level / 5;
-            amount += game.solarSystem.upgrades.posus.level / 100;
+            amount = amount.add(game.solarSystem.upgrades.venus.level / 25);
+            amount = amount.add(game.solarSystem.upgrades.neptune.level / 5);
+            amount = amount.add(game.solarSystem.upgrades.uranus.level / 5);
+            amount = amount.add(game.solarSystem.upgrades.posus.level / 100);
 
-            amount *= 1 + (game.solarSystem.upgrades.mythus.level / 200);
-            amount *= 1 + (game.solarSystem.upgrades.sun.level / 100);
+            amount = amount.mul(1 + (game.solarSystem.upgrades.mythus.level / 200));
+            amount = amount.mul(1 + (game.solarSystem.upgrades.sun.level / 100));
 
-            return new Decimal(Math.ceil(amount / 6)).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
+            return amount.ceil().div(6).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
-            let amount = game.stats.beamstp.div(1e4).sqrt().max(1);
+            let amount = new Decimal(game.stats.beamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.aebeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.abeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.rbeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.gbeamstp.div(1e4).sqrt().max(1)).round();
 
-            amount *= game.bricks.amount.add("1e500000").log("1e500000");
-            amount *= game.plasticBags.total.add(450).log(450);
-            amount *= game.stats.totalscrews.add(10000).log(10000);
-            amount *= game.stats.totalquests.add(250).log(250);
-            amount *= game.stats.totalmergetokens.add(10000).log(10000);
+            amount = amount.mul(game.bricks.amount.add("1e500000").log("1e500000"));
+            amount = amount.mul(game.plasticBags.total.add(450).log(450));
+            amount = amount.mul(game.stats.totalscrews.add(10000).log(10000));
+            amount = amount.mul(game.stats.totalquests.add(250).log(250));
+            amount = amount.mul(game.stats.totalmergetokens.add(10000).log(10000));
 
-            return new Decimal(amount).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         reset: function (type="default") {
             // BOOSTS
@@ -1919,7 +1929,7 @@ var game =
             game.scrap = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.scrapThisPrestige = applyUpgrade(game.supernova.cosmicUpgrades.startScrap);
             game.magnets = new Decimal(0);
-            game.glitchesCollected = 0;
+            //game.glitchesCollected = 0;
             game.highestBarrelReached = 0;
             game.highestScrapReached = new Decimal(0);
 
@@ -2106,7 +2116,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, 3),
             startBeams: new CosmicEmblemUpgrade(level => new Decimal(1),
-                level => new Decimal(20000).mul(level), {
+                level => new Decimal(10000).mul(level), {
                 maxLevel: 1,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+")
             }, 3),
@@ -2159,7 +2169,7 @@ var game =
         starDustUpgrades: {
             ara: new StarDustUpgrade(
                 level => new Decimal(4).add(2 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(47).pow(level),
+                level => new Decimal(27).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
                     integral: level => new Decimal(2).mul(level).mul(new Decimal(level).pow(2).sub(36 * level).add(6)).div(3),
@@ -2167,7 +2177,7 @@ var game =
             ),
             aries: new StarDustUpgrade(
                 level => new Decimal(9).add(6 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(123).pow(level),
+                level => new Decimal(41).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
                     integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(72 * level).add(9)),
@@ -2175,7 +2185,7 @@ var game =
             ),
             corvus: new StarDustUpgrade(
                 level => new Decimal(15).add(25 * level).mul(Math.max(1, level - 24)),
-                level => new Decimal(1).add(0.5 * level),
+                level => new Decimal(1).add(0.2 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^"),
                     integral: level => new Decimal(25).mul(new Decimal(level).pow(3).sub(new Decimal(level).pow(2).mul(36))).div(3).add(15 * level),
@@ -2232,12 +2242,15 @@ var game =
                 }
             ),
             aquila: new AlienDustUpgrade(
-                level => new Decimal(1).add(level > 99999 ? Math.pow(10, Math.floor(level / 100000)) - 1 : 0),
+                level => new Decimal(1).add(level > 99999 ? Math.pow(Math.floor(level / 100000), 10) - 1 : 0),
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
-                    afterBuy: () => updateBetterBarrels(),
-                    integral: level => new Decimal(10).pow(new Decimal(level).div(100000).add(5)).div(Math.log(10)).add(level),
+                    afterBuy: () => {
+                        game.solarSystem.upgrades.mythus.buyToTarget("hyperbuy");
+                        updateBetterBarrels()
+                    },
+                    integral: level => new Decimal(level).pow(11).div(11 * Math.pow(100000, 10)).add(level),
                 }
             ),
         },
@@ -2287,7 +2300,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(2).mul(level - 2).mul(Math.sqrt(Math.pow(Math.sin(level), 2))).sub(new Decimal(level).pow(2).sub(4 * level).sub(2).min(new Decimal(2).mul(level - 2).mul(Math.sqrt(Math.pow(Math.sin(level), 2))).div(2))).mul(Math.sqrt(Math.pow(Math.cos(level), 2))).add(45 + level).div(5),
+                    integral: level => new Decimal(level).div(2).sub(2).mul(2).mul(level).div(5).add(9),
                 }
             ),
         }

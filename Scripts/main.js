@@ -826,14 +826,14 @@ function awardGoldenBeam(value) {
     game.stats.aebeamstp = game.stats.aebeamstp.add(value);
     game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
 
-    game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
-    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
-    game.stats.abeamstp = game.stats.abeamstp.add(value * 3);
+    game.angelbeams.amount = game.angelbeams.amount.add(value.mul(3));
+    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value.mul(3));
+    game.stats.abeamstp = game.stats.abeamstp.add(value.mul(3));
     game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
 
-    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
-    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
-    game.stats.rbeamstp = game.stats.rbeamstp.add(value * 3);
+    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value.mul(3));
+    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value.mul(3));
+    game.stats.rbeamstp = game.stats.rbeamstp.add(value.mul(3));
     game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
 
     game.glitchbeams.amount = game.glitchbeams.amount.add(value);

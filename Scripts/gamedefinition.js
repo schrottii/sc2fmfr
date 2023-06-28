@@ -1339,7 +1339,7 @@ var game =
             }, ["moreFragments"]),
 
             tireValue: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e4002"), RESOURCE_BRICK]],
+                [[new Decimal("1e2103"), RESOURCE_BRICK]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["fasterAutoMerge"]),
@@ -1351,7 +1351,7 @@ var game =
             }, ["scrapBoost2"]),
 
             moreMergeTokens: new SkillTreeUpgradeFixed([
-                [[new Decimal("3000"), RESOURCE_BEAM]],
+                [[new Decimal("2000"), RESOURCE_BEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["higherAstroMax", "tireValue"]),
@@ -1387,7 +1387,8 @@ var game =
                 level => new Decimal(level).mul(100).mul(applyUpgrade(game.solarSystem.upgrades.venus)).div(applyUpgrade(game.scrapUpgrades.fasterBarrels)),
                 {
                     maxLevel: 1,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
+                    oneDep: true,
                 }, ["higherBeamValueMax", "fasterBricks"]),
 
             unlockMastery: new SkillTreeUpgradeFixed([
@@ -1548,8 +1549,8 @@ var game =
 
             // Row 3
             veryFastCrafting: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(1000), RESOURCE_MASTERYTOKEN], [new Decimal(25000), RESOURCE_AEROBEAM], [new Decimal(1000), RESOURCE_WRENCH]],
-                [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(10000), RESOURCE_BEAM], [new Decimal(200), RESOURCE_WRENCH]],
+                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(1000), RESOURCE_MASTERYTOKEN], [new Decimal(25000), RESOURCE_AEROBEAM]],
+                [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(10000), RESOURCE_BEAM]],
                     [[new Decimal("1e400"), RESOURCE_GS], [new Decimal(25), RESOURCE_FISHINGNET], [new Decimal(25), RESOURCE_PLASTICBAG]],
                     [[new Decimal("1e750"), RESOURCE_GS], [new Decimal("1e120"), RESOURCE_DARKSCRAP], [new Decimal(250000), RESOURCE_REINFORCEDBEAM]]
             ], [1, 2, 4, 8, 16], {

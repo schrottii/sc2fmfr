@@ -3120,8 +3120,8 @@ var scenes =
                     new UISkillTreePath(0.2, 2.75, 0.2, 3.05, 0.01, "skillTreePath", game.skillTree.upgrades.unlockScrapyard),
                     new UISkillTreePath(0.8, 2.75, 0.8, 3.05, 0.01, "skillTreePath", game.skillTree.upgrades.superEzUpgrader),
 
-                    new UISkillTreePath(0.2, 3.05, 0.5, 3.35, 0.01, "skillTreePath", [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
-                    new UISkillTreePath(0.8, 3.05, 0.5, 3.35, 0.01, "skillTreePath", [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
+                    new UISkillTreePath(0.2, 3.05, 0.5, 3.35, 0.01, "skillTreePath2", [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
+                    new UISkillTreePath(0.8, 3.05, 0.5, 3.35, 0.01, "skillTreePath2", [game.skillTree.upgrades.fasterBricks, game.skillTree.upgrades.higherBeamValueMax]),
 
                     new UISkillTreePath(0.5, 3.35, 0.5, 3.65, 0.01, "skillTreePath", game.skillTree.upgrades.speedBoostsFragments),
 

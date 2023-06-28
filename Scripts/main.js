@@ -1640,7 +1640,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.mergeQuests.dailyQuest == undefined) loadObj.mergeQuests.dailyQuest = new MergeQuest(12000, [5]);
             game.mergeQuests.scrapyard = loadVal(loadObj.mergeQuests.scrapyard, 1);
             game.mergeQuests.scrapyardProgress = loadVal(loadObj.mergeQuests.scrapyardProgress, 0);
-            game.mergeQuests.nextDaily = loadVal(loadObj.mergeQuests.nextDaily, "20220721");
+            game.mergeQuests.nextDaily = loadVal(loadObj.mergeQuests.nextDaily, 20220721);
             if (loadObj.mergeQuests.quests) {
                 for (let [i, q] of loadObj.mergeQuests.quests.entries()) {
                     game.mergeQuests.quests[i].barrelLvl = q.barrelLvl;
@@ -1986,7 +1986,7 @@ function loadGame(saveCode, isFromFile=false)
         game.tires.time = loadObj.tires.time;
         game.glitchesCollected = loadVal(loadObj.glitchesCollected, 0);
 
-        if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = "20220721";
+        if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = 20220721;
         game.milestones.highlighted = game.milestones.getHighestUnlocked() + 1;
         game.milestones.next = game.milestones.getNext();
 

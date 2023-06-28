@@ -260,7 +260,7 @@ var game =
             level => new Decimal(1 + 0.2 * level).mul(Decimal.pow(1.2, Math.max(0, level - 10))),
             {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                integral: level => new Decimal(5).mul(Math.pow(10, 10)).mul((Math.log(11) - Math.log(10)) * (level + 2) - 1).mul(new Decimal(11).pow(level)).div(new Decimal(Math.log(11) - Math.log(10)).pow(2).mul(Math.pow(11, 10)).mul(new Decimal(10).pow(level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
+                integral: level => new Decimal(5).mul(Math.pow(10, 10)).mul((Math.log(11) - Math.log(10)) * (level + 2) - 1).mul(new Decimal(11).pow(level)).div(new Decimal(Math.log(11) - Math.log(10)).pow(2).mul(Math.pow(11, 10)).mul(new Decimal(10).pow(level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)).max(10),
             }),
         moreGoldenScrap: new MagnetUpgrade(
             level => Utils.roundBase(new Decimal(30 + 10 * level).mul(Decimal.pow(1.07, Math.max(0, level - 20))), 1)
@@ -268,7 +268,7 @@ var game =
             level => game.supernova.cosmicUpgrades.strongerMagnetGS.level > 0 ? new Decimal(1.3).pow(level / 10).add(0.3 * level) : new Decimal(1 + 0.3 * level),
             {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                integral: level => new Decimal(10).mul(Math.pow(100, 20)).mul((Math.log(107) - Math.log(100)) * (level + 3) - 1).mul(new Decimal(107).pow(level)).div(new Decimal(Math.log(107) - Math.log(100)).pow(2).mul(Math.pow(107, 20)).mul(new Decimal(100).pow(level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
+                integral: level => new Decimal(10).mul(Math.pow(100, 20)).mul((Math.log(107) - Math.log(100)) * (level + 3) - 1).mul(new Decimal(107).pow(level)).div(new Decimal(Math.log(107) - Math.log(100)).pow(2).mul(Math.pow(107, 20)).mul(new Decimal(100).pow(level))).mul(applyUpgrade(game.solarSystem.upgrades.jupiter)).max(10),
             }),
         magnetMergeChance: new MagnetUpgrade(
             level => new Decimal(10 + level * level).mul(Decimal.pow(2, Math.max(0, level - 20)))
@@ -481,7 +481,7 @@ var game =
         mergeTokens: new Decimal(0),
         scrapyard: 1,
         scrapyardProgress: 0,
-        nextDaily: "20220721",
+        nextDaily: 20220721,
         upgrades:
         {
             scrapBoost: new MergeTokenUpgrade(level => Decimal.min(5, 1 + Math.floor(level / 4))
@@ -2260,7 +2260,7 @@ var game =
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
-                    integral: level => new Decimal(level).pow(3).mul(39).sub(new Decimal(level).pow(2).mul(1053).div(2)).add(272 * level),
+                    integral: level => new Decimal(level).pow(3).mul(39).sub(new Decimal(level).pow(2).mul(1053).div(2)).add(272 * level).max(10),
                 }
             ),
             pyxis: new FairyDustUpgrade(
@@ -2268,7 +2268,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(level).pow(3).mul(2).div(9).sub(new Decimal(level).pow(2).mul(3)).add(5 * level),
+                    integral: level => new Decimal(level).pow(3).mul(2).div(9).sub(new Decimal(level).pow(2).mul(3)).add(5 * level).max(10),
                 }
             ),
             antlia: new FairyDustUpgrade(
@@ -2276,7 +2276,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(level - 12).mul(level).mul(2 * level - 3).div(9),
+                    integral: level => new Decimal(level - 12).mul(level).mul(2 * level - 3).div(9).max(10),
                 }
             ),
             phoenix: new FairyDustUpgrade(
@@ -2284,7 +2284,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(27 * level).add(54)).div(18),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(27 * level).add(54)).div(18).max(10),
                 }
             ),
             orion: new FairyDustUpgrade(
@@ -2292,7 +2292,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(level).pow(2).sub(6 * level).add(7).mul(level),
+                    integral: level => new Decimal(level).pow(2).sub(6 * level).add(7).mul(level).max(10),
                 }
             ),
             puppis: new FairyDustUpgrade(

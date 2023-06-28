@@ -317,7 +317,7 @@ var movingItemFactory =
                 if (game.settings.lowPerformance) {
                     this.destroy();
                 }
-                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                 game.beams.amount = game.beams.amount.add(value);
                 game.stats.totalbeams = game.stats.totalbeams.add(value);
@@ -333,7 +333,7 @@ var movingItemFactory =
                 if (game.settings.lowPerformance) {
                     this.destroy();
                 }
-                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                 game.aerobeams.amount = game.aerobeams.amount.add(value);
                 game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
@@ -349,7 +349,7 @@ var movingItemFactory =
                 if (game.settings.lowPerformance) {
                     this.destroy();
                 }
-                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                 game.angelbeams.amount = game.angelbeams.amount.add(value);
                 game.stats.totalangelbeams = game.stats.totalangelbeams.add(value);
@@ -378,7 +378,7 @@ var movingItemFactory =
                     if (game.settings.lowPerformance) {
                         this.destroy();
                     }
-                    if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                    if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                     if (game.ms.includes(205) == false && game.settings.musicSelect == 2 && value > 139) {
                         game.ms.push(205);
@@ -421,7 +421,7 @@ var movingItemFactory =
                     if (game.settings.lowPerformance) {
                         this.destroy();
                     }
-                    if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                    if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                     if (this.img == images.movingItems.goldenBeam) {
                         awardGoldenBeam(value);
@@ -457,7 +457,7 @@ var movingItemFactory =
                 if (game.settings.lowPerformance) {
                     this.destroy();
                 }
-                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value * (Math.round(1 + Math.random() * 6));
+                if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                 awardGoldenBeam(value);
 

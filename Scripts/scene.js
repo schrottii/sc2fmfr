@@ -1671,7 +1671,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("reinforcedbeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<value>", getReinforcedBeamValue()).replace("<taps>", formatNumber(getReinforcedTapsNeeded())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("reinforcedbeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<value>", formatNumber(getReinforcedBeamValue())).replace("<taps>", getReinforcedTapsNeeded()).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 

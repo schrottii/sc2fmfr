@@ -364,7 +364,7 @@ class ScrapUpgrade
             this.onBuy();
             this.afterBuy();
             return true;
-        }
+        } 
         let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
         // 3.2 - new hyperbuy upgrade buying
         // Mass calculations using integrals
@@ -373,17 +373,18 @@ class ScrapUpgrade
         if (level == "hyperbuy") {
             //console.log("yup, is hyper")
             level = 10000;
-            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).lt(resource))) {
+
+            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
                 //console.log("integral mode");
                 // Keep doubling as long as possible
-                while (this.integral(this.level + level).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
                     level *= 2;
                     //console.log(level);
                 }
                 level = level / 2;
 
                 // Half, now x1.03 as long as possible. Should be fairly accurate
-                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
                     level = Math.floor(level * 1.02);
                 }
                 //console.log(level);
@@ -391,7 +392,7 @@ class ScrapUpgrade
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
                 if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
-
+                
                 resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
                 if (isNaN(resource) && !resource.gte(10)) //is resource negative

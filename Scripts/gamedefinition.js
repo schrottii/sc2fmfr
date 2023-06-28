@@ -2246,7 +2246,10 @@ var game =
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+"),
-                    afterBuy: () => updateBetterBarrels(),
+                    afterBuy: () => {
+                        game.solarSystem.upgrades.mythus.buyToTarget("hyperbuy");
+                        updateBetterBarrels()
+                    },
                     integral: level => new Decimal(level).pow(11).div(11 * Math.pow(100000, 10)).add(level),
                 }
             ),

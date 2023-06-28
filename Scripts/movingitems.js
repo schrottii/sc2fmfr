@@ -108,7 +108,8 @@ class MovingItem
                     this.acc = 0;
                 }
                 if (Math.random() > 0.9995) {
-                    movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                    if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
+                    else movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
                 }
                 if (Math.random() > 0.9999) {
                     this.img = images.movingItems.goldenBeam;

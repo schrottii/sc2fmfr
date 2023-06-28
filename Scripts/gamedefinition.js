@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.2.1 (v3.9.1)";
+const gameVersionText = "v3.2.2 (v3.9.2)";
 
 var game =
 {

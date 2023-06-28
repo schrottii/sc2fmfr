@@ -2654,6 +2654,7 @@ var scenes =
                         for (i = 0; i < 3; i++) {
                             game.mergeQuests.quests[i].active = false;
                             game.mergeQuests.quests[i].currentCooldown = 0;
+                            game.mergeQuests.quests[i].currentMerges = 0;
                         }
                     }
                 }, { quadratic: true }),

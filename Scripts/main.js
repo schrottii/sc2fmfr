@@ -634,37 +634,37 @@ function update()
 }
 
 function getBeamBaseValue() {
-    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
-        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.pyxis));
+    return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
+        .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis)).floor();
 }
 function getAeroBeamValue() {
-    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
-        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.antlia));
+    return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
+        .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia)).floor();
 }
 function getAngelBeamValue() {
-    return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.phoenix));
+    return new Decimal(applyUpgrade(game.angelbeams.upgrades.beamValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix)).floor();
 }
 function getReinforcedBeamValue() {
-    return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.orion));
+    return new Decimal(applyUpgrade(game.reinforcedbeams.upgrades.reinforce))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion));
 }
 function getGlitchBeamValue() {
-    return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.puppis));
+    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis)).floor();
 }
 
 function getReinforcedTapsNeeded() {

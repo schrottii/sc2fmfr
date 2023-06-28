@@ -2300,7 +2300,7 @@ var game =
                 level => new Decimal(1).add(0.1 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(level).div(2).sub(2).mul(2).mul(level).div(5).add(9),
+                    integral: level => new Decimal(level).div(2).sub(2).mul(2).mul(level).div(5).add(9).max(10),
                 }
             ),
         }

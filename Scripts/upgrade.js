@@ -392,7 +392,7 @@ class ScrapUpgrade
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
                 if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
-                
+
                 resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
                 if (isNaN(resource) && !resource.gte(10)) //is resource negative

@@ -596,6 +596,19 @@ var scenes =
                                 ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
                         }
+                        if (game.barrelMastery.isUnlocked()) {
+                            Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
+
+                            ctx.fillStyle = colors[C]["text"];
+                            ctx.textAlign = "left";
+                            ctx.font = (h * 0.015) + "px " + fonts.default;
+                            if (upgradingType == "mas") {
+                                ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
+                            }
+                            else {
+                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
+                            }
+                        }
                     }
                 }
 

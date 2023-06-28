@@ -1990,6 +1990,17 @@ function loadGame(saveCode, isFromFile=false)
         game.milestones.highlighted = game.milestones.getHighestUnlocked() + 1;
         game.milestones.next = game.milestones.getNext();
 
+        if (game.beams.amount == "Infinity") game.beams.amount = new Decimal(0);
+        if (game.aerobeams.amount == "Infinity") game.aerobeams.amount = new Decimal(0);
+        if (game.angelbeams.amount == "Infinity") game.angelbeams.amount = new Decimal(0);
+        if (game.reinforcedbeams.amount == "Infinity") game.reinforcedbeams.amount = new Decimal(0);
+        if (game.glitchbeams.amount == "Infinity") game.glitchbeams.amount = new Decimal(0);
+        if (game.stats.beamstp == "Infinity") game.stats.beamstp = new Decimal(0);
+        if (game.stats.aebeamstp == "Infinity") game.stats.aebeamstp = new Decimal(0);
+        if (game.stats.abeamstp == "Infinity") game.stats.abeamstp = new Decimal(0);
+        if (game.stats.rbeamstp == "Infinity") game.stats.rbeamstp = new Decimal(0);
+        if (game.stats.gbeamstp == "Infinity") game.stats.gbeamstp = new Decimal(0);
+
         // Mastery
         if (loadObj.barrelMastery !== undefined) {
             game.barrelMastery.b = loadObj.barrelMastery.b;

@@ -537,7 +537,8 @@ function update()
                             }
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
+                                    if (getGlitchBeamValue().gt(1e200)) stormQueue.push([300 * i, "glitchbeam", getGlitchBeamValue()]);
+                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
                                 }
                             }
                         }
@@ -546,7 +547,8 @@ function update()
                                 movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
                             }
                             else {
-                                movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                                if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
+                                else movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
                             }
                             renewableEnergy();
                         }
@@ -634,37 +636,37 @@ function update()
 }
 
 function getBeamBaseValue() {
-    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
-        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.pyxis));
+    return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
+        .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis)).floor();
 }
 function getAeroBeamValue() {
-    return Math.floor((applyUpgrade(game.beams.upgrades.beamValue)
-        + (applyUpgrade(game.skillTree.upgrades.xplustwo)))
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.antlia));
+    return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
+        .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia)).floor();
 }
 function getAngelBeamValue() {
-    return Math.floor(applyUpgrade(game.angelbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.phoenix));
+    return new Decimal(applyUpgrade(game.angelbeams.upgrades.beamValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix)).floor();
 }
 function getReinforcedBeamValue() {
-    return Math.floor(applyUpgrade(game.reinforcedbeams.upgrades.reinforce)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.orion));
+    return new Decimal(applyUpgrade(game.reinforcedbeams.upgrades.reinforce))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion));
 }
 function getGlitchBeamValue() {
-    return Math.floor(applyUpgrade(game.glitchbeams.upgrades.beamValue)
-        * applyUpgrade(game.tires.upgrades[3][1])
-        * (applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
-        * applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams)
-        * applyUpgrade(game.supernova.fairyDustUpgrades.puppis));
+    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis)).floor();
 }
 
 function getReinforcedTapsNeeded() {
@@ -824,14 +826,14 @@ function awardGoldenBeam(value) {
     game.stats.aebeamstp = game.stats.aebeamstp.add(value);
     game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
 
-    game.angelbeams.amount = game.angelbeams.amount.add(value * 3);
-    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value * 3);
-    game.stats.abeamstp = game.stats.abeamstp.add(value * 3);
+    game.angelbeams.amount = game.angelbeams.amount.add(value.mul(3));
+    game.stats.totalangelbeams = game.stats.totalangelbeams.add(value.mul(3));
+    game.stats.abeamstp = game.stats.abeamstp.add(value.mul(3));
     game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
 
-    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value * 3);
-    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value * 3);
-    game.stats.rbeamstp = game.stats.rbeamstp.add(value * 3);
+    game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value.mul(3));
+    game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value.mul(3));
+    game.stats.rbeamstp = game.stats.rbeamstp.add(value.mul(3));
     game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
 
     game.glitchbeams.amount = game.glitchbeams.amount.add(value);
@@ -1640,7 +1642,7 @@ function loadGame(saveCode, isFromFile=false)
             if (loadObj.mergeQuests.dailyQuest == undefined) loadObj.mergeQuests.dailyQuest = new MergeQuest(12000, [5]);
             game.mergeQuests.scrapyard = loadVal(loadObj.mergeQuests.scrapyard, 1);
             game.mergeQuests.scrapyardProgress = loadVal(loadObj.mergeQuests.scrapyardProgress, 0);
-            game.mergeQuests.nextDaily = loadVal(loadObj.mergeQuests.nextDaily, "20220721");
+            game.mergeQuests.nextDaily = loadVal(loadObj.mergeQuests.nextDaily, 20220721);
             if (loadObj.mergeQuests.quests) {
                 for (let [i, q] of loadObj.mergeQuests.quests.entries()) {
                     game.mergeQuests.quests[i].barrelLvl = q.barrelLvl;
@@ -1986,9 +1988,20 @@ function loadGame(saveCode, isFromFile=false)
         game.tires.time = loadObj.tires.time;
         game.glitchesCollected = loadVal(loadObj.glitchesCollected, 0);
 
-        if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = "20220721";
+        if (loadObj.mergeQuests.nextDaily == undefined) loadObj.mergeQuests.nextDaily = 20220721;
         game.milestones.highlighted = game.milestones.getHighestUnlocked() + 1;
         game.milestones.next = game.milestones.getNext();
+
+        if (game.beams.amount == "Infinity") game.beams.amount = new Decimal(0);
+        if (game.aerobeams.amount == "Infinity") game.aerobeams.amount = new Decimal(0);
+        if (game.angelbeams.amount == "Infinity") game.angelbeams.amount = new Decimal(0);
+        if (game.reinforcedbeams.amount == "Infinity") game.reinforcedbeams.amount = new Decimal(0);
+        if (game.glitchbeams.amount == "Infinity") game.glitchbeams.amount = new Decimal(0);
+        if (game.stats.beamstp == "Infinity") game.stats.beamstp = new Decimal(0);
+        if (game.stats.aebeamstp == "Infinity") game.stats.aebeamstp = new Decimal(0);
+        if (game.stats.abeamstp == "Infinity") game.stats.abeamstp = new Decimal(0);
+        if (game.stats.rbeamstp == "Infinity") game.stats.rbeamstp = new Decimal(0);
+        if (game.stats.gbeamstp == "Infinity") game.stats.gbeamstp = new Decimal(0);
 
         // Mastery
         if (loadObj.barrelMastery !== undefined) {

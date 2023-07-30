@@ -234,19 +234,19 @@ function getStonks(swit) {
     let worth;
     switch (swit) {
         case 0:
-            worth = (game.beams.hbv != undefined ? game.beams.hbv : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hbv != undefined ? Math.max(getBeamBaseValue(), game.beams.hbv) : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = (game.beams.haebv != undefined ? game.beams.haebv : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = (game.beams.haebv != undefined ? Math.max(getAeroBeamValue(), game.beams.haebv) : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
-            worth = (game.beams.habv != undefined ? game.beams.habv : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
+            worth = (game.beams.habv != undefined ? Math.max(getAngelBeamValue(), game.beams.habv) : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
             break;
         case 3:
-            worth = (game.beams.hrbv != undefined ? game.beams.hrbv : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hrbv != undefined ? Math.max(getReinforcedBeamValue(), game.beams.hrbv) : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 4:
-            worth = (game.beams.hgbv != undefined ? game.beams.hgbv : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hgbv != undefined ? Math.max(getGlitchBeamValue(), game.beams.hgbv) : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
     }
     return worth;

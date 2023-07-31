@@ -603,7 +603,7 @@ var scenes =
 
                 if (draggedBarrel != null) {
                     draggedBarrel.setCoord(mouseX, mouseY);
-                    draggedBarrel.render(ctx);
+                    if (!game.settings.nobarrels) draggedBarrel.render(ctx);
                 }
 
                 ctx.fillStyle = "black";

@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.2.2 (v3.9.2)";
+const gameVersionText = "v3.2.3 (v3.9.3)";
 
 var game =
 {
@@ -1871,7 +1871,7 @@ var game =
             amount = amount.add(game.factory.fishingNets.add(20).log(20));
 
             for (i in game.autos) {
-                amount = amount.add(game.autos[i].level / 5);
+                if (game.autos[i] != undefined) amount = amount.add(game.autos[i].level / 5);
             }
             for (i in game.collectors) {
                 amount = amount.add(game.collectors[i].level / 5);
@@ -2173,7 +2173,7 @@ var game =
                 level => new Decimal(27).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                    integral: level => new Decimal(2).mul(level).mul(new Decimal(level).pow(2).sub(36 * level).add(6)).div(3),
+                    integral: level => new Decimal(2).mul(level).mul(new Decimal(level).pow(2).sub(36 * level).add(6)).div(3).max(10),
                 }
             ),
             aries: new StarDustUpgrade(
@@ -2181,7 +2181,7 @@ var game =
                 level => new Decimal(41).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(72 * level).add(9)),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).mul(2).sub(72 * level).add(9)).max(10),
                 }
             ),
             corvus: new StarDustUpgrade(
@@ -2189,7 +2189,7 @@ var game =
                 level => new Decimal(1).add(0.2 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "^"),
-                    integral: level => new Decimal(25).mul(new Decimal(level).pow(3).sub(new Decimal(level).pow(2).mul(36))).div(3).add(15 * level),
+                    integral: level => new Decimal(25).mul(new Decimal(level).pow(3).sub(new Decimal(level).pow(2).mul(36))).div(3).add(15 * level).max(10),
                 }
             ),
             volans: new StarDustUpgrade(
@@ -2197,7 +2197,7 @@ var game =
                 level => new Decimal(50).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)).max(10),
                 }
             ),
             vulpecula: new StarDustUpgrade(
@@ -2205,7 +2205,7 @@ var game =
                 level => new Decimal(1).add(0.05 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.percentStandard(2, ""),
-                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)),
+                    integral: level => new Decimal(level).mul(new Decimal(level).pow(2).sub(36 * level).add(3)).max(10),
                 }
             ),
             caelum: new StarDustUpgrade(
@@ -2213,7 +2213,7 @@ var game =
                 level => new Decimal(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "+"),
-                    integral: level => new Decimal(340).mul(new Decimal(level).pow(3).sub(36 * Math.pow(level, 2))).div(3),
+                    integral: level => new Decimal(340).mul(new Decimal(level).pow(3).sub(36 * Math.pow(level, 2))).div(3).max(10),
                 }
             ),
         },
@@ -2627,6 +2627,7 @@ var game =
         FPS: 9999,
         beamTimer: false,
         coconut: false,
+        nobarrels: false,
         musicVolume: 0,
         displayFPS: false,
         hyperBuy: false,

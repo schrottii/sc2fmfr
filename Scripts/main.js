@@ -323,7 +323,7 @@ function update()
         
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
-                if (game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
+                if (game.autos[i] != undefined && game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
                     game.autos[i].time += delta;
                     if (game.autos[i].time >= Math.max(applyUpgrade(game.autos[i]), ((game.autos[i].setTime != undefined) ? game.autos[i].setTime : 0))) {
                         game.autos[i].time = 0.001;
@@ -332,7 +332,7 @@ function update()
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
                                 if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
                                 else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
-                                if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
+                                if (game.autos[i] != undefined && l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
                                     if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
@@ -709,7 +709,7 @@ function craftingMulti() {
 }
 
 function getScrews(isFallingScrew=false) {
-    return new Decimal(Math.ceil(2 * Math.log10(game.stats.totalscrews) * (isFallingScrew ? 3 : 1)));
+    return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1)));
 }
 
 function fallingMagnetWorth() {
@@ -1458,6 +1458,32 @@ function loadGame(saveCode, isFromFile=false)
             for (i = 0; i < 3; i++) {
                 game.mergeQuests.quests[i].active = false;
                 game.mergeQuests.quests[i].currentCooldown = 0;
+            }
+        }
+        else if (saveCode == "resetnova") {
+            game.stats.totalstardust = new Decimal(100);
+            game.stats.totalaliendust = new Decimal(100);
+            game.stats.totalfairydust = new Decimal(100);
+
+            game.supernova.stars = new Decimal(1);
+            game.supernova.starDust = new Decimal(100);
+            game.supernova.alienDust = new Decimal(100);
+            game.supernova.fairyDust = new Decimal(100);
+            game.supernova.cosmicEmblems = new Decimal(1);
+            for (u in game.supernova.starDustUpgrades) {
+                game.supernova.starDustUpgrades[u].level = 0;
+                game.supernova.starDustUpgrades[u].lock = false;
+            }
+            for (u in game.supernova.alienDustUpgrades) {
+                game.supernova.alienDustUpgrades[u].level = 0;
+                game.supernova.alienDustUpgrades[u].lock = false;
+            }
+            for (u in game.supernova.fairyDustUpgrades) {
+                game.supernova.fairyDustUpgrades[u].level = 0;
+                game.supernova.fairyDustUpgrades[u].lock = false;
+            }
+            for (u in game.supernova.cosmicUpgrades) {
+                game.supernova.cosmicUpgrades[u].level = 0;
             }
         }
         else {

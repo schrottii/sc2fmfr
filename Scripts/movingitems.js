@@ -379,6 +379,7 @@ var movingItemFactory =
                     if (game.settings.lowPerformance) {
                         this.destroy();
                     }
+                    value = new Decimal(value);
                     if (applyUpgrade(game.glitchbeams.upgrades.valueGlitch) / 100 > Math.random()) value = value.mul(Math.round(1 + Math.random() * 6));
 
                     if (game.ms.includes(205) == false && game.settings.musicSelect == 2 && value > 139) {

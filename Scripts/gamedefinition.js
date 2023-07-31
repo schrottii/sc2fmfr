@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.2.2 (v3.9.2)";
+const gameVersionText = "v3.2.3 (v3.9.3)";
 
 var game =
 {
@@ -1871,7 +1871,7 @@ var game =
             amount = amount.add(game.factory.fishingNets.add(20).log(20));
 
             for (i in game.autos) {
-                amount = amount.add(game.autos[i].level / 5);
+                if (game.autos[i] != undefined) amount = amount.add(game.autos[i].level / 5);
             }
             for (i in game.collectors) {
                 amount = amount.add(game.collectors[i].level / 5);
@@ -2627,6 +2627,7 @@ var game =
         FPS: 9999,
         beamTimer: false,
         coconut: false,
+        nobarrels: false,
         musicVolume: 0,
         displayFPS: false,
         hyperBuy: false,

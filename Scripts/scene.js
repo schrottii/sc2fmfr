@@ -351,7 +351,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("This world is full of bugs", w * 0.49, h - w * 0.2);
+                ctx.fillText("Evil red car", w * 0.49, h - w * 0.2);
 
             }),
         new Scene("Barrels",

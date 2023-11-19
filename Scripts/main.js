@@ -240,7 +240,7 @@ function update()
 
             if (game.ms.includes(215) == false && cogReward > 999) {
                 game.ms.push(215);
-                GameNotification.create(new MilestoneNotificaion(216));
+                GameNotification.create(new MilestoneNotification(216));
             }
 
 
@@ -975,7 +975,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
                    game.ms.push(86);
-                   GameNotification.create(new MilestoneNotificaion(87));
+                   GameNotification.create(new MilestoneNotification(87));
                 }
             }
     }

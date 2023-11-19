@@ -574,7 +574,7 @@ class UIUpgrade3 extends UIGroup {
                     if (parseInt(att) > 0) upg.setTime = att;
                     if (game.ms.includes(207) == false) {
                         game.ms.push(207);
-                        GameNotification.create(new MilestoneNotificaion(208));
+                        GameNotification.create(new MilestoneNotification(208));
                     }
                 }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
             ], isVisible);

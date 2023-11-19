@@ -252,6 +252,7 @@ var images =
         aliendustupgrades: loadImage("Images/Scenes/aliendustupgrades.png"),
         fairydustupgrades: loadImage("Images/Scenes/fairydustupgrades.png"),
         cosmicupgrades: loadImage("Images/Scenes/cosmicupgrades.png"),
+        unlocks: loadImage("Images/Scenes/unlocks.png"),
     },
     solarSystem:
     {

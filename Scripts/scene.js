@@ -419,7 +419,7 @@ var scenes =
                 }),
                 new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
-                        isVisible: () => game.highestBarrelReached >= 100 && !timeMode,
+                        isVisible: () => game.highestBarrelReached >= 99 && !timeMode,
                         quadraticMin: true
                     }),
                 new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
@@ -761,7 +761,7 @@ var scenes =
 
                             if (game.ms.includes(212) == false) {
                                 game.ms.push(212);
-                                GameNotification.create(new MilestoneNotificaion(213));
+                                GameNotification.create(new MilestoneNotification(213));
                             }
                         }
                     }
@@ -946,7 +946,7 @@ var scenes =
                         if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
                             if (game.ms.includes(120) == false) {
                                 game.ms.push(120);
-                                GameNotification.create(new MilestoneNotificaion(121));
+                                GameNotification.create(new MilestoneNotification(121));
                             }
                         }
                         game.settings.barrelGalleryPage = Math.floor((GoTo - 1) / 20);
@@ -1080,9 +1080,6 @@ var scenes =
                 new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.daily, () => Scene.loadScene("Daily"), {
                     quadratic: true,
                     isVisible: () => game.highestBarrelReached >= 1000
-                }),
-                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.statistics, () => Scene.loadScene("StatCompare"), {
-                    quadratic: true
                 }),
                 new UIButton(0.7, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
                     quadratic: true,
@@ -1972,7 +1969,7 @@ var scenes =
 
                     if (game.ms.includes(232) == false) {
                         game.ms.push(232);
-                        GameNotification.create(new MilestoneNotificaion(233));
+                        GameNotification.create(new MilestoneNotification(233));
                     }
                 }, { quadratic: true }),
                 new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
@@ -2014,7 +2011,7 @@ var scenes =
 
                                 if (game.ms.includes(230) == false) {
                                     game.ms.push(230);
-                                    GameNotification.create(new MilestoneNotificaion(231));
+                                    GameNotification.create(new MilestoneNotification(231));
                                 }
                             }
                         }
@@ -2095,7 +2092,7 @@ var scenes =
 
                                 if (game.ms.includes(231) == false) {
                                     game.ms.push(231);
-                                    GameNotification.create(new MilestoneNotificaion(232));
+                                    GameNotification.create(new MilestoneNotification(232));
                                 }
                             }
                             else {
@@ -2617,7 +2614,7 @@ var scenes =
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"))
                     if (game.ms.includes(206) == false) {
                         game.ms.push(206);
-                        GameNotification.create(new MilestoneNotificaion(207));
+                        GameNotification.create(new MilestoneNotification(207));
                     }
                 }, { quadratic: true }),
                 new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
@@ -2804,7 +2801,13 @@ var scenes =
                     bold: 900,
                     borderSize: 0.003,
                     font: fonts.title
-                })
+                }),
+                new UIButton(0.35, 0.93, 0.1, 0.1, images.scenes.statistics, () => Scene.loadScene("StatCompare"), {
+                    quadratic: true
+                }),
+                new UIButton(0.65, 0.93, 0.1, 0.1, images.scenes.unlocks, () => Scene.loadScene("StatCompare"), {
+                    quadratic: true
+                }),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];

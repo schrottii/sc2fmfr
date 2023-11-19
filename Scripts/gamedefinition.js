@@ -142,7 +142,7 @@ var game =
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
                             if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
                                 game.ms.push(85);
-                                GameNotification.create(new MilestoneNotificaion(86));
+                                GameNotification.create(new MilestoneNotification(86));
                             }
                         }
                     }
@@ -180,7 +180,7 @@ var game =
                                     && barrels[11].level.toFixed(0) == barrels[15].level.toFixed(0)
                                     && barrels[15].level.toFixed(0) == barrels[19].level.toFixed(0)) {
                                     game.ms.push(87);
-                                    GameNotification.create(new MilestoneNotificaion(88));
+                                    GameNotification.create(new MilestoneNotification(88));
                                     trophyProgress = 0;
                                 }
                             }
@@ -195,7 +195,7 @@ var game =
                                 || ((barrels[3].level.toFixed(0) == 343 || barrels[3].level.toFixed(0) == 344) && barrels[0].level.toFixed(0) == 353)
                             ) {
                                 game.ms.push(88);
-                                GameNotification.create(new MilestoneNotificaion(89));
+                                GameNotification.create(new MilestoneNotification(89));
                             }
                         }
                     }
@@ -2069,6 +2069,8 @@ var game =
             for (let q of game.mergeQuests.quests) {
                 q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);
             }
+            game.mergeQuests.dailyQuest.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
+            game.mergeQuests.dailyQuest.currentMerges = 0;
 
             updateBetterBarrels();
             game.settings.barrelGalleryPage = 0;

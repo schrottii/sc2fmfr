@@ -106,7 +106,7 @@ class MasteryLevelUpNotification extends GameNotification
     }
 }
 
-class MilestoneNotificaion extends GameNotification
+class MilestoneNotification extends GameNotification
 {
     constructor(milestone)
     {

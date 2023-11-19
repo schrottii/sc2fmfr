@@ -234,19 +234,19 @@ function getStonks(swit) {
     let worth;
     switch (swit) {
         case 0:
-            worth = (game.beams.hbv != undefined ? game.beams.hbv : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hbv != undefined ? Math.max(getBeamBaseValue(), game.beams.hbv) : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = (game.beams.haebv != undefined ? game.beams.haebv : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = (game.beams.haebv != undefined ? Math.max(getAeroBeamValue(), game.beams.haebv) : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
-            worth = (game.beams.habv != undefined ? game.beams.habv : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
+            worth = (game.beams.habv != undefined ? Math.max(getAngelBeamValue(), game.beams.habv) : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
             break;
         case 3:
-            worth = (game.beams.hrbv != undefined ? game.beams.hrbv : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hrbv != undefined ? Math.max(getReinforcedBeamValue(), game.beams.hrbv) : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 4:
-            worth = (game.beams.hgbv != undefined ? game.beams.hgbv : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = (game.beams.hgbv != undefined ? Math.max(getGlitchBeamValue(), game.beams.hgbv) : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
     }
     return worth;
@@ -351,7 +351,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("Bonus update 3", w * 0.49, h - w * 0.2);
+                ctx.fillText("This world is full of bugs", w * 0.49, h - w * 0.2);
 
             }),
         new Scene("Barrels",
@@ -574,9 +574,11 @@ var scenes =
 
                     if (barrels[i] !== undefined) {
                         barrels[i].setCoord(x, y);
-                        barrels[i].render(ctx);
                     }
                     if (!game.settings.nobarrels) {
+                        if (barrels[i] !== undefined) {
+                            barrels[i].render(ctx);
+                        }
                         if (barrels[i] === undefined && tempDrawnBarrels[i] === undefined || (barrels[i] !== undefined && barrels[i].scale < 1) && tempDrawnBarrels[i] === undefined) {
                             ctx.drawImage(images.barrelTemplate, x - barrelSize / 2, y - barrelSize / 2, barrelSize, barrelSize);
                         }
@@ -596,25 +598,12 @@ var scenes =
                                 ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
                         }
-                        if (game.barrelMastery.isUnlocked()) {
-                            Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
-
-                            ctx.fillStyle = colors[C]["text"];
-                            ctx.textAlign = "left";
-                            ctx.font = (h * 0.015) + "px " + fonts.default;
-                            if (upgradingType == "mas") {
-                                ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
-                            }
-                            else {
-                                ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
-                            }
-                        }
                     }
                 }
 
                 if (draggedBarrel != null) {
                     draggedBarrel.setCoord(mouseX, mouseY);
-                    draggedBarrel.render(ctx);
+                    if (!game.settings.nobarrels) draggedBarrel.render(ctx);
                 }
 
                 ctx.fillStyle = "black";
@@ -1115,7 +1104,7 @@ var scenes =
                 new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
 
                 new UIPlanet(0.5, 0.5, () => tt("planet1"), game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
-                new UIPlanet(0.7, 0.7, () => tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
+                new UIPlanet(0.6, 0.7, () => tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
                 new UIPlanet(0.3, 0.325, () => tt("planet3"), game.solarSystem.upgrades.venus, "$images.scrap$", images.solarSystem.venus, 0.055),
                 new UIPlanet(0.65, 0.2, () => tt("planet4"), game.solarSystem.upgrades.earth, "$images.goldenScrap$", images.solarSystem.earth, 0.055),
                 new UIPlanet(0.2, 0.825, () => tt("planet5").replace("<amount>", formatNumber(fallingMagnetWorth())), game.solarSystem.upgrades.mars, "$images.fragment$", images.solarSystem.mars, 0.04, () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS), //whoever did not put a , there before I hate U!!!
@@ -1123,12 +1112,12 @@ var scenes =
                 new UIButton(0.6, 0.5, 0.05, 0.05, images.buttonMaxAll, () => maxSunUpgrades(),
                     {
                         quadratic: true,
-                        isVisible: () => game.solarSystem.upgrades.sun.level >= 250 && game.solarSystem.upgrades.sun.level < game.solarSystem.upgrades.sun.maxLevel
+                        isVisible: () => game.solarSystem.upgrades.sun.level >= 100 && game.solarSystem.upgrades.sun.level < game.solarSystem.upgrades.sun.maxLevel && !game.settings.hyperBuy
                     }),
-                new UIButton(0.8, 0.7, 0.05, 0.05, images.buttonMaxAll, () => maxMercuryUpgrades(),
+                new UIButton(0.7, 0.7, 0.05, 0.05, images.buttonMaxAll, () => maxMercuryUpgrades(),
                     {
                         quadratic: true,
-                        isVisible: () => game.solarSystem.upgrades.mercury.level >= 100 && game.solarSystem.upgrades.mercury.level < game.solarSystem.upgrades.mercury.maxLevel
+                        isVisible: () => game.solarSystem.upgrades.mercury.level >= 50 && game.solarSystem.upgrades.mercury.level < game.solarSystem.upgrades.mercury.maxLevel && !game.settings.hyperBuy
                     }),
             ],
             function () {
@@ -3374,11 +3363,11 @@ var scenes =
                     new UIRect(0.5, 1.7, 1, 0.3, "table"),
                     new UIRect(0.5, 2.0, 1, 0.3, "table2"),
 
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.moreMergeTokens, "em1", 0.2, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.autoBuyerMax, images.upgrades.unlockAutos, "em1", 0.2, 0.45, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.hyperBuy, images.checkbox.hyperbuy.on, "em14", 0.5, 0.45, "table"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.upgrades.goldenScrapBoost, "em3", 0.8, 0.45, "table"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepEZ, images.ezUpgrade, "em3", 0.8, 0.45, "table"),
 
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreScrap, "em4", 0.2, 0.75, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.fasterMergeQuests, images.upgrades.moreMergeTokens, "em4", 0.2, 0.75, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.doubleBeams, images.upgrades.beamValue, "em5", 0.5, 0.75, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.strongerMagnetGS, images.upgrades.goldenScrapBoost, "em2", 0.8, 0.75, "table2"),
 
@@ -3394,8 +3383,8 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreScrapMax, images.upgrades.moreScrap, "em6", 0.5, 1.65, "table"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.mythusMultiBuy, images.upgrades.cheaperMythus, "em15", 0.8, 1.65, "table"),
 
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreDust, images.upgrades.efficientenergy, "em16", 0.2, 1.95, "table2"),
-                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoCollectors, images.upgrades.unlockAutos, "em17", 0.5, 1.95, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreDust, images.scenes.fairydustupgrades, "em16", 0.2, 1.95, "table2"),
+                    new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoCollectors, images.upgrades.unlockAutoCollectors, "em17", 0.5, 1.95, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBricks, images.upgrades.brickBoost, "em18", 0.8, 1.95, "table2"),
                 ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.15 })
 

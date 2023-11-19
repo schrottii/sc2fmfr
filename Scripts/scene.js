@@ -1077,10 +1077,6 @@ var scenes =
                     quadratic: true,
                     isVisible: game.wrenches.isUnlocked
                 }),
-                new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.daily, () => Scene.loadScene("Daily"), {
-                    quadratic: true,
-                    isVisible: () => game.highestBarrelReached >= 1000
-                }),
                 new UIButton(0.7, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
                     quadratic: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags)
@@ -2634,18 +2630,22 @@ var scenes =
             }),
         new Scene("MergeQuests",
             [
+                new UIText(() => tt("Merge Quests"), 0.5, 0.033, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
                 new UIButton(0.1, 0.125, 0.07, 0.07, images.scenes.scrapyard, () => Scene.loadScene("Scrapyard"), {
                     isVisible: () => game.skillTree.upgrades.unlockScrapyard.isUnlocked(),
                     quadratic: true,
                 }),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.scrapBoost, images.upgrades.moreScrap, 0.63, "mq1"),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.goldenScrapBoost, images.upgrades.goldenScrapBoost, 0.73, "mq2", "table2"),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.83, "mq3"),
-                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, 0.93, "mq4", "table2", () => applyUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet)),
-
-
-                new UIButton(0.9, 0.105, 0.05, 0.05, images.buttonReset, () => {
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.scenes.daily, () => Scene.loadScene("Daily"), {
+                    quadratic: true,
+                    isVisible: () => game.highestBarrelReached >= 1000
+                }),
+                new UIButton(0.9, 0.125, 0.07, 0.07, images.buttonReset, () => {
                     if (confirm("Do you really want to reset all 3 quests?")) {
                         for (i = 0; i < 3; i++) {
                             game.mergeQuests.quests[i].active = false;
@@ -2654,6 +2654,11 @@ var scenes =
                         }
                     }
                 }, { quadratic: true }),
+
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.scrapBoost, images.upgrades.moreScrap, 0.63, "mq1"),
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.goldenScrapBoost, images.upgrades.goldenScrapBoost, 0.73, "mq2", "table2"),
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.83, "mq3"),
+                new UIMergeTokenUpgrade(game.mergeQuests.upgrades.fallingMagnetValue, images.upgrades.fasterFallingMagnets, 0.93, "mq4", "table2", () => applyUpgrade(game.skillTree.upgrades.mergeQuestUpgFallingMagnet)),
 
                 new UIButton(0.84, 0.255, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.quests[0].active) {
@@ -2687,7 +2692,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                drawCurrencyBar(game.mergeQuests.mergeTokens, images.mergeToken, -h * 0.125);
+                drawCurrencyBar(game.mergeQuests.mergeTokens, images.mergeToken, -h * 0.1);
 
                 for (let [idx, q] of game.mergeQuests.quests.entries()) {
                     q.render(ctx, w * 0.15, h * (0.225 + 0.13 * idx));

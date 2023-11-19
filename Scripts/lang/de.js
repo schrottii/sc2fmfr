@@ -162,6 +162,7 @@ const trans_de = {
     masterylvlup: "Mastery Level Up!",
 
     // QUESTS
+    "Merge Quests": "Merge Quests",
     nextquest: "Nächste Quest in",
     questcomplete: "Merge Quest Fertig!",
     confirm: "Bestätigen",
@@ -625,7 +626,7 @@ const trans_de = {
         "058": ["Ist das...", "Habe <amount> Magnete gleichzeitig"],
         "059": ["Die besten Tonnen III", "Verbessere Bessere Tonnen auf 1000"],
         "060": ["Warp 9.9", "Tonnen erscheinen schneller als 5ms"],
-        "061": ["Frank's Rekord", "Habe 1e6 Fragmente gleichzeitig"],
+        "061": ["Schrottii's Rekord", "Habe 1e6 Fragmente gleichzeitig"],
         "062": ["Die besten Tonnen IV", "Verbessere Bessere Tonnen auf 2000"],
         "063": ["Meister Mastery", "Erreiche Merge Mastery Level 500"],
         "064": ["TISCHZERSCHMETTERER!!!", "Erreiche <amount> Reifen"],

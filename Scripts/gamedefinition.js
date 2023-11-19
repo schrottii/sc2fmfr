@@ -2389,7 +2389,7 @@ var game =
                 new Milestone(103, "Magnet Man get Sixpack", 62, () => "Triple the falling magnet value!", () => game.aerobeams.upgrades.betterFallingMagnets.level > 19),
                 new Milestone(59, "Best Barrels III", 10, "Reach Better Barrels Upgrade Level 1000", () => game.scrapUpgrades.betterBarrels.level >= 1000),
                 new Milestone(60, "Warp 9.9", 28, "Barrels spawn faster than 5ms", () => applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber() < 0.005, [], "#0092ff"),
-                new Milestone(61, "Going for Frank's record", 39, "Have 1e6 fragments at once", () => game.fragment.amount.gte(999999)),
+                new Milestone(61, "Going for Schrottii's record", 39, "Have 1e6 fragments at once", () => game.fragment.amount.gte(999999)),
                 new Milestone(100, "Great Northern Beans", 52, () => "Hoard quite many Steel Beams", () => game.beams.amount > 499),
                 new Milestone(62, "Best Barrels IV", 10, "Reach Better Barrels Upgrade Level 2000", () => game.scrapUpgrades.betterBarrels.level >= 2000),
                 new Milestone(97, "Beam Thunder", 56, () => "Increase the storm chance to 5%", () => game.beams.upgrades.beamStormChance.level > 49),

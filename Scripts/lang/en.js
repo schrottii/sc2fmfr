@@ -162,6 +162,7 @@ const trans_en = {
     masterylvlup: "Mastery Level Up!",
 
     // QUESTS
+    "Merge Quests": "Merge Quests",
     nextquest: "Next Quest in",
     questcomplete: "Merge Quest Complete!",
     confirm: "Confirm",

@@ -388,7 +388,7 @@ var scenes =
                 }),
                 new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
                     quadraticMin: true,
-                    isVisible: game.skillTree.isUnlocked,
+                    isVisible: () => game.skillTree.isUnlocked,
                 }),
                 new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
                     {
@@ -404,9 +404,9 @@ var scenes =
 
                 // MIDDLE row
                 // magnets, settings, achievements, fragments, auto merge, auto convert
-                new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
-                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
-                new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
+                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
                 new UIButton(0.575, 0.9, 0.05, 0.05, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
                         isVisible: () => game.highestBarrelReached >= 99 && !timeMode,
@@ -462,7 +462,7 @@ var scenes =
                 // Scrap Upgrades
                 // Better Barrels
                 new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.1, 0.76, 0.035, "black", { bold: true }),
-                new UIText(() => tt("Better Barrels") + " (" + formatNumber(game.scrapUpgrades.betterBarrels.level) + "/" + formatNumber(game.scrapUpgrades.betterBarrels.maxLevel) + "):\n" + tt("bbdesc"), 0.2, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
+                new UIText(() => tt("Better Barrels") + " (" + formatNumber(game.scrapUpgrades.betterBarrels.level) + "/" + formatNumber(game.scrapUpgrades.betterBarrels.maxLevel) + "):\n" + tt("bbdesc"), 0.175, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
                     game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.betterBarrels.buy();
                 }, {
@@ -472,7 +472,7 @@ var scenes =
 
                 // Faster Barrels
                 new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.1, 0.84, 0.035, "black", { bold: true }),
-                new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.2, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
+                new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.175, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
                     game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.fasterBarrels.buy();
                 }, {
@@ -934,13 +934,13 @@ var scenes =
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.masterytoggle, () => {
                     if (barrelsDisplayMode == 0) barrelsDisplayMode = 1;
                     else barrelsDisplayMode = 0;
-                }, { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
+                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
                 new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery"),
-                    { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
+                    { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
 
                 new UIButton(0.25, 0.15, 0.07, 0.07, images.upgrades.betterBarrels, function () {
                     game.scrapUpgrades.betterBarrels.buy();
-                }, { quadratic: true, isVisible: game.barrelMastery.isUnlocked }),
+                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
                 new UIButton(0.25, 0.9, 0.1, 0.1, images.arrows.left, () => game.settings.barrelGalleryPage = Math.max(0, game.settings.barrelGalleryPage - 1),
                     {
                         quadratic: true,
@@ -1069,33 +1069,33 @@ var scenes =
 
                 new UIButton(0.9, 0.2, 0.07, 0.07, images.scenes.mergeQuests, () => Scene.loadScene("MergeQuests"), {
                     quadratic: true,
-                    isVisible: game.mergeQuests.isUnlocked
+                    isVisible: () => game.mergeQuests.isUnlocked
                 }),
                 new UIButton(0.9, 0.1, 0.07, 0.07, images.scenes.mergeMastery, () => Scene.loadScene("MergeMastery"), {
                     quadratic: true,
-                    isVisible: game.mergeMastery.isUnlocked
+                    isVisible: () => game.mergeMastery.isUnlocked
                 }),
                 new UIButton(0.9, 0.3, 0.07, 0.07, images.scenes.bricks, () => Scene.loadScene("Bricks"), {
                     quadratic: true,
-                    isVisible: game.bricks.isUnlocked
+                    isVisible: () => game.bricks.isUnlocked
                 }),
                 new UIButton(0.9, 0.4, 0.07, 0.07, images.scenes.tires, () => Scene.loadScene("Tires"), {
                     quadratic: true,
-                    isVisible: game.tires.isUnlocked
+                    isVisible: () => game.tires.isUnlocked
                 }),
-                new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
+                new UIButton(0.9, 0.5, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
                     quadratic: true,
-                    isVisible: game.wrenches.isUnlocked
+                    isVisible: () => game.wrenches.isUnlocked
                 }),
-                new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
+                new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
                     quadratic: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags)
                 }),
-                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("Screws"), {
+                new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("Screws"), {
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
-                new UIButton(0.5, 0.9, 0.07, 0.07, images.scenes.gifts, () => Scene.loadScene("Gifts"), {
+                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.gifts, () => Scene.loadScene("Gifts"), {
                     quadratic: true,
                     isVisible: () => game.gifts.isUnlocked()
                 }),
@@ -1854,7 +1854,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("MergeQuests"), { quadratic: true }),
 
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.scenes.timemode, () => Scene.loadScene("TimeMode"), {
                     quadratic: true,
@@ -2301,7 +2301,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
 
 
                 new UIButton(0.2, 0.95, 0.3, 0.07, images.buttonEmpty, () => {
@@ -3068,7 +3068,7 @@ var scenes =
             }),
         new Scene("SkillTree",
             [
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), {quadratic: true}),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), {quadratic: true}),
                 new UIText(() => tt("skilltree"), 0.5, 0.09, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
@@ -3132,8 +3132,8 @@ var scenes =
 
                     new UISkillTreePath(0.5, 3.35, 0.5, 3.65, 0.01, "skillTreePath", game.skillTree.upgrades.speedBoostsFragments),
 
-                    new UISkillTreePath(0.5, 3.65, 0.2, 3.95, 0.01, "skillTreePath", game.skillTree.upgrades.unlockMastery),
-                    new UISkillTreePath(0.5, 3.65, 0.8, 3.95, 0.01, "skillTreePath", game.skillTree.upgrades.unlockMastery),
+                    new UISkillTreePath(0.5, 3.65, 0.2, 3.95, 0.01, "skillTreePath", game.skillTree.upgrades.unlockMastery && game.skillTree.upgrades.speedBoostsFragments),
+                    new UISkillTreePath(0.5, 3.65, 0.8, 3.95, 0.01, "skillTreePath", game.skillTree.upgrades.unlockMastery && game.skillTree.upgrades.speedBoostsFragments),
 
                     new UISkillTreePath(0.2, 3.95, 0.2, 4.25, 0.01, "skillTreePath", game.skillTree.upgrades.efficientEnergy),
                     new UISkillTreePath(0.8, 3.95, 0.8, 4.25, 0.01, "skillTreePath", game.skillTree.upgrades.fourthMaxLevel),

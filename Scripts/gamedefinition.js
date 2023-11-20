@@ -1401,7 +1401,7 @@ var game =
                 [[new Decimal(15000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, ["unlockMastery"]),
+            }, ["unlockMastery", "speedBoostsFragments"]),
 
             renewableEnergy: new SkillTreeUpgradeFixed([
                 [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
@@ -1413,7 +1413,7 @@ var game =
                 [[new Decimal(2729), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
-            }, ["unlockMastery"]),
+            }, ["unlockMastery", "speedBoostsFragments"]),
 
             unlockBeamConverter: new SkillTreeUpgradeFixed([
                 [[new Decimal(1000), RESOURCE_BEAM], [new Decimal(1000), RESOURCE_AEROBEAM], [new Decimal(10000), RESOURCE_ANGELBEAM], [new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(1000), RESOURCE_GLITCHBEAM],],

@@ -356,39 +356,8 @@ var scenes =
             }),
         new Scene("Barrels",
             [
-                new UIButton(0.125, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
-                    game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.betterBarrels.buy();
-                }, {
-                    isVisible: () => !timeMode,
-                    quadratic: true
-                }),
-                new UIButton(0.875, 0.73, 0.05, 0.05, images.ezUpgrade, function () {
-                    let GoTo = prompt(tt("barrelgoto"));
-                    GoTo = Math.round(GoTo - 1);
-                    if (GoTo < 0) {
-                        alert(tt("Too low!"));
-                        return;
-                    }
-                    if (GoTo < game.scrapUpgrades.betterBarrels.maxLevel) {
-                        game.scrapUpgrades.betterBarrels.buyToTarget(GoTo);
-                        updateUpgradingBarrelFromBB();
-                    }
-                    else {
-                        alert(tt("Too high!"));
-                    }
-                }, {
-                    isVisible: () => (game.skillTree.upgrades.superEzUpgrader.level > 0 || game.supernova.cosmicUpgrades.keepEZ.level > 0) && !timeMode,
-                    quadratic: true
-                }),
-                new UIButton(0.125, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
-                    game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.fasterBarrels.buy();
-                }, {
-                    isVisible: () => !timeMode,
-                    quadratic: true
-                }),
-
-
-
+                // BOTTOM row
+                // 2nd dim, barrels, beams, factory, tree, prestige, solar system
                 new UIButton(0, 0.97, 0.15, 0.06, images.scenes.dimension, () => Scene.loadScene("SecondDimension"), {
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION && !timeMode,
                     quadraticMin: true, anchor: [0, 0.5]
@@ -417,11 +386,10 @@ var scenes =
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY && !timeMode,
                     quadraticMin: true
                 }),
-                new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.fragment, () => Scene.loadScene("Fragment"),
-                    {
-                        isVisible: () => game.highestBarrelReached >= 99 && !timeMode,
-                        quadraticMin: true
-                    }),
+                new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
+                    quadraticMin: true,
+                    isVisible: game.skillTree.isUnlocked,
+                }),
                 new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
                     {
                         isVisible: () => game.highestScrapReached.gte(1e15) && !timeMode,
@@ -434,14 +402,15 @@ var scenes =
                         anchor: [1, 0.5]
                     }),
 
-
+                // MIDDLE row
+                // magnets, settings, achievements, fragments, auto merge, auto convert
                 new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
                 new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
                 new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
-                new UIButton(0.575, 0.9, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
+                new UIButton(0.575, 0.9, 0.05, 0.05, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
-                        quadratic: true,
-                        isVisible: () => game.solarSystem.upgrades.earth.level >= 1 && !timeMode
+                        isVisible: () => game.highestBarrelReached >= 99 && !timeMode,
+                        quadratic: true
                     }),
                 new UICheckbox(0.725, 0.9, 0.05, 0.05, "game.settings.autoMerge", {
                     isVisible: () => game.ms.includes(7) && !timeMode,
@@ -456,6 +425,7 @@ var scenes =
                     on: images.checkbox.autoConvert.on,
                 }),
 
+                // Hyper Buy 1 2 3
                 new UICheckbox(0.575, 0.825, 0.05, 0.05, "game.settings.hyperBuy", {
                     isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
                     quadratic: true,
@@ -489,11 +459,55 @@ var scenes =
                     }
                 }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
 
-                new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.125, 0.76, 0.035, "black", { bold: true }),
-                new UIText(() => tt("Better Barrels") + " (" + formatNumber(game.scrapUpgrades.betterBarrels.level) + "/" + formatNumber(game.scrapUpgrades.betterBarrels.maxLevel) + "):\n" + tt("bbdesc"), 0.225, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
-                new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.125, 0.84, 0.035, "black", { bold: true }),
-                new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.225, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
+                // Scrap Upgrades
+                // Better Barrels
+                new UIText(() => game.scrapUpgrades.betterBarrels.getPriceDisplay(), 0.1, 0.76, 0.035, "black", { bold: true }),
+                new UIText(() => tt("Better Barrels") + " (" + formatNumber(game.scrapUpgrades.betterBarrels.level) + "/" + formatNumber(game.scrapUpgrades.betterBarrels.maxLevel) + "):\n" + tt("bbdesc"), 0.2, 0.74, 0.03, "black", { halign: "left", valign: "middle" }),
+                new UIButton(0.1, 0.73, 0.05, 0.05, images.upgrades.betterBarrels, function () {
+                    game.settings.hyperBuy ? game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.betterBarrels.buy();
+                }, {
+                    isVisible: () => !timeMode,
+                    quadratic: true
+                }),
 
+                // Faster Barrels
+                new UIText(() => game.scrapUpgrades.fasterBarrels.getPriceDisplay(), 0.1, 0.84, 0.035, "black", { bold: true }),
+                new UIText(() => tt("Faster Barrels") + ":\n" + tt("fbdesc") + "\n" + game.scrapUpgrades.fasterBarrels.getEffectDisplay(), 0.2, 0.82, 0.03, "black", { halign: "left", valign: "middle" }),
+                new UIButton(0.1, 0.81, 0.05, 0.05, images.upgrades.fasterBarrels, function () {
+                    game.settings.hyperBuy ? game.scrapUpgrades.fasterBarrels.buyToTarget("hyperbuy", false) : game.scrapUpgrades.fasterBarrels.buy();
+                }, {
+                    isVisible: () => !timeMode,
+                    quadratic: true
+                }),
+
+                // Max
+                new UIButton(0.725, 0.74, 0.05, 0.05, images.buttonMaxAll, () => maxScrapUpgrades(),
+                    {
+                        quadratic: true,
+                        isVisible: () => game.solarSystem.upgrades.earth.level >= 1 && !timeMode
+                    }),
+
+                // EZ Upgrade
+                new UIButton(0.875, 0.74, 0.05, 0.05, images.ezUpgrade, function () {
+                    let GoTo = prompt(tt("barrelgoto"));
+                    GoTo = Math.round(GoTo - 1);
+                    if (GoTo < 0) {
+                        alert(tt("Too low!"));
+                        return;
+                    }
+                    if (GoTo < game.scrapUpgrades.betterBarrels.maxLevel) {
+                        game.scrapUpgrades.betterBarrels.buyToTarget(GoTo);
+                        updateUpgradingBarrelFromBB();
+                    }
+                    else {
+                        alert(tt("Too high!"));
+                    }
+                }, {
+                    isVisible: () => (game.skillTree.upgrades.superEzUpgrader.level > 0 || game.supernova.cosmicUpgrades.keepEZ.level > 0) && !timeMode,
+                    quadratic: true
+                }),
+
+                // Income, beam timer, storm timer
                 new UIText(() => {
                     if (game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
                     else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
@@ -1069,19 +1083,15 @@ var scenes =
                     quadratic: true,
                     isVisible: game.tires.isUnlocked
                 }),
-                new UIButton(0.9, 0.5, 0.07, 0.07, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
-                    quadratic: true,
-                    isVisible: game.skillTree.isUnlocked
-                }),
                 new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
                     quadratic: true,
                     isVisible: game.wrenches.isUnlocked
                 }),
-                new UIButton(0.7, 0.9, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
+                new UIButton(0.9, 0.7, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
                     quadratic: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags)
                 }),
-                new UIButton(0.7, 0.8, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("Screws"), {
+                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.screws, () => Scene.loadScene("Screws"), {
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),

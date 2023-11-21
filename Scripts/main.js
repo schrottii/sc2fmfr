@@ -997,16 +997,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         game.tires.onMerge();
     }
 
-    for (i in game.mergeQuests.quests) {
-        if (game.mergeQuests.quests[i].currentMerges > 0) {
-            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
-            upgradingType = i;
-        }
-    }
-    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
-        upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
-        upgradingType = i;
-    }
+    updateUpgradingBarrelFromBB();
 
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
 
@@ -1622,6 +1613,7 @@ function loadGame(saveCode, isFromFile=false)
                 else {
                     game.stats[k] = new Decimal(0);
                 }
+                if (isNaN(game.stats[k])) game.stats[k] = new Decimal(0);
             });
         }
         else {
@@ -2251,6 +2243,11 @@ function updateUpgradingBarrelFromBB(plus=0) {
             upgradingType = i;
         }
     }
+    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
+        upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
+        upgradingType = "day";
+    }
+
     if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + plus;
 }
 

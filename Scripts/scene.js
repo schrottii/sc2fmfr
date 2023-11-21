@@ -608,6 +608,9 @@ var scenes =
                             if (upgradingType == "mas") {
                                 ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
                             }
+                            else if (upgradingType == "day") {
+                                ctx.fillText(game.mergeQuests.dailyQuest.currentMerges + "/" + game.mergeQuests.dailyQuest.getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
+                            }
                             else {
                                 ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
@@ -1532,8 +1535,8 @@ var scenes =
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow"),
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow"),
                 new UIText(() => tt("selected") + ": " + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] + "\n" + tt("convertto") + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo], 0.5, 0.4, 0.04, "yellow"),
-                new UIText(() => tt("convertworth").replace("<amount>", formatNumber(worth1)).replace("<amount2>", formatNumber(worth2)), 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 > 0 && worth2 > 0}),
-                new UIText(() => "Try increasing the value of falling beams\nof that type: " + (worth1 < 1 ? [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] : [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo]) + "!", 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 < 1 || worth2 < 1}),
+                new UIText(() => tt("convertworth").replace("<amount>", formatNumber(worth1)).replace("<amount2>", formatNumber(worth2)), 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 > 0 && worth2 > 0 }),
+                new UIText(() => "Try increasing the value of falling beams\nof that type: " + (worth1 < 1 ? [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] : [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo]) + "!", 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 < 1 || worth2 < 1 }),
 
 
                 new UIButton(0.1, 0.525, 0.1, 0.1, images.beam, () => selectedConvert = 0, { quadratic: true }),
@@ -2344,7 +2347,7 @@ var scenes =
                             default: ["Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Self Merges"],
                             de: ["Höchstes Merge Mastery Level", "Höchste Tonne", "Meister Schrott", "Schraubenschlüssel", "Stahlträger", "Aerostahl", "Engelstahl", "Stahlstahl", "Glitchstahl", "Stahlträger gefangen", "Aerostahl gefangen", "Engelstahl gefangen", "Stahlstahl gefangen", "Glitchstahl gefangen", "Quests", "Merge Tokens insgesamt", "Schattenschrott", "Fragmente", "Schattenfragmente", "Reifen eingesammelt", "GS Resets", "Spielzeit", "Quests", "Mastery Tokens", "Plastiktüten", "Schrauben", "Schrauben eingesammelt", "Geschenke gesendet", "Geschenke erhalten", "Verbindungen", "Eigene Verbindungen"],
                             ru: ["Наивысший уровень Мастерства Слияний", "Наивысшая Бочк", "Наибольший достигнутый Мусо", "Всего Гаечных Ключей", "Всего Балок", "Всего Аэробалок", "Всего Ангельских Балок", "Всего Усиленных Балок", "Всего Глючных Балок", "Всего Собрано Балок", "Всего Собрано Аэробалок", "Всего Собрано Ангельских Балок", "Всего Собрано Усиленных Балок", "Всего Собрано Глючных Балок", "Всего Квестов завершено", "Всего Токенов Слияний", "Всего Тёмного Мусора", "Всего Фрагментов", "Всего Тёмных Фрагментов", "Всего Собрано Покрышек", "Всего Сбросов ЗМ", "Время Игры", "Всего Ежедневных Квестов завершено", "Всего Токенов Мастерства", "Всего Пластиковых Пакетов", "Всего Винтов", "Всего Винтов Собрано", "Подарков Отправлено", "Подарков Получено", "Всего Слияний", "Самослияний"],
-                    });
+                        });
                 }
                 else {
                     var compareIDs = [
@@ -2605,7 +2608,7 @@ var scenes =
                     }, () => tt("HARDRESET"), "table"),
 
 
-            ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.9 }),
+                ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 0.9 }),
                 /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
                     {
                         quadratic: true,
@@ -2927,11 +2930,12 @@ var scenes =
             }),
         new Scene("Shrine",
             [
-                new UIText(() => tt("shrine"), 0.5, 0.1, 0.08, "white", {
+                new UIText(() => tt("shrine"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
+                new UIText(() => tt("shrine-exp"), 0.5, 0.1, 0.03, "white"),
                 new UIButton(0.1, 0.2, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
                 new UISkillTreeUpgradeNoBG(game.shrine.generatorUnlock, images.upgrades.unlockGenerator, "shrine1", 0.5, 0.3, "white"),
                 new UISkillTreeUpgradeNoBG(game.shrine.factoryUnlock, images.upgrades.unlockFactory, "shrine2", 0.5, 0.525, "white"),

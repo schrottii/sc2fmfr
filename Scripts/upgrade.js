@@ -371,7 +371,7 @@ class ScrapUpgrade
         // Made by Schrottii
 
         if (level == "hyperbuy") {
-            //console.log("yup, is hyper")
+            // is hyperbuy, level = "hyperbuy"
             level = 10000;
 
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
@@ -379,7 +379,6 @@ class ScrapUpgrade
                 // Keep doubling as long as possible
                 while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
                     level *= 2;
-                    //console.log(level);
                 }
                 level = level / 2;
 
@@ -408,15 +407,20 @@ class ScrapUpgrade
             }
             else {
                 level = level + this.level;
+                //console.log(level)
             }
         }
         else {
             if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
             else resource = getUpgradeResource(this.resource);
         }
+
+        // cap the level
         if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
-        if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 || isNaN(this.getPrice(this.level + level))) {
-            this.level = this.getMaxLevel();
+        if (level > this.getMaxLevel()) level = this.getMaxLevel();
+
+        if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 /*|| isNaN(this.getPrice(level))*/) {
+            //this.level = this.getMaxLevel();        ummmm what???
             return false;
         }
 

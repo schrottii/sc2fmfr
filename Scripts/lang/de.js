@@ -243,6 +243,7 @@ const trans_de = {
 
     // FACTORY
     shrine: "Mythischer Schrein",
+    "shrine-exp": "Max. diese Upgrades um ihre Gebäude freizuschalten!",
     generator: "Generator",
     scrapfactory: "Schrottfabrik",
     autobuyers: "Autokäufer",

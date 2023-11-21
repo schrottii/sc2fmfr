@@ -243,6 +243,7 @@ const trans_ru = {
 
     // FACTORY
     shrine: "Мифическое Святилище",
+    "shrine-exp": "Max. these upgrades to unlock their buildings!",
     generator: "Генератор",
     scrapfactory: "Завод Мусора",
     autobuyers: "Автопокупщики",

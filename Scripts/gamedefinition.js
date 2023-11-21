@@ -613,7 +613,9 @@ var game =
                 level => Decimal.pow(1.04, level),
                 {
                     maxLevel: 10000,
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(2)
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2),
+                    // (32 ^ (x + ((0.75 * (x - 50)) ^ 1.25 )) * 100000) ^ (1.01 ^ (x - 250))
+                    //integral: level => new Decimal(3125).pow(100).pow(new Decimal(101).pow(level - 250)).mul(32).mul(level + 1 + ((3 * (5 / 4) * (level - 50) * (5 / 4)) / (2 * (5 / 2)))).mul(100).mul(new Decimal(101).pow(level - 250))
                 }),
             brickBoost: new BrickUpgrade(level => Decimal.pow(64, Math.pow(level, 1.1)).mul(1e12),
                 level => Decimal.pow(4, level),
@@ -2241,7 +2243,7 @@ var game =
                 level => new Decimal(50).pow(level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x"),
-                    integral: level => new Decimal(level).pow(2).sub(36 * level).add(3).mul(level),
+                    integral: level => new Decimal(level).pow(2).sub(36 * level).add(3).mul(level).max(10),
                 }
             ),
             aquila: new AlienDustUpgrade(

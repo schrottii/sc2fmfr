@@ -2823,7 +2823,7 @@ var scenes =
                 new UIButton(0.35, 0.93, 0.1, 0.1, images.scenes.statistics, () => Scene.loadScene("StatCompare"), {
                     quadratic: true
                 }),
-                new UIButton(0.65, 0.93, 0.1, 0.1, images.scenes.unlocks, () => Scene.loadScene("StatCompare"), {
+                new UIButton(0.65, 0.93, 0.1, 0.1, images.scenes.unlocks, () => Scene.loadScene("Unlocks"), {
                     quadratic: true
                 }),
             ],
@@ -2894,6 +2894,35 @@ var scenes =
                 }
                 else {
                     game.milestones.tooltip = null;
+                }
+            }),
+        new Scene("Unlocks",
+            [
+                new UIText(() => "Unlocks"/*tt("supernova")*/, 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                var unlocks = tto({
+                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "AeroBeams", "Barrel Mastery", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova"],
+                    de: [""],
+                    ru: [""],
+                });
+                // var unlocksUnlocks
+
+                //  shit quality sleep
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = (h * 0.015) + "px " + fonts.default;
+                for (i = 0; i < unlocksUnlocks.length; i++) {
+                    ctx.fillStyle = unlocksUnlocks[i]() ? colors[C]["text"] : "red";
+                    ctx.fillText((unlocksUnlocks[i]() ? unlocks[i] + " (" + unlocksText[i] + ")" : "Locked - " + unlocksText[i]), w * 0.5, h * (0.125 + (0.025 * i)));
                 }
             }),
         new Scene("ScrapFactory",

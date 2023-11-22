@@ -2642,3 +2642,11 @@ var game =
         lang: "en",
     }
 }
+
+var unlocksUnlocks = [() => game.highestScrapReached.gte(1e15), () => game.goldenScrap.upgrades.scrapBoost.level >= 8, () => game.mergeQuests.isUnlocked(), () => game.fragment.isUnlocked(), () => game.mergeMastery.isUnlocked(), () => game.beams.isUnlocked(), () => game.skillTree.isUnlocked(), () => game.bricks.isUnlocked(), () => game.tires.isUnlocked(), () => game.wrenches.isUnlocked(),
+ () => game.aerobeams.isUnlocked(), () => game.barrelMastery.isUnlocked(), () => game.angelbeams.isUnlocked(), () => game.reinforcedbeams.isUnlocked(), () => game.darkscrap.isUnlocked(), () => game.glitchbeams.isUnlocked(), () => game.glitchbeams.upgrades.goldenbeam.level > 0,
+    () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, () => applyUpgrade(game.shrine.generatorUnlock), () => applyUpgrade(game.shrine.autosUnlock), () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), () => game.gifts.isUnlocked(), () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), () => game.screws.isUnlocked(), () => game.cogwheels.isUnlocked(), () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0)];
+var unlocksText = ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "Earth (5e24 GS)", "1e213 Scrap", "Barrel 500", "12,000 Self Merges",
+    "Skill Tree", "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
+    "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)"
+];

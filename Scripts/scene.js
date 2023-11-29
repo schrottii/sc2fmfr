@@ -1029,11 +1029,13 @@ var scenes =
         new Scene("Mastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery2"), { quadratic: true }),
                 new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
                 }),
+
                 new UIMasteryUpgrade(game.barrelMastery.upgrades.scrapBoost, images.upgrades.moreScrap, 0.4, "mastery1", "table", () => getTotalLevels(1) > 9),
                 new UIMasteryUpgrade(game.barrelMastery.upgrades.goldenScrapBoost, images.upgrades.moreGS, 0.525, "mastery2", "table2", () => getTotalLevels(2) > 9),
                 new UIMasteryUpgrade(game.barrelMastery.upgrades.brickBoost, images.upgrades.brickBoost, 0.65, "mastery3", "table", () => getTotalLevels(3) > 9),
@@ -1064,6 +1066,48 @@ var scenes =
                     ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(
                         game.barrelMastery.upgrades[["scrapBoost", "goldenScrapBoost", "brickBoost", "fragmentBoost", "magnetBoost"][i]]
                     )).pow(getTotalLevels(i + 1))), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
+                }
+            }),
+        new Scene("Mastery2",
+            [
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery"), { quadratic: true }),
+                new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.beamBoost, images.upgrades.beamValue, 0.4, "mastery1", "table", () => getTotalLevels(6) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkFragmentBoost, images.upgrades.posusDarkFragments, 0.525, "mastery2", "table2", () => getTotalLevels(7) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.tireBoost, images.upgrades.tireBoost, 0.65, "mastery3", "table", () => getTotalLevels(8) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.screwBoost, images.upgrades.unlockScrews, 0.775, "mastery4", "table2", () => getTotalLevels(9) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.9, "mastery5", "table", () => getTotalLevels(10) > 19),
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                drawCurrencyBar(game.barrelMastery.masteryTokens, images.masteryToken);
+
+                for (i = 0; i < 5; i++) {
+                    ctx.fillStyle = "black";
+                    ctx.font = (h * 0.04) + "px " + fonts.default;
+                    ctx.textAlign = "center";
+                    ctx.fillText("Unlocked at 20 mastery level " + (i + 6) + " barrels!", w * 0.5, h * (0.4 + (0.125 * i)), w * 0.5);
+                    
+                    ctx.fillStyle = "rgb(66, 66, 66)";
+                    ctx.fillRect(0, h * (0.445 + (0.125 * i)), w, h * 0.025);
+                    ctx.fillStyle = colors[C]["bgFront"];
+                    ctx.fillRect(0, h * (0.445 + (0.125 * i)), w * (getTotalLevels(i + 6) / BARRELS), h * 0.025);
+                    ctx.fillStyle = "white";
+                    ctx.font = (h * 0.025) + "px " + fonts.default;
+                    ctx.textAlign = "center";
+                    ctx.fillText(getTotalLevels(i + 6) + " / " + BARRELS, w * 0.5, h * (0.4475 + (0.125 * i)), w * 0.15);
+                    ctx.textAlign = "left";
+                    ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(
+                        game.barrelMastery.upgrades[["beamBoost", "darkFragmentBoost", "tireBoost", "screwBoost", "darkScrapBoost"][i]]
+                    )).pow(getTotalLevels(i + 6))), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
                 }
             }),
         new Scene("SolarSystem",

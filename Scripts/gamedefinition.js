@@ -1620,6 +1620,36 @@ var game =
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "x", "^L5")
                 }),
+            beamBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.0001 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L6")
+                }),
+            darkFragmentBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.0003 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(5, "x", "^L7")
+                }),
+            tireBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.0003 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L8")
+                }),
+            screwBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.001 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L9")
+                }),
+            darkScrapBoost: new MasteryTokenUpgrade(
+                level => new Decimal(Math.round(10 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.02 * level)),
+                {
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L10")
+                }),
         }
     },
     shrine: {

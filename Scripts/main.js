@@ -934,7 +934,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         if (calculateMasteryLevel(game.barrelMastery.b[lvl % BARRELS]) > game.barrelMastery.bl[lvl % BARRELS]) {
             game.barrelMastery.bl[lvl % BARRELS] += 1;
 
-            for (i = 1; i < 11; i++) {
+            for (i = 1; i < 21; i++) {
                 game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
             }
 
@@ -2029,7 +2029,7 @@ function loadGame(saveCode, isFromFile=false)
                 game.barrelMastery.bl.push(calculateMasteryLevel(game.barrelMastery.b[i]));
             }
             game.barrelMastery.masteryTokens = new Decimal(loadObj.barrelMastery.masteryTokens);
-            for (i = 1; i < 11; i++) {
+            for (i = 1; i < 21; i++) {
                 game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
             }
             Object.keys(loadObj.barrelMastery.upgrades).forEach(k => {

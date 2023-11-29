@@ -22,6 +22,7 @@ const trans_en = {
     "You have found me": "You have found me",
     "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
     autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
+    unlocks: "Unlocks",
 
     // OPTIONS
     "Options": "Options",

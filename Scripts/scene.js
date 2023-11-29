@@ -2898,7 +2898,7 @@ var scenes =
             }),
         new Scene("Unlocks",
             [
-                new UIText(() => "Unlocks"/*tt("supernova")*/, 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("unlocks"), 0.5, 0.05, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -2912,7 +2912,7 @@ var scenes =
                 var unlocks = tto({
                     default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "AeroBeams", "Barrel Mastery", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova"],
                     de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Barrel Mastery", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova"],
-                    ru: [""],
+                    ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Мастерство Бочек", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая"],
                 });
                 // var unlocksUnlocks
                 var unlocksText = tto({
@@ -2924,6 +2924,9 @@ var scenes =
                         "Baum", "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
                         "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)"
                     ],
+                    ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "Земля (5e24 ЗМ)", "1e213 Мусора", "Бочка 500", "12,000 Самослияний",
+                        "Дерево Навыков", "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
+                        "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)"]
                 });
 
                 //  shit quality sleep
@@ -2932,7 +2935,7 @@ var scenes =
                 ctx.font = (h * 0.015) + "px " + fonts.default;
                 for (i = 0; i < unlocksUnlocks.length; i++) {
                     ctx.fillStyle = unlocksUnlocks[i]() ? colors[C]["text"] : "red";
-                    ctx.fillText((unlocksUnlocks[i]() ? unlocks[i] + " (" + unlocksText[i] + ")" : "Locked - " + unlocksText[i]), w * 0.5, h * (0.125 + (0.025 * i)));
+                    ctx.fillText((unlocksUnlocks[i]() ? unlocks[i] + " (" + unlocksText[i] + ")" : tt("locked") + "- " + unlocksText[i]), w * 0.5, h * (0.125 + (0.025 * i)));
                 }
             }),
         new Scene("ScrapFactory",

@@ -22,6 +22,7 @@ const trans_de = {
     "You have found me": "Du hast mich gefunden",
     "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
     autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
+    unlocks: "Freigeschaltet",
 
     // OPTIONS
     "Options": "Einstellungen",

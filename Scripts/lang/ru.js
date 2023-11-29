@@ -22,6 +22,7 @@ const trans_ru = {
     "You have found me": "Ты нашëл меня",
     "enter2nddim": " Тебе нужно хотя бы <amount> Золотого Мусора, чтобы войти!",
     autobuyertext: "Авто Покупщикам нужна энергия для работы!\nОдно улучшение стоит <energy> <ru_energy>.",
+    unlocks: "Открытия",
 
     // OPTIONS
     "Options": "Опции",
@@ -162,7 +163,7 @@ const trans_ru = {
     masterylvlup: "Повышение Уровня Мастерства!",
 
     // QUESTS
-    "Merge Quests": "Merge Quests",
+    "Merge Quests": "Квесты Слияний",
     nextquest: "Следующий Квест через",
     questcomplete: "Квест Слияний пройден!",
     confirm: "Подтверждение",
@@ -243,7 +244,7 @@ const trans_ru = {
 
     // FACTORY
     shrine: "Мифическое Святилище",
-    "shrine-exp": "Max. these upgrades to unlock their buildings!",
+    "shrine-exp": "Макс. эти улучшения для разблокировки их зданий!",
     generator: "Генератор",
     scrapfactory: "Завод Мусора",
     autobuyers: "Автопокупщики",

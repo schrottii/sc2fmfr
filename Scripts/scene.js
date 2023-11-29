@@ -2664,7 +2664,8 @@ var scenes =
                         isVisible: () => game.settings.optionsPage < 2
                     }),*/
                 new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
-                    GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"))
+                    location.href = "https://schrottii.github.io/";
+                    GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
                     if (game.ms.includes(206) == false) {
                         game.ms.push(206);
                         GameNotification.create(new MilestoneNotification(207));

@@ -84,6 +84,7 @@ const trans_en = {
     "ogsc2": "Play the Original SC2",
     "myserver": "My Discord Server",
     "myyt": "My Youtube Channel",
+    "myw": "My Other Games",
 
     // SAVE CODE
     "export": "Export",

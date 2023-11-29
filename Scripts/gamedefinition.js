@@ -710,7 +710,7 @@ var game =
                 [ //more xTires per collect, Tire chance, faster Merge Quests
                     new TireUpgrade(level => Decimal.pow(32, Math.pow(level / 2 + game.tires.getCombinedRowLevel(game.tires.upgrades[1]) / 2, 1.15) + game.tires.getLevelBias(level))
                         .mul(10e63),
-                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)).pow(applyUpgrade(game.supernova.starDustUpgrades.corvus)),
+                        level => new Decimal(1.3 + 0.05 * level + 0.01 * Math.pow(Math.max(level - 70, 0), 2)).mul(1 + game.skillTree.upgrades.tireValue.level).mul(applyUpgrade(game.aerobeams.upgrades.moreTires)).mul(applyUpgrade(game.plasticBags.upgrades.moreTires)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost)).pow(applyUpgrade(game.skillTree.upgrades.tireBoost2)).pow(applyUpgrade(game.supernova.starDustUpgrades.corvus)).mul(applyUpgrade(game.barrelMastery.upgrades.tireBoost).pow(getTotalLevels(8))),
                         {
                             getEffectDisplay: effectDisplayTemplates.numberStandard(2),
                             integral: level => new Decimal(20).mul(new Decimal(10).pow(63)).mul(new Decimal(32).pow((level / 2) + game.tires.getLevelBias(level) + ((game.tires.getCombinedRowLevel(game.tires.upgrades[1]) * (23 / 20)) / (2 * (23 / 20))))).div(Math.log(32)),
@@ -1622,31 +1622,31 @@ var game =
                 }),
             beamBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1 + (0.0001 * level)),
+                level => new Decimal(1 + (0.0002 * level)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L6")
                 }),
             darkFragmentBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1 + (0.0003 * level)),
+                level => new Decimal(1 + (0.0008 * level)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(5, "x", "^L7")
                 }),
             tireBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1 + (0.0003 * level)),
+                level => new Decimal(1 + (0.001 * level)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L8")
                 }),
             screwBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(4 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1 + (0.001 * level)),
+                level => new Decimal(1 + (0.0001 * level)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L9")
                 }),
             darkScrapBoost: new MasteryTokenUpgrade(
-                level => new Decimal(Math.round(10 * Math.max(1, (level / 2) - 5))),
-                level => new Decimal(1 + (0.02 * level)),
+                level => new Decimal(Math.round(6 * Math.max(1, (level / 2) - 5))),
+                level => new Decimal(1 + (0.004 * level)),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(4, "x", "^L10")
                 }),

@@ -640,33 +640,38 @@ function getBeamBaseValue() {
         .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getAeroBeamValue() {
     return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
         .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getAngelBeamValue() {
     return new Decimal(applyUpgrade(game.angelbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getReinforcedBeamValue() {
     return new Decimal(applyUpgrade(game.reinforcedbeams.upgrades.reinforce))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion));
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getGlitchBeamValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 
 function getReinforcedTapsNeeded() {
@@ -682,7 +687,7 @@ function getFragmentBaseValue() {
 }
 
 function getDarkFragmentBaseValue() {
-    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2));
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2)).mul(applyUpgrade(game.barrelMastery.upgrades.darkFragmentBoost).pow(getTotalLevels(7)));
 }
 
 function getMagnetBaseValue()
@@ -701,7 +706,8 @@ function getMagnetBaseValue()
 function getDarkScrap(level) {
     return new Decimal(1.0075).pow(level)
         .mul(applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))
-        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost));
+        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.darkScrapBoost).pow(getTotalLevels(10)));
 }
 
 function craftingMulti() {
@@ -709,7 +715,7 @@ function craftingMulti() {
 }
 
 function getScrews(isFallingScrew=false) {
-    return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1)));
+    return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1))).mul(applyUpgrade(game.barrelMastery.upgrades.screwBoost).pow(getTotalLevels(9)));
 }
 
 function fallingMagnetWorth() {

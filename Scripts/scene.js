@@ -1029,7 +1029,7 @@ var scenes =
         new Scene("Mastery",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("BarrelGallery"), { quadratic: true }),
-                new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery2"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery2"), { quadratic: true, isVisible: () => game.supernova.stars.gte(1) }), // Unlocked at 1 star
                 new UIText(() => tt("Mastery Upgrades"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
@@ -1078,11 +1078,11 @@ var scenes =
                     font: fonts.title
                 }),
 
-                new UIMasteryUpgrade(game.barrelMastery.upgrades.beamBoost, images.upgrades.beamValue, 0.4, "mastery1", "table", () => getTotalLevels(6) > 19),
-                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkFragmentBoost, images.upgrades.posusDarkFragments, 0.525, "mastery2", "table2", () => getTotalLevels(7) > 19),
-                new UIMasteryUpgrade(game.barrelMastery.upgrades.tireBoost, images.upgrades.tireBoost, 0.65, "mastery3", "table", () => getTotalLevels(8) > 19),
-                new UIMasteryUpgrade(game.barrelMastery.upgrades.screwBoost, images.upgrades.unlockScrews, 0.775, "mastery4", "table2", () => getTotalLevels(9) > 19),
-                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.9, "mastery5", "table", () => getTotalLevels(10) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.beamBoost, images.upgrades.beamValue, 0.4, "mastery6", "table", () => getTotalLevels(6) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkFragmentBoost, images.upgrades.posusDarkFragments, 0.525, "mastery7", "table2", () => getTotalLevels(7) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.tireBoost, images.upgrades.tireBoost, 0.65, "mastery8", "table", () => getTotalLevels(8) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.screwBoost, images.upgrades.unlockScrews, 0.775, "mastery9", "table2", () => getTotalLevels(9) > 19),
+                new UIMasteryUpgrade(game.barrelMastery.upgrades.darkScrapBoost, images.upgrades.moreDarkScrap, 0.9, "mastery10", "table", () => getTotalLevels(10) > 19),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];

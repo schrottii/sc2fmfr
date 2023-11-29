@@ -323,9 +323,14 @@ const trans_de = {
     // Mastery
     mastery1: "Mehr Schrott für L1 Tonnen",
     mastery2: "Mehr GS für L2 Tonnen",
-    mastery3: "Mehr Ziegelsteine für L3 Tonnen",
+    mastery3: "Mehr Ziegelsteine\nfür L3 Tonnen",
     mastery4: "Mehr Fragmente für L4 Tonnen",
     mastery5: "Mehr Magnete für L5 Tonnen",
+    mastery6: "Mehr Stahl für L6 Tonnen",
+    mastery7: "Mehr Schattenfragmente\nfür L7 Tonnen",
+    mastery8: "Mehr Reifen für L8 Tonnen",
+    mastery9: "Mehr Schrauben\nfür L9 Tonnen",
+    mastery10: "Mehr Schattenschrott\nfür L10 Tonnen",
 
     // Merge Quests
     mq1: "Mehr Schrott",
@@ -655,7 +660,7 @@ const trans_de = {
         "084": ["Quests? Ich hasse sie", "Max. das zweite Schattenschrott-Upgrade"],
         "085": ["Sehnsucht", "Erreiche 1.000.000 Schattenschrott\noder Schattenfragmente"],
         "086": ["1 zu 10 in Reihenfolge", "Platziere die ersten zehn Tonnen (ohne Sterne)\nin Reihenfolge, die 1. nach oben links,\n2. rechts daneben, usw.\nDann verbessere Bessere Tonnen"],
-        "087": ["Pfannkuchen", "Verbinde 10k Tonnen\nwährend Shrove deine Spawntonne ist"],
+        "087": ["Pfannkuchen", "Verbinde 10k Tonnen\nwährend Shrove die Spawntonne ist"],
         "088": ["Feld voll 69", "Mache eine 6 aus Tonnen, verbessere Bessere Tonnen,\nmache eine 9, verbessere Bessere Tonnen"],
         "089": ["Pasta-Ring", "Lege die 1. Pasta-Tonne nach oben links,\ndie 2. nach oben rechts,\ndann verbessere Bessere Tonnen"],
         "090": ["Reifen oben, Reifen in Hand", "Sammel einen Reifen während die Reifen-Tonne\noben links ist"],
@@ -780,7 +785,7 @@ const trans_de = {
         "204": ["Jeder kann es lesen", "Wechsel zu dem ultimativen Zahlenformat\nund habe mindestens <amount> Magnete"],
         "205": ["Schrottkokosnuss 2", "Verbinde Kokosnüsse"],
         "206": ["Machtstahl", "140 BPM"],
-        "207": ["Schrottii", "Finde Schrottii"],
+        "207": ["Schrottii", "Klicke Schrottii\nund sehe ihre anderen Spiele"],
         "208": ["Langsamer kann besser sein", "Mache einen Autokäufer langsamer"],
         "209": ["Gekochte Krabbe", "NEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIINNNNNNNNNNN!!!!!!!!!!!!!!!"],
         "210": ["Es waren 84 Jahre...", "Verbessere die vierte Reihe\nReifenupgrades auf 50"],

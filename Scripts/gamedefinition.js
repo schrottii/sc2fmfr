@@ -2549,7 +2549,7 @@ var game =
                 new Milestone(204, "Everyone can read it", 38, () => "Switch to the ultimate notation\nwhile having at least " + formatNumber(new Decimal(1e182)) + " magnets", () => game.settings.numberFormatType == 12 && game.magnets.gte(new Decimal(1e182)), ["<amount>", "formatNumber(new Decimal(1e182))"]),
                 new Milestone(205, "Scrap Coconut II", 99, () => "Merge coconuts", () => game.settings.coconut == true && (game.mergeQuests.dailyQuest.currentMerges >= 4000 || game.mergeQuests.dailyQuest.active == false)),
                 new Milestone(206, "Power Beams", 77, () => "140 Beams per minute", () => game.dimension == 508050),
-                new Milestone(207, "Schrottii", 109, () => "Find Schrottii", () => game.dimension == 508050),
+                new Milestone(207, "Schrottii", 109, () => "Click Schrottii\nto see her other games", () => game.dimension == 508050),
                 new Milestone(208, "Slower can be better", 87, () => "Make an autobuyer slower", () => game.dimension == 508050),
                 new Milestone(209, "Cooked Crab", 110, () => "Noooooooooo", () => game.stats.totalplasticbags.gte(1200) && game.plasticBags.amount.lte(0)),
                 new Milestone(211, "Falling Magnet Guys", 2, "Make Falling Magnets\nworth 100x more", () => game.skillTree.upgrades.fallingMagnetValue.level > 0),

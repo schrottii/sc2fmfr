@@ -265,6 +265,8 @@ const trans_en = {
     stars2: "Stars",
     emblems: "Cosmic Emblems",
     pins: "Cosmic Pins",
+    hyperBuyCapText: "New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)",
+    hyperBuyPerText: "New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)",
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
     supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",

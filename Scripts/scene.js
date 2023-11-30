@@ -434,7 +434,7 @@ var scenes =
                 }),
                 new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : "Unlimited", 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
-                    let newCap = prompt("New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)");
+                    let newCap = prompt(tt("hyperBuyCapText"));
                     if (newCap == null || newCap == "" || newCap == null) {
                         game.settings.hyperBuyCap = 0;
                     }
@@ -447,12 +447,13 @@ var scenes =
                 }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
-                    let newCap = prompt("New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)");
+                    let newCap = prompt(tt("hyperBuyPerText"));
                     if (newCap == null || newCap == "" || newCap == null) {
                         game.settings.hyperBuyPer = 100;
                     }
                     else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyPer = Math.min(newCap, 100);
+                        basicAchievementUnlock(255, newCap == 69);
                     }
                     else {
                         alert(tt("Too low!"));
@@ -2017,7 +2018,7 @@ var scenes =
                     basicAchievementUnlock(232);
                 }, { quadratic: true }),
                 new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
-                    sendTo = prompt(tt("gifttext4")).substr(0, 5);
+                    sendTo = prompt(tt("gifttext4")).substr(0, 6);
                 }, { quadratic: true }),
                 new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
                 new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
@@ -2032,7 +2033,7 @@ var scenes =
                                 return false;
                             }
                             if (sendTo == game.code) {
-                                basicAchievementUnlock(254);
+                                basicAchievementUnlock(253);
                                 alert("You can not send a gift to yourself!");
                                 return false;
                             }

@@ -267,6 +267,8 @@ const trans_de = {
     alienpin: "Alienpin",
     fairypin: "Feenpin",
     starpin: "Sternpin",
+    hyperBuyCapText: "Neue Levelbegrenzung? (Es werden max. so viele gekauft. 0 = unbegrenzt)",
+    hyperBuyPerText: "Neuer Prozentsatz? (Mehr als x% werden nicht gekauft. 100 = unbegrenzt)",
 
     supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",

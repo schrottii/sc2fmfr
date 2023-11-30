@@ -2119,6 +2119,7 @@ var game =
             for (let q of game.mergeQuests.quests) {
                 q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);
             }
+            let dq = game.mergeQuests.dailyQuest;
             game.mergeQuests.dailyQuest.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
             game.mergeQuests.dailyQuest.currentMerges = 0;
 

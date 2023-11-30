@@ -2120,9 +2120,16 @@ function loadGame(saveCode, isFromFile=false)
             game.supernova.alienDust = loadVal(new Decimal(loadObj.supernova.alienDust), new Decimal(0));
             game.supernova.fairyDust = loadVal(new Decimal(loadObj.supernova.fairyDust), new Decimal(0));
             game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
-            game.supernova.pins.alienPin = loadVal(loadObj.supernova.pins.alienPin, 0);
-            game.supernova.pins.fairyPin = loadVal(loadObj.supernova.pins.fairyPin, 0);
-            game.supernova.pins.starPin = loadVal(loadObj.supernova.pins.starPin, 0);
+            if (loadObj.supernova.pins !== undefined) {
+                game.supernova.pins.alienPin = loadVal(loadObj.supernova.pins.alienPin, 0);
+                game.supernova.pins.fairyPin = loadVal(loadObj.supernova.pins.fairyPin, 0);
+                game.supernova.pins.starPin = loadVal(loadObj.supernova.pins.starPin, 0);
+            }
+            else {
+                game.supernova.pins.alienPin = 0;
+                game.supernova.pins.fairyPin = 0;
+                game.supernova.pins.starPin = 0;
+            }
             game.supernova.stars = loadVal(new Decimal(loadObj.supernova.stars), new Decimal(0));
             if (loadObj.supernova.cosmicUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.cosmicUpgrades).forEach(k => {

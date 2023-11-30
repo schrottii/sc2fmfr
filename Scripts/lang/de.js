@@ -844,7 +844,7 @@ const trans_de = {
         "255": ["Ich nicht!", "Habe 42 Kosmische Embleme gleichzeitig"],
         "256": ["Hyperjunge", "Setze Hyper Buy auf 69%"],
         "257": ["obaMa", "Erreiche Merge Mastery Level 1.000.000"],
-        "258": ["Ein ganz willt", "Habe 1M Zahnräder gleichzeitig"],
+        "258": ["Ein ganz willt", "Habe 25k Zahnräder gleichzeitig"],
         "259": ["Des Meister's zweite Seite", "Schalte das sechste Mastery Upgrade frei\n(Nach Supernova)"],
         "260": ["Immer weiter...", "Schalte das letzte Mastery Upgrade frei\n(Nach Supernova)"],
         "261": ["Schottland", "Schrottplatz Level 10.000"],

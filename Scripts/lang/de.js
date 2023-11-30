@@ -263,6 +263,10 @@ const trans_de = {
     stars: "Sterne",
     stars2: "Sterne",
     emblems: "Kosmische Embleme",
+    pins: "Kosmische Pins",
+    alienpin: "Alienpin",
+    fairypin: "Feenpin",
+    starpin: "Sternpin",
 
     supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",

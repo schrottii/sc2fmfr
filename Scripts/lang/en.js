@@ -264,6 +264,7 @@ const trans_en = {
     stars: "Stars",
     stars2: "Stars",
     emblems: "Cosmic Emblems",
+    pins: "Cosmic Pins",
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
     supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",

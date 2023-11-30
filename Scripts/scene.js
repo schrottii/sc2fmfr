@@ -451,7 +451,7 @@ var scenes =
                     if (newCap == null || newCap == "" || newCap == null) {
                         game.settings.hyperBuyPer = 100;
                     }
-                    else if (Math.round(newCap) > -1) {g
+                    else if (Math.round(newCap) > -1) {
                         game.settings.hyperBuyPer = Math.min(newCap, 100);
                     }
                     else {
@@ -3383,7 +3383,7 @@ var scenes =
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
-                    "\n+1 " + tt("stars"), 0.5, 0.3, 0.04, "black"),
+                    "\n+1 " + tt("star"), 0.5, 0.3, 0.04, "black"),
 
                 new UIText(() => tt("supernovagetmore"), 0.5, 0.5, 0.03, "black"),
 
@@ -3478,7 +3478,70 @@ var scenes =
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.moreDust, images.scenes.fairydustupgrades, "em16", 0.2, 1.95, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.keepAutoCollectors, images.upgrades.unlockAutoCollectors, "em17", 0.5, 1.95, "table2"),
                     new UIEmblemUpgrade(game.supernova.cosmicUpgrades.startBricks, images.upgrades.brickBoost, "em18", 0.8, 1.95, "table2"),
-                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.15 })
+
+                    new UIButton(0.5, 2.3, 0.2, 0.2, images.pins, () => Scene.loadScene("CosmicPins"), { quadratic: true, isVisible: () => game.supernova.stars.gte(50) }),
+                ], 0, 0.3, 1, 0.7, () => true, { ymin: 0, ymax: 2.45 })
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
+            }),
+        new Scene("CosmicPins",
+            [
+                new UIText(() => tt("pins"), 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("EmblemUpgrades"), { quadratic: true }),
+
+                new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + ": " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.2, 0.06, "yellow"),
+
+                // Alien Pin
+                new UIText(() => tt("alienpin"), 0.5, 0.275, 0.08, "black"),
+                new UIText(() => tt("level") + ": " + game.supernova.pins.alienPin + " | " + tt("costs") + ": " + formatNumber(game.supernova.pins.getPinCosts(game.supernova.pins.alienPin)) + "\n" + formatNumber(game.supernova.pins.getPinEffect(game.supernova.pins.alienPin), game.settings.numberFormatType, {precision: 2}) + "x " + tt("aliendust"), 0.5, 0.32, 0.04, "black"),
+                new UIButton(0.5, 0.4, 0.1, 0.1, images.alienPin, () => {
+                    let pinAmount = game.settings.hyperBuy ? (game.settings.hyperBuyCap == "0" ? 100 : game.settings.hyperBuyCap) : 1;
+                    for (pi = 0; pi < pinAmount; pi++) {
+                        if (game.supernova.cosmicEmblems.gte(game.supernova.pins.getPinCosts(game.supernova.pins.alienPin))) {
+                            game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.sub(game.supernova.pins.getPinCosts(game.supernova.pins.alienPin));
+                            game.supernova.pins.alienPin += 1;
+                        }
+                    }
+                    
+                }, { quadratic: true }),
+
+                // Fairy Pin
+                new UIText(() => tt("fairypin"), 0.5, 0.475, 0.08, "black"),
+                new UIText(() => tt("level") + ": " + game.supernova.pins.fairyPin + " | " + tt("costs") + ": " + formatNumber(game.supernova.pins.getPinCosts(game.supernova.pins.fairyPin)) + "\n" + formatNumber(game.supernova.pins.getPinEffect(game.supernova.pins.fairyPin), game.settings.numberFormatType, { precision: 2 }) + "x " + tt("fairydust"), 0.5, 0.52, 0.04, "black"),
+                new UIButton(0.5, 0.6, 0.1, 0.1, images.fairyPin, () => {
+                    let pinAmount = game.settings.hyperBuy ? (game.settings.hyperBuyCap == "0" ? 100 : game.settings.hyperBuyCap) : 1;
+                    for (pi = 0; pi < pinAmount; pi++) {
+                        if (game.supernova.cosmicEmblems.gte(game.supernova.pins.getPinCosts(game.supernova.pins.fairyPin))) {
+                            game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.sub(game.supernova.pins.getPinCosts(game.supernova.pins.fairyPin));
+                            game.supernova.pins.fairyPin += 1;
+                        }
+                    }
+
+                }, { quadratic: true }),
+
+                // Star Pin
+                new UIText(() => tt("starpin"), 0.5, 0.675, 0.08, "black"),
+                new UIText(() => tt("level") + ": " + game.supernova.pins.starPin + " | " + tt("costs") + ": " + formatNumber(game.supernova.pins.getPinCosts(game.supernova.pins.starPin)) + "\n" + formatNumber(game.supernova.pins.getPinEffect(game.supernova.pins.starPin), game.settings.numberFormatType, { precision: 2 }) + "x " + tt("stardust"), 0.5, 0.72, 0.04, "black"),
+                new UIButton(0.5, 0.8, 0.1, 0.1, images.starPin, () => {
+                    let pinAmount = game.settings.hyperBuy ? (game.settings.hyperBuyCap == "0" ? 100 : game.settings.hyperBuyCap) : 1;
+                    for (pi = 0; pi < pinAmount; pi++) {
+                        if (game.supernova.cosmicEmblems.gte(game.supernova.pins.getPinCosts(game.supernova.pins.starPin))) {
+                            game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.sub(game.supernova.pins.getPinCosts(game.supernova.pins.starPin));
+                            game.supernova.pins.starPin += 1;
+                        }
+                    }
+
+                }, { quadratic: true }),
 
             ],
             function () {

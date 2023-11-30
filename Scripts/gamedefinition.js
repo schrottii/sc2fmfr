@@ -1877,23 +1877,26 @@ var game =
     supernova:
     {
         cosmicEmblems: new Decimal(0),
-        starDust: new Decimal(0),
         alienDust: new Decimal(0),
         fairyDust: new Decimal(0),
+        starDust: new Decimal(0),
         stars: new Decimal(0),
+
+        pins: {
+            alienPin: 0,
+            fairyPin: 0,
+            starPin: 0,
+
+            getPinCosts: function (level) {
+                return new Decimal(3).add(level).add(Math.max(0, level - 99)).add(Math.max(0, level - 199)).add(Math.max(0, level - 499)).pow(Math.max(1, (level - 149) / 100));
+            },
+            getPinEffect: function (level) {
+                return new Decimal(1).add(level * 0.05).pow(Math.max(1, level / 24));
+            }
+        },
 
         getEmblems: function () {
             return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
-        },
-        getStarDust: function () {
-            let amount = new Decimal(game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50));
-            amount = amount.mul(game.magnets.add(1e200).min("1e30050").log(1e200));
-            amount = amount.mul(game.fragment.amount.add(1e50).log(1e50));
-            amount = amount.mul(game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500"));
-            amount = amount.mul(game.darkscrap.amount.add(1e20).log(1e20));
-            amount = amount.mul(new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000));
-            amount = amount.add(game.tires.amount.add("1e1000000").log("1e1000000"));
-            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getAlienDust: function () {
             let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));
@@ -1917,6 +1920,7 @@ var game =
             amount = amount.mul(1 + (game.solarSystem.upgrades.mythus.level / 200));
             amount = amount.mul(1 + (game.solarSystem.upgrades.sun.level / 100));
 
+            amount = amount.mul(game.supernova.pins.getPinEffect(game.supernova.pins.alienPin));
             return amount.ceil().div(6).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
@@ -1932,6 +1936,18 @@ var game =
             amount = amount.mul(game.stats.totalquests.add(250).log(250));
             amount = amount.mul(game.stats.totalmergetokens.add(10000).log(10000));
 
+            amount = amount.mul(game.supernova.pins.getPinEffect(game.supernova.pins.fairyPin));
+            return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
+        },
+        getStarDust: function () {
+            let amount = new Decimal(game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50));
+            amount = amount.mul(game.magnets.add(1e200).min("1e30050").log(1e200));
+            amount = amount.mul(game.fragment.amount.add(1e50).log(1e50));
+            amount = amount.mul(game.goldenScrap.amount.add("1e500").min("1e9050").log("1e500"));
+            amount = amount.mul(game.darkscrap.amount.add(1e20).log(1e20));
+            amount = amount.mul(new Decimal(game.mergeMastery.prestige.level).add(1000).log(1000));
+            amount = amount.add(game.tires.amount.add("1e1000000").log("1e1000000"));
+            amount = amount.mul(game.supernova.pins.getPinEffect(game.supernova.pins.starPin));
             return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         reset: function (type="default") {
@@ -2188,7 +2204,7 @@ var game =
             moreDust: new CosmicEmblemUpgrade(level => new Decimal(1),
                 level => 1 + 0.2 * level, {
                 maxLevel: 20,
-                getEffectDisplay: effectDisplayTemplates.unlock()
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x")
             }, 10),
             keepAutoCollectors: new CosmicEmblemUpgrade(level => new Decimal(3),
                 level => level, {

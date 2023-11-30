@@ -101,6 +101,10 @@ var images =
     hyperbuyLevel: loadImage("Images/Buttons/hyperbuy_level.png"),
     hyperbuyPercent: loadImage("Images/Buttons/hyperbuy_percent.png"),
     masterytoggle: loadImage("Images/Buttons/masterytoggle.png"),
+    pins: loadImage("Images/pins.png"),
+    alienPin: loadImage("Images/alienpin.png"),
+    fairyPin: loadImage("Images/fairypin.png"),
+    starPin: loadImage("Images/starpin.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

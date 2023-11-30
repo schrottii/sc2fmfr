@@ -327,10 +327,10 @@ const trans_en = {
     mastery4: "Get More Fragments for L4 barrels",
     mastery5: "Get More Magnets for L5 barrels",
     mastery6: "Get More Beams for L6 barrels",
-    mastery7: "Get More Dark Fragments for L7 barrels",
+    mastery7: "Get More Dark Fragments\nfor L7 barrels",
     mastery8: "Get More Tires for L8 barrels",
     mastery9: "Get More Screws for L9 barrels",
-    mastery10: "Get More Dark Scrap for L10 barrels",
+    mastery10: "Get More Dark Scrap\nfor L10 barrels",
 
     // Merge Quests
     mq1: "Get More Scrap",

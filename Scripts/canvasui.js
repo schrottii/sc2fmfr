@@ -572,10 +572,7 @@ class UIUpgrade3 extends UIGroup {
                 new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
                     let att = prompt(tt("buyertimetext"));
                     if (parseInt(att) > 0) upg.setTime = att;
-                    if (game.ms.includes(207) == false) {
-                        game.ms.push(207);
-                        GameNotification.create(new MilestoneNotification(208));
-                    }
+                    basicAchievementUnlock(207);
                 }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
             ], isVisible);
     }

@@ -451,7 +451,7 @@ var scenes =
                     if (newCap == null || newCap == "" || newCap == null) {
                         game.settings.hyperBuyPer = 100;
                     }
-                    else if (Math.round(newCap) > -1) {
+                    else if (Math.round(newCap) > -1) {g
                         game.settings.hyperBuyPer = Math.min(newCap, 100);
                     }
                     else {
@@ -776,10 +776,7 @@ var scenes =
                             timeMode = true;
                             game.goldenScrap.reset();
 
-                            if (game.ms.includes(212) == false) {
-                                game.ms.push(212);
-                                GameNotification.create(new MilestoneNotification(213));
-                            }
+                            basicAchievementUnlock(212);
                         }
                     }
                 }, { quadratic: true }),
@@ -961,10 +958,7 @@ var scenes =
                         GoTo = Math.floor(GoTo);
                         if (GoTo < 1) GoTo = 1;
                         if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
-                            if (game.ms.includes(120) == false) {
-                                game.ms.push(120);
-                                GameNotification.create(new MilestoneNotification(121));
-                            }
+                            basicAchievementUnlock(120);
                         }
                         game.settings.barrelGalleryPage = Math.floor((GoTo - 1) / 20);
                     }
@@ -2020,10 +2014,7 @@ var scenes =
                         }
                     }
 
-                    if (game.ms.includes(232) == false) {
-                        game.ms.push(232);
-                        GameNotification.create(new MilestoneNotification(233));
-                    }
+                    basicAchievementUnlock(232);
                 }, { quadratic: true }),
                 new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
                     sendTo = prompt(tt("gifttext4")).substr(0, 5);
@@ -2041,6 +2032,7 @@ var scenes =
                                 return false;
                             }
                             if (sendTo == game.code) {
+                                basicAchievementUnlock(254);
                                 alert("You can not send a gift to yourself!");
                                 return false;
                             }
@@ -2062,10 +2054,7 @@ var scenes =
 
                                 game.stats.giftsSent = game.stats.giftsSent.add(1);
 
-                                if (game.ms.includes(230) == false) {
-                                    game.ms.push(230);
-                                    GameNotification.create(new MilestoneNotification(231));
-                                }
+                                basicAchievementUnlock(230);
                             }
                         }
                         else {
@@ -2143,10 +2132,7 @@ var scenes =
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);
 
-                                if (game.ms.includes(231) == false) {
-                                    game.ms.push(231);
-                                    GameNotification.create(new MilestoneNotification(232));
-                                }
+                                basicAchievementUnlock(231);
                             }
                             else {
                                 alert("This gift appears to be for someone else, or you already opened a gift from that person today...");
@@ -2666,10 +2652,7 @@ var scenes =
                 new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
                     location.href = "https://schrottii.github.io/";
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
-                    if (game.ms.includes(206) == false) {
-                        game.ms.push(206);
-                        GameNotification.create(new MilestoneNotification(207));
-                    }
+                    basicAchievementUnlock(206);
                 }, { quadratic: true }),
                 new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
                 new UIText(() => tt("myserver"), 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),

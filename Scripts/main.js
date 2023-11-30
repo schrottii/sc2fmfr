@@ -238,10 +238,7 @@ function update()
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
-            if (game.ms.includes(215) == false && cogReward > 999) {
-                game.ms.push(215);
-                GameNotification.create(new MilestoneNotification(216));
-            }
+            basicAchievementUnlock(215, cogReward > 999);
 
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
@@ -754,6 +751,13 @@ function dustReset(upgradeType, dustType, dustStat) {
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
 }
 
+function basicAchievementUnlock(index, req=true) {
+    if (game.ms.includes(index) == false && req) {
+        game.ms.push(index);
+        GameNotification.create(new MilestoneNotification(index + 1));
+    }
+}
+
 function hardReset() {
     for (i in game.stats) {
         game.stats[i] = new Decimal(0);
@@ -977,6 +981,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 
     if (game.scrapUpgrades.betterBarrels.level % 1000 == 224 || game.scrapUpgrades.betterBarrels.level % 1000 == 572) {
+        // ehhh no basic here
         if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {

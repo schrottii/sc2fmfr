@@ -467,6 +467,7 @@ var game =
         totalstardust: new Decimal(0),
         totalaliendust: new Decimal(0),
         totalfairydust: new Decimal(0),
+        totalcosmicemblems: new Decimal(0),
         beamstp: new Decimal(0),
         aebeamstp: new Decimal(0),
         abeamstp: new Decimal(0),
@@ -1963,6 +1964,7 @@ var game =
                 game.stats.totalstardust = game.stats.totalstardust.add(game.supernova.getStarDust());
                 game.stats.totalaliendust = game.stats.totalaliendust.add(game.supernova.getAlienDust());
                 game.stats.totalfairydust = game.stats.totalfairydust.add(game.supernova.getFairyDust());
+                game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(game.supernova.getEmblems());
             }
             // REMOVE YOUR STUFF
             game.dimension = 0;

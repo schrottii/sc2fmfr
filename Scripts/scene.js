@@ -2381,14 +2381,14 @@ var scenes =
                 }
                 else {
                     var compareIDs = [
-                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks", "totalstardust", "totalaliendust", "totalfairydust"
+                        "totallegendaryscrap", "totalsteelmagnets", "totalbluebricks", "totalfishingnets", "totalbuckets", "totaltanks", "totalstardust", "totalaliendust", "totalfairydust", "totalcosmicemblems"
                     ];
-                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks, game.stats.totalstardust, game.stats.totalaliendust, game.stats.totalfairydust];
+                    var compareNums = [game.stats.totallegendaryscrap, game.stats.totalsteelmagnets, game.stats.totalbluebricks, game.stats.totalfishingnets, game.stats.totalbuckets, game.stats.totaltanks, game.stats.totalstardust, game.stats.totalaliendust, game.stats.totalfairydust, game.stats.totalcosmicemblems];
                     var textDisplays =
                         tto({
-                            default: ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust"],
-                            de: ["Legendärer Schrott", "Stahlmagnete", "Blaue Ziegel", "Fischernetze", "Eimer", "Tankauffüllungen", "Sternenstaub", "Alienstaub", "Feenstaub"],
-                            ru: ["Всего Легендарного Мусора", "Всего Стальных Магнитов", "Всего Голубых Кирпичей", "Всего Рыболовных Сетей", "Всего Вёдер", "Всего Заполнений Бака", "Всего Звёздной Пыли", "Всего Инопланетной Пыли", "Всего Волшебной Пыли"],
+                            default: ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust", "Total Cosmic Emblems"],
+                            de: ["Legendärer Schrott", "Stahlmagnete", "Blaue Ziegel", "Fischernetze", "Eimer", "Tankauffüllungen", "Sternenstaub", "Alienstaub", "Feenstaub", "Kosmische Embleme"],
+                            ru: ["Всего Легендарного Мусора", "Всего Стальных Магнитов", "Всего Голубых Кирпичей", "Всего Рыболовных Сетей", "Всего Вёдер", "Всего Заполнений Бака", "Всего Звёздной Пыли", "Всего Инопланетной Пыли", "Всего Волшебной Пыли", "Космические Эмблемы"],
                         });
                 }
 

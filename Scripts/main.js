@@ -70,6 +70,10 @@ let shortV = {
     "totalMerges": "ttm",
     "giftsSent": "gfs",
     "giftsReceived": "gfo",
+    "totalstardust": "csd",
+    "totalaliendust": "cad",
+    "totalfairydust": "cfd",
+    "totalcosmicemblems": "cem",
 }
 
 var spawnTime =
@@ -1275,7 +1279,7 @@ function exportCompare() {
     let exportCode = {};
 
     for (e in pexportCode) {
-        console.log(e, shortV[e]);
+        //console.log(e, shortV[e]);
         exportCode[shortV[e]] = typeof (pexportCode[e]) == "object" ? pexportCode[e].toPrecision(6).toString() : pexportCode[e].toFixed(6).toString();
     }
 
@@ -1466,6 +1470,7 @@ function loadGame(saveCode, isFromFile=false)
             game.stats.totalstardust = new Decimal(100);
             game.stats.totalaliendust = new Decimal(100);
             game.stats.totalfairydust = new Decimal(100);
+            game.stats.totalcosmicemblems = new Decimal(1);
 
             game.supernova.stars = new Decimal(1);
             game.supernova.starDust = new Decimal(100);
@@ -2132,6 +2137,23 @@ function loadGame(saveCode, isFromFile=false)
             if (game.supernova.cosmicUpgrades.hyperBuy.stars == 5) {
                 // Cost change refund :-)
                 if (game.supernova.cosmicUpgrades.hyperBuy.level == 1) game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(2);
+            }
+            if (game.stats.totalcosmicemblems.lt(game.supernova.cosmicEmblems)) {
+                game.stats.totalcosmicemblems = game.supernova.cosmicEmblems;
+                for (tcei = 0; tcei < Object.keys(game.supernova.cosmicUpgrades).length; tcei++) {
+                    let thisOne = game.supernova.cosmicUpgrades[Object.keys(game.supernova.cosmicUpgrades)[tcei]];
+                    //console.log(tcei, thisOne.level);
+                    if (thisOne.level == 1) {
+                        game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(thisOne.getPrice());
+                        //console.log("inc.lvl 1     " + game.stats.totalcosmicemblems);
+                    }
+                    else {
+                        for (j = 0; j < thisOne.level; j++) {
+                            game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(thisOne.getPrice(j));
+                            //console.log("inc.lvl " + j + "     " + game.stats.totalcosmicemblems);
+                        }
+                    }
+                }
             }
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {

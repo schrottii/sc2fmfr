@@ -541,7 +541,7 @@ class UIUpgrade2 extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 100, false) : upg.buy(doround), { quadratic: true }),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 150, false) : upg.buy(doround), { quadratic: true }),
                 new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y + 0.025, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => {

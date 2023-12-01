@@ -2145,8 +2145,8 @@ function loadGame(saveCode, isFromFile=false)
                 // Cost change refund :-)
                 if (game.supernova.cosmicUpgrades.hyperBuy.level == 1) game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(2);
             }
-            if (game.stats.totalcosmicemblems.lt(game.supernova.cosmicEmblems)) {
-                game.stats.totalcosmicemblems = game.supernova.cosmicEmblems;
+            if (game.stats.totalcosmicemblems.lt(game.supernova.cosmicEmblems.max(game.supernova.stars))) {
+                game.stats.totalcosmicemblems = game.supernova.cosmicEmblems.max(game.supernova.stars);
                 for (tcei = 0; tcei < Object.keys(game.supernova.cosmicUpgrades).length; tcei++) {
                     let thisOne = game.supernova.cosmicUpgrades[Object.keys(game.supernova.cosmicUpgrades)[tcei]];
                     //console.log(tcei, thisOne.level);

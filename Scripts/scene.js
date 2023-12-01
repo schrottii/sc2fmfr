@@ -3294,7 +3294,7 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.doublePlasticBags, images.upgrades.doublePlasticBags, "tree30", 0.5, 5.15, "table"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherNeptuneMax, images.upgrades.higherNeptuneMax, "tree31", 0.8, 5.15, "table"),
 
-                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterMergeMastery, images.upgrades.fasterMaster, "tree32", 0.2, 5.45, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.fasterMergeMastery, images.upgrades.fasterMastery, "tree32", 0.2, 5.45, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.cheaperMythus, images.upgrades.cheaperMythus, "tree33", 0.5, 5.45, "table2"),
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockAutoCollectors, images.upgrades.unlockAutoCollectors, "tree34", 0.8, 5.45, "table2"),
 

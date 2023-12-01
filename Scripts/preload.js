@@ -205,7 +205,6 @@ var images =
         strongerBarrelTiers: loadImage("Images/Upgrades/barreltiers.png"),
         strongerMasteryMagnets: loadImage("Images/Upgrades/strongermasterymagnets.png"),
         strongerMasteryScrap: loadImage("Images/Upgrades/strongermasteryscrap.png"),
-        fasterMaster: loadImage("Images/Upgrades/fastermaster.png"),
         shorterGSStorms: loadImage("Images/Upgrades/shorterGSStorms.png"),
         higherNeptuneMax: loadImage("Images/Upgrades/higherneptunemax.png"),
         unlockAutoCollectors: loadImage("Images/Upgrades/unlockautocollectors.png"),

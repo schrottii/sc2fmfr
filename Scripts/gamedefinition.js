@@ -1230,7 +1230,7 @@ var game =
         amount: new Decimal(0),
         isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockScrews),
 
-        getScrews: level => new Decimal(2 + Math.floor(level / 100)),
+        getScrews: level => new Decimal(2 + Math.floor(Math.min(Math.max(23, getScrews()), level / 100))),
 
         upgrades:
         {

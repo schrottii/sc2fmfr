@@ -715,7 +715,7 @@ var scenes =
         new Scene("MagnetUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
-                new UIText(() => tt("magnetupgrades"), 0.5, 0.1, 0.1, "white", {
+                new UIText(() => tt("magnetupgrades"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title

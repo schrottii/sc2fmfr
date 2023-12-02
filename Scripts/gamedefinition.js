@@ -1230,7 +1230,7 @@ var game =
         amount: new Decimal(0),
         isUnlocked: () => applyUpgrade(game.skillTree.upgrades.unlockScrews),
 
-        getScrews: level => new Decimal(2 + Math.floor(Math.min(Math.max(23, getScrews()), (level / 100).mul(applyUpgrade(game.barrelMastery.upgrades.screwBoost).pow(getTotalLevels(9)))   ))),
+        getScrews: level => new Decimal(2 + Math.floor(Math.min(Math.max(23, getScrews()), (level / 100)))).mul(applyUpgrade(game.barrelMastery.upgrades.screwBoost).pow(getTotalLevels(9))),
 
         upgrades:
         {
@@ -1253,7 +1253,7 @@ var game =
                 level => 3 * level,
                 {
                     maxLevel: 200,
-                    getEffectDisplay: () => effectDisplayTemplates.numberStandard(1, "+", "%")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "%")
                 }),
             moreMergeTokens: new ScrewUpgrade(
                 level => new Decimal(Math.floor(100 * Math.pow(1.006, level + Math.max((level - 99) / 75, 0)))),

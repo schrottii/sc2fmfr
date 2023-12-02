@@ -225,6 +225,8 @@ const trans_de = {
     gifttext2: "(basierend auf Vorräten)",
     gifttext3: "Nachricht? (Max. 80 Zeichen)",
     gifttext4: "Was ist der Freundescode von dem Freund, zu dem du es schicken möchtest?",
+    entercode: "Gebe den Geschenkcode ein, den du erhalten hast",
+    importantmessage: "Wichtige Nachricht",
 
     giftcontent: "Wähle den Inhalt aus",
     opengift: "Geschenk öffnen",
@@ -304,6 +306,7 @@ const trans_de = {
     mag3: "Höhere Chance auf\nMagnete von Verbindungen",
     mag4: "Schnellere Auto Verbindungen",
     mag5: "Weniger Verbindungen sind nötig\num die Ziegelsteinprod.\nzu verdoppeln",
+    magnetupgrades: "Magnet-Upgrades",
 
     // Golden Scrap
     gs1: "Mehr Schrott",
@@ -325,6 +328,7 @@ const trans_de = {
     frag2: "Mehr Magnete",
     darkfrag1: "Mehr Schrott in 2. Dim.",
     darkfrag2: "Mehr Fragmente",
+    fragments: "Fragmente",
 
     // Mastery
     mastery1: "Mehr Schrott für L1 Tonnen",
@@ -392,6 +396,9 @@ const trans_de = {
     beam5: "Längere Stahlträgerstürme",
     beam6: "Mehr Schrott",
     beam7: "Mehr Magnete",
+    tryincreasing: "Versuche, mehr Stahl zu verdienen\n Sorte",
+    askbeammulti: "Welcher Multi?",
+    currentbmulti: "Multi",
 
     aero1: "Aerostahl erscheint häufiger",
     aero2: "Fallende Magnete fallen\nlangsamer",

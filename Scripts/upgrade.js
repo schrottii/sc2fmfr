@@ -447,8 +447,8 @@ class ScrapUpgrade
 
     getPriceDisplay(suffix, prefix, space, showResource)
     {
-        let s = suffix !== undefined ? suffix : "";
         let p = prefix !== undefined ? prefix : "";
+        let s = suffix !== undefined ? suffix : "";
         let spaceChar = space || space === undefined ? " " : "";
         let img = showResource ? getResourceImage(this.resource) : "";
         if (this.level < this.getMaxLevel())
@@ -938,6 +938,7 @@ var effectDisplayTemplates =
             c.precision = digits;
             return function ()
             {
+                if (game.settings.lang == "ru" && s == "% Chance") s = "% Шанс";
                 if (this.level === this.getMaxLevel())
                 {
                     return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s;

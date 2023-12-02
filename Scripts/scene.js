@@ -715,7 +715,7 @@ var scenes =
         new Scene("MagnetUpgrades",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
-                new UIText("Magnet Upgrades", 0.5, 0.1, 0.1, "white", {
+                new UIText(() => tt("magnetupgrades"), 0.5, 0.1, 0.1, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -902,7 +902,7 @@ var scenes =
                     }
                 }, 0.5, 0.2, 0.03, "black"),
 
-                new UIText(() => "$images.fragment$ Barrel Fragments: " + formatNumber(game.fragment.amount), 0.5, 0.3, 0.04, "yellow"),
+                new UIText(() => "$images.fragment$ " + tt("fragments") + ": " + formatNumber(game.fragment.amount), 0.5, 0.3, 0.04, "yellow"),
                 new UIFragmentUpgrade(game.fragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.45, "frag1"),
                 new UIFragmentUpgrade(game.fragment.upgrades.magnetBoost, images.upgrades.magnetBoost, 0.55, "frag2", "table2"),
 
@@ -1575,7 +1575,7 @@ var scenes =
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow"),
                 new UIText(() => tt("selected") + ": " + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] + "\n" + tt("convertto") + [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo], 0.5, 0.4, 0.04, "yellow"),
                 new UIText(() => tt("convertworth").replace("<amount>", formatNumber(worth1)).replace("<amount2>", formatNumber(worth2)), 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 > 0 && worth2 > 0 }),
-                new UIText(() => "Try increasing the value of falling beams\nof that type: " + (worth1 < 1 ? [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] : [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo]) + "!", 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 < 1 || worth2 < 1 }),
+                new UIText(() => tt("tryincreasing") + ": " + (worth1 < 1 ? [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvert] : [tt("beams"), tt("aerobeams"), tt("angelbeams"), tt("reinforcedbeams"), tt("glitchbeams")][selectedConvertTo]) + "!", 0.5, 0.435, 0.04, "yellow", { isVisible: () => worth1 < 1 || worth2 < 1 }),
 
 
                 new UIButton(0.1, 0.525, 0.1, 0.1, images.beam, () => selectedConvert = 0, { quadratic: true }),
@@ -1591,7 +1591,7 @@ var scenes =
                 new UIButton(0.9, 0.65, 0.1, 0.1, images.glitchbeam, () => selectedConvertTo = 4, { quadratic: true }),
 
 
-                new UIText(() => "Current convert multi: x" + multiConvert, 0.5, 0.95, 0.04, "yellow"),
+                new UIText(() => tt("currentbmulti") + ": x" + formatNumber(multiConvert), 0.5, 0.95, 0.04, "yellow"),
 
                 new UIButton(0.5, 0.785, 0.4, 0.1, images.convertbutton, () => {
                     if (convertButtonCheck(selectedConvert, worth1)) {
@@ -1624,8 +1624,11 @@ var scenes =
                     }
                 }, { quadratic: false }),
                 new UIButton(0.76, 0.9, 0.1, 0.1, images.ezUpgrade, () => {
-                    let newMulti = parseInt(prompt("What multiplier do you want?"));
-                    if (typeof (newMulti) == typeof (1000)) multiConvert = newMulti;
+                    let newMulti = prompt(tt("askbeammulti"));
+                    if (newMulti.split("e")[1] != undefined) {
+                        multiConvert = new Decimal(newMulti);
+                    }
+                    else if (typeof (parseInt(newMulti)) == typeof (1000)) multiConvert = newMulti;
                 }, { quadratic: false, isVisible: () => game.supernova.stars.gt(0) })
             ],
             function () {
@@ -1636,8 +1639,8 @@ var scenes =
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.24);
                 ctx.fillRect(w * 0.05, h * 0.388, w * 0.9, h * 0.06);
 
-                worth1 = Math.ceil(getStonks(selectedConvert) * 1.5) * multiConvert;
-                worth2 = Math.floor(getStonks(selectedConvertTo)) * multiConvert;
+                worth1 = new Decimal(Math.ceil(getStonks(selectedConvert) * 1.5)).mul(multiConvert);
+                worth2 = new Decimal(Math.floor(getStonks(selectedConvertTo))).mul(multiConvert);
             }),
         new Scene("Aerobeams",
             [
@@ -2090,7 +2093,7 @@ var scenes =
 
                 new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
-                        let giftCode = prompt("Enter the gift code your friend sent to you");
+                        let giftCode = prompt(tt("entercode"));
 
                         giftCode = giftCode.replace("GIFT", "ey");
                         giftCode = giftCode.replace("i5e", "I6I");
@@ -2129,7 +2132,7 @@ var scenes =
                                 }
 
                                 GameNotification.create(new TextNotification("+" + formatNumber(giftContent.amount) + " " + tt("sendgift" + giftContent.content), "Gift opened successfully!"));
-                                GameNotification.create(new TextNotification(giftContent.message, "Important message"));
+                                GameNotification.create(new TextNotification(giftContent.message, tt("importantmessage")));
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);
 

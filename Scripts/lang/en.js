@@ -226,6 +226,8 @@ const trans_en = {
     gifttext2: "(based on your current amount)",
     gifttext3: "Message? (Max. 80 characters)",
     gifttext4: "What is the friend code of the player you want to send it to?",
+    entercode: "Enter the gift code your friend sent to you",
+    importantmessage: "Important Message",
 
     giftcontent: "Select Gift Content",
     opengift: "Open Gift",
@@ -301,6 +303,7 @@ const trans_en = {
     mag3: "Increase the Chance to\nget Magnets by merging",
     mag4: "Increase Auto Merge Speed",
     mag5: "Less Merges are needed\nto double Brick\nproduction.",
+    magnetupgrades: "Magnet Upgrades",
 
     // Golden Scrap
     gs1: "Get More Scrap",
@@ -322,6 +325,7 @@ const trans_en = {
     frag2: "Get More Magnets",
     darkfrag1: "Get More Scrap in 2. Dim.",
     darkfrag2: "Get More Fragments",
+    fragments: "Barrel Fragments",
 
     // Mastery
     mastery1: "Get More Scrap for L1 barrels",
@@ -389,6 +393,9 @@ const trans_en = {
     beam5: "Beam storms are longer",
     beam6: "Get more Scrap",
     beam7: "Get more Magnets",
+    tryincreasing: "Try increasing the value of falling beams\nof that type",
+    askbeammulti: "What multiplier do you want?",
+    currentbmulti: "Current convert multi",
 
     aero1: "Aerobeams spawn more often",
     aero2: "Falling Magnets are slower",

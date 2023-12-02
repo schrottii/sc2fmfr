@@ -22,6 +22,7 @@ const trans_en = {
     "You have found me": "You have found me",
     "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
     autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
+    unlocks: "Unlocks",
 
     // OPTIONS
     "Options": "Options",
@@ -83,6 +84,7 @@ const trans_en = {
     "ogsc2": "Play the Original SC2",
     "myserver": "My Discord Server",
     "myyt": "My Youtube Channel",
+    "myw": "My Other Games",
 
     // SAVE CODE
     "export": "Export",
@@ -162,6 +164,7 @@ const trans_en = {
     masterylvlup: "Mastery Level Up!",
 
     // QUESTS
+    "Merge Quests": "Merge Quests",
     nextquest: "Next Quest in",
     questcomplete: "Merge Quest Complete!",
     confirm: "Confirm",
@@ -223,6 +226,8 @@ const trans_en = {
     gifttext2: "(based on your current amount)",
     gifttext3: "Message? (Max. 80 characters)",
     gifttext4: "What is the friend code of the player you want to send it to?",
+    entercode: "Enter the gift code your friend sent to you",
+    importantmessage: "Important Message",
 
     giftcontent: "Select Gift Content",
     opengift: "Open Gift",
@@ -242,6 +247,7 @@ const trans_en = {
 
     // FACTORY
     shrine: "Mythic Shrine",
+    "shrine-exp": "Max. these upgrades to unlock their buildings!",
     generator: "Generator",
     scrapfactory: "Scrap Factory",
     autobuyers: "Auto Buyers",
@@ -260,6 +266,9 @@ const trans_en = {
     stars: "Stars",
     stars2: "Stars",
     emblems: "Cosmic Emblems",
+    pins: "Cosmic Pins",
+    hyperBuyCapText: "New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)",
+    hyperBuyPerText: "New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)",
 
     supernovatext: "You have gathered enough power from Glitch Beams and built\na laser powerful enough to destroy the sun, causing a Supernova,\ndestroying the entire solar system and everything in it.\nPress the button below to learn more.",
     supernovawarning: "You will lose everything except stats, achievements, wrenches,\nBarrel Mastery, settings and things earned from Supernovas.",
@@ -267,6 +276,7 @@ const trans_en = {
     youwillearn: "You will earn: ",
     anothersupernovatext: "Click the button below to do a Supernova.",
     supernovagetmore: "Earn more Emblems by reaching very high barrels.\nEarn more dust by collecting certain resources.",
+    doyoureally: "Do you really want to do a Supernova?",
 
     resetstar: "Do you really want to reset your Star Dust Upgrades? (100% refund)",
     resetalien: "Do you really want to reset your Alien Dust Upgrades? (100% refund)",
@@ -294,6 +304,7 @@ const trans_en = {
     mag3: "Increase the Chance to\nget Magnets by merging",
     mag4: "Increase Auto Merge Speed",
     mag5: "Less Merges are needed\nto double Brick\nproduction.",
+    magnetupgrades: "Magnet Upgrades",
 
     // Golden Scrap
     gs1: "Get More Scrap",
@@ -315,6 +326,7 @@ const trans_en = {
     frag2: "Get More Magnets",
     darkfrag1: "Get More Scrap in 2. Dim.",
     darkfrag2: "Get More Fragments",
+    fragments: "Barrel Fragments",
 
     // Mastery
     mastery1: "Get More Scrap for L1 barrels",
@@ -322,6 +334,11 @@ const trans_en = {
     mastery3: "Get More Bricks for L3 barrels",
     mastery4: "Get More Fragments for L4 barrels",
     mastery5: "Get More Magnets for L5 barrels",
+    mastery6: "Get More Beams for L6 barrels",
+    mastery7: "Get More Dark Fragments\nfor L7 barrels",
+    mastery8: "Get More Tires for L8 barrels",
+    mastery9: "Get More Screws for L9 barrels",
+    mastery10: "Get More Dark Scrap\nfor L10 barrels",
 
     // Merge Quests
     mq1: "Get More Scrap",
@@ -377,6 +394,9 @@ const trans_en = {
     beam5: "Beam storms are longer",
     beam6: "Get more Scrap",
     beam7: "Get more Magnets",
+    tryincreasing: "Try increasing the value of falling beams\nof that type",
+    askbeammulti: "What multiplier do you want?",
+    currentbmulti: "Current convert multi",
 
     aero1: "Aerobeams spawn more often",
     aero2: "Falling Magnets are slower",

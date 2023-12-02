@@ -359,7 +359,7 @@ class ScrapUpgrade
         {
             // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
-            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 40) / 20));
+            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20));
             else game.skillTree.upgrades.higherDarkScrapTokenMax.level = Math.min(14, Math.floor(resource / 1200));
             this.onBuy();
             this.afterBuy();
@@ -371,7 +371,7 @@ class ScrapUpgrade
         // Made by Schrottii
 
         if (level == "hyperbuy") {
-            //console.log("yup, is hyper")
+            // is hyperbuy, level = "hyperbuy"
             level = 10000;
 
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
@@ -379,7 +379,6 @@ class ScrapUpgrade
                 // Keep doubling as long as possible
                 while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
                     level *= 2;
-                    //console.log(level);
                 }
                 level = level / 2;
 
@@ -408,15 +407,20 @@ class ScrapUpgrade
             }
             else {
                 level = level + this.level;
+                //console.log(level)
             }
         }
         else {
             if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
             else resource = getUpgradeResource(this.resource);
         }
+
+        // cap the level
         if (game.settings.hyperBuyCap != 0 && originHyper) level = this.level + Math.min(level, game.settings.hyperBuyCap);
-        if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 || isNaN(this.getPrice(this.level + level))) {
-            this.level = this.getMaxLevel();
+        if (level > this.getMaxLevel()) level = this.getMaxLevel();
+
+        if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 /*|| isNaN(this.getPrice(level))*/) {
+            //this.level = this.getMaxLevel();        ummmm what???
             return false;
         }
 
@@ -443,8 +447,8 @@ class ScrapUpgrade
 
     getPriceDisplay(suffix, prefix, space, showResource)
     {
-        let s = suffix !== undefined ? suffix : "";
         let p = prefix !== undefined ? prefix : "";
+        let s = suffix !== undefined ? suffix : "";
         let spaceChar = space || space === undefined ? " " : "";
         let img = showResource ? getResourceImage(this.resource) : "";
         if (this.level < this.getMaxLevel())
@@ -934,6 +938,7 @@ var effectDisplayTemplates =
             c.precision = digits;
             return function ()
             {
+                if (game.settings.lang == "ru" && s == "% Chance") s = "% Шанс";
                 if (this.level === this.getMaxLevel())
                 {
                     return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s;

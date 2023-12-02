@@ -70,6 +70,10 @@ let shortV = {
     "totalMerges": "ttm",
     "giftsSent": "gfs",
     "giftsReceived": "gfo",
+    "totalstardust": "csd",
+    "totalaliendust": "cad",
+    "totalfairydust": "cfd",
+    "totalcosmicemblems": "cem",
 }
 
 var spawnTime =
@@ -238,10 +242,7 @@ function update()
             timeMode = false;
             let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
 
-            if (game.ms.includes(215) == false && cogReward > 999) {
-                game.ms.push(215);
-                GameNotification.create(new MilestoneNotificaion(216));
-            }
+            basicAchievementUnlock(215, cogReward > 999);
 
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
@@ -640,33 +641,38 @@ function getBeamBaseValue() {
         .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getAeroBeamValue() {
     return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
         .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getAngelBeamValue() {
     return new Decimal(applyUpgrade(game.angelbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getReinforcedBeamValue() {
     return new Decimal(applyUpgrade(game.reinforcedbeams.upgrades.reinforce))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion));
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 function getGlitchBeamValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
-        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis)).floor();
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 
 function getReinforcedTapsNeeded() {
@@ -682,7 +688,7 @@ function getFragmentBaseValue() {
 }
 
 function getDarkFragmentBaseValue() {
-    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2));
+    return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2)).mul(applyUpgrade(game.barrelMastery.upgrades.darkFragmentBoost).pow(getTotalLevels(7)));
 }
 
 function getMagnetBaseValue()
@@ -701,7 +707,8 @@ function getMagnetBaseValue()
 function getDarkScrap(level) {
     return new Decimal(1.0075).pow(level)
         .mul(applyUpgrade(game.darkscrap.upgrades.darkScrapBoost))
-        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost));
+        .mul(applyUpgrade(game.cogwheels.upgrades.darkScrapBoost))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.darkScrapBoost).pow(getTotalLevels(10)));
 }
 
 function craftingMulti() {
@@ -709,7 +716,7 @@ function craftingMulti() {
 }
 
 function getScrews(isFallingScrew=false) {
-    return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1)));
+    return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1))).mul(applyUpgrade(game.barrelMastery.upgrades.screwBoost).pow(getTotalLevels(9)));
 }
 
 function fallingMagnetWorth() {
@@ -746,6 +753,13 @@ function dustReset(upgradeType, dustType, dustStat) {
         }
     }
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
+}
+
+function basicAchievementUnlock(index, req=true) {
+    if (game.ms.includes(index) == false && req) {
+        game.ms.push(index);
+        GameNotification.create(new MilestoneNotification(index + 1));
+    }
 }
 
 function hardReset() {
@@ -934,7 +948,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         if (calculateMasteryLevel(game.barrelMastery.b[lvl % BARRELS]) > game.barrelMastery.bl[lvl % BARRELS]) {
             game.barrelMastery.bl[lvl % BARRELS] += 1;
 
-            for (i = 1; i < 11; i++) {
+            for (i = 1; i < 21; i++) {
                 game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
             }
 
@@ -971,11 +985,12 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 
     if (game.scrapUpgrades.betterBarrels.level % 1000 == 224 || game.scrapUpgrades.betterBarrels.level % 1000 == 572) {
+        // ehhh no basic here
         if (game.ms.includes(86) == false) {
             trophyMergeCounter += 1;
             if (trophyMergeCounter > 9999) {
                    game.ms.push(86);
-                   GameNotification.create(new MilestoneNotificaion(87));
+                   GameNotification.create(new MilestoneNotification(87));
                 }
             }
     }
@@ -997,16 +1012,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         game.tires.onMerge();
     }
 
-    for (i in game.mergeQuests.quests) {
-        if (game.mergeQuests.quests[i].currentMerges > 0) {
-            upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
-            upgradingType = i;
-        }
-    }
-    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
-        upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
-        upgradingType = i;
-    }
+    updateUpgradingBarrelFromBB();
 
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
 
@@ -1031,12 +1037,12 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 }
 
-const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994];
+const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994, 997];
 
 function duckTales(type=0) {
     let duckCheck = true;
     let duckAmount = 0;
-    // new: 162, 388, 478, 743, 994
+    // new: 162, 388, 478, 743, 994        997
     duckBarrels.forEach(i => {
         if (game.barrelMastery.b[i - 1] < 100000) {
             duckCheck = false;
@@ -1273,7 +1279,7 @@ function exportCompare() {
     let exportCode = {};
 
     for (e in pexportCode) {
-        console.log(e, shortV[e]);
+        //console.log(e, shortV[e]);
         exportCode[shortV[e]] = typeof (pexportCode[e]) == "object" ? pexportCode[e].toPrecision(6).toString() : pexportCode[e].toFixed(6).toString();
     }
 
@@ -1464,12 +1470,18 @@ function loadGame(saveCode, isFromFile=false)
             game.stats.totalstardust = new Decimal(100);
             game.stats.totalaliendust = new Decimal(100);
             game.stats.totalfairydust = new Decimal(100);
+            game.stats.totalcosmicemblems = new Decimal(1);
 
             game.supernova.stars = new Decimal(1);
             game.supernova.starDust = new Decimal(100);
             game.supernova.alienDust = new Decimal(100);
             game.supernova.fairyDust = new Decimal(100);
             game.supernova.cosmicEmblems = new Decimal(1);
+
+            game.supernova.pins.alienPin = 0;
+            game.supernova.pins.fairyPin = 0;
+            game.supernova.pins.starPin = 0;
+
             for (u in game.supernova.starDustUpgrades) {
                 game.supernova.starDustUpgrades[u].level = 0;
                 game.supernova.starDustUpgrades[u].lock = false;
@@ -1622,6 +1634,7 @@ function loadGame(saveCode, isFromFile=false)
                 else {
                     game.stats[k] = new Decimal(0);
                 }
+                if (isNaN(game.stats[k])) game.stats[k] = new Decimal(0);
             });
         }
         else {
@@ -1782,11 +1795,11 @@ function loadGame(saveCode, isFromFile=false)
         if (loadObj.beams !== undefined) {
             game.beams.amount = loadVal(new Decimal(loadObj.beams.amount), new Decimal(0));
             game.beams.selected = loadVal(new Decimal(loadObj.beams.selected), 0);
-            game.beams.hbv = loadVal(loadObj.beams.hbv, 0);
-            game.beams.haebv = loadVal(loadObj.beams.haebv, 0);
-            game.beams.habv = loadVal(loadObj.beams.habv, 0);
-            game.beams.hrbv = loadVal(loadObj.beams.hrbv, 0);
-            game.beams.hgbv = loadVal(loadObj.beams.hgbv, 0);
+            game.beams.hbv = loadVal(new Decimal(loadObj.beams.hbv), new Decimal(0));
+            game.beams.haebv = loadVal(new Decimal(loadObj.beams.haebv), new Decimal(0));
+            game.beams.habv = loadVal(new Decimal(loadObj.beams.habv), new Decimal(0));
+            game.beams.hrbv = loadVal(new Decimal(loadObj.beams.hrbv), new Decimal(0));
+            game.beams.hgbv = loadVal(new Decimal(loadObj.beams.hgbv), new Decimal(0));
 
             if (loadObj.beams.upgrades !== undefined) {
                 Object.keys(loadObj.beams.upgrades).forEach(k => {
@@ -2037,7 +2050,7 @@ function loadGame(saveCode, isFromFile=false)
                 game.barrelMastery.bl.push(calculateMasteryLevel(game.barrelMastery.b[i]));
             }
             game.barrelMastery.masteryTokens = new Decimal(loadObj.barrelMastery.masteryTokens);
-            for (i = 1; i < 11; i++) {
+            for (i = 1; i < 21; i++) {
                 game.barrelMastery.levels[i - 1] = calculateTotalLevels(i);
             }
             Object.keys(loadObj.barrelMastery.upgrades).forEach(k => {
@@ -2104,9 +2117,19 @@ function loadGame(saveCode, isFromFile=false)
         // Supernova stuff
         if (loadObj.supernova !== undefined) {
             game.supernova.cosmicEmblems = loadVal(new Decimal(loadObj.supernova.cosmicEmblems), new Decimal(0));
-            game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
             game.supernova.alienDust = loadVal(new Decimal(loadObj.supernova.alienDust), new Decimal(0));
             game.supernova.fairyDust = loadVal(new Decimal(loadObj.supernova.fairyDust), new Decimal(0));
+            game.supernova.starDust = loadVal(new Decimal(loadObj.supernova.starDust), new Decimal(0));
+            if (loadObj.supernova.pins !== undefined) {
+                game.supernova.pins.alienPin = loadVal(loadObj.supernova.pins.alienPin, 0);
+                game.supernova.pins.fairyPin = loadVal(loadObj.supernova.pins.fairyPin, 0);
+                game.supernova.pins.starPin = loadVal(loadObj.supernova.pins.starPin, 0);
+            }
+            else {
+                game.supernova.pins.alienPin = 0;
+                game.supernova.pins.fairyPin = 0;
+                game.supernova.pins.starPin = 0;
+            }
             game.supernova.stars = loadVal(new Decimal(loadObj.supernova.stars), new Decimal(0));
             if (loadObj.supernova.cosmicUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.cosmicUpgrades).forEach(k => {
@@ -2121,6 +2144,23 @@ function loadGame(saveCode, isFromFile=false)
             if (game.supernova.cosmicUpgrades.hyperBuy.stars == 5) {
                 // Cost change refund :-)
                 if (game.supernova.cosmicUpgrades.hyperBuy.level == 1) game.supernova.cosmicEmblems = game.supernova.cosmicEmblems.add(2);
+            }
+            if (game.stats.totalcosmicemblems.lt(game.supernova.cosmicEmblems.max(game.supernova.stars))) {
+                game.stats.totalcosmicemblems = game.supernova.cosmicEmblems.max(game.supernova.stars);
+                for (tcei = 0; tcei < Object.keys(game.supernova.cosmicUpgrades).length; tcei++) {
+                    let thisOne = game.supernova.cosmicUpgrades[Object.keys(game.supernova.cosmicUpgrades)[tcei]];
+                    //console.log(tcei, thisOne.level);
+                    if (thisOne.level == 1) {
+                        game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(thisOne.getPrice());
+                        //console.log("inc.lvl 1     " + game.stats.totalcosmicemblems);
+                    }
+                    else {
+                        for (j = 0; j < thisOne.level; j++) {
+                            game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(thisOne.getPrice(j));
+                            //console.log("inc.lvl " + j + "     " + game.stats.totalcosmicemblems);
+                        }
+                    }
+                }
             }
             if (loadObj.supernova.starDustUpgrades !== undefined) {
                 Object.keys(loadObj.supernova.starDustUpgrades).forEach(k => {
@@ -2251,6 +2291,11 @@ function updateUpgradingBarrelFromBB(plus=0) {
             upgradingType = i;
         }
     }
+    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
+        upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
+        upgradingType = "day";
+    }
+
     if (upgradingBarrel == 0) upgradingBarrel = game.scrapUpgrades.betterBarrels.level + plus;
 }
 

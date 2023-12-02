@@ -168,10 +168,7 @@ class FallingItem extends MovingItem
                 }
                 else {
                     // Repeats the beam
-                    if (game.ms.includes(142) == false) {
-                        game.ms.push(142);
-                        GameNotification.create(new MilestoneNotificaion(143));
-                    }
+                    basicAchievementUnlock(142);
                     this.y = -1;
                     this.acc = 0;
                     this.autoTried = false;
@@ -274,11 +271,8 @@ var movingItemFactory =
             function (isAuto = false)
             {
                 this.collected = true;
-                if (game.ms.includes(89) == false && barrels[0] != undefined) {
-                    if (barrels[0].level.toFixed(0) == 384) {
-                        game.ms.push(89);
-                        GameNotification.create(new MilestoneNotificaion(90));
-                    }
+                if (barrels[0] != undefined && barrels[0].level.toFixed(0) == 384) {
+                    basicAchievementUnlock(89);
                 }
                 if(game.settings.lowPerformance)
                 {
@@ -297,10 +291,7 @@ var movingItemFactory =
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
                     currentScene.popupTexts.push(new PopUpText("Spawned!", this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
-                    if (game.ms.includes(112) == false) {
-                            game.ms.push(112);
-                            GameNotification.create(new MilestoneNotificaion(113));
-                    }
+                    basicAchievementUnlock(112);
                 }
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, {color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005}))
             }))
@@ -365,10 +356,7 @@ var movingItemFactory =
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100 || isAuto) {
                     this.progress += 3;
-                    if (game.ms.includes(131) == false && !isAuto) {
-                        game.ms.push(131);
-                        GameNotification.create(new MilestoneNotificaion(132));
-                    }
+                    basicAchievementUnlock(131, !isAuto);
                 }
                 else {
                     this.progress += 1;
@@ -384,7 +372,7 @@ var movingItemFactory =
 
                     if (game.ms.includes(205) == false && game.settings.musicSelect == 2 && value > 139) {
                         game.ms.push(205);
-                        GameNotification.create(new MilestoneNotificaion(206));
+                        GameNotification.create(new MilestoneNotification(206));
                     }
 
                     game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(value);
@@ -399,16 +387,14 @@ var movingItemFactory =
             }, 0))
     },
     fallingGlitchBeam: (value) => {
+        value = new Decimal(value);
         let rndm = applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? Math.max(0.75, Math.random() + 0.25) : 1;
         movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15 * rndm, h * 0.15 * rndm, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function (isAuto = false) {
                 if (this.cooldown < 0.05) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100 || isAuto) {
                     this.progress += 3;
-                    if (game.ms.includes(131) == false && !isAuto) {
-                        game.ms.push(131);
-                        GameNotification.create(new MilestoneNotificaion(132));
-                    }
+                    basicAchievementUnlock(131, !isAuto);
                     this.x = w * Math.random();
                     this.y = h * Math.min(Math.random(), 0.6);
                 }

@@ -33,7 +33,7 @@ class Milestone
             {
                 if(createNotifs)
                 {
-                    GameNotification.create(new MilestoneNotificaion(game.milestones.achievements[i].id));
+                    GameNotification.create(new MilestoneNotification(game.milestones.achievements[i].id));
                 }
                 game.ms.push(game.milestones.achievements[i].id - 1);
                 game.milestones.next = game.milestones.getNext();

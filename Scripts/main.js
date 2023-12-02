@@ -1795,11 +1795,11 @@ function loadGame(saveCode, isFromFile=false)
         if (loadObj.beams !== undefined) {
             game.beams.amount = loadVal(new Decimal(loadObj.beams.amount), new Decimal(0));
             game.beams.selected = loadVal(new Decimal(loadObj.beams.selected), 0);
-            game.beams.hbv = loadVal(loadObj.beams.hbv, 0);
-            game.beams.haebv = loadVal(loadObj.beams.haebv, 0);
-            game.beams.habv = loadVal(loadObj.beams.habv, 0);
-            game.beams.hrbv = loadVal(loadObj.beams.hrbv, 0);
-            game.beams.hgbv = loadVal(loadObj.beams.hgbv, 0);
+            game.beams.hbv = loadVal(new Decimal(loadObj.beams.hbv), new Decimal(0));
+            game.beams.haebv = loadVal(new Decimal(loadObj.beams.haebv), new Decimal(0));
+            game.beams.habv = loadVal(new Decimal(loadObj.beams.habv), new Decimal(0));
+            game.beams.hrbv = loadVal(new Decimal(loadObj.beams.hrbv), new Decimal(0));
+            game.beams.hgbv = loadVal(new Decimal(loadObj.beams.hgbv), new Decimal(0));
 
             if (loadObj.beams.upgrades !== undefined) {
                 Object.keys(loadObj.beams.upgrades).forEach(k => {

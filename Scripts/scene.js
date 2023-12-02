@@ -234,22 +234,22 @@ function getStonks(swit) {
     let worth;
     switch (swit) {
         case 0:
-            worth = (game.beams.hbv != undefined ? Math.max(getBeamBaseValue(), game.beams.hbv) : getBeamBaseValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = new Decimal(game.beams.hbv != undefined ? getBeamBaseValue().max(game.beams.hbv) : getBeamBaseValue()).div(30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 1:
-            worth = (game.beams.haebv != undefined ? Math.max(getAeroBeamValue(), game.beams.haebv) : getAeroBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
+            worth = new Decimal(game.beams.haebv != undefined ? getAeroBeamValue().max(game.beams.haebv) : getAeroBeamValue()).div(45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams));
             break;
         case 2:
-            worth = (game.beams.habv != undefined ? Math.max(getAngelBeamValue(), game.beams.habv) : getAngelBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
+            worth = new Decimal(game.beams.habv != undefined ? getAngelBeamValue().max(game.beams.habv) : getAngelBeamValue()).div(30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams));
             break;
         case 3:
-            worth = (game.beams.hrbv != undefined ? Math.max(getReinforcedBeamValue(), game.beams.hrbv) : getReinforcedBeamValue()) / (45 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = new Decimal(game.beams.hrbv != undefined ? getReinforcedBeamValue().max(game.beams.hrbv) : getReinforcedBeamValue()).div(45 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
         case 4:
-            worth = (game.beams.hgbv != undefined ? Math.max(getGlitchBeamValue(), game.beams.hgbv) : getGlitchBeamValue()) / (30 - applyUpgrade(game.beams.upgrades.fasterBeams));
+            worth = new Decimal(game.beams.hgbv != undefined ? getGlitchBeamValue().max(game.beams.hgbv) : getGlitchBeamValue()).div(30 - applyUpgrade(game.beams.upgrades.fasterBeams));
             break;
     }
-    return worth;
+    return new Decimal(worth);
 }
 
 function convertButtonCheck(type, worthn) {
@@ -1639,8 +1639,8 @@ var scenes =
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.24);
                 ctx.fillRect(w * 0.05, h * 0.388, w * 0.9, h * 0.06);
 
-                worth1 = new Decimal(Math.ceil(getStonks(selectedConvert) * 1.5)).mul(multiConvert);
-                worth2 = new Decimal(Math.floor(getStonks(selectedConvertTo))).mul(multiConvert);
+                worth1 = getStonks(selectedConvert).mul(1.5).ceil().mul(multiConvert);
+                worth2 = getStonks(selectedConvertTo).floor().mul(multiConvert);
             }),
         new Scene("Aerobeams",
             [
@@ -3394,7 +3394,7 @@ var scenes =
                 new UIText(() => tt("anothersupernovatext"), 0.5, 0.6, 0.03, "black"),
 
                 new UIButton(0.5, 0.8, 0.15, 0.15, images.supernovabutton, () => {
-                    if (confirm("Do you really want to do a Supernova?")) {
+                    if (confirm(tt("doyoureally"))) {
                         supernovaAlpha = 0.001;
                     }
                 }, { quadratic: true, isVisible: () => supernovaAlpha == 0 }),

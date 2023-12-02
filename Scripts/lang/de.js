@@ -278,6 +278,7 @@ const trans_de = {
     youwillearn: "Du wirst erhalten: ",
     anothersupernovatext: "Drücke den Knopf, um die Supernova durchzuführen.",
     supernovagetmore: "Erhalte mehr Embleme durch das erreichen sehr hoher Tonnen.\nErhalte mehr Staub durch sammeln von bestimmten Rohstoffen.",
+    doyoureally: "Willst du wirklich eine Supernova durchführen?",
 
     resetstar: "Möchtest du wirklich deine Sternenstaub-Upgrades zurücksetzen? (100% Erstattung)",
     resetalien: "Möchtest du wirklich deine Alienstaub-Upgrades zurücksetzen? (100% Erstattung)",

@@ -276,6 +276,7 @@ const trans_en = {
     youwillearn: "You will earn: ",
     anothersupernovatext: "Click the button below to do a Supernova.",
     supernovagetmore: "Earn more Emblems by reaching very high barrels.\nEarn more dust by collecting certain resources.",
+    doyoureally: "Do you really want to do a Supernova?",
 
     resetstar: "Do you really want to reset your Star Dust Upgrades? (100% refund)",
     resetalien: "Do you really want to reset your Alien Dust Upgrades? (100% refund)",

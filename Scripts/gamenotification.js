@@ -76,7 +76,7 @@ class MergeQuestNotification extends GameNotification
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
-        ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.4);
+        ctx.fillText(tt("questcomplete"), w / 2, this.y - h * 0.09, w * 0.4);
         Barrel.renderBarrel(ctx, this.barrelLvl, w * 0.35, this.y - h * 0.0325, h * 0.05);
 
         ctx.fillStyle = "white";

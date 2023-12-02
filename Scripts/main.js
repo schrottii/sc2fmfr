@@ -1037,12 +1037,12 @@ function onBarrelMerge(isAuto, lvl, bx, by)
     }
 }
 
-const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994];
+const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994, 997];
 
 function duckTales(type=0) {
     let duckCheck = true;
     let duckAmount = 0;
-    // new: 162, 388, 478, 743, 994
+    // new: 162, 388, 478, 743, 994        997
     duckBarrels.forEach(i => {
         if (game.barrelMastery.b[i - 1] < 100000) {
             duckCheck = false;

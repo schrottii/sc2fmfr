@@ -388,7 +388,7 @@ var scenes =
                 }),
                 new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
                     quadraticMin: true,
-                    isVisible: () => game.skillTree.isUnlocked,
+                    isVisible: () => game.skillTree.isUnlocked(),
                 }),
                 new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
                     {
@@ -1111,23 +1111,23 @@ var scenes =
 
                 new UIButton(0.9, 0.2, 0.07, 0.07, images.scenes.mergeQuests, () => Scene.loadScene("MergeQuests"), {
                     quadratic: true,
-                    isVisible: () => game.mergeQuests.isUnlocked
+                    isVisible: () => game.mergeQuests.isUnlocked()
                 }),
                 new UIButton(0.9, 0.1, 0.07, 0.07, images.scenes.mergeMastery, () => Scene.loadScene("MergeMastery"), {
                     quadratic: true,
-                    isVisible: () => game.mergeMastery.isUnlocked
+                    isVisible: () => game.mergeMastery.isUnlocked()
                 }),
                 new UIButton(0.9, 0.3, 0.07, 0.07, images.scenes.bricks, () => Scene.loadScene("Bricks"), {
                     quadratic: true,
-                    isVisible: () => game.bricks.isUnlocked
+                    isVisible: () => game.bricks.isUnlocked()
                 }),
                 new UIButton(0.9, 0.4, 0.07, 0.07, images.scenes.tires, () => Scene.loadScene("Tires"), {
                     quadratic: true,
-                    isVisible: () => game.tires.isUnlocked
+                    isVisible: () => game.tires.isUnlocked()
                 }),
                 new UIButton(0.9, 0.5, 0.07, 0.07, images.scenes.wrenches, () => Scene.loadScene("Wrenches"), {
                     quadratic: true,
-                    isVisible: () => game.wrenches.isUnlocked
+                    isVisible: () => game.wrenches.isUnlocked()
                 }),
                 new UIButton(0.9, 0.6, 0.07, 0.07, images.scenes.plasticbags, () => Scene.loadScene("PlasticBags"), {
                     quadratic: true,
@@ -2270,10 +2270,10 @@ var scenes =
                 new UIText(() => tt("totalmerges") + ": " + game.totalMerges + "\n" + tt("selfmerges") + ": " + game.selfMerges, 0.5, 0.8, 0.06, "black"),
                 new UIText(() => tt("mergeexplanation"), 0.5, 0.9, 0.03, "black"),
 
-                new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.35, "wrench1", "table", game.mergeMastery.isUnlocked),
-                new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.45, "wrench2", "table2", game.bricks.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.doubleMergeMastery, images.upgrades.fasterAutoMerge, 0.35, "wrench1", "table", game.mergeMastery.isUnlocked()),
+                new UIWrenchUpgrade(game.wrenches.upgrades.instantBricksChance, images.upgrades.brickBoost, 0.45, "wrench2", "table2", game.bricks.isUnlocked()),
                 new UIWrenchUpgrade(game.wrenches.upgrades.wrenchScrapBoost, images.upgrades.moreScrap, 0.55, "wrench3"),
-                new UIWrenchUpgrade(game.wrenches.upgrades.fasterBeamChance, images.upgrades.beamChance, 0.65, "wrench4", "table2", game.beams.isUnlocked),
+                new UIWrenchUpgrade(game.wrenches.upgrades.fasterBeamChance, images.upgrades.beamChance, 0.65, "wrench4", "table2", game.beams.isUnlocked()),
 
             ],
             function () {
@@ -2948,15 +2948,15 @@ var scenes =
                 });
                 // var unlocksUnlocks
                 var unlocksText = tto({
-                    default: ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "Earth (5e24 GS)", "1e213 Scrap", "Barrel 500", "12,000 Self Merges",
+                    default: ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "1e213 Scrap", "Earth (5e24 GS)", "Barrel 500", "12,000 Self Merges",
                         "Skill Tree", "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
                         "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)", "50 Stars"
                     ],
-                    de: ["1e15 Schrott", "Schrott-Boost (GS) Level 8", "1e93 Schrott", "Tonne 100", "1e153 Schrott", "Tonne 300", "Erde (5e24 GS)", "1e213 Schrott", "Tonne 500", "12,000 eigene Verbindungen",
+                    de: ["1e15 Schrott", "Schrott-Boost (GS) Level 8", "1e93 Schrott", "Tonne 100", "1e153 Schrott", "Tonne 300", "1e213 Schrott", "Erde (5e24 GS)", "Tonne 500", "12,000 eigene Verbindungen",
                         "Baum", "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
                         "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)", "50 Sterne"
                     ],
-                    ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "Земля (5e24 ЗМ)", "1e213 Мусора", "Бочка 500", "12,000 Самослияний",
+                    ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "1e213 Мусора", "Земля (5e24 ЗМ)", "Бочка 500", "12,000 Самослияний",
                         "Дерево Навыков", "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
                         "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)", "50 Звëзд"]
                 });

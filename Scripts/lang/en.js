@@ -267,6 +267,9 @@ const trans_en = {
     stars2: "Stars",
     emblems: "Cosmic Emblems",
     pins: "Cosmic Pins",
+    alienpin: "Alien Pin",
+    fairypin: "Fairy Pin",
+    starpin: "Star Pin",
     hyperBuyCapText: "New Hyper Buy level cap? (It won't buy more levels than that. 0 = unlimited)",
     hyperBuyPerText: "New Hyper Buy percentage? (It won't buy more than this percentage. 100 = unlimited)",
 

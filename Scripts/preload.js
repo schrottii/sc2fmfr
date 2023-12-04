@@ -101,6 +101,10 @@ var images =
     hyperbuyLevel: loadImage("Images/Buttons/hyperbuy_level.png"),
     hyperbuyPercent: loadImage("Images/Buttons/hyperbuy_percent.png"),
     masterytoggle: loadImage("Images/Buttons/masterytoggle.png"),
+    pins: loadImage("Images/pins.png"),
+    alienPin: loadImage("Images/alienpin.png"),
+    fairyPin: loadImage("Images/fairypin.png"),
+    starPin: loadImage("Images/starpin.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),
@@ -201,7 +205,6 @@ var images =
         strongerBarrelTiers: loadImage("Images/Upgrades/barreltiers.png"),
         strongerMasteryMagnets: loadImage("Images/Upgrades/strongermasterymagnets.png"),
         strongerMasteryScrap: loadImage("Images/Upgrades/strongermasteryscrap.png"),
-        fasterMaster: loadImage("Images/Upgrades/fastermaster.png"),
         shorterGSStorms: loadImage("Images/Upgrades/shorterGSStorms.png"),
         higherNeptuneMax: loadImage("Images/Upgrades/higherneptunemax.png"),
         unlockAutoCollectors: loadImage("Images/Upgrades/unlockautocollectors.png"),
@@ -252,6 +255,7 @@ var images =
         aliendustupgrades: loadImage("Images/Scenes/aliendustupgrades.png"),
         fairydustupgrades: loadImage("Images/Scenes/fairydustupgrades.png"),
         cosmicupgrades: loadImage("Images/Scenes/cosmicupgrades.png"),
+        unlocks: loadImage("Images/Scenes/unlocks.png"),
     },
     solarSystem:
     {

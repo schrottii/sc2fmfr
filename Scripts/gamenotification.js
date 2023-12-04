@@ -76,7 +76,7 @@ class MergeQuestNotification extends GameNotification
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
-        ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.4);
+        ctx.fillText(tt("questcomplete"), w / 2, this.y - h * 0.09, w * 0.4);
         Barrel.renderBarrel(ctx, this.barrelLvl, w * 0.35, this.y - h * 0.0325, h * 0.05);
 
         ctx.fillStyle = "white";
@@ -106,7 +106,7 @@ class MasteryLevelUpNotification extends GameNotification
     }
 }
 
-class MilestoneNotificaion extends GameNotification
+class MilestoneNotification extends GameNotification
 {
     constructor(milestone)
     {
@@ -155,7 +155,7 @@ class TextNotification extends GameNotification {
 
         if (this.img != "none") {
             ctx.textAlign = "left";
-            if (this.img != "barrel" && this.img != "barrelm") ctx.drawImage(images[this.img], w / 2 - w * 0.2, this.y - h * 0.06, h * 0.05, h * 0.05);
+            if (this.img != "barrel" && this.img != "barrelm") ctx.drawImage(images[this.img], w / 2 - w * 0.2, this.y - h * 0.064, h * 0.05, h * 0.05);
             else Barrel.renderBarrel(ctx, this.b - 1, w / 2 - w * 0.2, this.y - h * 0.032, h * 0.04);
             if (this.img == "barrelm") ctx.drawImage(images.masteryToken, w / 2 + w * 0.15, this.y - h * 0.06, h * 0.05, h * 0.05);
             ctx.fillText(this.title, w * 0.375, this.y - h * 0.03, w * 0.35);

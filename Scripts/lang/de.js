@@ -22,6 +22,7 @@ const trans_de = {
     "You have found me": "Du hast mich gefunden",
     "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
     autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
+    unlocks: "Freigeschaltet",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -162,6 +163,7 @@ const trans_de = {
     masterylvlup: "Mastery Level Up!",
 
     // QUESTS
+    "Merge Quests": "Merge Quests",
     nextquest: "Nächste Quest in",
     questcomplete: "Merge Quest Fertig!",
     confirm: "Bestätigen",
@@ -223,6 +225,8 @@ const trans_de = {
     gifttext2: "(basierend auf Vorräten)",
     gifttext3: "Nachricht? (Max. 80 Zeichen)",
     gifttext4: "Was ist der Freundescode von dem Freund, zu dem du es schicken möchtest?",
+    entercode: "Gebe den Geschenkcode ein, den du erhalten hast",
+    importantmessage: "Wichtige Nachricht",
 
     giftcontent: "Wähle den Inhalt aus",
     opengift: "Geschenk öffnen",
@@ -242,6 +246,7 @@ const trans_de = {
 
     // FACTORY
     shrine: "Mythischer Schrein",
+    "shrine-exp": "Max. diese Upgrades um ihre Gebäude freizuschalten!",
     generator: "Generator",
     scrapfactory: "Schrottfabrik",
     autobuyers: "Autokäufer",
@@ -260,6 +265,12 @@ const trans_de = {
     stars: "Sterne",
     stars2: "Sterne",
     emblems: "Kosmische Embleme",
+    pins: "Kosmische Pins",
+    alienpin: "Alienpin",
+    fairypin: "Feenpin",
+    starpin: "Sternpin",
+    hyperBuyCapText: "Neue Levelbegrenzung? (Es werden max. so viele gekauft. 0 = unbegrenzt)",
+    hyperBuyPerText: "Neuer Prozentsatz? (Mehr als x% werden nicht gekauft. 100 = unbegrenzt)",
 
     supernovatext: "Du hast genug Kraft von Glitchstahl erhalten und einen\nLaser erschaffen, mächtig genug um die Sonne zu zerstören.\nDies verursacht eine Supernova, die das\ngesamte Sonnensystem und alles da drin zerstört.\nDrücke den Knopf um mehr zu erfahren.",
     supernovawarning: "Du verlierst alles außer Statistiken, Erfolge, Schraubenschlüssel,\nTonnenmastery, Einstellungen und Supernova-Sachen.",
@@ -267,6 +278,7 @@ const trans_de = {
     youwillearn: "Du wirst erhalten: ",
     anothersupernovatext: "Drücke den Knopf, um die Supernova durchzuführen.",
     supernovagetmore: "Erhalte mehr Embleme durch das erreichen sehr hoher Tonnen.\nErhalte mehr Staub durch sammeln von bestimmten Rohstoffen.",
+    doyoureally: "Willst du wirklich eine Supernova durchführen?",
 
     resetstar: "Möchtest du wirklich deine Sternenstaub-Upgrades zurücksetzen? (100% Erstattung)",
     resetalien: "Möchtest du wirklich deine Alienstaub-Upgrades zurücksetzen? (100% Erstattung)",
@@ -295,6 +307,7 @@ const trans_de = {
     mag3: "Höhere Chance auf\nMagnete von Verbindungen",
     mag4: "Schnellere Auto Verbindungen",
     mag5: "Weniger Verbindungen sind nötig\num die Ziegelsteinprod.\nzu verdoppeln",
+    magnetupgrades: "Magnet-Upgrades",
 
     // Golden Scrap
     gs1: "Mehr Schrott",
@@ -316,13 +329,19 @@ const trans_de = {
     frag2: "Mehr Magnete",
     darkfrag1: "Mehr Schrott in 2. Dim.",
     darkfrag2: "Mehr Fragmente",
+    fragments: "Fragmente",
 
     // Mastery
     mastery1: "Mehr Schrott für L1 Tonnen",
     mastery2: "Mehr GS für L2 Tonnen",
-    mastery3: "Mehr Ziegelsteine für L3 Tonnen",
+    mastery3: "Mehr Ziegelsteine\nfür L3 Tonnen",
     mastery4: "Mehr Fragmente für L4 Tonnen",
     mastery5: "Mehr Magnete für L5 Tonnen",
+    mastery6: "Mehr Stahl für L6 Tonnen",
+    mastery7: "Mehr Schattenfragmente\nfür L7 Tonnen",
+    mastery8: "Mehr Reifen für L8 Tonnen",
+    mastery9: "Mehr Schrauben\nfür L9 Tonnen",
+    mastery10: "Mehr Schattenschrott\nfür L10 Tonnen",
 
     // Merge Quests
     mq1: "Mehr Schrott",
@@ -378,6 +397,9 @@ const trans_de = {
     beam5: "Längere Stahlträgerstürme",
     beam6: "Mehr Schrott",
     beam7: "Mehr Magnete",
+    tryincreasing: "Versuche, mehr Stahl zu verdienen\n Sorte",
+    askbeammulti: "Welcher Multi?",
+    currentbmulti: "Multi",
 
     aero1: "Aerostahl erscheint häufiger",
     aero2: "Fallende Magnete fallen\nlangsamer",
@@ -625,7 +647,7 @@ const trans_de = {
         "058": ["Ist das...", "Habe <amount> Magnete gleichzeitig"],
         "059": ["Die besten Tonnen III", "Verbessere Bessere Tonnen auf 1000"],
         "060": ["Warp 9.9", "Tonnen erscheinen schneller als 5ms"],
-        "061": ["Frank's Rekord", "Habe 1e6 Fragmente gleichzeitig"],
+        "061": ["Schrottii's Rekord", "Habe 1e6 Fragmente gleichzeitig"],
         "062": ["Die besten Tonnen IV", "Verbessere Bessere Tonnen auf 2000"],
         "063": ["Meister Mastery", "Erreiche Merge Mastery Level 500"],
         "064": ["TISCHZERSCHMETTERER!!!", "Erreiche <amount> Reifen"],
@@ -652,7 +674,7 @@ const trans_de = {
         "084": ["Quests? Ich hasse sie", "Max. das zweite Schattenschrott-Upgrade"],
         "085": ["Sehnsucht", "Erreiche 1.000.000 Schattenschrott\noder Schattenfragmente"],
         "086": ["1 zu 10 in Reihenfolge", "Platziere die ersten zehn Tonnen (ohne Sterne)\nin Reihenfolge, die 1. nach oben links,\n2. rechts daneben, usw.\nDann verbessere Bessere Tonnen"],
-        "087": ["Pfannkuchen", "Verbinde 10k Tonnen\nwährend Shrove deine Spawntonne ist"],
+        "087": ["Pfannkuchen", "Verbinde 10k Tonnen\nwährend Shrove die Spawntonne ist"],
         "088": ["Feld voll 69", "Mache eine 6 aus Tonnen, verbessere Bessere Tonnen,\nmache eine 9, verbessere Bessere Tonnen"],
         "089": ["Pasta-Ring", "Lege die 1. Pasta-Tonne nach oben links,\ndie 2. nach oben rechts,\ndann verbessere Bessere Tonnen"],
         "090": ["Reifen oben, Reifen in Hand", "Sammel einen Reifen während die Reifen-Tonne\noben links ist"],
@@ -777,7 +799,7 @@ const trans_de = {
         "204": ["Jeder kann es lesen", "Wechsel zu dem ultimativen Zahlenformat\nund habe mindestens <amount> Magnete"],
         "205": ["Schrottkokosnuss 2", "Verbinde Kokosnüsse"],
         "206": ["Machtstahl", "140 BPM"],
-        "207": ["Schrottii", "Finde Schrottii"],
+        "207": ["Schrottii", "Klicke Schrottii\nund sehe ihre anderen Spiele"],
         "208": ["Langsamer kann besser sein", "Mache einen Autokäufer langsamer"],
         "209": ["Gekochte Krabbe", "NEEEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIINNNNNNNNNNN!!!!!!!!!!!!!!!"],
         "210": ["Es waren 84 Jahre...", "Verbessere die vierte Reihe\nReifenupgrades auf 50"],
@@ -822,5 +844,31 @@ const trans_de = {
         "248": ["Nichtmal Aliens Können Es Fassen", "Erreiche <amount> Schrott\nStop... Schrottzeit!"],
         "249": ["Gelb", "Habe <amount> GS"],
         "250": ["Das Ende", "Alle Erfolge"],
+
+        "251": ["Untergang der Sterne", "Habe <amount> Sternenstaub insgesamt"],
+        "252": ["Untergang der Aliens", "Habe <amount> Alienstaub insgesamt"],
+        "253": ["Untergang der Feen", "Habe <amount> Feenstaub insgesamt"],
+        "254": ["Nicht fair!", "Versuche, dir selbst\nein Geschenk zu schenken..."],
+        "255": ["Ich nicht!", "Habe 42 Kosmische Embleme gleichzeitig"],
+        "256": ["Hyperjunge", "Setze Hyper Buy auf 69%"],
+        "257": ["obaMa", "Erreiche Merge Mastery Level 1.000.000"],
+        "258": ["Ein ganz willt", "Habe 25k Zahnräder gleichzeitig"],
+        "259": ["Des Meister's zweite Seite", "Schalte das sechste Mastery Upgrade frei\n(Nach Supernova)"],
+        "260": ["Immer weiter...", "Schalte das letzte Mastery Upgrade frei\n(Nach Supernova)"],
+        "261": ["Schottland", "Schrottplatz Level 10.000"],
+        "262": ["Die letzten Sterne", "Habe <amount> Sternenstaub insgesamt"],
+        "263": ["Die letzten Aliens", "Habe <amount> Alienstaub insgesamt"],
+        "264": ["Die letzten Feen", "Habe <amount> Feenstaub insgesamt"],
+        "265": ["Der unendliche Krieg", "<amount> Schrott"],
+        "266": ["Endspiel", "<amount> Schrott"],
+        "267": ["Magnitov", "<amount> Magnete"],
+        "268": ["Bi-Hufeisen", "<amount> Magnete"],
+        "269": ["Verzauberter Apfel", "<amount> Goldener Schrott"],
+        "270": ["Zweiter Reifenclub", "<amount> Reifen\n(Es gibt nur einen)"],
+        "271": ["Begrabenes Meer", "<amount> Plastiktüten"],
+        "272": ["Weiterbauen", "<amount> Ziegelsteine"],
+        "273": ["Wolkenkratzer zur Sonne", "<amount> Ziegelsteine"],
+        "274": ["Meistermeister", "ALLE Tonnen auf Mastery Level 10"],
+        "275": ["Champion IV", "250 Erfolge"],
     }
 }

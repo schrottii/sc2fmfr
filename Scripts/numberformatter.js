@@ -8,7 +8,7 @@ function formatThousands(n, prec)
     });
 }
 
-var NUM_FORMAT_TYPES = 13;
+var NUM_FORMAT_TYPES = 14;
 function formatNumber(x, type, cfg)
 {
     x = new Decimal(x);
@@ -46,6 +46,7 @@ function formatNumber(x, type, cfg)
 
     let greek = "άαβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".split("");
     let letters = "~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    let letters2 = "~abcdefghijklmnopqrstuvwxyz".split("");
     let cyrillic = "~абвгдежзийклмнопрстуфхцчшщьюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЮЯ".split("");
     let emojis = ["~", "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😎", "😍", "🥰", "😛", 
         "😜", "🤑", "😨", "😱", "🥵", "🥶", "🤬", "🤔", "👹", "👺", "👾", "👽", "🙉", "🦮", "🐂", "🐊", "🐬", "🧲", "🎄", "🎨",
@@ -72,13 +73,14 @@ function formatNumber(x, type, cfg)
             pre.ones[Math.floor(newE / 3) % pre.ones.length] +
             pre.tens[Math.floor(newE / 30) % pre.tens.length];
     }
-    if(type >= 4 && type <= 9)
+    if(type >= 4 && type <= 10)
     {
         let suffixes = type === 4 ? letters : greek;
         if(type === 6) suffixes = cyrillic;
         if (type === 7) suffixes = emojis;
         if (type === 8) suffixes = japanese;
         if (type === 9) suffixes = chinese;
+        if (type === 10) suffixes = letters2;
         let order = Math.floor(Math.log(x.e / 3) / Math.log(suffixes.length));
         let remainingE = x.e;
         let suffix = "";
@@ -106,7 +108,7 @@ function formatNumber(x, type, cfg)
     {
         return x.m.toFixed(x.e < 10000 ? 2 : 0) + "e" + (x.e >= 1e4 ? formatNumber(x.e, game.settings.numberFormatType, {namesAfter: 1e9}) : x.e.toFixed(0));
     }
-    if (type === 10) {
+    if (type === 11) {
         let m = (x.m * Math.pow(10, x.e % 3)).toFixed(sigDigits);
         let e = Math.floor(x.e / 3) * 3;
 
@@ -135,7 +137,7 @@ function formatNumber(x, type, cfg)
             return m + " " + prefixes[Math.floor(newE / 3) % prefixes.length] + quekkas;
         }
     }
-    if (type === 11) {
+    if (type === 12) {
         if (x > 0) return tto({
             default: "yes",
             de: "ja",
@@ -147,7 +149,7 @@ function formatNumber(x, type, cfg)
             ru: "Нет"
         });;
     }
-    if (type === 12) {
+    if (type === 13) {
         let suffixes = letters
         let order = Math.floor(Math.log(x.e / 3) / Math.log(suffixes.length));
         let remainingE = x.e;

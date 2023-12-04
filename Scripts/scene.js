@@ -935,13 +935,13 @@ var scenes =
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.masterytoggle, () => {
                     if (barrelsDisplayMode == 0) barrelsDisplayMode = 1;
                     else barrelsDisplayMode = 0;
-                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
+                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked() }),
                 new UIButton(0.9, 0.05, 0.07, 0.07, images.masteryIcon, () => Scene.loadScene("Mastery"),
-                    { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
+                    { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked() }),
 
                 new UIButton(0.25, 0.15, 0.07, 0.07, images.upgrades.betterBarrels, function () {
                     game.scrapUpgrades.betterBarrels.buy();
-                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked }),
+                }, { quadratic: true, isVisible: () => game.barrelMastery.isUnlocked() }),
                 new UIButton(0.25, 0.9, 0.1, 0.1, images.arrows.left, () => game.settings.barrelGalleryPage = Math.max(0, game.settings.barrelGalleryPage - 1),
                     {
                         quadratic: true,

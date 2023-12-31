@@ -23,6 +23,9 @@ const trans_de = {
     "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
     autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
     unlocks: "Freigeschaltet",
+    notenoughgs: "Nicht genug GS!",
+    sizelimit: "Maximale Weite",
+    lockUpgrades: "Schrott-Upgrades sperren",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -83,6 +86,8 @@ const trans_de = {
     "Export and Import": "Export und Import",
     "ogsc2": "Spiel das Original ST2!",
     "myserver": "Mein Discord Server",
+    "fmserver": "Scrap Fanmade Server",
+    "scrapserver": "Scrap Server",
     "myyt": "Mein Youtube Kanal",
 
     // SAVE CODE

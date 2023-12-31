@@ -23,6 +23,9 @@ const trans_en = {
     "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
     autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
     unlocks: "Unlocks",
+    notenoughgs: "Not enough GS!",
+    sizelimit: "Width limit",
+    lockUpgrades: "Lock Scrap Upgrades",
 
     // OPTIONS
     "Options": "Options",
@@ -83,6 +86,8 @@ const trans_en = {
     "Export and Import": "Export and Import",
     "ogsc2": "Play the Original SC2",
     "myserver": "My Discord Server",
+    "fmserver": "Scrap Fanmade Server",
+    "scrapserver": "Scrap Server",
     "myyt": "My Youtube Channel",
     "myw": "My Other Games",
 
@@ -191,8 +196,8 @@ const trans_en = {
     // WRENCHES
     wrenches: "Wrenches",
     totalmerges: "Total Merges",
-    selfmerges: "Self Merges",
-    mergeexplanation: "Self merges -> Merges done by the player!",
+    selfmerges: "Manual Merges",
+    mergeexplanation: "Manual merges -> Merges done by the player!",
 
     // DAILY AND STATS
     daily: "Daily",
@@ -440,10 +445,10 @@ const trans_en = {
     screw3: "Earn Bricks faster",
 
     // Wrenches
-    wrench1: "x2 Merge Mastery progress\nfrom self merges",
-    wrench2: "x16 brick progress\nfrom self merges",
+    wrench1: "x2 Merge Mastery progress\nfrom manual merges",
+    wrench2: "x16 brick progress\nfrom manual merges",
     wrench3: "Scrap Boost\n(Based on wrenches)",
-    wrench4: "Reduce the beam timer\nby 0.25s every self merge",
+    wrench4: "Reduce the beam timer\nby 0.25s every manual merge",
 
     // Shrine
     shrine1: "Unlock the generator building",

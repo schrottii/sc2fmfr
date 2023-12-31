@@ -23,6 +23,9 @@ const trans_ru = {
     "enter2nddim": " Тебе нужно хотя бы <amount> Золотого Мусора, чтобы войти!",
     autobuyertext: "Авто Покупщикам нужна энергия для работы!\nОдно улучшение стоит <energy> <ru_energy>.",
     unlocks: "Открытия",
+    notenoughgs: "Недостаточно золота!",
+    sizelimit: "максимальная ширина",
+    lockUpgrades: "заблокированные улучшения лома",
 
     // OPTIONS
     "Options": "Опции",
@@ -83,6 +86,8 @@ const trans_ru = {
     "Export and Import": "Экспорт и Импорт",
     "ogsc2": "Играть в Оригинальный SC2",
     "myserver": "Мой Discord-Сервер",
+    "fmserver": "сделано фанатом Discord-Сервер",
+    "scrapserver": "Мусора Discord-Сервер",
     "myyt": "Мой Youtube-канал",
 
     // SAVE CODE

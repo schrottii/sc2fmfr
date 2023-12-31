@@ -1,34 +1,34 @@
+// Main JS script
+
+// Get canvas and other essential variables
 var canvas = document.querySelector("#gameCanvas");
 var ctx = canvas.getContext("2d");
 var w = canvas.width;
 var h = canvas.height;
 var mouseX = 0, mouseY = 0, mouseMoveX = 0, mouseMoveY = 0;
 var mousePressed = false;
-
-var importType = 0;
-
 var gSplitter = new GraphemeSplitter();
+
 
 var barrels = [];
 var stormQueue = []; // queueueueueeueueuueueuueuuuu euueue ueuuee? ? ? ? ? ?????? ????
-var freeSpots = 20;
+var freeSpots = 20; // how many barrel slots... 0 - 20
 var draggedBarrel;
 var tempDrawnBarrels = []; //barrels drawn below newly merged barrels
 var lastClickedBarrel = -1;
 var timeSinceLastBarrelClick = 0;
+var importType = 0; // what do you import
+var FPS = 9999;
+var trophyProgress = 0;
+var hyperBuy = false;
 
 var currentScene = scenes[0];
 
+// animations
 var gameNotifications = [];
 var movingItems = [];
-
-var trophyMergeCounter = 0;
-var trophyProgress = 0;
-var hyperBuy = false;
 var cloudAlpha = 0;
 var supernovaAlpha = 0;
-
-var FPS = 9999;
 
 let shortV = {
     "playtime": "p",
@@ -93,11 +93,11 @@ var saveTime =
         cd: 10,
         time: 0
 };
-var secondTime = 0;
 
+// some time stuff
+var secondTime = 0;
 var autoMergeTime = 0;
 var autoConvertTime = 0;
-
 var fallingMagnetTime = 0;
 var gsStormTime = 0;
 
@@ -117,9 +117,7 @@ function isMobile()
     return check;
 }
 
-
 // Register service worker to control making site work offline
-
 if ('serviceWorker' in navigator && location.protocol === "https:" && window.isSecureContext) {
     console.log('Service Worker Registered');
     navigator.serviceWorker
@@ -192,7 +190,7 @@ function copyGift() {
 
 function cancelGift() {
     giftContent = {};
-
+    
     game.gifts.sendLimit += 1;
     game.stats.giftsSent = game.stats.giftsSent.sub(1);
 
@@ -221,7 +219,7 @@ function update()
     if (!document.hidden)
     {
         if (game.scrap == 0) game.scrap = new Decimal(1);
-        if(game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+        if (game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
         else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
         game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
         game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
@@ -824,7 +822,7 @@ function tryAutoMerge() {
     if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn)) {
         autoMergeBarrel();
         if (autoMergeTime >= applyUpgrade(game.solarSystem.upgrades.saturn) * 600) autoMergeTime = applyUpgrade(game.solarSystem.upgrades.saturn) * 600; // Max. 600 merges
-        else autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
+        autoMergeTime -= applyUpgrade(game.solarSystem.upgrades.saturn);
         tryAutoMerge();
     }
 }
@@ -984,17 +982,6 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         }
     }
 
-    if (game.scrapUpgrades.betterBarrels.level % 1000 == 224 || game.scrapUpgrades.betterBarrels.level % 1000 == 572) {
-        // ehhh no basic here
-        if (game.ms.includes(86) == false) {
-            trophyMergeCounter += 1;
-            if (trophyMergeCounter > 9999) {
-                   game.ms.push(86);
-                   GameNotification.create(new MilestoneNotification(87));
-                }
-            }
-    }
-
     if (game.mergeMastery.isUnlocked())
     {
         game.mergeMastery.currentMerges++;
@@ -1118,7 +1105,7 @@ function setBarrelQuality(idx, fromScene)
 {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
-    if (game.dimension == 0) { /* Change this when you add new BARRELS files */
+    //if (game.dimension == 0) { /* Change this when you add new BARRELS files */
         for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
                 "barrels" + i + "_ulq.png"][idx], () => {
@@ -1126,7 +1113,8 @@ function setBarrelQuality(idx, fromScene)
                     Scene.loadScene(fromScene ? fromScene : "Barrels");
                 });
         }
-    }
+    //}
+    /*
     if (game.dimension == 1) {
         for (i = 1; i < 11; i++) {
             images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
@@ -1135,7 +1123,7 @@ function setBarrelQuality(idx, fromScene)
                     Scene.loadScene(fromScene ? fromScene : "Barrels");
                 });
         }
-    }
+    }*/
     BARREL_SPRITE_SIZE = [256, 128, 64][idx];
     images.shadowBarrels = []; //clear barrel cache
     images.previewBarrels = [];
@@ -1146,9 +1134,10 @@ function updateMouse(e)
     let oldmX = mouseX;
     let oldmY = mouseY;
 
-    mouseX = e.clientX * devicePixelRatio || (e.touches && e.touches[0] ? e.touches[0].clientX * devicePixelRatio : mouseX);
+    // getBoundingClientRect().x here is needed for big devices where the width is limited, it is the difference between the left side of the screen and the left side of the canvas
+    if (game.settings.sizeLimit != 0) mouseX = (e.clientX - Math.floor(gameCanvas.getBoundingClientRect().x)) * devicePixelRatio || (e.touches && e.touches[0] ? e.touches[0].clientX * devicePixelRatio : mouseX);
+    else mouseX = e.clientX * devicePixelRatio || (e.touches && e.touches[0] ? e.touches[0].clientX * devicePixelRatio : mouseX);
     mouseY = e.clientY * devicePixelRatio || (e.touches && e.touches[0] ? e.touches[0].clientY * devicePixelRatio : mouseY);
-
     mouseMoveX = e.movementX !== undefined ? e.movementX : mouseX - oldmX;
     mouseMoveY = e.movementY !== undefined ? e.movementY : mouseY - oldmY;
 
@@ -1162,7 +1151,8 @@ function updateMouse(e)
 function resizeCanvas()
 {
     canvas.height = innerHeight * devicePixelRatio;
-    canvas.width = innerWidth * devicePixelRatio;
+    if (game.settings.sizeLimit != 0) canvas.width = Math.min([1, 480, 640, 960][game.settings.sizeLimit], innerWidth * devicePixelRatio); // this min is maaaa - giii - caaall
+    else canvas.width = innerWidth * devicePixelRatio; // this min is maaaa - giii - caaall
     w = canvas.width;
     h = canvas.height;
 }
@@ -1581,6 +1571,8 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.hyperBuyPer = loadVal(loadObj.settings.hyperBuyPer, 100);
         game.settings.beamRed = loadVal(loadObj.settings.beamRed, 0);
         game.settings.lang = loadVal(loadObj.settings.lang, "en");
+        game.settings.sizeLimit = loadVal(loadObj.settings.sizeLimit, 0);
+        game.settings.lockUpgrades = loadVal(loadObj.settings.lockUpgrades, false);
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;

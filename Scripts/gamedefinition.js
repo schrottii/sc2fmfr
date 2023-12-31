@@ -2,10 +2,10 @@
 let currentMonth = currentTime.getUTCMonth();
 
 const BARRELS = 1000;
-const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3);
+const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.3 (v4.0)";
+const gameVersionText = "v3.3.1 (v4.0.1)";
 
 var game =
 {
@@ -132,11 +132,7 @@ var game =
             },
             level => new Decimal(level),
             {
-                onBuy: function () {
-                    trophyMergeCounter = 0;
-
-                    updateUpgradingBarrelFromBB(1);
-
+                onBuy: function () {updateUpgradingBarrelFromBB(1);
                     // 1 to 10
                     if (game.ms.includes(85) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
@@ -1354,7 +1350,7 @@ var game =
             }, ["scrapBoost2"]),
 
             moreMergeTokens: new SkillTreeUpgradeFixed([
-                [[new Decimal("2000"), RESOURCE_BEAM]],
+                [[new Decimal("1000"), RESOURCE_BEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["higherAstroMax", "tireValue"]),
@@ -1401,13 +1397,13 @@ var game =
             }, ["speedBoostsFragments"]),
 
             efficientEnergy: new SkillTreeUpgradeFixed([
-                [[new Decimal(15000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
+                [[new Decimal(8000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockMastery", "speedBoostsFragments"]),
 
             renewableEnergy: new SkillTreeUpgradeFixed([
-                [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
+                [[new Decimal(2000), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["efficientEnergy"]),
@@ -1459,7 +1455,7 @@ var game =
                 }, ["strongerMasteryMagnets"]),
 
             shortGSStorms: new SkillTreeUpgradeFixed([
-                [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(25), RESOURCE_PLASTICBAG], [new Decimal(3000), RESOURCE_GLITCHBEAM]],
+                [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(25), RESOURCE_PLASTICBAG], [new Decimal(5000), RESOURCE_ANGELBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockPlasticBags"]),
@@ -2401,8 +2397,8 @@ var game =
                 new Milestone(91, "Steel Beams!", 47, () => "Unlock Steel Beams by reaching barrel 300", () => game.highestBarrelReached > 299),
                 new Milestone(34, "Questing to\nthe Max", 14, "\n\nHave all Merge Quest\nUpgrades at least at Level 20", () => Utils.filterObject(game.mergeQuests.upgrades, upg => upg.level >= 20).length === 3),
                 new Milestone(35, "Interesting Barrels", 10, "Reach Better Barrels Level 300", () => game.scrapUpgrades.betterBarrels.level >= 300),
-                new Milestone(106, "Almost there!", 65, "Do 10k self merges\n(Merges from auto merge do not count as self merges)", () => game.selfMerges > 9999),
-                new Milestone(107, "The worst currency", 66, "Unlock wrenches (12k self merges)", () => game.wrenches.isUnlocked()),
+                new Milestone(106, "Almost there!", 65, "Do 10k manual merges\n(Merges from auto merge do not count as manual merges)", () => game.selfMerges > 9999),
+                new Milestone(107, "The worst currency", 66, "Unlock wrenches (12k manual merges)", () => game.wrenches.isUnlocked()),
                 new Milestone(36, "Who needs Upgrades II", 13, () => "Get " + formatNumber(1e30) + " Scrap without\nbuying Scrap Upgrades", () => game.scrap.gte(1e30) && game.scrapUpgrades.betterBarrels.level === 0 && game.scrapUpgrades.fasterBarrels.level === 0, ["<amount>", "formatNumber(1e30)"]),
                 new Milestone(37, "Magnetism II", 2, () => "Have " + formatThousands(10e6) + " Magnets at once", () => game.magnets.gte(10e6)),
                 new Milestone(108, "Better than the dev", 66, "Have more than 5292 wrenches at once", () => game.wrenches.amount > 5292),
@@ -2490,7 +2486,7 @@ var game =
                 new Milestone(131, "Balanced and fair", 76, () => "Keep the balance", () => game.reinforcedbeams.upgrades.reinforce.level > 19 && game.reinforcedbeams.upgrades.strength.level * 2 > game.reinforcedbeams.upgrades.reinforce.level - 3),
                 new Milestone(135, "Very, very EZ", 33, "Unlock the Super EZ Upgrader in the Skill Tree!", () => applyUpgrade(game.skillTree.upgrades.superEzUpgrader)),
                 new Milestone(86, "1 to 10 in Order", 1, () => "Put the first ten barrels (without stars) in order,\nBarrel 1 in pos 1 (top left), 2 in 2, etc.\nThen upgrade Better Barrels when they are placed correctly.", () => game.dimension == 508050),
-                new Milestone(87, "Shrove Supremacy", 43, () => "Merge 10k barrels while Shrove\nis your spawning barrel", () => game.dimension == 508050),
+                new Milestone(87, "Shrove Supremacy", 43, () => "Merge Shrove 10,000 times", () => game.barrelMastery.b[224] >= 10000 || game.barrelMastery.b[572] >= 10000),
                 new Milestone(88, "A whole field of 69", 44, () => "Make a 6 out of barrels, uprade\nBetter Barrels, make a 9\n and upgrade again to get this.", () => game.dimension == 508050),
                 new Milestone(89, "Pastaring", 45, () => "Put the first pasta barrel in the top left.\nSecond pasta barrel in the top right.\nThen upgrade Better Barrels to confirm.", () => game.dimension == 508050),
                 new Milestone(90, "Tire at top, in my hand", 46, () => "Collect a tire while having a stack of tires in the top left", () => game.dimension == 508050),
@@ -2598,7 +2594,7 @@ var game =
                 new Milestone(237, "500 Golden", 4, () => "Reach " + formatNumber(new Decimal("1e500")) + " Golden Scrap", () => game.goldenScrap.amount.gte("1e500"), ["<amount>", "formatNumber(new Decimal('1e500'))"]),
                 new Milestone(238, "The Final Unlock", 2, "Max. Earth", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA),
                 new Milestone(239, "The Final Tree Upgrade", 2, "Buy the final tree upgrade", () => game.skillTree.upgrades.unlockSupernova.level > 0),
-                new Milestone(227, "Combine Everything", 65, "Do 100k self merges\n(Merges from auto merge do not count as self merges)\nor 10M total merges", () => game.selfMerges >= 1e5 || game.totalMerges >= 1e7 ),
+                new Milestone(227, "Combine Everything", 65, "Do 100k manual merges\n(Merges from auto merge do not count as manual merges)\nor 10M total merges", () => game.selfMerges >= 1e5 || game.totalMerges >= 1e7 ),
                 new Milestone(151, "BRICKMAN", 64, "Reach Merge Mastery Level 10000", () => game.highestMasteryLevel >= 10000),
                 new Milestone(179, "Scrapyard v300", 68, "Upgrade scrapyard to level 301", () => game.mergeQuests.scrapyard > 300),
                 new Milestone(153, "Beam Factory", 82, () => "Have 1M normal Beams at once", () => game.beams.amount.gte(1000000)),
@@ -2641,7 +2637,7 @@ var game =
                 new Milestone(271, "Buried Ocean", 96, () => "Reach " + formatNumber(new Decimal("1e15")) + " Plastic Bags\nNo more crabs :(", () => game.plasticBags.amount.gte(new Decimal("1e15")), ["<amount>", "formatNumber(new Decimal('1e15'))"]),
                 new Milestone(273, "Skyscraper to the Sun", 18, () => "Reach " + formatNumber(new Decimal("1e1e10")) + " Bricks\nAll your dreams will come true.", () => game.bricks.amount.gte(new Decimal("1e1e10")), ["<amount>", "formatNumber(new Decimal('1e1e10'))"]),
                 new Milestone(221, "Duck Tales", 115, () => "Do at least 100k merges on all\nduck barrels (Progress: " + duckTales(1) + "/" + duckBarrels.length + ")\n" + duckTales(2), () => duckTales(), ["<text>", "duckTales(1)"]),
-                new Milestone(228, "Nuclear Fusion", 65, "Do 1M self merges\n(Merges from auto merge do not count as self merges)\nor 100M total merges", () => game.selfMerges >= 1e6 || game.totalMerges >= 1e8),
+                new Milestone(228, "Nuclear Fusion", 65, "Do 1M manual merges\n(Merges from auto merge do not count as manual merges)\nor 100M total merges", () => game.selfMerges >= 1e6 || game.totalMerges >= 1e8),
                 new Milestone(274, "Mastery of Mastery", 92, () => "Get ALL barrels to Mastery 10", () => getTotalLevels(10) >= BARRELS),
                 new Milestone(250, "The End", 0, () => "Get All Achievements", () => game.ms.length >= game.milestones.achievements.length - 1),
                 //new Milestone(166, "", 50, "", () => ),
@@ -2714,6 +2710,8 @@ var game =
         hyperBuyPer: 100,
         beamRed: 0,
         lang: "en",
+        sizeLimit: 1,
+        lockUpgrades: false,
     }
 }
 

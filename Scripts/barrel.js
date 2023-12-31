@@ -166,7 +166,9 @@ class Barrel
                 }
                 else if (!game.settings.barrelShadows)
                 {
+                    if (game.dimension == 1) ctx.filter = "invert()";
                     ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, size, size);
+                    if (game.dimension == 1) ctx.filter = "";
                 }
                 else
                 {
@@ -193,7 +195,9 @@ class Barrel
                 {
                     ctx.translate(-10000, 0);
                 }
+                if (game.dimension == 1) ctx.filter = "invert()";
                 ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, size, size);
+                if (game.dimension == 1) ctx.filter = "";
                 if (preview)
                 {
                     ctx.translate(10000, 0);

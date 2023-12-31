@@ -2710,7 +2710,7 @@ var game =
         hyperBuyPer: 100,
         beamRed: 0,
         lang: "en",
-        sizeLimit: 1,
+        sizeLimit: 0,
         lockUpgrades: false,
     }
 }

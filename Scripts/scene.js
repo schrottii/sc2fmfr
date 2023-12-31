@@ -2511,14 +2511,16 @@ var scenes =
                     // Hyper Buy 2.0
                     new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table"),
 
-                    // Size Limit
-                    new UIOption(tabYs[0] + 0.9, images.scenes.beamselection, () => {
-                        game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
-                        resizeCanvas();
-                    }, () => tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table2"),
-
                     // Lock Upgrades
-                    new UIToggleOption(tabYs[0] + 1.0, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table"),
+
+                    // Size Limit
+                    new UIOption(tabYs[0] + 1.0, images.options.numberFormat, () => {
+                        if (!isMobile() || prompt("It seems like you play on a phone. Are you sure you want to enable this?")) {
+                            game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
+                            resizeCanvas();
+                        }
+                    }, () => tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table2"),
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {
                         bold: 600,

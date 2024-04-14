@@ -582,6 +582,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["table2"];
                 ctx.fillRect(0, h * 0.78, w, h * 0.08);
 
+                if (game.dimension == 1) ctx.filter = "invert()";
                 for (let i = 0, l = barrels.length; i < l; i++) {
                     if (barrels[i] !== undefined && barrels[i].scale >= 1 || barrels[i] === undefined) {
                         tempDrawnBarrels[i] = undefined;
@@ -631,6 +632,7 @@ var scenes =
                     draggedBarrel.setCoord(mouseX, mouseY);
                     if (!game.settings.nobarrels) draggedBarrel.render(ctx);
                 }
+                if (game.dimension == 1) ctx.filter = "";
 
                 ctx.fillStyle = "black";
             },

@@ -1009,6 +1009,8 @@ var scenes =
                     ctx.fillRect(0, h * 0.1875 + h * 0.15 * i, w, h * 0.15);
                 }
                 let maxLvl = Math.min(20 * game.settings.barrelGalleryPage + 20, Math.round(Barrel.getMaxLevelBarrel()) + 1);
+
+                if (game.dimension == 1) ctx.filter = "invert()";
                 for (let i = 20 * game.settings.barrelGalleryPage; i < 20 * game.settings.barrelGalleryPage + 20; i++) {
                     let c = i - 20 * game.settings.barrelGalleryPage; //used for coordinates
                     let x = (0.15 + 0.7 * (c % 5) / 4) * w;
@@ -1030,6 +1032,7 @@ var scenes =
                         else ctx.fillText(calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y + h * 0.06, w * 0.15);
                     }
                 }
+                if (game.dimension == 1) ctx.filter = "";
             }),
         new Scene("Mastery",
             [

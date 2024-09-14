@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.3.1 (v4.0.1)";
+const gameVersionText = "v3.4 (v4.1)";
 
 var game =
 {
@@ -2645,7 +2645,7 @@ var game =
         highlighted: 0, 
         tooltip: null,
         page: 0,
-        maxPage: () => Math.floor((game.milestones.achievements.length - 1) / 25),
+        maxPage: () => Math.floor((game.milestones.achievements.length - 1) / Math.floor(w / Math.min(w, (h / 1.5)) * 25)),
         changePage: d => {
             game.milestones.page += d;
             game.milestones.page = Utils.clamp(game.milestones.page, 0, game.milestones.maxPage());

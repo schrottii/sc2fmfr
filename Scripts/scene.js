@@ -360,11 +360,11 @@ var scenes =
                 // 2nd dim, barrels, beams, factory, tree, prestige, solar system
                 new UIButton(0, 0.97, 0.15, 0.06, images.scenes.dimension, () => Scene.loadScene("SecondDimension"), {
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SECOND_DIMENSION && !timeMode,
-                    quadraticMin: true, anchor: [0, 0.5]
+                    quadratic: true, anchor: [0, 0.5]
                 }),
                 new UIButton(0.2, 0.97, 0.15, 0.06, images.scenes.barrelGallery, () => Scene.loadScene("BarrelGallery"), {
                     isVisible: () => !timeMode,
-                    quadraticMin: true
+                    quadratic: true
                 }),
                 new UIButton(0.35, 0.97, 0.15, 0.06, images.scenes.steelBeams, () => {
                     switch (game.settings.beamRed) {
@@ -380,25 +380,25 @@ var scenes =
                     }
                 }, {
                     isVisible: () => game.beams.isUnlocked() && !timeMode,
-                    quadraticMin: true
+                    quadratic: true
                 }),
                 new UIButton(0.5, 0.97, 0.15, 0.06, images.scenes.factory, () => Scene.loadScene("ScrapFactory"), {
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY && !timeMode,
-                    quadraticMin: true
+                    quadratic: true
                 }),
                 new UIButton(0.65, 0.97, 0.15, 0.06, images.scenes.skillTree, () => Scene.loadScene("SkillTree"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.skillTree.isUnlocked(),
                 }),
                 new UIButton(0.8, 0.97, 0.15, 0.06, images.scenes.goldenScrap, () => Scene.loadScene("GoldenScrap"),
                     {
                         isVisible: () => game.highestScrapReached.gte(1e15) && !timeMode,
-                        quadraticMin: true
+                        quadratic: true
                     }),
                 new UIButton(1, 0.97, 0.15, 0.06, images.scenes.solarSystem, () => Scene.loadScene("SolarSystem"),
                     {
                         isVisible: () => game.goldenScrap.upgrades.scrapBoost.level >= 8 && !timeMode,
-                        quadraticMin: true,
+                        quadratic: true,
                         anchor: [1, 0.5]
                     }),
 
@@ -1456,28 +1456,28 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
                 new UIButton(0, 0.97, 0.15, 0.06, images.scenes.beamselection, () => Scene.loadScene("Beamselection"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.aerobeams.isUnlocked(),
                     anchor: [0, 0.5]
                 }),
                 new UIButton(0.235, 0.97, 0.15, 0.06, images.scenes.aerobeams, () => Scene.loadScene("Aerobeams"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.aerobeams.isUnlocked(),
                 }),
                 new UIButton(0.415, 0.97, 0.15, 0.06, images.scenes.convert, () => Scene.loadScene("Beamconvert"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockBeamConverter),
                 }),
                 new UIButton(0.585, 0.97, 0.15, 0.06, images.scenes.angelbeams, () => Scene.loadScene("AngelBeams"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.angelbeams.isUnlocked(),
                 }),
                 new UIButton(0.765, 0.97, 0.15, 0.06, images.scenes.reinforcedbeams, () => Scene.loadScene("ReinforcedBeams"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.reinforcedbeams.isUnlocked(),
                 }),
                 new UIButton(1, 0.97, 0.15, 0.06, images.scenes.glitchbeams, () => Scene.loadScene("GlitchBeams"), {
-                    quadraticMin: true,
+                    quadratic: true,
                     isVisible: () => game.glitchbeams.isUnlocked(),
                     anchor: [1, 0.5]
                 }),
@@ -2892,61 +2892,86 @@ var scenes =
                 }),
             ],
             function () {
+                // DRAW ACHIEVEMENTS
+
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                let perRow = 5; //achievements per row
+                let tSize = Math.min(w, (h / 1.5)); // size of each achievement
+                
+                let perRow = Math.floor(w / tSize * 5); // achievements per row
+                let perPage = perRow * 5;
                 let maxTrophies = game.milestones.achievements.length;
 
                 ctx.font = "bold " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillStyle = "black";
-
+                
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.2, w, w);
-                for (let i = 25 * game.milestones.page; i < Math.min(25 * game.milestones.page + 25, maxTrophies); i++) {
-                    let tSize = w / perRow;
-                    let x = tSize * (i % perRow);
-                    let y = h * 0.2 + tSize * Math.floor((i - 25 * game.milestones.page) / perRow);
+                for (let i = perPage * game.milestones.page; i < Math.min(perPage * game.milestones.page + perPage, maxTrophies); i++) {
+                    // position the achievement
+                    let x = (tSize / 5) * (i % perRow);
+                    let y = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
+
+                    // grab the right image
                     let iid = game.milestones.achievements[i].imageId;
                     let iX = 256 * (iid % 10);
                     let iY = 256 * Math.floor(iid / 10);
-                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize, tSize);
+
+                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize / 5, tSize / 5);
                     if (game.milestones.achievements[i].id == game.milestones.highlighted) {
-                        ctx.drawImage(images.highlightedSlot, x, y, tSize, tSize);
+                        ctx.drawImage(images.highlightedSlot, x, y, tSize / 5, tSize / 5);
                     }
                     if (game.milestones.achievements[i].id == game.milestones.next) {
-                        ctx.drawImage(images.nextSlot, x, y, tSize, tSize);
+                        ctx.drawImage(images.nextSlot, x, y, tSize / 5, tSize / 5);
                     }
+
                     ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
                     ctx.lineWidth = 0;
                 }
 
+                // DRAW DESCRIPTION / TOOLTIP
+
                 if (game.milestones.tooltip !== null) {
-                    let y = h * 0.2 + w * ((1 / perRow) * Math.floor((game.milestones.tooltip - 25 * game.milestones.page) / perRow) + 0.18);
-                    let cx = w * ((1 / perRow) * (game.milestones.tooltip % perRow) + 0.05);
+                    let cx = ((tSize / 5) * (game.milestones.tooltip % perRow) + 0.05);
+                    let y = h * 0.2 + (tSize / 5) * Math.floor((game.milestones.tooltip - perPage * game.milestones.page) / perRow) + 0.18 + (tSize / 5);
+                    y = Math.min(0.75 * h, y);
                     let arrowX = cx + w / perRow / 4;
+
+                    // black square
                     cx = Utils.clamp(cx, w * 0.325, w * 0.675);
                     ctx.fillStyle = "#000000";
                     ctx.fillRect(cx - w * 0.3, y, w * 0.6, h * 0.1);
+
+                    // triangle boi
                     ctx.beginPath();
                     ctx.moveTo(arrowX, y - w * 0.025);
                     ctx.lineTo(arrowX + w * 0.025, y);
                     ctx.lineTo(arrowX - w * 0.025, y);
                     ctx.closePath();
                     ctx.fill();
-                    ctx.fillStyle = game.milestones.achievements[game.milestones.tooltip].fontColor;
+
+                    // text (settings -> header -> description)
                     ctx.textBaseline = "top";
                     ctx.textAlign = "center";
-                    ctx.font = (w * 0.045) + "px " + fonts.default;
-                    Utils.drawEscapedText(ctx, game.settings.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0")), cx, y + w * 0.02, 0.04);
+
+                    ctx.fillStyle = game.milestones.achievements[game.milestones.tooltip].fontColor;
+                    Utils.drawEscapedText(ctx, game.settings.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0")), cx, y + w * (TEXTSCALING * 0.02), (TEXTSCALING * 0.04), TEXTSCALING * w * 0.6);
+
                     ctx.fillStyle = "white";
-                    Utils.drawEscapedText(ctx, game.milestones.achievements[game.milestones.tooltip].getDescriptionDisplay(), cx, y + w * 0.065, 0.0225, w * 0.6);
+                    Utils.drawEscapedText(ctx, game.milestones.achievements[game.milestones.tooltip].getDescriptionDisplay(), cx, y + w * (TEXTSCALING * 0.065), (TEXTSCALING * 0.02), TEXTSCALING * w * 0.4);
                 }
             },
             function () {
-                let perRow = 5;
-                let clickedMileStone = Math.floor(mouseX / w * perRow) + perRow * Math.floor((mouseY - h * 0.2) / w * perRow) + 25 * game.milestones.page;
-                if (clickedMileStone >= 25 * game.milestones.page && clickedMileStone < Math.min(25 * game.milestones.page + 25, game.milestones.achievements.length)) {
+                // ACTIVATE DESCRIPTION / TOOLTIP
+
+                let tSize = Math.min(w, (h / 1.5)); // size of each achievement
+
+                let perRow = Math.floor(w / tSize * 5); // achievements per row
+                let perPage = perRow * 5;
+
+                let clickedMileStone = Math.floor(mouseX / w * perRow) + perRow * Math.floor((mouseY - h * 0.2) / w * perRow) + perPage * game.milestones.page;
+                if (clickedMileStone >= perPage * game.milestones.page && clickedMileStone < Math.min(perPage * game.milestones.page + perPage, game.milestones.achievements.length)) {
                     game.milestones.highlighted = game.milestones.achievements[clickedMileStone].id;
                     game.milestones.next = game.milestones.getNext();
                     if (game.milestones.tooltip === clickedMileStone) {
@@ -2974,7 +2999,7 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 var unlocks = tto({
-                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "AeroBeams", "Barrel Mastery", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
+                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "Aerobeams", "Barrel Mastery", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
                     de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Barrel Mastery", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova", "Kosmische Pins"],
                     ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Мастерство Бочек", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая", "Космический Значок"],
                 });
@@ -3382,19 +3407,19 @@ var scenes =
 
 
                     new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
-                        quadraticMin: true,
+                        quadratic: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
                     new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
-                        quadraticMin: true,
+                        quadratic: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
                     new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
-                        quadraticMin: true,
+                        quadratic: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
                     new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
-                        quadraticMin: true,
+                        quadratic: true,
                         isVisible: () => game.supernova.stars.gte(1)
                     }),
                 ],

@@ -8,10 +8,10 @@ var h = canvas.height;
 var mouseX = 0, mouseY = 0, mouseMoveX = 0, mouseMoveY = 0;
 var mousePressed = false;
 var gSplitter = new GraphemeSplitter();
-
+var TEXTSCALING = 1;
 
 var barrels = [];
-var stormQueue = []; // queueueueueeueueuueueuueuuuu euueue ueuuee? ? ? ? ? ?????? ????
+var stormQueue = []; // used to queue storm items
 var freeSpots = 20; // how many barrel slots... 0 - 20
 var draggedBarrel;
 var tempDrawnBarrels = []; //barrels drawn below newly merged barrels
@@ -1153,8 +1153,11 @@ function resizeCanvas()
     canvas.height = innerHeight * devicePixelRatio;
     if (game.settings.sizeLimit != 0) canvas.width = Math.min([1, 480, 640, 960][game.settings.sizeLimit], innerWidth * devicePixelRatio); // this min is maaaa - giii - caaall
     else canvas.width = innerWidth * devicePixelRatio; // this min is maaaa - giii - caaall
+
     w = canvas.width;
     h = canvas.height;
+
+    TEXTSCALING = 1 / (Math.pow(w, 0.9) / 244);
 }
 
 function handlePress(e)

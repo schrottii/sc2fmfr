@@ -9,7 +9,6 @@ class UIElement
         this.offset = [0, 0];
         this.isVisible = config && config.isVisible ? config.isVisible : this.isVisible;
         this.quadratic = config && config.quadratic ? config.quadratic : false;
-        this.quadraticMin = config && config.quadraticMin ? config.quadraticMin : false;
         this.anchor = config && config.anchor ? config.anchor : [0.5, 0.5]; //x, y
         this.name = config && config.name ? config.name : null;
         this.isGroup = false;
@@ -24,27 +23,18 @@ class UIElement
         let x = this.x + this.offset[0];
         let y = this.y + this.offset[1];
 
-        if (!this.quadratic && !this.quadraticMin)
+        if (!this.quadratic && !this.quadratic)
         {
             anchor = {
                 x: this.width * w * normAnchor[0],
                 y: this.height * h * normAnchor[1]
             }
         }
-        else if(this.quadraticMin)
+        else if (this.quadratic)
         {
-            let max = Math.min(this.width, this.height);
             anchor = {
-                x: max * h * normAnchor[0],
-                y: max * h * normAnchor[1]
-            }
-        }
-        else
-        {
-            let max = Math.max(this.width, this.height);
-            anchor = {
-                x: max * h * normAnchor[0],
-                y: max * h * normAnchor[1]
+                x: this.height * h * normAnchor[0],
+                y: this.height * h * normAnchor[1]
             }
         }
 
@@ -55,16 +45,7 @@ class UIElement
             height: this.height * h
         };
 
-        if (this.quadratic)
-        {
-            rect.width = Math.max(rect.width, rect.height);
-            rect.height = Math.max(rect.width, rect.height);
-        }
-        else if (this.quadraticMin)
-        {
-            rect.width = Math.min(rect.width, rect.height);
-            rect.height = Math.min(rect.width, rect.height);
-        }
+        if (this.quadratic) rect.width = rect.height;
 
         return rect;
     }
@@ -346,11 +327,11 @@ class UIText extends UIElement
 
     update()
     {
-        if (typeof this.updateText == "function")
+        if (typeof(this.updateText) == "function")
         {
             this.text = this.updateText();
         }
-        else if (typeof this.updateText == "string")
+        else if (typeof(this.updateText) == "string")
         {
             this.text = this.updateText;
         }
@@ -363,14 +344,14 @@ class UIText extends UIElement
 
     render(ctx)
     {
-        if (this.isVisible()) Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size,
+        if (this.isVisible()) Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size * TEXTSCALING,
             {
                 color: (C == "dark" && (this.color == "black" || this.color == "#000000")) ? "white" : this.color,
                 halign: this.halign,
                 valign: this.valign,
                 bold: this.bold,
                 font: this.font,
-                borderSize: this.borderSize,
+                borderSize: this.borderSize * TEXTSCALING,
                 borderColor: this.borderColor
             });
     }

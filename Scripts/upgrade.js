@@ -28,15 +28,12 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_ALIENDUST = 27,
     RESOURCE_FAIRYDUST = 28;
 
-function applyUpgrade(upg)
-{
+function applyUpgrade(upg) {
     return upg.getEffect(upg.level);
 }
 
-function getUpgradeResource(res)
-{
-    switch (res)
-    {
+function getUpgradeResource(res) {
+    switch (res) {
         case RESOURCE_SCRAP:
             return game.scrap;
         case RESOURCE_MAGNET:
@@ -100,10 +97,8 @@ function getUpgradeResource(res)
     }
 }
 
-function assignResourceAfterUpgrade(resType, res)
-{
-    switch (resType)
-    {
+function assignResourceAfterUpgrade(resType, res) {
+    switch (resType) {
         case RESOURCE_SCRAP:
             game.scrap = res;
             break;
@@ -193,14 +188,12 @@ function assignResourceAfterUpgrade(resType, res)
     }
 }
 
-function getResourceImage(res)
-{
-    switch(res)
-    {
+function getResourceImage(res) {
+    switch (res) {
         case RESOURCE_SCRAP:
             return "$images.scrap$";
         case RESOURCE_MAGNET:
-            return"$images.magnet$";
+            return "$images.magnet$";
         case RESOURCE_GS:
             return "$images.goldenScrap$";
         case RESOURCE_MERGE_TOKEN:
@@ -260,37 +253,29 @@ function getResourceImage(res)
     }
 }
 
-class ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         this.level = 0;
 
         this.getPrice = getPrice;
         this.getEffect = getEffect;
-        if (cfg)
-        {
-            if (cfg.getEffectDisplay)
-            {
+        if (cfg) {
+            if (cfg.getEffectDisplay) {
                 this.getEffectDisplay = cfg.getEffectDisplay;
             }
-            if (cfg.onBuy)
-            {
+            if (cfg.onBuy) {
                 this.onBuy = cfg.onBuy;
             }
-            if (cfg.afterBuy)
-            {
+            if (cfg.afterBuy) {
                 this.afterBuy = cfg.afterBuy;
             }
-            if (cfg.onLevelDown)
-            {
+            if (cfg.onLevelDown) {
                 this.onLevelDown = cfg.onLevelDown;
             }
             if (cfg.onBuyMax) {
                 this.onBuyMax = cfg.onBuyMax;
             }
-            if (cfg.isUnlocked)
-            {
+            if (cfg.isUnlocked) {
                 this.isUnlocked = cfg.isUnlocked;
             }
             if (cfg.integral) {
@@ -302,18 +287,15 @@ class ScrapUpgrade
         this.resource = RESOURCE_SCRAP;
     }
 
-    onBuy()
-    {
+    onBuy() {
 
     }
 
-    afterBuy()
-    {
+    afterBuy() {
 
     }
 
-    onLevelDown()
-    {
+    onLevelDown() {
 
     }
 
@@ -323,7 +305,7 @@ class ScrapUpgrade
 
 
 
-    buy(round, disableOnBuy=false) {
+    buy(round, disableOnBuy = false) {
         let resource = getUpgradeResource(this.resource);
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford) {
@@ -342,21 +324,17 @@ class ScrapUpgrade
         return canAfford;
     }
 
-    buyToTarget(level, round)
-    {
+    buyToTarget(level, round) {
         let originHyper = false;
         if (level == "hyperbuy") originHyper = true;
-        if(level != "hyperbuy" && level <= this.level)
-        {
-            if(level < this.level)
-            {
+        if (level != "hyperbuy" && level <= this.level) {
+            if (level < this.level) {
                 this.onLevelDown(level);
             }
             this.level = level;
             return true;
         }
-        else if (this.resource == 7 && game.settings.hyperBuy2)
-        {
+        else if (this.resource == 7 && game.settings.hyperBuy2) {
             // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
             if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20));
@@ -364,7 +342,7 @@ class ScrapUpgrade
             this.onBuy();
             this.afterBuy();
             return true;
-        } 
+        }
         let resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
         // 3.2 - new hyperbuy upgrade buying
         // Mass calculations using integrals
@@ -436,71 +414,58 @@ class ScrapUpgrade
         return this.getPrice(this.level);
     }
 
-    getMaxLevel()
-    {
-        if (typeof this.maxLevel == "function")
-        {
+    getMaxLevel() {
+        if (typeof this.maxLevel == "function") {
             return this.maxLevel();
         }
         return this.maxLevel;
     }
 
-    getPriceDisplay(suffix, prefix, space, showResource)
-    {
+    getPriceDisplay(suffix, prefix, space, showResource) {
         let p = prefix !== undefined ? prefix : "";
         let s = suffix !== undefined ? suffix : "";
         let spaceChar = space || space === undefined ? " " : "";
         let img = showResource ? getResourceImage(this.resource) : "";
-        if (this.level < this.getMaxLevel())
-        {
+        if (this.level < this.getMaxLevel()) {
             return img + p + spaceChar + formatNumber(this.currentPrice()) + spaceChar + s;
         }
-        else
-        {
+        else {
             return "Max";
         }
     }
 
-    getEffectDisplay()
-    {
+    getEffectDisplay() {
         return "x" + this.getEffect(this.level) + " → " + "x" + this.getEffect(this.level + 1);
     }
 
-    getLevelDisplay()
-    {
+    getLevelDisplay() {
         return this.level + (this.getMaxLevel() < Infinity ? "/" + this.getMaxLevel() : "");
     }
 }
 
-class FixedLevelUpgrade
-{
-    constructor(levels, effects, cfg)
-    {
+class FixedLevelUpgrade {
+    constructor(levels, effects, cfg) {
         this.levels = levels;
         this.effects = effects;
         this.getEffectDisplay = cfg && cfg.getEffectDisplay ? cfg.getEffectDisplay : this.getEffectDisplay;
         this.level = 0;
     }
 
-    getPrices(level)
-    {
+    getPrices(level) {
         return this.levels[level];
     }
 
-    getCurrentPrices()
-    {
+    getCurrentPrices() {
         return this.getPrices(this.level);
     }
 
-    getPriceDisplay()
-    {
-        if(this.level === this.getMaxLevel()) return "Max";
+    getPriceDisplay() {
+        if (this.level === this.getMaxLevel()) return "Max";
         let str = "";
         let len = this.getCurrentPrices().length;
         let nlFreq = len > 2 ? 2 : 1;
         let i = 0;
-        for(let p of this.getCurrentPrices())
-        {
+        for (let p of this.getCurrentPrices()) {
             let img = getResourceImage(p[1]);
             str += img + formatNumber(p[0]) + (i % nlFreq === nlFreq - 1 ? "\n" : " ");
             i++;
@@ -508,38 +473,30 @@ class FixedLevelUpgrade
         return str;
     }
 
-    getEffect(level)
-    {
+    getEffect(level) {
         return this.effects[level];
     }
 
-    getEffectDisplay()
-    {
+    getEffectDisplay() {
         return "x" + this.getEffect(this.level) + " → " + "x" + this.getEffect(this.level + 1);
     }
 
-    getMaxLevel()
-    {
+    getMaxLevel() {
         return this.levels.length;
     }
 
-    buy()
-    {
-        if(this.level >= this.getMaxLevel())
-        {
+    buy() {
+        if (this.level >= this.getMaxLevel()) {
             return;
         }
-        for(let p of this.getCurrentPrices())
-        {
+        for (let p of this.getCurrentPrices()) {
             let resource = getUpgradeResource(p[1]);
-            if(p[0].gt(resource.round()))
-            {
+            if (p[0].gt(resource.round())) {
                 return;
             }
         }
 
-        for(let p of this.getCurrentPrices())
-        {
+        for (let p of this.getCurrentPrices()) {
             let resource = getUpgradeResource(p[1]);
             resource = resource.sub(p[0]).max(0);
             assignResourceAfterUpgrade(p[1], resource);
@@ -573,19 +530,15 @@ class FixedLevelUpgrade
     }
 }
 
-class SkillTreeUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, resource, getEffect, cfg, deps)
-    {
+class SkillTreeUpgrade extends ScrapUpgrade {
+    constructor(getPrice, resource, getEffect, cfg, deps) {
         super(getPrice, getEffect, cfg);
         this.deps = deps;
         this.resource = resource;
     }
 
-    isUnlocked()
-    {
-        if(this.deps === undefined)
-        {
+    isUnlocked() {
+        if (this.deps === undefined) {
             return true;
         }
         if (this.deps.upg != undefined) {
@@ -601,25 +554,20 @@ class SkillTreeUpgrade extends ScrapUpgrade
         return true;
     }
 
-    getPriceDisplay(suffix, prefix, space, showResource)
-    {
+    getPriceDisplay(suffix, prefix, space, showResource) {
         return super.getPriceDisplay(suffix, prefix, space, true);
     }
 }
 
-class SkillTreeUpgradeFixed extends FixedLevelUpgrade
-{
-    constructor(prices, effects, cfg, deps)
-    {
+class SkillTreeUpgradeFixed extends FixedLevelUpgrade {
+    constructor(prices, effects, cfg, deps) {
         super(prices, effects, cfg);
         this.cfg = cfg;
         this.deps = deps;
     }
 
-    isUnlocked()
-    {
-        if(this.deps === undefined)
-        {
+    isUnlocked() {
+        if (this.deps === undefined) {
             return true;
         }
         if (this.cfg.nova == true) {
@@ -675,19 +623,15 @@ class CosmicEmblemUpgrade extends ScrapUpgrade {
     }
 }
 
-class MagnetUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class MagnetUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_MAGNET;
     }
 }
 
-class GoldenScrapUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class GoldenScrapUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_GS;
     }
@@ -701,19 +645,15 @@ class BarrelUpgrade extends ScrapUpgrade {
     }
 }
 
-class MergeTokenUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class MergeTokenUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_MERGE_TOKEN;
     }
 }
 
-class BrickUpgrade extends ScrapUpgrade
-{
-    constructor(getPrice, getEffect, cfg)
-    {
+class BrickUpgrade extends ScrapUpgrade {
+    constructor(getPrice, getEffect, cfg) {
         super(getPrice, getEffect, cfg);
         this.resource = RESOURCE_BRICK;
     }
@@ -912,70 +852,60 @@ class FairyDustUpgrade extends ScrapUpgrade {
 }
 
 var EarthLevels =
-    {
-        UNLOCK_MARS: 2,
-        MAGNET_3_LEVELS: 3,
-        UNLOCK_JUPITER: 4,
-        UNLOCK_SATURN: 5,
-        UNLOCK_URANUS: 6,
-        UNLOCK_NEPTUNE: 7,
-        SKILL_TREE: 8,
-        BRICK_3_LEVELS: 9,
-        ANGEL_BEAMS: 10,
-        SECOND_DIMENSION: 11,
-        SCRAP_FACTORY: 12,
-        GIFTS: 13,
-        UNLOCK_NOVA: 14,
-    };
+{
+    UNLOCK_MARS: 2,
+    MAGNET_3_LEVELS: 3,
+    UNLOCK_JUPITER: 4,
+    UNLOCK_SATURN: 5,
+    UNLOCK_URANUS: 6,
+    UNLOCK_NEPTUNE: 7,
+    SKILL_TREE: 8,
+    BRICK_3_LEVELS: 9,
+    ANGEL_BEAMS: 10,
+    SECOND_DIMENSION: 11,
+    SCRAP_FACTORY: 12,
+    GIFTS: 13,
+    UNLOCK_NOVA: 14,
+};
 
 var effectDisplayTemplates =
-    {
-        numberStandard: function (digits, prefix, suffix, cfg)
-        {
-            let p = prefix !== undefined ? prefix : "x";
-            let s = suffix !== undefined ? suffix : "";
-            let c = cfg ? cfg : {};
-            c.precision = digits;
-            return function ()
-            {
-                if (game.settings.lang == "ru" && s == "% Chance") s = "% Шанс";
-                if (this.level === this.getMaxLevel())
-                {
-                    return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s;
-                }
+{
+    numberStandard: function (digits, prefix, suffix, cfg) {
+        let p = prefix !== undefined ? prefix : "x";
+        let s = suffix !== undefined ? suffix : "";
+        let c = cfg ? cfg : {};
+        c.precision = digits;
+        return function () {
+            if (game.settings.lang == "ru" && s == "% Chance") s = "% Шанс";
+            if (this.level === this.getMaxLevel()) {
+                return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s;
+            }
 
-                return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s + " → " +
-                    p + formatNumber(this.getEffect(this.level + 1), game.settings.numberFormatType, c) + s;
+            return p + formatNumber(this.getEffect(this.level), game.settings.numberFormatType, c) + s + " → " +
+                p + formatNumber(this.getEffect(this.level + 1), game.settings.numberFormatType, c) + s;
+        }
+    },
+    percentStandard: function (digits, prefix) {
+        let p = prefix !== undefined ? prefix : "";
+        return function () {
+            if (this.level === this.getMaxLevel()) {
+                return p + formatPercent(this.getEffect(this.level), digits);
             }
-        },
-        percentStandard: function (digits, prefix)
-        {
-            let p = prefix !== undefined ? prefix : "";
-            return function ()
-            {
-                if (this.level === this.getMaxLevel())
-                {
-                    return p + formatPercent(this.getEffect(this.level), digits);
-                }
 
-                return p + formatPercent(this.getEffect(this.level), digits) + " → " +
-                    p + formatPercent(this.getEffect(this.level + 1), digits);
-            }
-        },
-        unlock: function()
-        {
-            return function()
-            {
-                return this.getEffect(this.level) ? tt("unlocked") : tt("locked");
-            }
-        },
-    unlockEffect: function (prefix, suffix)
-    {
+            return p + formatPercent(this.getEffect(this.level), digits) + " → " +
+                p + formatPercent(this.getEffect(this.level + 1), digits);
+        }
+    },
+    unlock: function () {
+        return function () {
+            return this.getEffect(this.level) ? tt("unlocked") : tt("locked");
+        }
+    },
+    unlockEffect: function (prefix, suffix) {
         let p = prefix !== undefined ? prefix : "";
         let s = suffix !== undefined ? suffix : "";
-            return function()
-            {
-                return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : tt("locked");
-            }
+        return function () {
+            return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : tt("locked");
         }
-    };
+    }
+};

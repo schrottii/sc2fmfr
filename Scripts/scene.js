@@ -52,31 +52,24 @@ function playMusic() {
     }
 }
 
-class Scene
-{
-    static loadScene(name)
-    {
+class Scene {
+    static loadScene(name) {
         let scene = scenes.find(scene => scene.name === name);
-        if (scene !== undefined)
-        {
+        if (scene !== undefined) {
             currentScene = scene;
         }
-        else
-        {
+        else {
             console.warn("Scene \"" + name + "\" does not exist");
         }
     }
 
-    constructor(name, ui, render, onpress, onrelease, cfg)
-    {
+    constructor(name, ui, render, onpress, onrelease, cfg) {
         this.name = name;
         this.ui = ui;
         this.render = render;
-        this.scenePress = onpress ? onpress : function ()
-        {
+        this.scenePress = onpress ? onpress : function () {
         };
-        this.sceneRelease = onrelease ? onrelease : function ()
-        {
+        this.sceneRelease = onrelease ? onrelease : function () {
         };
         this.oncreate = cfg && cfg.oncreate ? cfg.oncreate : this.oncreate;
         this.popupTexts = [];
@@ -84,100 +77,79 @@ class Scene
         this.oncreate();
     }
 
-    oncreate()
-    {
+    oncreate() {
 
     }
 
-    addUI(el)
-    {
+    addUI(el) {
         this.ui.push(el);
     }
 
-    onPress()
-    {
+    onPress() {
         this.scenePress();
 
         this.handleUIClick();
     }
 
-    onRelease()
-    {
+    onRelease() {
         this.sceneRelease();
 
         this.handleUIRelease();
     }
 
-    update(delta)
-    {
+    update(delta) {
         this.render(delta);
 
-        for (let element of this.ui)
-        {
+        for (let element of this.ui) {
             element.update();
             element.render(ctx);
         }
 
-        for (let p of this.popupTexts)
-        {
+        for (let p of this.popupTexts) {
             p.tick(delta);
             p.render(ctx);
         }
 
         this.popupTexts = this.popupTexts.filter(text => text.lifeTime < 1);
 
-        
+
     }
 
-    handleElementAction(element, type)
-    {
-        if (!element.isGroup)
-        {
-            if (element.isHovered())
-            {
-                if(type === 0)
-                {
+    handleElementAction(element, type) {
+        if (!element.isGroup) {
+            if (element.isHovered()) {
+                if (type === 0) {
                     element.onclick();
                 }
-                else
-                {
+                else {
                     element.onrelease();
                 }
             }
         }
-        else
-        {
-            if(element.isVisible() && !element.outOfScroll)
-            {
-                for (let el of element.uiElements)
-                {
+        else {
+            if (element.isVisible() && !element.outOfScroll) {
+                for (let el of element.uiElements) {
                     this.handleElementAction(el, type);
                 }
             }
         }
     }
 
-    handleUIClick()
-    {
-        for (let element of this.ui)
-        {
+    handleUIClick() {
+        for (let element of this.ui) {
             this.handleElementAction(element, 0);
         }
     }
 
-    handleUIRelease()
-    {
-        for (let element of this.ui)
-        {
+    handleUIRelease() {
+        for (let element of this.ui) {
             this.handleElementAction(element, 1);
         }
     }
 }
 
-function drawStars(amount, size)
-{
-    for (let i = 0; i < amount; i++)
-    {
+function drawStars(amount, size) {
+    for (let i = 0; i < amount; i++) {
         let x = (0.5 + 0.5 * Math.sin(i * 675510 + Date.now() / 51234)) * w;
         let y = (0.5 + 0.5 * Math.sin(i * 387450 + Date.now() / 84521)) * h;
         ctx.fillStyle = "white";
@@ -188,8 +160,7 @@ function drawStars(amount, size)
     }
 }
 
-function drawCurrencyBar(val, img, offY, width)
-{
+function drawCurrencyBar(val, img, offY, width) {
     let oy = offY !== undefined ? offY : 0;
     let widthTimes = width ? width : 1;
 
@@ -1011,7 +982,7 @@ var scenes =
                     ctx.fillRect(0, h * 0.1875 + h * 0.15 * i, w, h * 0.15);
                 }
                 let maxLvl = Math.min(20 * game.settings.barrelGalleryPage + 20, Math.round(Barrel.getMaxLevelBarrel()) + 1);
-                
+
                 if (game.dimension == 1 && !game.settings.lowPerformance && (game.settings.dimEffects == 1 || game.settings.dimEffects == 2)) ctx.filter = "invert(1)";
                 for (let i = 20 * game.settings.barrelGalleryPage; i < 20 * game.settings.barrelGalleryPage + 20; i++) {
                     let c = i - 20 * game.settings.barrelGalleryPage; //used for coordinates
@@ -1105,7 +1076,7 @@ var scenes =
                     ctx.font = (h * 0.04) + "px " + fonts.default;
                     ctx.textAlign = "center";
                     ctx.fillText("Unlocked at 20 mastery level " + (i + 6) + " barrels!", w * 0.5, h * (0.4 + (0.125 * i)), w * 0.5);
-                    
+
                     ctx.fillStyle = "rgb(66, 66, 66)";
                     ctx.fillRect(0, h * (0.445 + (0.125 * i)), w, h * 0.025);
                     ctx.fillStyle = colors[C]["bgFront"];
@@ -2907,14 +2878,14 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 let tSize = Math.min(w, (h / 1.5)); // size of each achievement
-                
+
                 let perRow = Math.floor(w / tSize * 5); // achievements per row
                 let perPage = perRow * 5;
                 let maxTrophies = game.milestones.achievements.length;
 
                 ctx.font = "bold " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillStyle = "black";
-                
+
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.2, w, w);
                 for (let i = perPage * game.milestones.page; i < Math.min(perPage * game.milestones.page + perPage, maxTrophies); i++) {
@@ -3215,7 +3186,7 @@ var scenes =
             }),
         new Scene("SkillTree",
             [
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), {quadratic: true}),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIText(() => tt("skilltree"), 0.5, 0.09, 0.12, "white", {
                     bold: 900,
                     borderSize: 0.005,
@@ -3385,60 +3356,59 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.higherDarkScrapTokenMax, images.upgrades.moreDarkScrap, "tree44", 0.8, 6.65, "table2"),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockSupernova, images.solarSystem.sun, "tree45", 0.5, 6.95, "table"),
-                    
-                ], 0, 0.2, 1, 0.8, () => true, {ymin: 0, ymax: 7.15})
+
+                ], 0, 0.2, 1, 0.8, () => true, { ymin: 0, ymax: 7.15 })
             ],
-            function ()
-            {
+            function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
             }),
         new Scene("Supernova",
-                [
-                    new UIText(() => tt("supernova"), 0.5, 0.05, 0.08, "white", {
-                        bold: 900,
-                        borderSize: 0.005,
-                        font: fonts.title
-                    }),
-                    new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
+            [
+                new UIText(() => tt("supernova"), 0.5, 0.05, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true }),
 
-                    new UIText(() => tt("supernovatext"), 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                new UIText(() => tt("supernovatext"), 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                    new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
+                new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
 
-                    new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
-                    new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
-                    new UIText(() => "$images.fairydust$ " + tt("fairydust") + ": " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
+                new UIText(() => "$images.stardust$ " + tt("stardust") + ": " + formatNumber(game.supernova.starDust), 0.5, 0.7, 0.05, "black"),
+                new UIText(() => "$images.aliendust$ " + tt("aliendust") + ": " + formatNumber(game.supernova.alienDust), 0.5, 0.75, 0.05, "black"),
+                new UIText(() => "$images.fairydust$ " + tt("fairydust") + ": " + formatNumber(game.supernova.fairyDust), 0.5, 0.8, 0.05, "black"),
 
-                    new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + ": " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
+                new UIText(() => "$images.cosmicemblem$ " + tt("emblems") + ": " + formatNumber(game.supernova.cosmicEmblems), 0.5, 0.85, 0.04, "black"),
 
 
-                    new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
-                        quadratic: true,
-                        isVisible: () => game.supernova.stars.gte(1)
-                    }),
-                    new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
-                        quadratic: true,
-                        isVisible: () => game.supernova.stars.gte(1)
-                    }),
-                    new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
-                        quadratic: true,
-                        isVisible: () => game.supernova.stars.gte(1)
-                    }),
-                    new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
-                        quadratic: true,
-                        isVisible: () => game.supernova.stars.gte(1)
-                    }),
-                ],
+                new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
+                    quadratic: true,
+                    isVisible: () => game.supernova.stars.gte(1)
+                }),
+                new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
+                    quadratic: true,
+                    isVisible: () => game.supernova.stars.gte(1)
+                }),
+                new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
+                    quadratic: true,
+                    isVisible: () => game.supernova.stars.gte(1)
+                }),
+                new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
+                    quadratic: true,
+                    isVisible: () => game.supernova.stars.gte(1)
+                }),
+            ],
 
-                function () {
-                    ctx.fillStyle = colors[C]["bg"];
-                    ctx.fillRect(0, 0, w, h);
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
 
-                    ctx.fillStyle = colors[C]["table"];
-                    ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.15);
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.15);
             }),
         new Scene("Supernova2",
             [
@@ -3450,7 +3420,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("SolarSystem"), { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
 
                 new UIText(() => tt("supernovawarning"), 0.5, 0.175, 0.03, "black"),
-                new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1)}),
+                new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1) }),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
@@ -3468,7 +3438,7 @@ var scenes =
                     }
                 }, { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
             ],
-            
+
             function (delta) {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
@@ -3576,7 +3546,7 @@ var scenes =
 
                 // Alien Pin
                 new UIText(() => tt("alienpin"), 0.5, 0.275, 0.08, "black"),
-                new UIText(() => tt("level") + ": " + game.supernova.pins.alienPin + " | " + tt("costs") + ": " + formatNumber(game.supernova.pins.getPinCosts(game.supernova.pins.alienPin)) + "\n" + formatNumber(game.supernova.pins.getPinEffect(game.supernova.pins.alienPin), game.settings.numberFormatType, {precision: 2}) + "x " + tt("aliendust"), 0.5, 0.32, 0.04, "black"),
+                new UIText(() => tt("level") + ": " + game.supernova.pins.alienPin + " | " + tt("costs") + ": " + formatNumber(game.supernova.pins.getPinCosts(game.supernova.pins.alienPin)) + "\n" + formatNumber(game.supernova.pins.getPinEffect(game.supernova.pins.alienPin), game.settings.numberFormatType, { precision: 2 }) + "x " + tt("aliendust"), 0.5, 0.32, 0.04, "black"),
                 new UIButton(0.5, 0.4, 0.1, 0.1, images.alienPin, () => {
                     let pinAmount = game.settings.hyperBuy ? (game.settings.hyperBuyCap == "0" ? 100 : game.settings.hyperBuyCap) : 1;
                     for (pi = 0; pi < pinAmount; pi++) {
@@ -3585,7 +3555,7 @@ var scenes =
                             game.supernova.pins.alienPin += 1;
                         }
                     }
-                    
+
                 }, { quadratic: true }),
 
                 // Fairy Pin

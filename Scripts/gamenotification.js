@@ -1,60 +1,48 @@
-class GameNotification
-{
-    constructor(text)
-    {
+class GameNotification {
+    constructor(text) {
         this.text = text;
         this.y = 0;
         this.lifeTime = 0;
     }
 
-    static create(notification)
-    {
+    static create(notification) {
         gameNotifications.push(notification);
     }
 
-    remove()
-    {
+    remove() {
         gameNotifications = gameNotifications.filter(nf => nf !== this);
     }
 
-    tick(delta)
-    {
+    tick(delta) {
         this.lifeTime += delta;
 
-        if(this.lifeTime < 0.5)
-        {
+        if (this.lifeTime < 0.5) {
             this.y = this.lifeTime * 2 * h * 0.15;
         }
-        else if(this.lifeTime > 2.5)
-        {
+        else if (this.lifeTime > 2.5) {
             this.y = (3 - this.lifeTime) * 2 * h * 0.15;
         }
-        else
-        {
+        else {
             this.y = h * 0.15;
         }
 
-        if(this.lifeTime > 3.25)
-        {
+        if (this.lifeTime > 3.25) {
             this.remove();
         }
     }
 
-    renderBackground(ctx)
-    {
+    renderBackground(ctx) {
         ctx.drawImage(images.gameNotifaction, w * 0.25, this.y - h * 0.125, w * 0.5, h * 0.125);
     }
 
-    setDefaultFont(ctx)
-    {
+    setDefaultFont(ctx) {
         ctx.textAlign = "center";
         ctx.fillStyle = "white";
         ctx.textBaseline = "middle";
         ctx.font = "bold " + (h * 0.03) + "px " + fonts.default;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         this.renderBackground(ctx);
 
         this.setDefaultFont(ctx);
@@ -62,17 +50,14 @@ class GameNotification
     }
 }
 
-class MergeQuestNotification extends GameNotification
-{
-    constructor(quest)
-    {
+class MergeQuestNotification extends GameNotification {
+    constructor(quest) {
         super("Merge Quest Complete!");
         this.barrelLvl = quest.barrelLvl;
         this.reward = quest.reward;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
@@ -86,16 +71,13 @@ class MergeQuestNotification extends GameNotification
     }
 }
 
-class MasteryLevelUpNotification extends GameNotification
-{
-    constructor(level)
-    {
+class MasteryLevelUpNotification extends GameNotification {
+    constructor(level) {
         super("Mastery Level Up!");
         this.reward = game.mergeMastery.getMagnetBonus(level);
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
@@ -106,10 +88,8 @@ class MasteryLevelUpNotification extends GameNotification
     }
 }
 
-class MilestoneNotification extends GameNotification
-{
-    constructor(milestone)
-    {
+class MilestoneNotification extends GameNotification {
+    constructor(milestone) {
         for (i in game.milestones.achievements) {
             if (game.milestones.achievements[i].id == milestone) milestone = game.milestones.achievements[i];
         }
@@ -118,8 +98,7 @@ class MilestoneNotification extends GameNotification
         this.iid = milestone.imageId;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
@@ -138,7 +117,7 @@ class MilestoneNotification extends GameNotification
 // Added in SC2FMFR 2.1 :)
 // Parameter 1 is the Title (top), 2 is text (below)
 class TextNotification extends GameNotification {
-    constructor(title, text, img="none", b="0") {
+    constructor(title, text, img = "none", b = "0") {
         super(title);
         this.title = title;
         this.text = text;

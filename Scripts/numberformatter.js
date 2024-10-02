@@ -1,32 +1,28 @@
-function formatThousands(n, prec)
-{
+function formatThousands(n, prec) {
     let num = new Decimal(n);
     return num.toNumber().toLocaleString("en-us",
-    {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: prec
-    });
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: prec
+        });
 }
 
 var NUM_FORMAT_TYPES = 14;
-function formatNumber(x, type, cfg)
-{
+function formatNumber(x, type, cfg) {
     x = new Decimal(x);
 
     type = type === undefined ? game.settings.numberFormatType : type;
 
-    if(isNaN(x.toNumber()))
-    {
+    if (isNaN(x.toNumber())) {
         return "NaN";
     }
 
-    if(x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6) && type != 9)
-    {
+    if (x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6) && type != 9) {
         let prec = cfg && cfg.precision ? cfg.precision : 0;
         return formatThousands(x, prec);
     }
 
-    let numberPrefixes = 
+    let numberPrefixes =
     {
         start: ["", "K", "M", "B"],
         ones: ["", "U", "D", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "N"],
@@ -36,19 +32,19 @@ function formatNumber(x, type, cfg)
     };
 
     let numberPrefixesShort =
-        {
-            start: ["", "K", "M", "B"],
-            ones: ["", "U", "D", "T", "Q", "q", "S", "s", "O", "N"],
-            tens: ["", "D", "V", "Tr", "QU", "qu", "Se", "Sp", "Og", "No"],
-            hundreds: ["", "C", "B", "t", "Q", "q", "S", "s", "O", "n"],
-            thousands: ["", "M", "DM", "TM", "QM", "qM", "SM", "sM", "OM", "NM"]
-        };
+    {
+        start: ["", "K", "M", "B"],
+        ones: ["", "U", "D", "T", "Q", "q", "S", "s", "O", "N"],
+        tens: ["", "D", "V", "Tr", "QU", "qu", "Se", "Sp", "Og", "No"],
+        hundreds: ["", "C", "B", "t", "Q", "q", "S", "s", "O", "n"],
+        thousands: ["", "M", "DM", "TM", "QM", "qM", "SM", "sM", "OM", "NM"]
+    };
 
     let greek = "άαβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".split("");
     let letters = "~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     let letters2 = "~abcdefghijklmnopqrstuvwxyz".split("");
     let cyrillic = "~абвгдежзийклмнопрстуфхцчшщьюяАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЮЯ".split("");
-    let emojis = ["~", "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😎", "😍", "🥰", "😛", 
+    let emojis = ["~", "😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😎", "😍", "🥰", "😛",
         "😜", "🤑", "😨", "😱", "🥵", "🥶", "🤬", "🤔", "👹", "👺", "👾", "👽", "🙉", "🦮", "🐂", "🐊", "🐬", "🧲", "🎄", "🎨",
         "👕", "🎲", "🎮", "🀄", "🍫", "🍩", "🍰", "🍔", "🔇", "💯"];
     let japanese = "~あびちぢえふげはいじかれものおぱくらせてうわをきよし".split("");
@@ -56,13 +52,11 @@ function formatNumber(x, type, cfg)
 
     let sigDigits = 2 - x.e % 3;
 
-    if(type === 0 || type === 1)
-    {
+    if (type === 0 || type === 1) {
         let m = (x.m * Math.pow(10, x.e % 3)).toFixed(sigDigits);
         let pre = type === 0 ? numberPrefixes : numberPrefixesShort;
 
-        if(x.lt(1e12))
-        {
+        if (x.lt(1e12)) {
             return m + " " + pre.start[Math.floor(x.e / 3)];
         }
 
@@ -73,10 +67,9 @@ function formatNumber(x, type, cfg)
             pre.ones[Math.floor(newE / 3) % pre.ones.length] +
             pre.tens[Math.floor(newE / 30) % pre.tens.length];
     }
-    if(type >= 4 && type <= 10)
-    {
+    if (type >= 4 && type <= 10) {
         let suffixes = type === 4 ? letters : greek;
-        if(type === 6) suffixes = cyrillic;
+        if (type === 6) suffixes = cyrillic;
         if (type === 7) suffixes = emojis;
         if (type === 8) suffixes = japanese;
         if (type === 9) suffixes = chinese;
@@ -85,8 +78,7 @@ function formatNumber(x, type, cfg)
         let remainingE = x.e;
         let suffix = "";
 
-        while(order >= 0)
-        {
+        while (order >= 0) {
             let index = Math.floor(remainingE / Math.pow(suffixes.length, order) / 3);
             suffix += suffixes[index];
             remainingE -= Math.pow(suffixes.length, order) * index * 3;
@@ -97,16 +89,14 @@ function formatNumber(x, type, cfg)
 
         return m + " " + suffix;
     }
-    if(type === 2)
-    {
+    if (type === 2) {
         let m = (x.m * Math.pow(10, x.e % 3)).toFixed(sigDigits);
         let e = Math.floor(x.e / 3) * 3;
 
-        return m + "E" + (e >= 1e4 ? formatNumber(e, game.settings.numberFormatType, {namesAfter: 1e9}) : e.toFixed(0));
+        return m + "E" + (e >= 1e4 ? formatNumber(e, game.settings.numberFormatType, { namesAfter: 1e9 }) : e.toFixed(0));
     }
-    if(type === 3)
-    {
-        return x.m.toFixed(x.e < 10000 ? 2 : 0) + "e" + (x.e >= 1e4 ? formatNumber(x.e, game.settings.numberFormatType, {namesAfter: 1e9}) : x.e.toFixed(0));
+    if (type === 3) {
+        return x.m.toFixed(x.e < 10000 ? 2 : 0) + "e" + (x.e >= 1e4 ? formatNumber(x.e, game.settings.numberFormatType, { namesAfter: 1e9 }) : x.e.toFixed(0));
     }
     if (type === 11) {
         let m = (x.m * Math.pow(10, x.e % 3)).toFixed(sigDigits);
@@ -121,17 +111,14 @@ function formatNumber(x, type, cfg)
             ru: ["к", "М", "Г", "Т", "П", "Э", "З", "Й", "Р", "К"]
         });
 
-        if(e <= prefixesLong.length * 3 - 3)
-        {
+        if (e <= prefixesLong.length * 3 - 3) {
             return m + " " + prefixesLong[Math.floor(e / 3)];
         }
-        else
-        {
+        else {
             let newE = e - 3;
             let order = Math.floor(newE / 3 / prefixes.length);
             let quekkas = (order > 1 ? "Q^" + formatNumber(order) : "");
-            if(order <= 4)
-            {
+            if (order <= 4) {
                 quekkas = "Q".repeat(order);
             }
             return m + " " + prefixes[Math.floor(newE / 3) % prefixes.length] + quekkas;
@@ -173,19 +160,15 @@ function formatNumber(x, type, cfg)
     }
 }
 
-function formatPercent(d, prec)
-{
-    return formatNumber(d.mul(100), game.settings.numberFormatType, {precision: prec}) + "%";
+function formatPercent(d, prec) {
+    return formatNumber(d.mul(100), game.settings.numberFormatType, { precision: prec }) + "%";
 }
 
-function formatTime(s)
-{
-    if(s < 60)
-    {
+function formatTime(s) {
+    if (s < 60) {
         return s.toFixed(0) + "s";
     }
-    if(s < 3600)
-    {
+    if (s < 3600) {
         return [Math.floor(s / 60).toFixed(0), ("0" + Math.floor(s % 60).toFixed(0)).slice(-2)].join(":");
     }
 }

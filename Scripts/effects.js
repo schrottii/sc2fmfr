@@ -1,13 +1,10 @@
-class PopUpText
-{
-    constructor(text, x, y, cfg)
-    {
+class PopUpText {
+    constructor(text, x, y, cfg) {
         this.x = x;
         this.y = y;
         this.text = text;
         this.lifeTime = 0;
-        if (cfg)
-        {
+        if (cfg) {
             this.color = cfg.color ? cfg.color : "#000000";
             this.size = cfg.size ? cfg.size : 0.02;
             this.speed = cfg.speed ? cfg.speed : 0.05;
@@ -15,8 +12,7 @@ class PopUpText
             this.maxWidth = cfg.maxWidth ? cfg.maxWidth : undefined;
             this.border = cfg.border ? cfg.border : 0;
         }
-        else
-        {
+        else {
             this.color = "#000000";
             this.size = 0.02;
             this.speed = 0.05;
@@ -26,14 +22,12 @@ class PopUpText
         }
     }
 
-    tick(delta)
-    {
+    tick(delta) {
         this.y -= delta * this.speed * h;
         this.lifeTime += delta;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         let alphaMulti = this.color.length <= 7 ? 1 : parseInt(this.color.slice(-2), 16) / 255;
@@ -44,8 +38,7 @@ class PopUpText
         ctx.strokeStyle = "#000000" + alpha;
         ctx.lineWidth = this.border;
 
-        if (this.border > 0)
-        {
+        if (this.border > 0) {
             ctx.strokeText(this.text, this.x, this.y, this.maxWidth);
         }
         ctx.fillText(this.text, this.x, this.y, this.maxWidth);

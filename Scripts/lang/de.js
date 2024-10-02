@@ -248,7 +248,7 @@ const trans_de = {
 
     sendtext: "Geschenke senden:\n\n1. Besitze mindestens 1 Stempel\n2. Wähle die Währung aus\n3. Gebe den Freundescode von\ndem Freund ein (nicht deinen code!)\n4. Klicke das Geschenk und schicke dem Freund den Code",
     opentext: "Geschenke öffnen:\n1. Besitze mindestens 1 Schere\n2. Klicke das Geschenk (unten)\n3. Gebe den Geschenkcode ein\nden dir dein Freund gegeben hat",
-    
+
     // TIME MODE
     timemode: "Rennen gegen die Zeit",
     timetext: "Renne gegen die Zeit\nLass das Feld sich nicht komplett auffüllen!\nVerdiene Zahnräder\nVersuche übrig: ",

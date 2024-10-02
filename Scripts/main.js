@@ -77,21 +77,21 @@ let shortV = {
 }
 
 var spawnTime =
-    {
-        cooldown: 0,
-        time: 0.15
-    };
+{
+    cooldown: 0,
+    time: 0.15
+};
 
 var incomeTextTime =
-    {
-        cooldown: 0,
-        time: 1
-    };
+{
+    cooldown: 0,
+    time: 1
+};
 
 var saveTime =
-    {
-        cd: 10,
-        time: 0
+{
+    cd: 10,
+    time: 0
 };
 
 // some time stuff
@@ -104,13 +104,10 @@ var gsStormTime = 0;
 var deltaTimeOld = Date.now();
 var deltaTimeNew = Date.now();
 
-function isMobile()
-{
+function isMobile() {
     let check = false;
-    (function (a)
-    {
-        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
-        {
+    (function (a) {
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
             check = true;
         }
     })(navigator.userAgent || navigator.vendor || window.opera);
@@ -125,24 +122,19 @@ if ('serviceWorker' in navigator && location.protocol === "https:" && window.isS
         .then(() => { console.log('File loaded'); });
 }
 
-function setup()
-{
-    for (let i = 0; i < 20; i++)
-    {
+function setup() {
+    for (let i = 0; i < 20; i++) {
         barrels.push(undefined);
     }
 
-    for (let q of game.mergeQuests.quests)
-    {
+    for (let q of game.mergeQuests.quests) {
         q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);
     }
 
-    try
-    {
+    try {
         loadGame();
     }
-    catch(e)
-    {
+    catch (e) {
         alert(tt("generalerror").replace("<estack>", e.stack));
         return;
     }
@@ -153,8 +145,7 @@ function setup()
     resizeCanvas();
 
     document.querySelector("div.absolute button#export").onclick = e => exportGame();
-    document.querySelector("div.absolute button#import").onclick = e =>
-    {
+    document.querySelector("div.absolute button#import").onclick = e => {
         thebool = confirm(tt("importconfirm"));
         if (thebool == true) {
             alert(tt("importing"));
@@ -192,7 +183,7 @@ function copyGift() {
 
 function cancelGift() {
     giftContent = {};
-    
+
     game.gifts.sendLimit += 1;
     game.stats.giftsSent = game.stats.giftsSent.sub(1);
 
@@ -208,8 +199,7 @@ function currentSceneNotLoading() {
 
 var fpsDisplay = "?";
 
-function update()
-{
+function update() {
     deltaTimeNew = Date.now();
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
     if (delta < (1000 / FPS / 1000)) {
@@ -220,8 +210,7 @@ function update()
 
     game.stats.playtime = game.stats.playtime.add(delta);
 
-    if (!document.hidden)
-    {
+    if (!document.hidden) {
         if (game.scrap == 0) game.scrap = new Decimal(1);
         if (game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
         else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
@@ -230,7 +219,7 @@ function update()
 
         spawnTime.cooldown += delta;
 
-        let barrelsToSpawn = Math.min(freeSpots,Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
+        let barrelsToSpawn = Math.min(freeSpots, Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
         if (barrelsToSpawn > 0) {
             spawnTime.cooldown = 0;
             for (let i = 0; i < barrelsToSpawn; i++) {
@@ -265,21 +254,17 @@ function update()
             game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 4);
         }
 
-        if(game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode)
-        {
+        if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode) {
             fallingMagnetTime += game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS ? delta : 0;
 
-            if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber())
-            {
+            if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber()) {
                 fallingMagnetTime = 0;
                 movingItemFactory.fallingMagnet(fallingMagnetWorth());
             }
         }
 
-        if (game.ms.includes(7) && !timeMode)
-        {
-            if(game.settings.autoMerge)
-            {
+        if (game.ms.includes(7) && !timeMode) {
+            if (game.settings.autoMerge) {
                 autoMergeTime += delta;
             }
             tryAutoMerge();
@@ -295,10 +280,8 @@ function update()
             }
         }
 
-        if (game.mergeQuests.isUnlocked())
-        {
-            for (let q of game.mergeQuests.quests)
-            {
+        if (game.mergeQuests.isUnlocked()) {
+            for (let q of game.mergeQuests.quests) {
                 q.tick(delta);
             }
         }
@@ -309,8 +292,7 @@ function update()
         secondTime += delta;
         game.factory.time -= delta;
 
-        if (saveTime.time >= saveTime.cd)
-        {
+        if (saveTime.time >= saveTime.cd) {
             saveTime.time = 0;
             saveGame();
         }
@@ -368,7 +350,7 @@ function update()
                             for (iee in game[game.autos[i].auto[0]].upgrades) {
                                 lsx += 1;
                                 if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
-                                    if(applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
+                                    if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
                                     else game.factory.tank = game.factory.tank.sub(2);
                                     if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                                     break;
@@ -379,7 +361,7 @@ function update()
                 }
             }
         }
-        
+
         if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
         // IMPORTANT - this is where the scene itself is rendered
@@ -397,14 +379,12 @@ function update()
             ctx.fillText(fpsDisplay + " fps", w * 0.01, h * 0.005, w);
         }
 
-        if (gameNotifications.length > 0)
-        {
+        if (gameNotifications.length > 0) {
             gameNotifications[0].render(ctx);
             gameNotifications[0].tick(delta);
         }
 
-        for (let item of movingItems)
-        {
+        for (let item of movingItems) {
             item.tick(delta);
         }
 
@@ -704,8 +684,7 @@ function getDarkFragmentBaseValue() {
     return new Decimal(applyUpgrade(game.skillTree.upgrades.posusAffectsDark) ? applyUpgrade(game.solarSystem.upgrades.posus).pow(0.5) : 1).mul(applyUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost)).mul(applyUpgrade(game.supernova.alienDustUpgrades.volans2)).mul(applyUpgrade(game.barrelMastery.upgrades.darkFragmentBoost).pow(getTotalLevels(7)));
 }
 
-function getMagnetBaseValue()
-{
+function getMagnetBaseValue() {
     return applyUpgrade(game.goldenScrap.upgrades.magnetBoost)
         .mul(applyUpgrade(game.mergeQuests.upgrades.magnetBoost))
         .mul(game.mergeMastery.prestige.currentMagnetBoost())
@@ -728,7 +707,7 @@ function craftingMulti() {
     return (1 - applyUpgrade(game.bricks.upgrades.fasterCrafting) / 100) / applyUpgrade(game.skillTree.upgrades.veryFastCrafting) / applyUpgrade(game.supernova.alienDustUpgrades.cetus);
 }
 
-function getScrews(isFallingScrew=false) {
+function getScrews(isFallingScrew = false) {
     return new Decimal(Math.ceil(2 * Math.log10(Math.max(3, game.stats.totalscrews)) * (isFallingScrew ? 3 : 1))).mul(applyUpgrade(game.barrelMastery.upgrades.screwBoost).pow(getTotalLevels(9)));
 }
 
@@ -768,7 +747,7 @@ function dustReset(upgradeType, dustType, dustStat) {
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
 }
 
-function basicAchievementUnlock(index, req=true) {
+function basicAchievementUnlock(index, req = true) {
     if (game.ms.includes(index) == false && req) {
         game.ms.push(index);
         GameNotification.create(new MilestoneNotification(index + 1));
@@ -880,7 +859,7 @@ function renewableEnergy() {
 }
 
 var masMerges = [100, 250, 500, 1000, 2500,
-                 5000, 7500, 10000, 15000, 20000, 25000];
+    5000, 7500, 10000, 15000, 20000, 25000];
 // 100, 125, 166, 250, 500, 833, 1071, 1250, 1666, 2000, 2272(, 4166, 5796, 7142, ...)
 
 const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "poop", "faggot", "nigger", "nigga", "slave", "cock", "dick", "sex", "penis", "vagina", "retard", "blowjob", "pussy", "tits", "nazi", "fag", "tranny", "shemale", "heshe", "trap", "transvestite"]
@@ -888,7 +867,7 @@ const filthyWords = ["ass", "cum", "shit", "fuck", "bitch", "hitler", "cunt", "p
 function calculateMasteryLevel(merges) {
     if (merges < 25001) {
         let id = 0;
-        while (merges >= masMerges[id]){
+        while (merges >= masMerges[id]) {
             id += 1;
         }
         return id;
@@ -939,15 +918,11 @@ function openFile() {
     }
 }
 
-function onBarrelMerge(isAuto, lvl, bx, by)
-{
-    if (game.mergeQuests.isUnlocked())
-    {
-        for (let q of game.mergeQuests.quests)
-        {
+function onBarrelMerge(isAuto, lvl, bx, by) {
+    if (game.mergeQuests.isUnlocked()) {
+        for (let q of game.mergeQuests.quests) {
             let merged = q.check(lvl);
-            if (merged)
-            {
+            if (merged) {
                 break;
             }
         }
@@ -997,20 +972,17 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         }
     }
 
-    if (game.mergeMastery.isUnlocked())
-    {
+    if (game.mergeMastery.isUnlocked()) {
         game.mergeMastery.currentMerges++;
         game.mergeMastery.check();
         if (game.highestBarrelReached >= 1000) game.mergeQuests.dailyQuest.check(lvl);
     }
 
-    if (game.bricks.isUnlocked())
-    {
+    if (game.bricks.isUnlocked()) {
         game.bricks.onMerge();
     }
 
-    if(game.tires.isUnlocked())
-    {
+    if (game.tires.isUnlocked()) {
         game.tires.onMerge();
     }
 
@@ -1018,8 +990,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
 
-    if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber())
-    {
+    if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber()) {
         //add the round amount of magnets, and save the remaining (not whole) magnets to add up later
         let amount = getMagnetBaseValue();
         game.remainderMagnets += amount.remainder(1).toNumber();
@@ -1029,9 +1000,8 @@ function onBarrelMerge(isAuto, lvl, bx, by)
         game.remainderMagnets %= 1;
         game.magnets = Decimal.round(game.magnets);
 
-        if(currentScene.name === "Barrels")
-        {
-            currentScene.popupTexts.push(new PopUpText("+" + formatNumber(magnetsToAdd), bx ? bx : mouseX, by ? by: mouseY, {
+        if (currentScene.name === "Barrels") {
+            currentScene.popupTexts.push(new PopUpText("+" + formatNumber(magnetsToAdd), bx ? bx : mouseX, by ? by : mouseY, {
                 color: "#4040ff",
                 size: 0.05
             }));
@@ -1041,7 +1011,7 @@ function onBarrelMerge(isAuto, lvl, bx, by)
 
 const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994, 997];
 
-function duckTales(type=0) {
+function duckTales(type = 0) {
     let duckCheck = true;
     let duckAmount = 0;
     // new: 162, 388, 478, 743, 994        997
@@ -1070,13 +1040,10 @@ function duckTales(type=0) {
     }
 }
 
-function autoMergeBarrel()
-{
+function autoMergeBarrel() {
     let lvls = [];
-    for (let i = 0; i < barrels.length; i++)
-    {
-        if(barrels[i] !== undefined)
-        {
+    for (let i = 0; i < barrels.length; i++) {
+        if (barrels[i] !== undefined) {
             lvls.push({
                 index: i,
                 lvl: Math.round(barrels[i].level)
@@ -1084,11 +1051,9 @@ function autoMergeBarrel()
         }
     }
 
-    for (let l of lvls)
-    {
+    for (let l of lvls) {
         let filtered = lvls.filter(lv => Math.round(lv.lvl) === Math.round(l.lvl));
-        if (filtered.length >= 2)
-        {
+        if (filtered.length >= 2) {
             onBarrelMerge(true, Math.round(barrels[filtered[0].index].level), barrels[filtered[0].index].x, barrels[filtered[0].index].y);
             tempDrawnBarrels[filtered[0].index] = barrels[filtered[0].index].level;
             barrels[filtered[0].index] = new Barrel(barrels[filtered[0].index].level + 1);
@@ -1147,15 +1112,13 @@ function updateMouse(e) {
     mouseMoveX = e.movementX !== undefined ? e.movementX : mouseX - oldmX;
     mouseMoveY = e.movementY !== undefined ? e.movementY : mouseY - oldmY;
 
-    if(e.type === "touchstart")
-    {
+    if (e.type === "touchstart") {
         mouseMoveX = 0;
         mouseMoveY = 0;
     }
 }
 
-function resizeCanvas()
-{
+function resizeCanvas() {
     canvas.height = innerHeight * devicePixelRatio;
     if (game.settings.sizeLimit != 0) canvas.width = Math.min([1, 480, 640, 960][game.settings.sizeLimit], innerWidth * devicePixelRatio); // this min is maaaa - giii - caaall
     else canvas.width = innerWidth * devicePixelRatio; // this min is maaaa - giii - caaall
@@ -1166,16 +1129,14 @@ function resizeCanvas()
     TEXTSCALING = 1 / (Math.pow(w, 0.9) / 244);
 }
 
-function handlePress(e)
-{
+function handlePress(e) {
     updateMouse(e);
     mousePressed = true;
 
     currentScene.onPress();
 }
 
-function handleRelease(e)
-{
+function handleRelease(e) {
     updateMouse(e);
     mousePressed = false;
 
@@ -1183,37 +1144,29 @@ function handleRelease(e)
 }
 
 
-if (isMobile())
-{
-    canvas.ontouchstart = function (e)
-    {
+if (isMobile()) {
+    canvas.ontouchstart = function (e) {
         handlePress(e);
     };
 
-    canvas.ontouchend = function (e)
-    {
+    canvas.ontouchend = function (e) {
         handleRelease(e);
     };
 
-    canvas.ontouchmove = function (e)
-    {
+    canvas.ontouchmove = function (e) {
         updateMouse(e);
     };
 }
-else
-{
-    canvas.onmousedown = function (e)
-    {
+else {
+    canvas.onmousedown = function (e) {
         handlePress(e);
     };
 
-    canvas.onmousemove = function (e)
-    {
+    canvas.onmousemove = function (e) {
         updateMouse(e);
     };
 
-    canvas.onmouseup = function (e)
-    {
+    canvas.onmouseup = function (e) {
         handleRelease(e);
     };
 }
@@ -1251,10 +1204,10 @@ function maxScrapUpgrades() {
 }
 
 function maxSunUpgrades() {
-        let upg = game.solarSystem.upgrades.sun;
-        while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
-            upg.buy();
-        }
+    let upg = game.solarSystem.upgrades.sun;
+    while (upg.currentPrice().lte(game.magnets) && upg.level < upg.maxLevel) {
+        upg.buy();
+    }
 }
 
 function maxMercuryUpgrades() {
@@ -1288,8 +1241,7 @@ function exportCompare() {
     alert(tt("codecopied"));
 }
 
-function saveGame(exportGame, downloaded=false)
-{
+function saveGame(exportGame, downloaded = false) {
     const saveObj = JSON.parse(JSON.stringify(game)); //clone object
     if (saveObj.milestones.unlocked != undefined) {
         if (saveObj.milestones.unlocked.length > 1) {
@@ -1305,7 +1257,7 @@ function saveGame(exportGame, downloaded=false)
 
     // Added in 2.5 or so, massively improved in SC2FMFR 3.2.1: The ultimate shortener
     for (let ob of [saveObj.skillTree.upgrades, saveObj.shrine, saveObj.supernova.cosmicUpgrades, saveObj.supernova.starDustUpgrades, saveObj.supernova.alienDustUpgrades, saveObj.supernova.fairyDustUpgrades, saveObj.autos, saveObj.collectors,
-        saveObj.tires.upgrades[0], saveObj.tires.upgrades[1], saveObj.tires.upgrades[2], saveObj.tires.upgrades[3]    ]) {
+    saveObj.tires.upgrades[0], saveObj.tires.upgrades[1], saveObj.tires.upgrades[2], saveObj.tires.upgrades[3]]) {
         for (i in ob) {
             delete ob[i].levels;
             delete ob[i].currency;
@@ -1329,8 +1281,7 @@ function saveGame(exportGame, downloaded=false)
     }
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
     // Reduces save size a bit (~300 chars less)
-    for (let i = 0; i < barrels.length; i++)
-    {
+    for (let i = 0; i < barrels.length; i++) {
         saveObj.barrelLvls[i] = barrels[i] !== undefined ? Math.round(barrels[i].level) : undefined;
     }
 
@@ -1363,8 +1314,8 @@ function saveGame(exportGame, downloaded=false)
                         }
                     }
                 }
-            
-        
+
+
             }
         }
 
@@ -1386,15 +1337,14 @@ function saveGame(exportGame, downloaded=false)
             }
         }
     }
-    catch{
+    catch {
         // for the case your javascript is so old it doesn't have Object.entries...
         // it will just skip the entire try part and well, not shorten it at all.
         console.log(tt("oldjs"));
     }
 
 
-    if (exportGame)
-    {
+    if (exportGame) {
         let save = btoa(JSON.stringify(saveObj));
         document.querySelector("div.absolute textarea").value = save;
         if (!downloaded) {
@@ -1403,15 +1353,13 @@ function saveGame(exportGame, downloaded=false)
         }
         // Still put it into the text area, but not copy to the clipboard, when downloading
     }
-    else
-    {
+    else {
         localStorage.setItem("ScrapFanmade", JSON.stringify(saveObj));
         if (currentSceneNotLoading()) currentScene.popupTexts.push(new PopUpText(tt("Saved"), w * 0.2, h * 1, { color: "#ffffff", bold: true, size: 0.04, border: h * 0.005 }));
     }
 }
 
-function loadVal(v, alt)
-{
+function loadVal(v, alt) {
     return v !== undefined ? v : alt;
 }
 
@@ -1453,11 +1401,9 @@ function loadCompare(compareCode) {
 
 }
 
-function loadGame(saveCode, isFromFile=false)
-{
+function loadGame(saveCode, isFromFile = false) {
     let loadObj;
-    if (saveCode !== undefined)
-    {
+    if (saveCode !== undefined) {
         if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
             game.highestBarrelReached = 1;
             for (i = 0; i < 3; i++) {
@@ -1507,8 +1453,7 @@ function loadGame(saveCode, isFromFile=false)
             }
         }
     }
-    else
-    {
+    else {
         loadObj = localStorage.getItem("ScrapFanmade");
     }
 
@@ -1606,10 +1551,10 @@ function loadGame(saveCode, isFromFile=false)
             }
             else {
                 game.gifts.friends = [];
-            }        
-		if (loadObj.gifts.friends == undefined) {
-            	game.gifts.friends = [];
-        	}
+            }
+            if (loadObj.gifts.friends == undefined) {
+                game.gifts.friends = [];
+            }
         }
         else {
             game.gifts.openedToday = [];
@@ -1903,10 +1848,8 @@ function loadGame(saveCode, isFromFile=false)
             })
         }
 
-        if(loadObj.skillTree !== undefined && loadObj.skillTree.upgrades !== undefined)
-        {
-            for (let k of Object.keys(game.skillTree.upgrades))
-            {
+        if (loadObj.skillTree !== undefined && loadObj.skillTree.upgrades !== undefined) {
+            for (let k of Object.keys(game.skillTree.upgrades)) {
                 if (loadObj.skillTree.upgrades[k] != undefined) {
                     game.skillTree.upgrades[k].level = loadVal(loadObj.skillTree.upgrades[k].level, 0);
                 }
@@ -2226,15 +2169,12 @@ function loadGame(saveCode, isFromFile=false)
 
         playMusic();
 
-        for (let i = 0; i < loadObj.barrelLvls.length; i++)
-        {
-            if (loadObj.barrelLvls[i] !== null)
-            {
+        for (let i = 0; i < loadObj.barrelLvls.length; i++) {
+            if (loadObj.barrelLvls[i] !== null) {
                 barrels[i] = new Barrel(loadObj.barrelLvls[i]);
                 freeSpots -= 1;
             }
-            else
-            {
+            else {
                 barrels[i] = undefined;
             }
         }
@@ -2248,16 +2188,13 @@ function loadGame(saveCode, isFromFile=false)
     }
 }
 
-function exportGame(downloaded=false)
-{
+function exportGame(downloaded = false) {
     saveGame(true, downloaded);
 }
 
-function importGame()
-{
+function importGame() {
     alert(tt("copied"));
-    navigator.clipboard.readText().then(text =>
-    {
+    navigator.clipboard.readText().then(text => {
         loadGame(text);
     });
 }
@@ -2271,7 +2208,7 @@ btnInstall.style.display = "none";
 
 
 function updateBetterBarrels() {
-    if(game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
+    if (game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
     if (game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila)), game.highestBarrelReached - 25));
 }
 
@@ -2284,7 +2221,7 @@ function calculateCurrentHighest() {
     return currentHighest;
 }
 
-function updateUpgradingBarrelFromBB(plus=0) {
+function updateUpgradingBarrelFromBB(plus = 0) {
     upgradingBarrel = 0;
     upgradingType = "mas";
     for (i in game.mergeQuests.quests) {

@@ -1,7 +1,5 @@
-class UIElement
-{
-    constructor(x, y, width, height, config)
-    {
+class UIElement {
+    constructor(x, y, width, height, config) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -14,8 +12,7 @@ class UIElement
         this.isGroup = false;
     }
 
-    absCoords()
-    {
+    absCoords() {
         let anchor;
 
         let normAnchor = [-this.anchor[0], -this.anchor[1]];
@@ -23,15 +20,13 @@ class UIElement
         let x = this.x + this.offset[0];
         let y = this.y + this.offset[1];
 
-        if (!this.quadratic && !this.quadratic)
-        {
+        if (!this.quadratic && !this.quadratic) {
             anchor = {
                 x: this.width * w * normAnchor[0],
                 y: this.height * h * normAnchor[1]
             }
         }
-        else if (this.quadratic)
-        {
+        else if (this.quadratic) {
             anchor = {
                 x: this.height * h * normAnchor[0],
                 y: this.height * h * normAnchor[1]
@@ -50,71 +45,56 @@ class UIElement
         return rect;
     }
 
-    isHovered()
-    {
+    isHovered() {
         let coord = this.absCoords();
         return this.isVisible() && (mouseX > coord.x && mouseX < coord.x + coord.width &&
             mouseY > coord.y && mouseY < coord.y + coord.height);
     }
 
-    isVisible()
-    {
+    isVisible() {
         return true;
     }
 
-    onclick()
-    {
+    onclick() {
     }
 
-    onrelease()
-    {
+    onrelease() {
     }
 
-    update()
-    {
+    update() {
     }
 
-    render()
-    {
+    render() {
         ctx.fillStyle = "aqua";
         ctx.fillRect(coord.x, coord.y, coord.width, coord.height);
     }
 }
 
-class UIGroup
-{
-    constructor(elements, isVisible)
-    {
+class UIGroup {
+    constructor(elements, isVisible) {
         this.uiElements = elements;
         this.isVisible = isVisible ? isVisible : this.isVisible;
         this.isGroup = true;
         this.offset = [0, 0];
     }
 
-    isVisible()
-    {
+    isVisible() {
         return true;
     }
 
-    isHovered()
-    {
+    isHovered() {
         return false;
     }
 
-    update()
-    {
-        for(let el of this.uiElements)
-        {
+    update() {
+        for (let el of this.uiElements) {
             el.offset = this.offset;
         }
     }
 
-    render()
-    {
-        if (this.isVisible())
-        {
-            for (let el of this.uiElements)
-            {
+    render() {
+        if (this.isVisible()) {
+            for (let el of this.uiElements) {
                 el.update();
                 el.render(ctx);
             }
@@ -122,10 +102,8 @@ class UIGroup
     }
 }
 
-class UIScrollContainer2D extends UIGroup
-{
-    constructor(elements, x, y, w, h, isVisiible, customBounds)
-    {
+class UIScrollContainer2D extends UIGroup {
+    constructor(elements, x, y, w, h, isVisiible, customBounds) {
         super(elements);
         this.isVisiible = isVisiible;
         this.x = x;
@@ -139,8 +117,7 @@ class UIScrollContainer2D extends UIGroup
         this.padding = 0.1;
         this.scrollSpeed = 2;
         this.scrollBounds = customBounds ? customBounds : this.getScrollBounds();
-        if(customBounds)
-        {
+        if (customBounds) {
             this.scrollBounds.xmax -= this.w + this.x;
             this.scrollBounds.ymax -= this.h + this.y;
         }
@@ -148,9 +125,8 @@ class UIScrollContainer2D extends UIGroup
         this.scrollY = this.scrollBounds.ymin;
     }
 
-    getScrollBounds()
-    {
-        return{
+    getScrollBounds() {
+        return {
             xmin: this.x - this.padding,
             xmax: this.uiElements.sort((el, el2) => el2.x - el.x)[0].x + this.padding - this.w - this.x, //this.x/y might be buggy
             ymin: this.y - this.padding,
@@ -158,10 +134,8 @@ class UIScrollContainer2D extends UIGroup
         }
     }
 
-    update()
-    {
-        for(let ui of this.uiElements)
-        {
+    update() {
+        for (let ui of this.uiElements) {
             ui.update();
         }
         if (mousePressed && this.isVisiible() &&
@@ -172,12 +146,10 @@ class UIScrollContainer2D extends UIGroup
 
             this.scrollX -= this.axis.x ? mx / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
             this.scrollY -= this.axis.y ? my / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
-            if(this.axis.x)
-            {
+            if (this.axis.x) {
                 this.scrollX = Utils.clamp(this.scrollX, this.scrollBounds.xmin, this.scrollBounds.xmax);
             }
-            if(this.axis.y)
-            {
+            if (this.axis.y) {
                 this.scrollY = Utils.clamp(this.scrollY, this.scrollBounds.ymin, this.scrollBounds.ymax);
             }
         }
@@ -218,8 +190,7 @@ class UIScrollContainer2D extends UIGroup
         if (!this.isVisiible()) return false;
 
         let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
-        if(this.axis.x)
-        {
+        if (this.axis.x) {
             ctx.fillStyle = colors[C]["scrollTrackbg"];
             ctx.fillRect(nx, ny + nh - w * 0.03, nw, w * 0.03);
             ctx.fillStyle = colors[C]["scrollTrack"];
@@ -227,16 +198,14 @@ class UIScrollContainer2D extends UIGroup
             //we don't need min, just the delta height, scrollX/Y is in the delta => 0 to 1
             ctx.fillRect(nx + (nw - barHeight + barSizeMod) * ((this.scrollX - this.scrollBounds.xmin) / (this.scrollBounds.xmax - this.scrollBounds.xmin)), ny + nh - w * 0.03, barHeight, w * 0.03);
         }
-        if(this.axis.y)
-        {
+        if (this.axis.y) {
             ctx.fillStyle = colors[C]["scrollTrackbg"];
             ctx.fillRect(nx + nw - w * 0.03, ny, w * 0.03, nh);
             ctx.fillStyle = colors[C]["scrollTrack"];
             let barHeight = h * (this.h / (this.scrollBounds.ymax + (this.h + this.y) - this.scrollBounds.ymin));
             ctx.fillRect(nx + nw - w * 0.03, ny + (nh - barHeight + barSizeMod) * ((this.scrollY - this.scrollBounds.ymin) / (this.scrollBounds.ymax - this.scrollBounds.ymin)), w * 0.03, barHeight);
         }
-        if(this.axis.x && this.axis.y)
-        {
+        if (this.axis.x && this.axis.y) {
             ctx.fillStyle = "rgb(96,124,166)";
             ctx.fillRect(nx + nw - w * 0.03, ny + nh - w * 0.03, w * 0.03, w * 0.03);
         }
@@ -244,21 +213,17 @@ class UIScrollContainer2D extends UIGroup
     }
 }
 
-class UIScrollContainerX extends UIScrollContainer2D
-{
-    constructor(ui, x, y, w, h, isVisible, customBounds)
-    {
-        super(ui ,x, y, w, h, isVisible, customBounds);
+class UIScrollContainerX extends UIScrollContainer2D {
+    constructor(ui, x, y, w, h, isVisible, customBounds) {
+        super(ui, x, y, w, h, isVisible, customBounds);
         this.axis.y = false;
         this.scrollX = this.scrollBounds.xmin;
         this.scrollY = 0;
     }
 }
 
-class UIScrollContainerY extends UIScrollContainer2D
-{
-    constructor(ui, x, y, w, h, isVisiible, customBounds)
-    {
+class UIScrollContainerY extends UIScrollContainer2D {
+    constructor(ui, x, y, w, h, isVisiible, customBounds) {
         super(ui, x, y, w, h, isVisiible, customBounds);
         this.axis.x = false;
         this.scrollX = 0;
@@ -266,22 +231,17 @@ class UIScrollContainerY extends UIScrollContainer2D
     }
 }
 
-class UIButton extends UIElement
-{
-    constructor(x, y, width, height, img, onclick, config)
-    {
+class UIButton extends UIElement {
+    constructor(x, y, width, height, img, onclick, config) {
         super(x, y, width, height, config);
         this.img = img;
         this.onrelease = onclick;
     }
 
-    render(ctx)
-    {
-        if (this.isVisible())
-        {
+    render(ctx) {
+        if (this.isVisible()) {
             let coord = this.absCoords();
-            if (this.isHovered() && mousePressed)
-            {
+            if (this.isHovered() && mousePressed) {
                 ctx.filter = "brightness(0.75)";
             }
             ctx.drawImage(this.img ? this.img : images.buttonEmpty, coord.x, coord.y, coord.width, coord.height);
@@ -301,10 +261,8 @@ function autoToggle(upg) {
     }
 }
 
-class UIText extends UIElement
-{
-    constructor(updateText, x, y, size, color, cfg)
-    {
+class UIText extends UIElement {
+    constructor(updateText, x, y, size, color, cfg) {
         super(x, y, 0, 0, cfg);
         this.size = size;
         this.color = color;
@@ -314,36 +272,29 @@ class UIText extends UIElement
         this.borderSize = cfg && cfg.borderSize !== undefined ? cfg.borderSize : 0;
         this.borderColor = cfg && cfg.borderColor ? cfg.borderColor : "black";
         this.font = cfg && cfg.font ? cfg.font : fonts.default;
-        this.updateText = updateText ? updateText : function ()
-        {
+        this.updateText = updateText ? updateText : function () {
             return "";
         }; //used to set text
     }
 
-    updateText()
-    {
+    updateText() {
         return "";
     }
 
-    update()
-    {
-        if (typeof(this.updateText) == "function")
-        {
+    update() {
+        if (typeof (this.updateText) == "function") {
             this.text = this.updateText();
         }
-        else if (typeof(this.updateText) == "string")
-        {
+        else if (typeof (this.updateText) == "string") {
             this.text = this.updateText;
         }
     }
 
-    isHovered()
-    {
+    isHovered() {
         return false;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         if (this.isVisible()) Utils.drawRichText(ctx, this.text, this.x + this.offset[0], this.y + this.offset[1], this.size * TEXTSCALING,
             {
                 color: (C == "dark" && (this.color == "black" || this.color == "#000000")) ? "white" : this.color,
@@ -357,28 +308,22 @@ class UIText extends UIElement
     }
 }
 
-class UIImage extends UIElement
-{
-    constructor(image, x, y, w, h, config)
-    {
+class UIImage extends UIElement {
+    constructor(image, x, y, w, h, config) {
         super(x, y, w, h, config);
         this.image = image;
     }
 
-    render(ctx)
-    {
-        if(this.isVisible())
-        {
+    render(ctx) {
+        if (this.isVisible()) {
             let coords = this.absCoords();
             ctx.drawImage(this.image, coords.x, coords.y, coords.width, coords.height);
         }
     }
 }
 
-class UICheckbox extends UIElement
-{
-    constructor(x, y, width, height, prop, config)
-    {
+class UICheckbox extends UIElement {
+    constructor(x, y, width, height, prop, config) {
         super(x, y, width, height, config);
         this.prop = prop;
         this.customClick = config && config.onclick ? config.onclick : this.customClick;
@@ -392,40 +337,32 @@ class UICheckbox extends UIElement
 
     }
 
-    update()
-    {
+    update() {
         this.checked = eval(this.prop);
     }
 
-    onclick()
-    {
-        if (this.isVisible())
-        {
+    onclick() {
+        if (this.isVisible()) {
             eval(this.prop + " = !" + this.prop);
             this.customClick();
         }
     }
 
-    render(ctx)
-    {
-        if (this.isVisible())
-        {
+    render(ctx) {
+        if (this.isVisible()) {
             let coords = this.absCoords();
             ctx.drawImage(this.checked ? this.imgChecked : this.imgUnchecked, coords.x, coords.y, coords.width, coords.height);
         }
     }
 }
 
-class UIRect extends UIElement
-{
-    constructor(x, y, w, h, color)
-    {
+class UIRect extends UIElement {
+    constructor(x, y, w, h, color) {
         super(x, y, w, h, {});
         this.color = color;
     }
 
-    render(ctx)
-    {
+    render(ctx) {
         ctx.fillStyle = colors[C][this.color];
 
         let coords = this.absCoords();
@@ -434,10 +371,8 @@ class UIRect extends UIElement
     }
 }
 
-class UIPath extends UIElement
-{
-    constructor(points, width, color, cfg)
-    {
+class UIPath extends UIElement {
+    constructor(points, width, color, cfg) {
         super(0, 0, 0, 0, cfg);
         this.width = width;
         this.points = points;
@@ -446,22 +381,18 @@ class UIPath extends UIElement
         this.color = color;
     }
 
-    render(ctx)
-    {
-        if(this.isVisible())
-        {
+    render(ctx) {
+        if (this.isVisible()) {
             ctx.beginPath();
-            for(let i = 0; i < this.points.length; i++)
-            {
+            for (let i = 0; i < this.points.length; i++) {
                 let p = this.points[i];
                 let x = (p[0] + this.offset[0]) * w;
                 let y = (p[1] + this.offset[1]) * h;
                 let width = this.width * h;
                 ctx.strokeStyle = colors[C][this.color];
                 ctx.lineWidth = width;
-                if(i === 0) ctx.moveTo(x, y);
-                else
-                {
+                if (i === 0) ctx.moveTo(x, y);
+                else {
                     ctx.lineTo(x, y);
                 }
             }
@@ -471,29 +402,22 @@ class UIPath extends UIElement
     }
 }
 
-class UISkillTreePath extends UIPath
-{
-    constructor(x1, y1, x2, y2, width, color, fromUpg)
-    {
+class UISkillTreePath extends UIPath {
+    constructor(x1, y1, x2, y2, width, color, fromUpg) {
         let p = [];
         p.push([x1, y1]);
-        if(x1 !== x2)
-        {
+        if (x1 !== x2) {
             p.push([x2, y1 + Math.abs(x1 - x2) / 2.5]);
         }
         p.push([x2, y2]);
         super(p, width, color);
-        this.isVisible = function ()
-        {
-            if(fromUpg.length === undefined)
-            {
+        this.isVisible = function () {
+            if (fromUpg.length === undefined) {
                 return fromUpg.level > 0;
             }
-            else
-            {
-                for(let upg of fromUpg)
-                {
-                    if(upg.level === 0) return false;
+            else {
+                for (let upg of fromUpg) {
+                    if (upg.level === 0) return false;
                 }
                 return true;
             }
@@ -501,18 +425,16 @@ class UISkillTreePath extends UIPath
     }
 }
 
-class UIUpgrade extends UIGroup
-{
-    constructor(upg, img, priceSuffix, y, desc, priceSize, col, isVisible, displayLevel, doround=true)
-    {
+class UIUpgrade extends UIGroup {
+    constructor(upg, img, priceSuffix, y, desc, priceSize, col, isVisible, displayLevel, doround = true) {
         super(
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(doround), {quadratic: true}),
-                new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", {halign: "right"}),
-                new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", {halign: "right", valign: "middle", bold: true}),
+                new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(doround), { quadratic: true }),
+                new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
+                new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => tt(desc) + "\n" +
-                    upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", {halign: "left", valign: "middle"})
+                    upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" })
             ], isVisible);
     }
 }
@@ -573,12 +495,12 @@ class UIFriend extends UIGroup {
                 new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
                     let friendCode = prompt("Friend code?");
                     let friendName = prompt("Friend name?");
-                    if (friendCode != "" && friendCode != null && friendName != "" && friendName != null)game.gifts.friends.push({code: friendCode, name: friendName});
+                    if (friendCode != "" && friendCode != null && friendName != "" && friendName != null) game.gifts.friends.push({ code: friendCode, name: friendName });
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
                 new UIButton(0.6, y - 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend name? (Not code)");
-                    if(newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
+                    if (newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
                 new UIButton(0.6, y + 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend code?").substr(0, 5);
@@ -591,31 +513,25 @@ class UIFriend extends UIGroup {
     }
 }
 
-class UIMagnetUpgrade extends UIUpgrade
-{
-    constructor(upg, img, y, desc, col, isVisible)
-    {
+class UIMagnetUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, isVisible) {
         super(upg, img, "$images.magnet$", y, desc, 0.05, col, isVisible, true);
     }
 }
 
-class UIGoldenScrapUpgrade extends UIUpgrade
-{
-    constructor(upg, img, y, desc, col)
-    {
+class UIGoldenScrapUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col) {
         super(upg, img, "$images.goldenScrap$", y, desc, 0.05, col, () => true, true);
     }
 }
 
-class UIMergeTokenUpgrade extends UIGroup
-{
-    constructor(upg, img, y, desc, col, isVisible)
-    {
+class UIMergeTokenUpgrade extends UIGroup {
+    constructor(upg, img, y, desc, col, isVisible) {
         super([
             new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
-            new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", true) : upg.buy(true), {quadratic: true}),
-            new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", {bold: true, halign: "right", valign: "middle"}),
-            new UIText(() => tt(desc) + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", {halign: "left", valign: "middle"}),
+            new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", true) : upg.buy(true), { quadratic: true }),
+            new UIText(() => upg.getPriceDisplay("$images.mergeToken$", "", false), 0.975, y + 0.0125, 0.065, "black", { bold: true, halign: "right", valign: "middle" }),
+            new UIText(() => tt(desc) + "\n" + upg.getEffectDisplay(), 0.2, y, 0.04, "black", { halign: "left", valign: "middle" }),
             new UIText(() => upg.getLevelDisplay(), 0.975, y - 0.045, 0.04, "black", {
                 halign: "right",
                 bold: true
@@ -624,20 +540,18 @@ class UIMergeTokenUpgrade extends UIGroup
     }
 }
 
-class UIBrickUpgrade extends UIUpgrade
-{
-    constructor(upg, img, y, desc, col, doround)
-    {
+class UIBrickUpgrade extends UIUpgrade {
+    constructor(upg, img, y, desc, col, doround) {
         super(upg, img, "$images.brick$", y, desc, 0.05, col, false);
     }
 }
 
-class UITireUpgrade extends UIGroup{
+class UITireUpgrade extends UIGroup {
     constructor(upg, img, title, x, y, col) {
         super([
             new UIRect(x, y, 1 / 3, 0.225, col ? col : "table"),
-            new UIText(() => tt(title), x, y - 0.075, 0.04, "black", {bold: true, valign: "middle"}),
-            new UIButton(x, y, 0.06, 0.06, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(), {quadratic: true}),
+            new UIText(() => tt(title), x, y - 0.075, 0.04, "black", { bold: true, valign: "middle" }),
+            new UIButton(x, y, 0.06, 0.06, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(), { quadratic: true }),
             new UIText(() => upg.getPriceDisplay("", "$images.tire$", false), x, y + 0.04, 0.05, "black"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.07, 0.03, "black")
         ]);
@@ -723,27 +637,25 @@ class UICogwheelUpgrade extends UIUpgrade {
     }
 }
 
-class UISkillTreeUpgrade extends UIGroup{
-    constructor(upg, img, title, x, y, col)
-    {
+class UISkillTreeUpgrade extends UIGroup {
+    constructor(upg, img, title, x, y, col) {
         super([
             new UIRect(x, y + 0.04, 0.25, 0.25, col ? col : "table"),
-            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), {quadratic: true}),
-            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", {bold: true, valign: "middle"}),
-            new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
-            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 1000, false) : upg.buy(), { quadratic: true }),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.035 : 0.03, "black", { bold: true, valign: "middle" }),
+            new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
         ], () => upg.isUnlocked());
     }
 }
 
-class UISkillTreeUpgradeNoBG extends UIGroup{
-    constructor(upg, img, title, x, y, col)
-    {
+class UISkillTreeUpgradeNoBG extends UIGroup {
+    constructor(upg, img, title, x, y, col) {
         super([
-            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), {quadratic: true}),
-            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", {bold: true, valign: "middle"}),
-            new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", {bold: true, valign: "top"}),
-            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", {valign: "top"}),
+            new UIButton(x, y + 0.04, 0.075, 0.075, img, () => upg.buy(), { quadratic: true }),
+            new UIText(() => tt(title), x, y - 0.04, title.split("\n").length < 3 ? 0.045 : 0.035, col ? col : "black", { bold: true, valign: "middle" }),
+            new UIText(() => upg.getPriceDisplay(), x, y + 0.085, 0.035, "black", { bold: true, valign: "top" }),
+            new UIText(() => upg.getEffectDisplay(), x, y + 0.14, 0.03, "black", { valign: "top" }),
         ], () => upg.isUnlocked());
     }
 }
@@ -761,14 +673,12 @@ class UIEmblemUpgrade extends UIGroup {
     }
 }
 
-class UIPlanet extends UIGroup
-{
-    constructor(x, y, title, upg, suffix, image, size, isVisible)
-    {
+class UIPlanet extends UIGroup {
+    constructor(x, y, title, upg, suffix, image, size, isVisible) {
         let s = size ? size : 0.05;
         super([
-            new UIText(typeof(title) == "string" ? tt(title) : title, x, y - 0.005 - size / 2, 0.0325, "white", {valign: "bottom"}),
-            new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(), {quadratic: true}),
+            new UIText(typeof (title) == "string" ? tt(title) : title, x, y - 0.005 - size / 2, 0.0325, "white", { valign: "bottom" }),
+            new UIButton(x, y, s, s, image, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(), { quadratic: true }),
             new UIText(() => upg.getPriceDisplay(suffix, "", false), x, y + size / 2, 0.04, "white"),
             new UIText(() => upg.getEffectDisplay(), x, y + 0.0225 + size / 2, 0.0275, "white"),
         ], isVisible !== undefined ? isVisible : () => true);
@@ -789,10 +699,8 @@ class UIConstellation extends UIGroup { // Almost the same. just the lock
     }
 }
 
-class UIToggleOption extends UIGroup
-{
-    constructor(y, prop, desc, color)
-    {
+class UIToggleOption extends UIGroup {
+    constructor(y, prop, desc, color) {
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
             new UICheckbox(0.1, y, 0.07, 0.07, prop, {
@@ -806,13 +714,11 @@ class UIToggleOption extends UIGroup
     }
 }
 
-class UIOption extends UIGroup
-{
-    constructor(y, image, onclick, desc, color)
-    {
+class UIOption extends UIGroup {
+    constructor(y, image, onclick, desc, color) {
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
-            new UIButton(0.1, y, 0.07, 0.07, image, onclick, {quadratic: true}),
+            new UIButton(0.1, y, 0.07, 0.07, image, onclick, { quadratic: true }),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",
                 valign: "middle"

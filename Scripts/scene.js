@@ -30,7 +30,7 @@ var upgradingType = "mas";
 var scrapyardBuyProcess = false;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-const tabYs = [0.2, 1.3, 2.2, 2.6];
+const tabYs = [0.2, 1.3, 2.3, 2.7];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
@@ -582,7 +582,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["table2"];
                 ctx.fillRect(0, h * 0.78, w, h * 0.08);
 
-                if (game.dimension == 1) ctx.filter = "invert()";
+                if (game.dimension == 1 && !game.settings.lowPerformance && (game.settings.dimEffects == 1 || game.settings.dimEffects == 2)) ctx.filter = "invert(1)";
                 for (let i = 0, l = barrels.length; i < l; i++) {
                     if (barrels[i] !== undefined && barrels[i].scale >= 1 || barrels[i] === undefined) {
                         tempDrawnBarrels[i] = undefined;
@@ -1011,8 +1011,8 @@ var scenes =
                     ctx.fillRect(0, h * 0.1875 + h * 0.15 * i, w, h * 0.15);
                 }
                 let maxLvl = Math.min(20 * game.settings.barrelGalleryPage + 20, Math.round(Barrel.getMaxLevelBarrel()) + 1);
-
-                if (game.dimension == 1) ctx.filter = "invert()";
+                
+                if (game.dimension == 1 && !game.settings.lowPerformance && (game.settings.dimEffects == 1 || game.settings.dimEffects == 2)) ctx.filter = "invert(1)";
                 for (let i = 20 * game.settings.barrelGalleryPage; i < 20 * game.settings.barrelGalleryPage + 20; i++) {
                     let c = i - 20 * game.settings.barrelGalleryPage; //used for coordinates
                     let x = (0.15 + 0.7 * (c % 5) / 4) * w;
@@ -2548,10 +2548,19 @@ var scenes =
                     // Low Performance Mode
                     new UIToggleOption(tabYs[1] + 0.4, "game.settings.lowPerformance", () => tt("lpm"), "table2"),
 
+                    // Second Dimension Effects
+                    new UIOption(tabYs[1] + 0.5, images.dimeffects, () => {
+                        game.settings.dimEffects++;
+                        if (game.settings.dimEffects > 3) game.settings.dimEffects = 0;
+                    }, () => tt("dimEffects") + ": " + tt("dimEffects" + game.settings.dimEffects), "table"),
+
                     // FPS
-                    new UIOption(tabYs[1] + 0.5, images.options.barrelQuality, () => {
+                    new UIOption(tabYs[1] + 0.6, images.options.barrelQuality, () => {
                         switch (game.settings.FPS) {
                             case 9999:
+                                game.settings.FPS = 120;
+                                break;
+                            case 120:
                                 game.settings.FPS = 60;
                                 break;
                             case 60:
@@ -2574,13 +2583,13 @@ var scenes =
                     }, "table"),
 
                     // FPS
-                    new UIToggleOption(tabYs[1] + 0.6, "game.settings.displayFPS", () => tt("Show FPS"), "table2"),
+                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.displayFPS", () => tt("Show FPS"), "table2"),
 
                     // Coconut
-                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.coconut", () => tt("Coconut"), "table"),
+                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.coconut", () => tt("Coconut"), "table"),
 
                     // No Barrels
-                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.nobarrels", () => tt("hidesetting"), "table2"),
+                    new UIToggleOption(tabYs[1] + 0.9, "game.settings.nobarrels", () => tt("hidesetting"), "table2"),
 
 
                     new UIText(() => tt("Audio"), 0.5, tabYs[2], 0.075, "white", {
@@ -2590,13 +2599,13 @@ var scenes =
                     }),
 
                     // Enable or disable music
-                    new UIOption(tabYs[2] + 0.1, images.change, () => {
+                    new UIOption(tabYs[2] + 0.1, images.music, () => {
                         game.settings.musicOnOff = !game.settings.musicOnOff;
                         playMusic();
                     }, () => game.settings.musicOnOff ? tt("Music") + ": " + tt("musicon") : tt("Music") + ": " + tt("musicoff"), "table"),
 
                     // Select song
-                    new UIOption(tabYs[2] + 0.2, images.options.numberFormat, () => {
+                    new UIOption(tabYs[2] + 0.2, images.music, () => {
                         if (game.ms.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
                             game.settings.musicSelect = game.settings.musicSelect + 1;
                         }
@@ -2654,7 +2663,7 @@ var scenes =
 
                     new UIText(() => tt("Libraries used") + ":\nbreak_infinity\ngrapheme-splitter", 0.5, tabYs[3] + 0.6, 0.04, "white"),
 
-                    new UIButton(0.1, tabYs[3] + 0.7, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
+                    new UIButton(0.1, tabYs[3] + 0.7, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
                     new UIText(() => tt("myserver"), 0.18, tabYs[3] + 0.7, 0.045, "black", { halign: "left", valign: "middle" }),
                     new UIButton(0.1, tabYs[3] + 0.8, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/KgK3AgMfaC", { quadratic: true }),
                     new UIText(() => tt("fmserver"), 0.18, tabYs[3] + 0.8, 0.045, "black", { halign: "left", valign: "middle" }),
@@ -2690,7 +2699,7 @@ var scenes =
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
                     basicAchievementUnlock(206);
                 }, { quadratic: true }),
-                new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/3T4CBmh", { quadratic: true }),
+                new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
                 new UIText(() => tt("myserver"), 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
                 new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
                 new UIText(() => tt("myyt"), 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),

@@ -132,8 +132,6 @@ function setup()
         barrels.push(undefined);
     }
 
-    resizeCanvas();
-
     for (let q of game.mergeQuests.quests)
     {
         q.generateQuest(q.possibleTiers[Math.floor(q.possibleTiers.length * Math.random())]);
@@ -148,7 +146,11 @@ function setup()
         alert(tt("generalerror").replace("<estack>", e.stack));
         return;
     }
+
     setBarrelQuality(game.settings.barrelQuality);
+    FPS = game.settings.FPS;
+
+    resizeCanvas();
 
     document.querySelector("div.absolute button#export").onclick = e => exportGame();
     document.querySelector("div.absolute button#import").onclick = e =>
@@ -203,6 +205,8 @@ function currentSceneNotLoading() {
 
     return currentScene.name != "Loading";
 }
+
+var fpsDisplay = "?";
 
 function update()
 {
@@ -291,35 +295,40 @@ function update()
             }
         }
 
-        if(game.mergeQuests.isUnlocked())
+        if (game.mergeQuests.isUnlocked())
         {
             for (let q of game.mergeQuests.quests)
             {
                 q.tick(delta);
             }
-            //game.mergeQuests.dailyQuest.tick(delta);
         }
 
         timeSinceLastBarrelClick += delta;
 
         saveTime.time += delta;
         secondTime += delta;
+        game.factory.time -= delta;
+
         if (saveTime.time >= saveTime.cd)
         {
             saveTime.time = 0;
             saveGame();
         }
-        if (secondTime >= 1) {
-            // Updating it every tick killed the performance. this should be much better
-            secondTime = 0;
-            Milestone.check(true);
-        }
         if (game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600) {
             game.tires.time -= delta;
         }
-        game.factory.time -= delta;
-        game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
-        
+
+        // this stuff is executed only once per second
+        if (secondTime >= 1) {
+            secondTime = 0;
+
+            fpsDisplay = (1 / delta).toFixed(0);
+            game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
+
+            Milestone.check(true);
+        }
+
+        // this does all the auto buyers... don't question it hahaha
         if (applyUpgrade(game.shrine.autosUnlock)) {
             for (i in game.autos) {
                 if (game.autos[i] != undefined && game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
@@ -371,10 +380,23 @@ function update()
             }
         }
         
-        if(game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
+        if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
+        // IMPORTANT - this is where the scene itself is rendered
+        // to render anything above it, put it below this chunk
+        if (game.settings.dimEffects > 1 && game.dimension == 1) ctx.filter = "brightness(0.5)";
         currentScene.update(delta);
-        
+        if (ctx.filter != "") ctx.filter = "";
+
+        // FPS display
+        if (game.settings.displayFPS) {
+            ctx.font = (h * .02) + "px " + fonts.default;
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            ctx.fillStyle = "white";
+            ctx.fillText(fpsDisplay + " fps", w * 0.01, h * 0.005, w);
+        }
+
         if (gameNotifications.length > 0)
         {
             gameNotifications[0].render(ctx);
@@ -620,13 +642,6 @@ function update()
                 }
             }
         }
-    }
-    if (game.settings.displayFPS) {
-        ctx.font = (h * .02) + "px " + fonts.default;
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-        ctx.fillStyle = "white";
-        ctx.fillText((1 / delta).toFixed(0) + " fps", w * 0.01, h * 0.005, w);
     }
 
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
@@ -1101,36 +1116,27 @@ function autoConvertBarrel() {
     }
 }
 
-function setBarrelQuality(idx, fromScene)
-{
+function setBarrelQuality(idx, fromScene) {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
-    //if (game.dimension == 0) { /* Change this when you add new BARRELS files */
-        for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
-            images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
-                "barrels" + i + "_ulq.png"][idx], () => {
-                    barrelsLoaded = true;
-                    Scene.loadScene(fromScene ? fromScene : "Barrels");
-                });
-        }
-    //}
-    /*
-    if (game.dimension == 1) {
-        for (i = 1; i < 11; i++) {
-            images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + "b.png", "barrels" + i + "b_lq.png",
-                "barrels" + i + "b_ulq.png"][idx], () => {
-                    barrelsLoaded = true;
-                    Scene.loadScene(fromScene ? fromScene : "Barrels");
-                });
-        }
-    }*/
+    // Change this when you add new BARRELS files
+    for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
+        images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
+        "barrels" + i + "_ulq.png"][idx], () => {
+            barrelsLoaded = true;
+            Scene.loadScene(fromScene ? fromScene : "Barrels");
+        });
+    }
+
     BARREL_SPRITE_SIZE = [256, 128, 64][idx];
-    images.shadowBarrels = []; //clear barrel cache
+
+    //clear barrel cache
+    images.shadowBarrels = [];
     images.previewBarrels = [];
+    images.cachedBarrels = [];
 }
 
-function updateMouse(e)
-{
+function updateMouse(e) {
     let oldmX = mouseX;
     let oldmY = mouseY;
 
@@ -1318,7 +1324,7 @@ function saveGame(exportGame, downloaded=false)
     saveObj.settings = [];
     for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
         "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
-        "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang"]) {
+        "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang", "sizeLimit", "lockUpgrades", "dimEffects"]) {
         saveObj.settings.push(tempSettings[x]);
     }
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
@@ -1542,7 +1548,7 @@ function loadGame(saveCode, isFromFile=false)
             let xy = 0;
             for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
                 "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
-                "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang"]) {
+                "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang", "sizeLimit", "lockUpgrades", "dimEffects"]) {
                 game.settings[x] = loadObj.settings[xy];
                 xy += 1;
             }
@@ -1576,6 +1582,7 @@ function loadGame(saveCode, isFromFile=false)
         game.settings.lang = loadVal(loadObj.settings.lang, "en");
         game.settings.sizeLimit = loadVal(loadObj.settings.sizeLimit, 0);
         game.settings.lockUpgrades = loadVal(loadObj.settings.lockUpgrades, false);
+        game.settings.dimEffects = loadVal(loadObj.settings.dimEffects, 0);
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;

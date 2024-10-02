@@ -2712,6 +2712,7 @@ var game =
         lang: "en",
         sizeLimit: 0,
         lockUpgrades: false,
+        dimEffects: 0,
     }
 }
 

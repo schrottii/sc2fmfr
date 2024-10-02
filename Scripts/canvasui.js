@@ -576,11 +576,11 @@ class UIFriend extends UIGroup {
                     if (friendCode != "" && friendCode != null && friendName != "" && friendName != null)game.gifts.friends.push({code: friendCode, name: friendName});
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
-                new UIButton(0.6, y - 0.02, 0.04, 0.04, images.change, () => {
+                new UIButton(0.6, y - 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend name? (Not code)");
                     if(newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
-                new UIButton(0.6, y + 0.02, 0.04, 0.04, images.change, () => {
+                new UIButton(0.6, y + 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend code?").substr(0, 5);
                     if (newFr != null && newFr != false) game.gifts.friends[id].code = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),

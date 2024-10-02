@@ -26,6 +26,11 @@ const trans_ru = {
     notenoughgs: "Недостаточно золота!",
     sizelimit: "максимальная ширина",
     lockUpgrades: "заблокированные улучшения лома",
+    dimEffects: "Эффекты 2-го измерения",
+    dimEffects0: "Нет",
+    dimEffects1: "Перевернутые бочки",
+    dimEffects2: "Перевернутые + темные",
+    dimEffects3: "Темные",
 
     // OPTIONS
     "Options": "Опции",

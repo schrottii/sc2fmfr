@@ -26,6 +26,11 @@ const trans_en = {
     notenoughgs: "Not enough GS!",
     sizelimit: "Width limit",
     lockUpgrades: "Lock Scrap Upgrades",
+    dimEffects: "2nd Dimension Effects",
+    dimEffects0: "None",
+    dimEffects1: "Inverted barrels",
+    dimEffects2: "Inverted + dark",
+    dimEffects3: "Dark",
 
     // OPTIONS
     "Options": "Options",
@@ -85,7 +90,7 @@ const trans_en = {
 
     "Export and Import": "Export and Import",
     "ogsc2": "Play the Original SC2",
-    "myserver": "My Discord Server",
+    "myserver": "My Games Discord Server",
     "fmserver": "Scrap Fanmade Server",
     "scrapserver": "Scrap Server",
     "myyt": "My Youtube Channel",

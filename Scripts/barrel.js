@@ -170,14 +170,12 @@ class Barrel
                 }
                 else
                 {
-                    if (images.shadowBarrels[lvlToDraw] === undefined && barrelsLoaded)
-                    {
-                        cacheBarrel(lvlToDraw);
+                    if (game.settings.barrelShadows || preview) {
+                        let ox = preview ? 10000 : size * 0.05;
+                        let oy = preview ? 0 : size * 0.05;
+                        Utils.setCanvasShadow(ctx, "#00000064", 0, ox, oy);
                     }
-                    if (images.shadowBarrels[lvlToDraw] !== undefined)
-                    {
-                        ctx.drawImage(images.shadowBarrels[lvlToDraw], finalX, finalY, size, size);
-                    }
+                    ctx.drawImage(images["barrels" + section], spriteX, spriteY, BARREL_SPRITE_SIZE, BARREL_SPRITE_SIZE, finalX, finalY, size, size);
                 }
             }
             else

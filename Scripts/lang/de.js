@@ -26,6 +26,11 @@ const trans_de = {
     notenoughgs: "Nicht genug GS!",
     sizelimit: "Maximale Weite",
     lockUpgrades: "Schrott-Upgrades sperren",
+    dimEffects: "Dimensionseffekte",
+    dimEffects0: "Keine",
+    dimEffects1: "Tonnen",
+    dimEffects2: "Tonnen + dunkel",
+    dimEffects3: "Dunkel",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -85,7 +90,7 @@ const trans_de = {
 
     "Export and Import": "Export und Import",
     "ogsc2": "Spiel das Original ST2!",
-    "myserver": "Mein Discord Server",
+    "myserver": "Mein Spiele Discord Server",
     "fmserver": "Scrap Fanmade Server",
     "scrapserver": "Scrap Server",
     "myyt": "Mein Youtube Kanal",

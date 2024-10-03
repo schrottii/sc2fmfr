@@ -30,7 +30,7 @@ var upgradingType = "mas";
 var scrapyardBuyProcess = false;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-const tabYs = [0.2, 1.3, 2.3, 2.7];
+const tabYs = [0.2, 1.4, 2.4, 2.8];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
@@ -403,7 +403,7 @@ var scenes =
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
                 }),
-                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : "Unlimited", 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : tt("Unlimited"), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
                     let newCap = prompt(tt("hyperBuyCapText"));
                     if (newCap == null || newCap == "" || newCap == null) {
@@ -1758,7 +1758,7 @@ var scenes =
 
                 new UIText(() => tt("crabs"), 0.575, 0.3, 0.04, "yellow"),
                 new UIText(() => tt("costs") + ": " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
-                new UIText(() => " (" + tt("level") + " " + Math.floor(game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))).add(1)) + ")", 0.85, 0.34, 0.03, "yellow"),
+                new UIText(() => tt("level") + " " + Math.floor(game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))).add(1)), 0.5, 0.25, 0.03, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
@@ -1832,7 +1832,7 @@ var scenes =
                             game.plasticBags.currentCosts = new Decimal(5 + Math.floor(100 * sin * Math.random() * (1 + (pbt / 200))));
                         }
                     }
-                }),
+                }, { quadratic: true }),
 
                 new UIText(() => "$images.plasticBag$ " + tt("plasticbags") + ": " + Math.round(game.plasticBags.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.moreScrap, images.upgrades.moreScrap, 0.55, "plastic1"),
@@ -2462,41 +2462,44 @@ var scenes =
                             fmtnmb.push(formatNumber(Decimal.pow(10, i)));
                         }
                         return tt("Switch Number format") + "\n" + fmtnmb.join(", ");
-                    }, "table"),
+                    }, "table2"),
 
                     // Theme
                     new UIOption(tabYs[0] + 0.3, images.options.barrelQuality, () => {
                         game.settings.C = (++game.settings.C) % 4;
                         C = ["default", "darkblue", "dark", "pink"][game.settings.C];
-                    }, () => tt("Theme") + ": " + [tt("theme1"), tt("theme2"), tt("theme3"), tt("theme4")][game.settings.C], "table2"),
+                    }, () => tt("Theme") + ": " + [tt("theme1"), tt("theme2"), tt("theme3"), tt("theme4")][game.settings.C], "table"),
 
                     // Convert / destroy barrels
-                    new UIToggleOption(tabYs[0] + 0.4, "game.settings.destroyBarrels", () => tt("convertsetting"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.4, "game.settings.destroyBarrels", () => tt("convertsetting"), "table2"),
 
                     // Barrel Spawn
-                    new UIToggleOption(tabYs[0] + 0.5, "game.settings.barrelSpawn", () => tt("barrelspawn"), "table2"),
+                    new UIToggleOption(tabYs[0] + 0.5, "game.settings.barrelSpawn", () => tt("barrelspawn"), "table"),
 
                     // Reset confirmation dialogue
-                    new UIToggleOption(tabYs[0] + 0.6, "game.settings.resetConfirmation", () => tt("resetconfirmation"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.6, "game.settings.resetConfirmation", () => tt("resetconfirmation"), "table2"),
 
                     // Open Beams
                     new UIOption(tabYs[0] + 0.7, images.scenes.beamselection, () => {
                         game.settings.beamRed = (game.settings.beamRed + 1) % 3;
-                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table2"),
+                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table"),
 
                     // Hyper Buy 2.0
-                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2"),
+
+                    // Better Barrels auto buyer
+                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table"),
 
                     // Lock Upgrades
-                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table"),
+                    new UIToggleOption(tabYs[0] + 1.0, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table2"),
 
                     // Size Limit
-                    new UIOption(tabYs[0] + 1.0, images.options.numberFormat, () => {
+                    new UIOption(tabYs[0] + 1.1, images.options.numberFormat, () => {
                         if (!isMobile() || prompt("It seems like you play on a phone. Are you sure you want to enable this?")) {
                             game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
                             resizeCanvas();
                         }
-                    }, () => tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table2"),
+                    }, () => tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table"),
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {
                         bold: 600,
@@ -2551,16 +2554,16 @@ var scenes =
                     }, () => {
                         if (FPS != 9999) return tt("FPS") + ": " + FPS;
                         else return tt("FPS") + ": " + tt("Unlimited");
-                    }, "table"),
+                    }, "table2"),
 
                     // FPS
-                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.displayFPS", () => tt("Show FPS"), "table2"),
+                    new UIToggleOption(tabYs[1] + 0.7, "game.settings.displayFPS", () => tt("Show FPS"), "table"),
 
                     // Coconut
-                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.coconut", () => tt("Coconut"), "table"),
+                    new UIToggleOption(tabYs[1] + 0.8, "game.settings.coconut", () => tt("Coconut"), "table2"),
 
                     // No Barrels
-                    new UIToggleOption(tabYs[1] + 0.9, "game.settings.nobarrels", () => tt("hidesetting"), "table2"),
+                    new UIToggleOption(tabYs[1] + 0.9, "game.settings.nobarrels", () => tt("hidesetting"), "table"),
 
 
                     new UIText(() => tt("Audio"), 0.5, tabYs[2], 0.075, "white", {
@@ -2950,7 +2953,7 @@ var scenes =
                 let perRow = Math.floor(w / tSize * 5); // achievements per row
                 let perPage = perRow * 5;
 
-                let clickedMileStone = Math.floor(mouseX / w * perRow) + perRow * Math.floor((mouseY - h * 0.2) / w * perRow) + perPage * game.milestones.page;
+                let clickedMileStone = Math.floor(mouseX / (tSize * perRow / 5) * perRow) + perRow * Math.floor((mouseY - h * 0.2) / w * perRow) + perPage * game.milestones.page;
                 if (clickedMileStone >= perPage * game.milestones.page && clickedMileStone < Math.min(perPage * game.milestones.page + perPage, game.milestones.achievements.length)) {
                     game.milestones.highlighted = game.milestones.achievements[clickedMileStone].id;
                     game.milestones.next = game.milestones.getNext();
@@ -2979,23 +2982,23 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 var unlocks = tto({
-                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "Aerobeams", "Barrel Mastery", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
-                    de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Barrel Mastery", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova", "Kosmische Pins"],
-                    ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Мастерство Бочек", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая", "Космический Значок"],
+                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "Aerobeams", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Barrel Mastery", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
+                    de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Barrel Mastery", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova", "Kosmische Pins"],
+                    ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Мастерство Бочек", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая", "Космический Значок"],
                 });
                 // var unlocksUnlocks
                 var unlocksText = tto({
                     default: ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "1e213 Scrap", "Earth (5e24 GS)", "Barrel 500", "12,000 Manual Merges",
-                        "Skill Tree", "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
-                        "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)", "50 Stars"
+                        "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
+                        "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)", "50 Stars"
                     ],
                     de: ["1e15 Schrott", "Schrott-Boost (GS) Level 8", "1e93 Schrott", "Tonne 100", "1e153 Schrott", "Tonne 300", "1e213 Schrott", "Erde (5e24 GS)", "Tonne 500", "12,000 eigene Verbindungen",
-                        "Baum", "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
-                        "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)", "50 Sterne"
+                        "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
+                        "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)", "50 Sterne"
                     ],
                     ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "1e213 Мусора", "Земля (5e24 ЗМ)", "Бочка 500", "12,000 Самослияний",
-                        "Дерево Навыков", "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
-                        "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)", "50 Звëзд"]
+                        "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
+                        "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)", "50 Звëзд"]
                 });
 
                 //  shit quality sleep
@@ -3020,6 +3023,8 @@ var scenes =
             function (delta) {
                 ctx.fillStyle = "lightgreen";
                 ctx.fillRect(0, 0, w, h);
+
+                ctx.drawImage(images.grass, 0, 0, w, h);
 
                 for (c in characters) {
                     if (characters[c][4]()) {

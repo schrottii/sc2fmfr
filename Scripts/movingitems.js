@@ -256,7 +256,7 @@ var movingItemFactory =
 
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
-                    currentScene.popupTexts.push(new PopUpText("Spawned!", this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
+                    currentScene.popupTexts.push(new PopUpText(tt("spawned"), this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
                     basicAchievementUnlock(112);
                 }
                 currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))

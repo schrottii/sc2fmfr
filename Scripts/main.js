@@ -320,7 +320,7 @@ function update() {
                         if (game.autos[i].auto[1] != "all") {
                             if (game.autos[i].auto[2] == undefined) {
                                 let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                                if (game.autos[i].auto[1] != "betterBarrels" && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
+                                if ((game.autos[i].auto[1] != "betterBarrels" || game.settings.bbauto) && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
                                 else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
                                 if (game.autos[i] != undefined && l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
                                     if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
@@ -408,6 +408,7 @@ function update() {
             }
         }
 
+        // all the beams
         if (game.beams.isUnlocked()) {
             game.beams.time += delta;
 
@@ -637,6 +638,7 @@ function getBeamBaseValue() {
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.pyxis))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
+
 function getAeroBeamValue() {
     return new Decimal(applyUpgrade(game.beams.upgrades.beamValue))
         .add(applyUpgrade(game.skillTree.upgrades.xplustwo))
@@ -645,6 +647,7 @@ function getAeroBeamValue() {
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.antlia))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
+
 function getAngelBeamValue() {
     return new Decimal(applyUpgrade(game.angelbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
@@ -652,6 +655,7 @@ function getAngelBeamValue() {
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.phoenix))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
+
 function getReinforcedBeamValue() {
     return new Decimal(applyUpgrade(game.reinforcedbeams.upgrades.reinforce))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
@@ -659,6 +663,7 @@ function getReinforcedBeamValue() {
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.orion))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
+
 function getGlitchBeamValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
@@ -1012,9 +1017,13 @@ function onBarrelMerge(isAuto, lvl, bx, by) {
 const duckBarrels = [141, 162, 301, 308, 309, 315, 319, 323, 371, 381, 384, 388, 391, 395, 401, 411, 425, 441, 451, 466, 471, 475, 478, 485, 498, 508, 580, 586, 664, 729, 743, 756, 994, 997];
 
 function duckTales(type = 0) {
+    // 0 -> return boolean whether the player has all ducks
+    // 1 -> return amount of ducks the player has
+    // 2 -> return which ducks are missing
+
     let duckCheck = true;
     let duckAmount = 0;
-    // new: 162, 388, 478, 743, 994        997
+
     duckBarrels.forEach(i => {
         if (game.barrelMastery.b[i - 1] < 100000) {
             duckCheck = false;
@@ -1274,9 +1283,7 @@ function saveGame(exportGame, downloaded = false) {
     // Settings shortener (SC2FMFR 3.2.1)
     let tempSettings = saveObj.settings;
     saveObj.settings = [];
-    for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
-        "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
-        "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang", "sizeLimit", "lockUpgrades", "dimEffects"]) {
+    for (let x of settingsDir) {
         saveObj.settings.push(tempSettings[x]);
     }
     // Added in SC2FMFR 2.1 - rounds up the barrels, for example 21.99999 to 22 (both are barrel 22)
@@ -1491,9 +1498,7 @@ function loadGame(saveCode, isFromFile = false) {
         }
         if (loadObj.settings.length != undefined) {
             let xy = 0;
-            for (let x of ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
-                "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
-                "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang", "sizeLimit", "lockUpgrades", "dimEffects"]) {
+            for (let x of settingsDir) {
                 game.settings[x] = loadObj.settings[xy];
                 xy += 1;
             }
@@ -1528,6 +1533,7 @@ function loadGame(saveCode, isFromFile = false) {
         game.settings.sizeLimit = loadVal(loadObj.settings.sizeLimit, 0);
         game.settings.lockUpgrades = loadVal(loadObj.settings.lockUpgrades, false);
         game.settings.dimEffects = loadVal(loadObj.settings.dimEffects, 0);
+        game.settings.bbauto = loadVal(loadObj.settings.bbauto, true);
 
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;
@@ -2165,9 +2171,10 @@ function loadGame(saveCode, isFromFile = false) {
 
         if (!game.aerobeams.amount.gte(0) && !game.aerobeams.amount.lte(0)) game.aerobeams.amount = new Decimal(10);
 
-        freeSpots = 20;
-
+        resizeCanvas()
         playMusic();
+
+        freeSpots = 20;
 
         for (let i = 0; i < loadObj.barrelLvls.length; i++) {
             if (loadObj.barrelLvls[i] !== null) {
@@ -2184,7 +2191,6 @@ function loadGame(saveCode, isFromFile = false) {
         stormQueue = [];
 
         if (isFromFile) alert("The file has been imported successfully!");
-
     }
 }
 
@@ -2198,6 +2204,10 @@ function importGame() {
         loadGame(text);
     });
 }
+
+const settingsDir = ["barrelGalleryPage", "barrelShadows", "useCachedBarrels", "numberFormatType", "barrelQuality", "destroyBarrels",
+    "autoMerge", "autoConvert", "resetConfirmation", "lowPerformance", "musicOnOff", "barrelSpawn", "musicSelect", "C", "beamTimer", "FPS",
+    "coconut", "displayFPS", "nobarrels", "musicVolume", "hyperBuy", "hyperBuy2", "hyperBuyCap", "hyperBuyPer", "beamRed", "lang", "sizeLimit", "lockUpgrades", "dimEffects", "bbauto"];
 
 onresize = e => resizeCanvas();
 

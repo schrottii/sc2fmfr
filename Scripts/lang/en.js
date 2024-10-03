@@ -20,17 +20,8 @@ const trans_en = {
     "Barrels": "Barrels",
 
     "You have found me": "You have found me",
-    "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
-    autobuyertext: "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
-    unlocks: "Unlocks",
-    notenoughgs: "Not enough GS!",
-    sizelimit: "Width limit",
-    lockUpgrades: "Lock Scrap Upgrades",
-    dimEffects: "2nd Dimension Effects",
-    dimEffects0: "None",
-    dimEffects1: "Inverted barrels",
-    dimEffects2: "Inverted + dark",
-    dimEffects3: "Dark",
+    "unlocks": "Unlocks",
+    "notenoughgs": "Not enough GS!",
 
     // OPTIONS
     "Options": "Options",
@@ -73,6 +64,15 @@ const trans_en = {
     "HR3": "Maybe export your save code before deleting everything, because if you press Yes again, everything will be gone",
     "HR4": "Are you 100% sure?",
     "HR_SUCC": "Hard resetted successfully!",
+
+    "sizelimit": "Width limit",
+    "lockUpgrades": "Lock Scrap Upgrades",
+    "dimEffects": "2nd Dimension Effects",
+    "dimEffects0": "None",
+    "dimEffects1": "Inverted barrels",
+    "dimEffects2": "Inverted + dark",
+    "dimEffects3": "Dark",
+    "bbauto": "Auto: Better Barrels\nbuys max",
 
     "Audio": "Audio",
     "Music": "Music",
@@ -162,7 +162,8 @@ const trans_en = {
     "2nddimtext": "Sacrifice your Golden Scrap and enter the Second Dimension\nyou will keep it until you return\nClick the Button below to enter the Second Dimension.",
     "2nddimtext2": "Progress to get Dark Scrap and destroy to get Dark Fragments.\nMerging increases your scrap production. Merge to reach higher barrels.\nClick the Button below to leave the Second Dimension.",
     "earn": "Earn",
-    dsgsboost: "You get <amount>% more Golden Scrap\nfor every Dark Scrap you have.\nYou get a total boost of x<multiplier>!",
+    "dsgsboost": "You get <amount>% more Golden Scrap\nfor every Dark Scrap you have.\nYou get a total boost of x<multiplier>!",
+    "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
 
     // MERGE MASTERY
     "Merge Mastery": "Merge Mastery",
@@ -266,6 +267,7 @@ const trans_en = {
     factorytext: "Use 2 currencies and some energy from the generator\nto craft new currencies here!",
     buyertimetext: "New time? (In seconds, e. g. 8)",
     collectortext: "Auto Collectors need energy to run!\nOne collect costs 1 energy.",
+    "autobuyertext": "Auto Buyers need energy to run!\nOne upgrade costs <energy> energy.",
 
     // SUPERNOVA
     supernova: "Supernova",
@@ -398,6 +400,8 @@ const trans_en = {
     tire41: "More\nPassive Magnets",
     tire42: "More Beams\n(All types)",
     tire43: "Cheaper\nPlastic Bags",
+
+    spawned: "Spawned!",
 
     // Beams
     beam1: "All Beams spawn more often",

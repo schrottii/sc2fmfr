@@ -1082,7 +1082,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "")
                 }),
             factoryTankSize: new ReinforcedBeamUpgrade(
-                level => new Decimal(2000 + (100 * level)),
+                level => new Decimal(1000 + (50 * level)),
                 level => 20 * level,
                 {
                     maxLevel: 72,
@@ -1278,7 +1278,7 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, ["scrapBoost"]),
             unlockbeamtypes: new SkillTreeUpgradeFixed([
-                [[new Decimal(1000), RESOURCE_BEAM]],
+                [[new Decimal(200), RESOURCE_BEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["xplustwo"]),
@@ -1351,7 +1351,7 @@ var game =
             }, ["scrapBoost2"]),
 
             moreMergeTokens: new SkillTreeUpgradeFixed([
-                [[new Decimal("1000"), RESOURCE_BEAM]],
+                [[new Decimal("200"), RESOURCE_BEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["higherAstroMax", "tireValue"]),
@@ -1398,7 +1398,7 @@ var game =
             }, ["speedBoostsFragments"]),
 
             efficientEnergy: new SkillTreeUpgradeFixed([
-                [[new Decimal(8000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
+                [[new Decimal(2000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockMastery", "speedBoostsFragments"]),
@@ -1410,19 +1410,19 @@ var game =
             }, ["efficientEnergy"]),
 
             fourthMaxLevel: new SkillTreeUpgradeFixed([
-                [[new Decimal(2729), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
+                [[new Decimal(400), RESOURCE_GLITCHBEAM], [new Decimal(1e150), RESOURCE_GS]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockMastery", "speedBoostsFragments"]),
 
             unlockBeamConverter: new SkillTreeUpgradeFixed([
-                [[new Decimal(1000), RESOURCE_BEAM], [new Decimal(1000), RESOURCE_AEROBEAM], [new Decimal(10000), RESOURCE_ANGELBEAM], [new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(1000), RESOURCE_GLITCHBEAM],],
+                [[new Decimal(200), RESOURCE_BEAM], [new Decimal(200), RESOURCE_AEROBEAM], [new Decimal(1000), RESOURCE_ANGELBEAM], [new Decimal(200), RESOURCE_REINFORCEDBEAM], [new Decimal(100), RESOURCE_GLITCHBEAM],],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["fourthMaxLevel"]),
 
             unlockPlasticBags: new SkillTreeUpgradeFixed([
-                [[new Decimal(10000), RESOURCE_AEROBEAM], [new Decimal("1e2000"), RESOURCE_SCRAP], [new Decimal(1e15), RESOURCE_FRAGMENT]],
+                [[new Decimal(500), RESOURCE_AEROBEAM], [new Decimal("1e2000"), RESOURCE_SCRAP], [new Decimal(1e15), RESOURCE_FRAGMENT]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock(),
                 oneDep: true
@@ -1456,7 +1456,7 @@ var game =
                 }, ["strongerMasteryMagnets"]),
 
             shortGSStorms: new SkillTreeUpgradeFixed([
-                [[new Decimal(5000), RESOURCE_AEROBEAM], [new Decimal(25), RESOURCE_PLASTICBAG], [new Decimal(5000), RESOURCE_ANGELBEAM]],
+                [[new Decimal(1000), RESOURCE_AEROBEAM], [new Decimal(25), RESOURCE_PLASTICBAG], [new Decimal(5000), RESOURCE_ANGELBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockPlasticBags"]),
@@ -1471,36 +1471,36 @@ var game =
                 }, ["shortGSStorms"]),
 
             unlockAutoCollectors: new SkillTreeUpgradeFixed([
-                [[new Decimal(33284), RESOURCE_GLITCHBEAM], [new Decimal(50), RESOURCE_PLASTICBAG]],
+                [[new Decimal(11827), RESOURCE_GLITCHBEAM], [new Decimal(50), RESOURCE_PLASTICBAG]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["higherNeptuneMax"]),
 
             tireBoost2: new SkillTreeUpgradeFixed([
-                [[new Decimal(10), RESOURCE_PLASTICBAG], [new Decimal(2000), RESOURCE_BEAM]],
-                [[new Decimal(20), RESOURCE_PLASTICBAG], [new Decimal(4000), RESOURCE_REINFORCEDBEAM]],
-                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(16000), RESOURCE_ANGELBEAM]],
-                [[new Decimal(80), RESOURCE_PLASTICBAG], [new Decimal(3333), RESOURCE_GLITCHBEAM]],
-                [[new Decimal(160), RESOURCE_PLASTICBAG], [new Decimal(32000), RESOURCE_AEROBEAM]]
+                [[new Decimal(10), RESOURCE_PLASTICBAG], [new Decimal(1000), RESOURCE_BEAM]],
+                [[new Decimal(20), RESOURCE_PLASTICBAG], [new Decimal(2000), RESOURCE_REINFORCEDBEAM]],
+                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(4000), RESOURCE_ANGELBEAM]],
+                [[new Decimal(80), RESOURCE_PLASTICBAG], [new Decimal(1234), RESOURCE_GLITCHBEAM]],
+                [[new Decimal(160), RESOURCE_PLASTICBAG], [new Decimal(3200), RESOURCE_AEROBEAM]]
             ],
                 [new Decimal(1), new Decimal(1.1), new Decimal(1.3), new Decimal(1.6), new Decimal(2), new Decimal(4)], {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x^")
             }, ["unlockPlasticBags"]),
 
             doublePlasticBags: new SkillTreeUpgradeFixed([
-                [[new Decimal(15000), RESOURCE_AEROBEAM], [new Decimal(1e24), RESOURCE_DARKSCRAP]],
+                [[new Decimal(2000), RESOURCE_AEROBEAM], [new Decimal(1e24), RESOURCE_DARKSCRAP]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["tireBoost2"]),
 
             cheaperMythus: new SkillTreeUpgradeFixed([
-                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(41316), RESOURCE_GLITCHBEAM], [new Decimal(5000), RESOURCE_BARREL]],
+                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(15353), RESOURCE_GLITCHBEAM], [new Decimal(5000), RESOURCE_BARREL]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["doublePlasticBags"]),
 
             unlockScrews: new SkillTreeUpgradeFixed([
-                [[new Decimal(100), RESOURCE_PLASTICBAG], [new Decimal("1e200"), RESOURCE_GS], [new Decimal(20000), RESOURCE_REINFORCEDBEAM]],
+                [[new Decimal(100), RESOURCE_PLASTICBAG], [new Decimal("1e200"), RESOURCE_GS], [new Decimal(2000), RESOURCE_REINFORCEDBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock(),
                 oneDep: true
@@ -1517,13 +1517,13 @@ var game =
                 }, ["unlockScrews"]),
 
             newTireUpgrades: new SkillTreeUpgradeFixed([
-                [[new Decimal(100000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_FISHINGNET], [new Decimal("1e1000000"), RESOURCE_TIRE]],
+                [[new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_FISHINGNET], [new Decimal("1e1000000"), RESOURCE_TIRE]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockScrews"]),
 
             posusAffectsDark: new SkillTreeUpgradeFixed([
-                [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e6), RESOURCE_DARKFRAGMENT], [new Decimal(10000), RESOURCE_BEAM]],
+                [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e6), RESOURCE_DARKFRAGMENT], [new Decimal(1000), RESOURCE_BEAM]],
             ], [false, 0.5], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("^")
             }, ["unlockScrews"]),
@@ -1536,7 +1536,7 @@ var game =
             }, ["magnetBoost"]),
 
             unlockTimeMode: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(30000), RESOURCE_MERGE_TOKEN], [new Decimal(6791), RESOURCE_GLITCHBEAM]],
+                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(30000), RESOURCE_MERGE_TOKEN], [new Decimal(4321), RESOURCE_GLITCHBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["newTireUpgrades"]),
@@ -1549,16 +1549,16 @@ var game =
 
             // Row 3
             veryFastCrafting: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(1000), RESOURCE_MASTERYTOKEN], [new Decimal(25000), RESOURCE_AEROBEAM]],
-                [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(10000), RESOURCE_BEAM]],
+                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(1000), RESOURCE_MASTERYTOKEN], [new Decimal(2500), RESOURCE_AEROBEAM]],
+                [[new Decimal("1e300"), RESOURCE_GS], [new Decimal(25), RESOURCE_LEGENDARYSCRAP], [new Decimal(1000), RESOURCE_BEAM]],
                 [[new Decimal("1e400"), RESOURCE_GS], [new Decimal(25), RESOURCE_FISHINGNET], [new Decimal(25), RESOURCE_PLASTICBAG]],
-                [[new Decimal("1e750"), RESOURCE_GS], [new Decimal("1e120"), RESOURCE_DARKSCRAP], [new Decimal(250000), RESOURCE_REINFORCEDBEAM]]
+                [[new Decimal("1e750"), RESOURCE_GS], [new Decimal("1e120"), RESOURCE_DARKSCRAP], [new Decimal(2500), RESOURCE_REINFORCEDBEAM]]
             ], [1, 2, 4, 8, 16], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("x")
             }, ["fallingMagnetValue"]),
 
             funnyGlitchBeams: new SkillTreeUpgradeFixed([
-                [[new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_BUCKET], [new Decimal(25), RESOURCE_BLUEBRICK]],
+                [[new Decimal(1000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_BUCKET], [new Decimal(25), RESOURCE_BLUEBRICK]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockTimeMode"]),
@@ -1573,7 +1573,7 @@ var game =
                 }, ["starDaily"]),
 
             unlockSupernova: new SkillTreeUpgradeFixed([
-                [[new Decimal(46834), RESOURCE_GLITCHBEAM], [new Decimal(10), RESOURCE_LEGENDARYSCRAP]],
+                [[new Decimal(1000), RESOURCE_GLITCHBEAM], [new Decimal(10), RESOURCE_LEGENDARYSCRAP]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock(),
                 nova: true
@@ -1963,6 +1963,7 @@ var game =
                 game.stats.totalfairydust = game.stats.totalfairydust.add(game.supernova.getFairyDust());
                 game.stats.totalcosmicemblems = game.stats.totalcosmicemblems.add(game.supernova.getEmblems());
             }
+
             // REMOVE YOUR STUFF
             game.dimension = 0;
 
@@ -2096,6 +2097,7 @@ var game =
             for (let upg of Object.keys(game.barrelMastery.upgrades)) {
                 game.barrelMastery.upgrades[upg].level = 0;
             }
+
             let bi = 0;
             for (b in game.barrelMastery.bl) {
                 while (bi <= game.barrelMastery.bl[b]) {
@@ -2714,6 +2716,7 @@ var game =
         sizeLimit: 0,
         lockUpgrades: false,
         dimEffects: 0,
+        bbauto: true,
     }
 }
 

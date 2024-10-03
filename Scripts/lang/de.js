@@ -20,17 +20,8 @@ const trans_de = {
     "Barrels": "Tonnen",
 
     "You have found me": "Du hast mich gefunden",
-    "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
-    autobuyertext: "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
-    unlocks: "Freigeschaltet",
-    notenoughgs: "Nicht genug GS!",
-    sizelimit: "Maximale Weite",
-    lockUpgrades: "Schrott-Upgrades sperren",
-    dimEffects: "Dimensionseffekte",
-    dimEffects0: "Keine",
-    dimEffects1: "Tonnen",
-    dimEffects2: "Tonnen + dunkel",
-    dimEffects3: "Dunkel",
+    "unlocks": "Freigeschaltet",
+    "notenoughgs": "Nicht genug GS!",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -78,6 +69,15 @@ const trans_de = {
     "Music": "Musik",
     "Current": "Jetzt",
     "Volume": "Lautstärke",
+
+    "sizelimit": "Maximale Weite",
+    "lockUpgrades": "Schrott-Upgrades sperren",
+    "dimEffects": "Dimensionseffekte",
+    "dimEffects0": "Keine",
+    "dimEffects1": "Tonnen",
+    "dimEffects2": "Tonnen + dunkel",
+    "dimEffects3": "Dunkel",
+    "bbauto": "Auto: Bessere Tonnen\nkauft max",
 
     "Credits": "Credits",
     "cp1": "Originalspiel Schrotttonne 2 von Schrott Games ©2017",
@@ -161,7 +161,8 @@ const trans_de = {
     "2nddimtext": "Opfere deinen Goldenen Schrott und betrete die Zweite Dimension\ndu behälst den GS, bis zu zurück kehrst\nDrücke den Knopf um sie zu betreten.",
     "2nddimtext2": "Erhalte Schattenschrott und zerstöre Tonnen für Schattenfragmente.\nVerbinden erhöht deine Produktion. Nutze dies, um hohe Tonnen zu erreichen.\nDrücke den Knopf, um die Zweite Dimension zu verlassen.",
     "earn": "Erhalte",
-    dsgsboost: "Du erhältst <amount>% mehr Goldenen Schrott\npro Schattenschrott.\nDu erhältst insgesamt x<multiplier> mehr GS!",
+    "dsgsboost": "Du erhältst <amount>% mehr Goldenen Schrott\npro Schattenschrott.\nDu erhältst insgesamt x<multiplier> mehr GS!",
+    "enter2nddim": "Du brauchst mindestens <amount> GS zum betreten!",
 
     // MERGE MASTERY
     "Merge Mastery": "Merge Mastery",
@@ -265,6 +266,7 @@ const trans_de = {
     factorytext: "Nutze 2 Währungen und Energie vom Generator\num hier neue Währungen herzustellen!!",
     buyertimetext: "Neue Zeit? (In Sekunden, z. B. 8)",
     collectortext: "Autosammler brauchen Energie für den Betrieb!\n1x sammeln kostet 1 Energie.",
+    "autobuyertext": "Autokäufer brauchen Energie!\n1 Upgrade kostet <energy> Energie.",
 
     // SUPERNOVA
     supernova: "Supernova",
@@ -398,6 +400,8 @@ const trans_de = {
     tire41: "Mehr passive\nMagnete",
     tire42: "Mehr Stahlträger\n(Alle Sorten)",
     tire43: "Günstigere\nPlastiktüten",
+
+    spawned: "Gespawnt!",
 
     // Beams
     beam1: "Alle Stahlträger erscheinen häufiger",

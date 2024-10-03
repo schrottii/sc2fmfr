@@ -106,6 +106,7 @@ var images =
     alienPin: loadImage("Images/alienpin.png"),
     fairyPin: loadImage("Images/fairypin.png"),
     starPin: loadImage("Images/starpin.png"),
+    grass: loadImage("Images/grass.png"),
     logos:
     {
         scrap2: loadImage("Images/scrap2logo.png"),

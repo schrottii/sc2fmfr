@@ -571,14 +571,14 @@ var scenes =
                         barrels[i].setCoord(x, y);
                     }
                     if (!game.settings.nobarrels) {
-                        if (barrels[i] !== undefined) {
-                            barrels[i].render(ctx);
-                        }
                         if (barrels[i] === undefined && tempDrawnBarrels[i] === undefined || (barrels[i] !== undefined && barrels[i].scale < 1) && tempDrawnBarrels[i] === undefined) {
                             ctx.drawImage(images.barrelTemplate, x - barrelSize / 2, y - barrelSize / 2, barrelSize, barrelSize);
                         }
                         if (!game.settings.lowPerformance && tempDrawnBarrels[i] !== undefined && (barrels[i] !== undefined && barrels[i].scale < 1)) {
                             Barrel.renderBarrel(ctx, tempDrawnBarrels[i], x, y, barrelSize);
+                        }
+                        if (barrels[i] !== undefined) {
+                            barrels[i].render(ctx);
                         }
                         if (game.barrelMastery.isUnlocked()) {
                             Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);

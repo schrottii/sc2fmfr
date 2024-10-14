@@ -1138,7 +1138,7 @@ function resizeCanvas() {
     w = canvas.width;
     h = canvas.height;
 
-    TEXTSCALING = 1 / (Math.pow(w, 0.9) / 244);
+    TEXTSCALING = 1 / (Math.pow((isMobile() ? w / 2 : w), 0.9) / 244);
 }
 
 function handlePress(e) {

@@ -322,7 +322,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("Evil red car", w * 0.49, h - w * 0.2);
+                ctx.fillText("Fanmade+++", w * 0.49, h - w * 0.2);
 
             }),
         new Scene("Barrels",
@@ -2498,7 +2498,7 @@ var scenes =
 
                     // Size Limit
                     new UIOption(tabYs[0] + 1.1, images.options.numberFormat, () => {
-                        if (!isMobile() || prompt("It seems like you play on a phone. Are you sure you want to enable this?")) {
+                        if (!isMobile() || confirm("It seems like you play on a phone. Are you sure you want to enable this?")) {
                             game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
                             resizeCanvas();
                         }

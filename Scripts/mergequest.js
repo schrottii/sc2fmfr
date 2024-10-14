@@ -1,7 +1,5 @@
-class MergeQuest
-{
-    constructor(cooldown, possibleTiers)
-    {
+class MergeQuest {
+    constructor(cooldown, possibleTiers) {
         this.barrelLvl = -1;
         this.possibleTiers = possibleTiers;
         this.currentMerges = 0;
@@ -13,8 +11,7 @@ class MergeQuest
 
     }
 
-    generateQuest(tier)
-    {
+    generateQuest(tier) {
         let highestLvl = game ? Math.max(100, Math.min(game.highestBarrelReached - 10, game.scrapUpgrades.betterBarrels.maxLevel)) : 100;
         let minLvl = game ? Math.max(50, game.highestBarrelReached - 250) : 0;
         if (tier != 5) this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
@@ -27,27 +24,22 @@ class MergeQuest
         this.currentCooldown = 0;
     }
 
-    getCooldown()
-    {
+    getCooldown() {
         return this.cooldown * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber() * (game.supernova.cosmicUpgrades.fasterMergeQuests.level > 0 ? 0.01 : 1);
     }
 
-    getNeededMerges()
-    {
+    getNeededMerges() {
         if (this.neededMerges < 3000) return Math.round(this.neededMerges * applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber());
         else return Math.round(this.neededMerges);
     }
 
-    check(mergedLvl)
-    {
+    check(mergedLvl) {
         let merged = this.barrelLvl === ((this.getNeededMerges() > 8000 && applyUpgrade(game.skillTree.upgrades.starDaily)) ? Math.floor(mergedLvl % BARRELS) : Math.floor(mergedLvl));
-        if(merged)
-        {
+        if (merged) {
             this.currentMerges++;
         }
 
-        if(this.currentMerges >= this.getNeededMerges() && this.active)
-        {
+        if (this.currentMerges >= this.getNeededMerges() && this.active) {
             game.mergeQuests.mergeTokens = Decimal.round(game.mergeQuests.mergeTokens.add(this.reward));
             game.stats.totalmergetokens = Decimal.round(game.stats.totalmergetokens.add(this.reward));
             game.stats.totalquests = game.stats.totalquests.add(1);
@@ -79,26 +71,21 @@ class MergeQuest
         return merged;
     }
 
-    tick(delta)
-    {
-        if(!this.active)
-        {
+    tick(delta) {
+        if (!this.active) {
             this.currentCooldown += delta;
-            if(this.currentCooldown >= this.getCooldown())
-            {
+            if (this.currentCooldown >= this.getCooldown()) {
                 this.generateQuest(this.possibleTiers[Math.floor(this.possibleTiers.length * Math.random())]);
             }
         }
     }
 
-    render(ctx, x, y)
-    {
+    render(ctx, x, y) {
         ctx.fillStyle = colors[C]["table"];
         if (this.getNeededMerges() > 8000) ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.17);
         else ctx.fillRect(x - w * 0.1, y - h * 0.0575, w * 0.875, h * 0.12);
 
-        if(this.active)
-        {
+        if (this.active) {
             Barrel.renderBarrel(ctx, this.barrelLvl, x, y, h * 0.1);
 
             ctx.fillStyle = "#505050";
@@ -124,8 +111,7 @@ class MergeQuest
             ctx.fillStyle = colors[C]["text"];
             ctx.fillText("#" + this.barrelLvl, x + h * 0.035, y + h * 0.05);
         }
-        else
-        {
+        else {
             ctx.fillStyle = colors[C]["text"];
             ctx.font = "bold " + (h * 0.09) + "px " + fonts.default;
             ctx.textBaseline = "middle";

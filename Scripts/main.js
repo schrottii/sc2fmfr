@@ -280,12 +280,6 @@ function update() {
             }
         }
 
-        if (game.mergeQuests.isUnlocked()) {
-            for (let q of game.mergeQuests.quests) {
-                q.tick(delta);
-            }
-        }
-
         timeSinceLastBarrelClick += delta;
 
         saveTime.time += delta;
@@ -302,12 +296,23 @@ function update() {
 
         // this stuff is executed only once per second
         if (secondTime >= 1) {
-            secondTime = 0;
+            // note - use secondTime instead of delta for *most* things in here - so it takes the entire time that has passed (about 1 second) and not 20 miliseconds or whatever
 
             fpsDisplay = (1 / delta).toFixed(0);
             game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
 
             Milestone.check(true);
+
+            if (game.mergeQuests.isUnlocked()) {
+                for (let q of game.mergeQuests.quests) {
+                    q.tick(secondTime);
+                }
+            }
+
+            if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
+
+            // remove the secondTime - this HAS to be last
+            secondTime = 0;
         }
 
         // this does all the auto buyers... don't question it hahaha
@@ -361,8 +366,6 @@ function update() {
                 }
             }
         }
-
-        if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
 
         // IMPORTANT - this is where the scene itself is rendered
         // to render anything above it, put it below this chunk

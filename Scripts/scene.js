@@ -999,10 +999,13 @@ var scenes =
                     ctx.textAlign = "center";
                     ctx.textBaseline = "top";
                     if (!drawPreview) {
-                        if (barrelsDisplayMode == 0) ctx.fillText(i + 1, x, y - h * 0.065, w * 0.15);
+                        // barrel tier OR mastery level
+                        if (barrelsDisplayMode == 0) ctx.fillText("#" + (i + 1), x, y - h * 0.065, w * 0.15);
                         else ctx.fillText(game.barrelMastery.b[i % BARRELS], x, y - h * 0.065, w * 0.15);
+
+                        // production OR mastery merges
                         if (barrelsDisplayMode == 0) ctx.fillText(formatNumber(Barrel.getIncomeForLevel(i)), x, y + h * 0.06, w * 0.15);
-                        else ctx.fillText(calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y + h * 0.06, w * 0.15);
+                        else ctx.fillText("L" + calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y + h * 0.06, w * 0.15);
                     }
                 }
                 if (game.dimension == 1) ctx.filter = "";

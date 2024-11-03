@@ -189,25 +189,25 @@ class UIScrollContainer2D extends UIGroup {
 
         if (!this.isVisiible()) return false;
 
-        let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; //if bottom right square is drawn, dont let bars flow into that square
+        let barSizeMod = this.axis.x && this.axis.y ? w * -0.03 : 0; // if bottom right square is drawn, dont let bars flow into that square
         if (this.axis.x) {
             ctx.fillStyle = colors[C]["scrollTrackbg"];
-            ctx.fillRect(nx, ny + nh - w * 0.03, nw, w * 0.03);
+            ctx.fillRect(nx, ny + nh - w * 0.03 * TEXTSCALING, nw * TEXTSCALING, w * 0.03);
             ctx.fillStyle = colors[C]["scrollTrack"];
             let barHeight = w * (this.w / (this.scrollBounds.xmax + (this.w + this.x) - this.scrollBounds.xmin)); //(this.w + this.x) correct from constructor custombounds
-            //we don't need min, just the delta height, scrollX/Y is in the delta => 0 to 1
+            // we don't need min, just the delta height, scrollX/Y is in the delta => 0 to 1
             ctx.fillRect(nx + (nw - barHeight + barSizeMod) * ((this.scrollX - this.scrollBounds.xmin) / (this.scrollBounds.xmax - this.scrollBounds.xmin)), ny + nh - w * 0.03, barHeight, w * 0.03);
         }
         if (this.axis.y) {
             ctx.fillStyle = colors[C]["scrollTrackbg"];
-            ctx.fillRect(nx + nw - w * 0.03, ny, w * 0.03, nh);
+            ctx.fillRect(nx + nw - w * 0.03 * TEXTSCALING, ny, w * 0.03 * TEXTSCALING, nh);
             ctx.fillStyle = colors[C]["scrollTrack"];
             let barHeight = h * (this.h / (this.scrollBounds.ymax + (this.h + this.y) - this.scrollBounds.ymin));
-            ctx.fillRect(nx + nw - w * 0.03, ny + (nh - barHeight + barSizeMod) * ((this.scrollY - this.scrollBounds.ymin) / (this.scrollBounds.ymax - this.scrollBounds.ymin)), w * 0.03, barHeight);
+            ctx.fillRect(nx + nw - w * 0.03 * TEXTSCALING, ny + (nh - barHeight + barSizeMod) * ((this.scrollY - this.scrollBounds.ymin) / (this.scrollBounds.ymax - this.scrollBounds.ymin)), w * 0.03 * TEXTSCALING, barHeight);
         }
         if (this.axis.x && this.axis.y) {
             ctx.fillStyle = "rgb(96,124,166)";
-            ctx.fillRect(nx + nw - w * 0.03, ny + nh - w * 0.03, w * 0.03, w * 0.03);
+            ctx.fillRect(nx + nw - w * 0.03 * TEXTSCALING, ny + nh - w * 0.03, w * 0.03 * TEXTSCALING, w * 0.03);
         }
         ctx.restore();
     }
@@ -700,15 +700,17 @@ class UIConstellation extends UIGroup { // Almost the same. just the lock
 }
 
 class UIToggleOption extends UIGroup {
-    constructor(y, prop, desc, color) {
+    constructor(y, prop, desc, color, isVisible) {
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
             new UICheckbox(0.1, y, 0.07, 0.07, prop, {
                 quadratic: true,
+                isVisible: isVisible
             }),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",
-                valign: "middle"
+                valign: "middle",
+                isVisible: isVisible
             }),
         ]);
     }

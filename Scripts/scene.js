@@ -2485,13 +2485,13 @@ var scenes =
                     // Open Beams
                     new UIOption(tabYs[0] + 0.7, images.scenes.beamselection, () => {
                         game.settings.beamRed = (game.settings.beamRed + 1) % 3;
-                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table"),
+                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table", () => game.beams.isUnlocked()),
 
                     // Hyper Buy 2.0
-                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2"),
+                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2", () => game.supernova.cosmicUpgrades.hyperBuy.level >= 1),
 
                     // Better Barrels auto buyer
-                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table", () => game.supernova.cosmicUpgrades.autoBuyerMax.level >= 1),
 
                     // Lock Upgrades
                     new UIToggleOption(tabYs[0] + 1.0, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table2"),
@@ -2529,7 +2529,7 @@ var scenes =
                     new UIOption(tabYs[1] + 0.5, images.dimeffects, () => {
                         game.settings.dimEffects++;
                         if (game.settings.dimEffects > 3) game.settings.dimEffects = 0;
-                    }, () => tt("dimEffects") + ": " + tt("dimEffects" + game.settings.dimEffects), "table"),
+                    }, () => tt("dimEffects") + ": " + tt("dimEffects" + game.settings.dimEffects), "table", () => game.darkscrap.isUnlocked()),
 
                     // FPS
                     new UIOption(tabYs[1] + 0.6, images.options.barrelQuality, () => {
@@ -2599,28 +2599,6 @@ var scenes =
                         if (game.settings.musicVolume > 100) game.settings.musicVolume = 0;
                         playMusic();
                     }, () => tt("Volume") + ": " + game.settings.musicVolume + "%", "table"),
-
-                    /*new UIOption(1.35, images.scenes.options, () => {
-                        if (confirm("Warning! You are about to reset your Dark Scrap (Upgrades), Dark Fragment (Upgrades) and related achievements. Press cancel if you want to keep them.")) {
-                            game.darkscrap.amount = new Decimal(0);
-                            Object.keys(game.darkscrap.upgrades).forEach(k => {
-                                game.darkscrap.upgrades[k].level = 0;
-                            })
-
-                            game.darkfragment.amount = new Decimal(0);
-                            Object.keys(game.darkfragment.upgrades).forEach(k => {
-                                game.darkfragment.upgrades[k].level = 0;
-                            })
-
-                            const removethose = [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84];
-                            for (i = 0; i < removethose.length; i++) {
-                                const index = game.ms.indexOf(removethose[i]);
-                                if (index > -1) {
-                                    game.ms.splice(index, 1);
-                                }
-                            }
-                        }
-                    }, "Reset Second Dimension Progress", "bg"),*/
 
 
                     new UIText(() => tt("Credits"), 0.5, tabYs[3], 0.075, "white", {
@@ -2979,38 +2957,21 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
+
+                new UIButton(0.85, 0.85, 0.1, 0.1, images.scenes.unlocks, () => {
+                    showAllUnlocks = !showAllUnlocks;
+                }, { quadratic: true }),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                var unlocks = tto({
-                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "Aerobeams", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Barrel Mastery", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
-                    de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Barrel Mastery", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova", "Kosmische Pins"],
-                    ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Мастерство Бочек", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая", "Космический Значок"],
-                });
-                // var unlocksUnlocks
-                var unlocksText = tto({
-                    default: ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "1e213 Scrap", "Earth (5e24 GS)", "Barrel 500", "12,000 Manual Merges",
-                        "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
-                        "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)", "50 Stars"
-                    ],
-                    de: ["1e15 Schrott", "Schrott-Boost (GS) Level 8", "1e93 Schrott", "Tonne 100", "1e153 Schrott", "Tonne 300", "1e213 Schrott", "Erde (5e24 GS)", "Tonne 500", "12,000 eigene Verbindungen",
-                        "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
-                        "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)", "50 Sterne"
-                    ],
-                    ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "1e213 Мусора", "Земля (5e24 ЗМ)", "Бочка 500", "12,000 Самослияний",
-                        "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
-                        "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)", "50 Звëзд"]
-                });
-
-                //  shit quality sleep
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.font = (h * 0.015) + "px " + fonts.default;
-                for (i = 0; i < unlocksUnlocks.length; i++) {
-                    ctx.fillStyle = unlocksUnlocks[i]() ? colors[C]["text"] : "red";
-                    ctx.fillText((unlocksUnlocks[i]() ? unlocks[i] + " (" + unlocksText[i] + ")" : tt("locked") + " - " + unlocksText[i]), w * 0.5, h * (0.125 + (0.025 * i)));
+                for (i = 0; i < unlocks.length; i++) {
+                    ctx.fillStyle = unlocks[i].unlock() ? colors[C]["text"] : "red";
+                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("locked") + " - " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)));
                 }
             }),
         new Scene("ScrapFactory",

@@ -5,7 +5,7 @@ const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.4 (v4.1)";
+const gameVersionText = "v3.4.1 (v4.1.1)";
 
 var game =
 {
@@ -2720,6 +2720,61 @@ var game =
     }
 }
 
-var unlocksUnlocks = [() => game.highestScrapReached.gte(1e15), () => game.goldenScrap.upgrades.scrapBoost.level >= 8, () => game.mergeQuests.isUnlocked(), () => game.fragment.isUnlocked(), () => game.mergeMastery.isUnlocked(), () => game.beams.isUnlocked(), () => game.bricks.isUnlocked(), () => game.skillTree.isUnlocked(), () => game.tires.isUnlocked(), () => game.wrenches.isUnlocked(),
-() => game.aerobeams.isUnlocked(), () => game.barrelMastery.isUnlocked(), () => game.angelbeams.isUnlocked(), () => game.reinforcedbeams.isUnlocked(), () => game.darkscrap.isUnlocked(), () => game.glitchbeams.isUnlocked(), () => game.glitchbeams.upgrades.goldenbeam.level > 0,
-() => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, () => applyUpgrade(game.shrine.generatorUnlock), () => applyUpgrade(game.shrine.autosUnlock), () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), () => game.gifts.isUnlocked(), () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), () => game.screws.isUnlocked(), () => game.cogwheels.isUnlocked(), () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), () => game.supernova.stars.gte(50)];
+
+
+class Unlock {
+    constructor(enName, enDesc, unlock, trans) {
+        this.enName = enName;
+        this.enDesc = enDesc;
+        this.unlock = unlock;
+        this.trans = trans;
+    }
+
+    getName() {
+        return tto({
+            default: this.enName,
+            de: this.trans.deName,
+            ru: this.trans.ruName
+        });
+    }
+
+    getDesc() {
+        return tto({
+            default: this.enDesc,
+            de: this.trans.deDesc,
+            ru: this.trans.ruDesc
+        });
+    }
+}
+
+var showAllUnlocks = false;
+
+const unlocks = [
+    new Unlock("Golden Scrap", "1e15 Scrap", () => game.highestScrapReached.gte(1e15), { deName: "Goldener Schrott", deDesc: "1e15 Schrott", ruName: "Золотой Мусор", ruDesc: "1e15 Мусора" }),
+    new Unlock("Solar System", "Scrap Boost (GS) Level 8", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, { deName: "Sonnensystem", deDesc: "Schrott-Boost (GS) Level 8", ruName: "Солнечная Система", ruDesc: "Буст Мусора (ЗМ) Уровень 8" }),
+    new Unlock("Merge Quests", "1e93 Scrap", () => game.mergeQuests.isUnlocked(), { deName: "Merge Quests", deDesc: "1e93 Schrott", ruName: "Квесты Слияний", ruDesc: "1e93 Мусора" }),
+    new Unlock("Barrel Fragments", "Barrel 100", () => game.fragment.isUnlocked(), { deName: "Fragmente", deDesc: "Tonne 100", ruName: "Фрагменты Бочек", ruDesc: "Бочка 100" }),
+    new Unlock("Merge Mastery", "1e153 Scrap", () => game.mergeMastery.isUnlocked(), { deName: "Merge Mastery", deDesc: "1e153 Schrott", ruName: "Мастерство Слияний", ruDesc: "1e153 Мусора" }),
+    new Unlock("Beams", "Barrel 300", () => game.beams.isUnlocked(), { deName: "Stahlträger", deDesc: "Tonne 300", ruName: "Балки", ruDesc: "Бочка 300" }),
+    new Unlock("Bricks", "1e213 Scrap", () => game.bricks.isUnlocked(), { deName: "Ziegelsteine", deDesc: "1e213 Schrott", ruName: "Кирпичи", ruDesc: "1e213 Мусора" }),
+    new Unlock("Skill Tree", "Earth (5e24 GS)", () => game.skillTree.isUnlocked(), { deName: "Baum", deDesc: "Erde (5e24 GS)", ruName: "Дерево Навыков", ruDesc: "Земля (5e24 ЗМ)" }),
+    new Unlock("Tires", "Barrel 500", () => game.tires.isUnlocked(), { deName: "Reifen", deDesc: "Tonne 500", ruName: "Покрышки", ruDesc: "Бочка 500" }),
+    new Unlock("Wrenches", "12,000 Manual Merges", () => game.wrenches.isUnlocked(), { deName: "Schraubenschlüssel", deDesc: "12,000 eigene Verbindungen", ruName: "Гаечные Ключи", ruDesc: "12,000 Самослияний" }),
+    new Unlock("Aerobeams", "Skill Tree", () => game.aerobeams.isUnlocked(), { deName: "Aerostahl", deDesc: "Baum", ruName: "Аэробалки", ruDesc: "Дерево Навыков" }),
+    new Unlock("Angel Beams", "Earth (1e27 GS)", () => game.angelbeams.isUnlocked(), { deName: "Engelstahl", deDesc: "Erde (1e27 GS)", ruName: "Ангельские Балки", ruDesc: "Земля (1e27 ЗМ)" }),
+    new Unlock("Reinforced Beams", "Merge Mastery Level 300", () => game.reinforcedbeams.isUnlocked(), { deName: "Stahlstahl", deDesc: "Merge Mastery Level 300", ruName: "Усиленные Балки", ruDesc: "Мастерство Слияний Уровень 300" }),
+    new Unlock("Second Dimension", "Earth (1e40 GS)", () => game.darkscrap.isUnlocked(), { deName: "Zweite Dimension", deDesc: "Erde (1e40 GS)", ruName: "Второе Измерение", ruDesc: "Земля (1e40 ЗМ)" }),
+    new Unlock("Glitch Beams", "1e12 Dark Scrap + Select Aerobeams", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: "1e12 Schattenschrott + Aerostahl auswählen", ruName: "Глючные Балки", ruDesc: "1e12 Тёмного Мусора + Аэробалки" }),
+    new Unlock("Golden Beams", "A Glitch Beam Upgrade", () => game.glitchbeams.upgrades.goldenbeam.level > 0, { deName: "Goldener Stahl", deDesc: "Glitchstahl-Upgrade", ruName: "Золотые Балки", ruDesc: "Улучшение Глючных Балок" }),
+    new Unlock("Scrap Factory", "Earth (1e100 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: "Erde (1e100 GS)", ruName: "Фабрика Мусора", ruDesc: "Земля (1e100 ЗМ)" }),
+    new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock), { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Auto Buyers", "Mystic Shrine", () => applyUpgrade(game.shrine.autosUnlock), { deName: "Autokäufer", deDesc: "Mythischer Schrein", ruName: "Автопокупщики", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Barrel Mastery", "Skill Tree", () => game.barrelMastery.isUnlocked(), { deName: "Barrel Mastery", deDesc: "Baum", ruName: "Мастерство Бочек", ruDesc: "Дерево Навыков" }),
+    new Unlock("Plastic Bags", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), { deName: "Platiktüten", deDesc: "Baum", ruName: "Пластиковые Пакеты", ruDesc: "Дерево Навыков" }),
+    new Unlock("Gifts", "Earth (1e150 GS)", () => game.gifts.isUnlocked(), { deName: "Geschenke", deDesc: "Erde (1e150 GS)", ruName: "Подарки", ruDesc: "Земля (1e150 ЗМ)" }),
+    new Unlock("Auto Collectors", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), { deName: "Autosammler", deDesc: "Baum", ruName: "Автосборщики", ruDesc: "Дерево Навыков" }),
+    new Unlock("Screws", "Skill Tree", () => game.screws.isUnlocked(), { deName: "Schrauben", deDesc: "Baum", ruName: "Винты", ruDesc: "Дерево Навыков" }),
+    new Unlock("Cogwheels", "Skill Tree", () => game.cogwheels.isUnlocked(), { deName: "Zahnräder", deDesc: "Baum", ruName: "Шестерёнки", ruDesc: "Дерево Навыков" }),
+    new Unlock("Supernova", "Earth (1e500 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), { deName: "Supernova", deDesc: "Erde (1e500 GS)", ruName: "Суперновая", ruDesc: "Земля (1e500 ЗМ)" }),
+    new Unlock("Cosmic Pins", "50 Stars", () => game.supernova.stars.gte(50), { deName: "Kosmische Pins", deDesc: "50 Sterne", ruName: "Космический Значок", ruDesc: "50 Звëзд" }),
+];

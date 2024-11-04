@@ -1135,7 +1135,7 @@ var scenes =
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
                 }),
 
-                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
+                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gt(0) }),
 
                 new UIPlanet(0.5, 0.5, () => tt("planet1"), game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
                 new UIPlanet(0.6, 0.7, () => tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
@@ -3343,7 +3343,7 @@ var scenes =
 
                 new UIText(() => tt("supernovatext"), 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.skillTree.upgrades.unlockSupernova.level > 0 || game.supernova.stars.gt(0) }),
 
                 new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
 
@@ -3356,19 +3356,15 @@ var scenes =
 
                 new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
             ],
 
@@ -3392,6 +3388,7 @@ var scenes =
                 new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1) }),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
+                    " (" + formatNumber(game.highestBarrelReached) + "/" + formatNumber(game.highestBarrelReached < 20000 ? 20000 : Math.ceil((1 + game.highestBarrelReached) / 20000) * 20000) + ")" + 
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
@@ -3405,7 +3402,7 @@ var scenes =
                     if (confirm(tt("doyoureally"))) {
                         supernovaAlpha = 0.001;
                     }
-                }, { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
+                }, { quadratic: true, isVisible: () => supernovaAlpha == 0 && game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
             ],
 
             function (delta) {

@@ -753,6 +753,8 @@ function dustReset(upgradeType, dustType, dustStat) {
         }
     }
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
+
+    if (dustType == "alienDust") updateBetterBarrels();
 }
 
 function basicAchievementUnlock(index, req = true) {

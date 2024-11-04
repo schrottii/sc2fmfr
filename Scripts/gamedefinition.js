@@ -2,6 +2,7 @@
 let currentMonth = currentTime.getUTCMonth();
 
 const BARRELS = 1000;
+const HARDLEVELCAP = 1e300;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
@@ -397,7 +398,7 @@ var game =
                         if (game.supernova.cosmicUpgrades.mythusMultiBuy.level > 0) game.solarSystem.upgrades.mythus.level += 9;
                     },
                     afterBuy: () => {
-                        if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009) {
+                        if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009 && !game.settings.hyperBuy) {
                             alert("You have to reach barrel 3010 to upgrade this planet!");
                         }
                         else {
@@ -1894,7 +1895,8 @@ var game =
         },
 
         getEmblems: function () {
-            return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
+            // 1 is guaranteed. 2nd is at 10k. 3rd at 20k, 4th at 40k, 5th at 60k, 6th at 80k, etc.
+            return new Decimal(Math.ceil((game.highestBarrelReached + 1) / 20000)).add(game.highestBarrelReached >= 10000 ? 1 : 0);
         },
         getAlienDust: function () {
             let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));

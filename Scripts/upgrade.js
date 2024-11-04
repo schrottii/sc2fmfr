@@ -308,7 +308,7 @@ class ScrapUpgrade {
     buy(round, disableOnBuy = false) {
         let resource = getUpgradeResource(this.resource);
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
-        if (this.level < this.getMaxLevel() && canAfford) {
+        if (this.level < this.getMaxLevel() && canAfford && this.level < HARDLEVELCAP) {
             if (!disableOnBuy) this.onBuy();
             let p = round ? this.currentPrice().round() : this.currentPrice();
             if (resource.mul(1000000).gt(p)) resource = resource.sub(p);
@@ -337,7 +337,7 @@ class ScrapUpgrade {
         else if (this.resource == 7 && game.settings.hyperBuy2) {
             // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
-            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20));
+            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.min(HARDLEVELCAP, Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20)));
             else game.skillTree.upgrades.higherDarkScrapTokenMax.level = Math.min(14, Math.floor(resource / 1200));
             this.onBuy();
             this.afterBuy();
@@ -355,13 +355,13 @@ class ScrapUpgrade {
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
                 //console.log("integral mode");
                 // Keep doubling as long as possible
-                while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level *= 2;
                 }
                 level = level / 2;
 
                 // Half, now x1.03 as long as possible. Should be fairly accurate
-                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource) && level < 1e305) {
+                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level = Math.floor(level * 1.02);
                 }
                 //console.log(level);
@@ -369,6 +369,7 @@ class ScrapUpgrade {
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
                 if (game.settings.hyperBuyCap != 0) level = Math.min(level, game.settings.hyperBuyCap);
+                level = Math.min(level, HARDLEVELCAP - this.level);
 
                 resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
@@ -377,6 +378,7 @@ class ScrapUpgrade {
                     resource = new Decimal(0);
                 }
                 assignResourceAfterUpgrade(this.resource, resource);
+
                 this.level = this.level + level; // put it here. grrr
                 this.onBuy();
                 this.afterBuy();
@@ -385,7 +387,6 @@ class ScrapUpgrade {
             }
             else {
                 level = level + this.level;
-                //console.log(level)
             }
         }
         else {
@@ -398,12 +399,15 @@ class ScrapUpgrade {
         if (level > this.getMaxLevel()) level = this.getMaxLevel();
 
         if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 /*|| isNaN(this.getPrice(level))*/) {
+            console.log(level)
             //this.level = this.getMaxLevel();        ummmm what???
             return false;
         }
 
-        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel()) {
+        let maxAttempts = 10000;
+        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel() && maxAttempts > 0 && this.level < HARDLEVELCAP) {
             this.buy(round);
+            maxAttempts -= 1;
             if (!originHyper) resource = getUpgradeResource(this.resource);
             else resource = resource.sub(this.getPrice(this.level - 1));
         }
@@ -571,7 +575,10 @@ class SkillTreeUpgradeFixed extends FixedLevelUpgrade {
             return true;
         }
         if (this.cfg.nova == true) {
-            if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA) return true;
+            if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA) {
+                if (game.supernova.stars.gt(0) && this.level == 0) this.level = 1;
+                return true;
+            }
             return false;
         }
         if (this.cfg.oneDep != true) {

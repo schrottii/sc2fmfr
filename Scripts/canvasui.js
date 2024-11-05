@@ -717,13 +717,14 @@ class UIToggleOption extends UIGroup {
 }
 
 class UIOption extends UIGroup {
-    constructor(y, image, onclick, desc, color) {
+    constructor(y, image, onclick, desc, color, isVisible) {
         super([
             new UIRect(0.5, y, 1, 0.1, color ? color : "table"),
-            new UIButton(0.1, y, 0.07, 0.07, image, onclick, { quadratic: true }),
+            new UIButton(0.1, y, 0.07, 0.07, image, onclick, { quadratic: true, isVisible: isVisible }),
             new UIText(desc, 0.2, y, 0.04, "black", {
                 halign: "left",
-                valign: "middle"
+                valign: "middle",
+                isVisible: isVisible
             })
         ])
     }

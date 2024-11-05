@@ -79,7 +79,8 @@ var game =
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
                 .mul(new Decimal(1000).pow(game.supernova.stars))
-                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
+                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara))
+                .mul(1 + (0.02 * Math.min(game.ms.length, game.milestones.achievements.length)));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -253,7 +254,7 @@ var game =
     magnetUpgrades:
     {
         scrapBoost: new MagnetUpgrade(
-            level => Utils.roundBase(new Decimal(10 + 5 * level).mul(Decimal.pow(1.1, Math.max(0, level - 10))), 1)
+            level => Utils.roundBase(new Decimal(4 + 2 * level).mul(Decimal.pow(1.1, Math.max(0, level - 10))), 1)
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             level => new Decimal(1 + 0.2 * level).mul(Decimal.pow(1.2, Math.max(0, level - 10))),
             {
@@ -271,7 +272,7 @@ var game =
         magnetMergeChance: new MagnetUpgrade(
             level => new Decimal(10 + level * level).mul(Decimal.pow(2, Math.max(0, level - 20)))
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
-            level => new Decimal(0.01 + 0.001 * level),
+            level => new Decimal(0.02 + 0.002 * level),
             {
                 getEffectDisplay: effectDisplayTemplates.percentStandard(1),
                 maxLevel: () => 20 + (game.solarSystem.upgrades.earth.level >= EarthLevels.MAGNET_3_LEVELS ? 20 : 0)

@@ -93,7 +93,8 @@ const trans_en = {
     "myserver": "My Games Discord Server",
     "fmserver": "Scrap Fanmade Server",
     "scrapserver": "Scrap Server",
-    "myyt": "My Youtube Channel",
+    "mydc": "Discord",
+    "myyt": "Youtube",
     "myw": "My Other Games",
 
     // SAVE CODE
@@ -217,6 +218,7 @@ const trans_en = {
     skilltree: "Skill Tree",
     locked: "Locked",
     unlocked: "Unlocked",
+    unlockedat: "Unlocked at",
     screws: "Screws",
     plasticbags: "Plastic Bags",
     costs: "Costs",

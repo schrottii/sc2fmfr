@@ -492,7 +492,7 @@ var scenes =
                     if (game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
                     else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
                 }, 0.3, 0.02, 0.03, "white", { bold: true }),
-                new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
+                new UIText(() => { if (game.settings.beamTimer == true && game.beams.isUnlocked()) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return tt("Next Storm Chance in: ") + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
             ],
             function (delta) {
@@ -2639,25 +2639,25 @@ var scenes =
 
 
                 ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 1.2 }),
-                /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
-                    {
-                        quadratic: true,
-                        isVisible: () => game.settings.optionsPage > 0
-                    }),
-                new UIButton(0.75, 0.65, 0.075, 0.075, images.arrows.right, () => game.settings.changeOptionsPage(1),
-                    {
-                        quadratic: true,
-                        isVisible: () => game.settings.optionsPage < 2
-                    }),*/
-                new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
+
+                // My logo
+                new UIButton(0.85, 0.925, 0.15, 0.15, images.logos.schrottii, () => {
                     location.href = "https://schrottii.github.io/";
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
                     basicAchievementUnlock(206);
                 }, { quadratic: true }),
-                new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
-                new UIText(() => tt("myserver"), 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
-                new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
-                new UIText(() => tt("myyt"), 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+
+                new UIButton(0.5, 0.925, 0.2, 0.1, images.logos.donate, () => {
+                    location.href = "https://ko-fi.com/schrottii";
+                }, { quadratic: true }),
+
+                // DC & YT
+                new UIButton(0.05, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
+                new UIText(() => tt("mydc"), 0.13, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
+                new UIButton(0.05, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
+                new UIText(() => tt("myyt"), 0.13, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+
+                // Export, import, OG link
                 new UIText(() => tt("Export and Import"), 0.3, 0.825, 0.035, "black"),
                 new UIButton(0.3, 0.775, 0.09, 0.09, images.exportImport, () => { importType = 0; document.querySelector("div.absolute").style.display = "block" }, { quadratic: true }),
                 new UIText(() => tt("ogsc2"), 0.7, 0.825, 0.035, "black"),
@@ -2843,6 +2843,8 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
+                new UIText(() => "+" + (2 * Math.min(game.ms.length, game.milestones.achievements.length)) + "% GS", 0.975, 0.025, 0.06, "black", { halign: "right" }),
+
                 new UIText(() => game.ms.length + " / " + game.milestones.achievements.length, 0.5, 0.15, 0.06, "white", {
                     bold: 900,
                     borderSize: 0.003,
@@ -2958,7 +2960,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
 
-                new UIButton(0.85, 0.85, 0.1, 0.1, images.scenes.unlocks, () => {
+                new UIButton(0.85, 0.9, 0.1, 0.1, images.scenes.unlocks, () => {
                     showAllUnlocks = !showAllUnlocks;
                 }, { quadratic: true }),
             ],
@@ -2966,12 +2968,15 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.1, w * 0.9, h * 0.7);
+
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.font = (h * 0.015) + "px " + fonts.default;
                 for (i = 0; i < unlocks.length; i++) {
-                    ctx.fillStyle = unlocks[i].unlock() ? colors[C]["text"] : "red";
-                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("locked") + " - " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)));
+                    ctx.fillStyle = unlocks[i].unlock() ? colors[C]["text"] : "orange";
+                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("unlockedat") + ": " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)));
                 }
             }),
         new Scene("ScrapFactory",

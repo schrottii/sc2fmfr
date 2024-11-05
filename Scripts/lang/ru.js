@@ -93,7 +93,8 @@ const trans_ru = {
     "myserver": "Мой Discord-Сервер",
     "fmserver": "сделано фанатом Discord-Сервер",
     "scrapserver": "Мусора Discord-Сервер",
-    "myyt": "Мой Youtube-канал",
+    "mydc": "Discord",
+    "myyt": "Youtube",
 
     // SAVE CODE
     "export": "Экспорт",
@@ -216,6 +217,7 @@ const trans_ru = {
     skilltree: "Дерево Навыков",
     locked: "Закрыто",
     unlocked: "Открыто",
+    unlockedat: "Открыто",
     screws: "Винты",
     plasticbags: "Пластиковые Пакеты",
     costs: "Стоит",

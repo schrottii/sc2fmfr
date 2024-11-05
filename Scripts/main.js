@@ -768,6 +768,9 @@ function hardReset() {
     for (i in game.stats) {
         game.stats[i] = new Decimal(0);
     }
+
+    game.supernova.reset("norew");
+
     game.wrenches.amount = new Decimal(0);
     for (u in game.wrenches.upgrades) {
         game.wrenches.upgrades[u].level = 0;
@@ -779,12 +782,14 @@ function hardReset() {
     }
     game.barrelMastery.b = Array(1000).fill(0);
     game.barrelMastery.bl = Array(1000).fill(0);
-
+    game.barrelMastery.levels = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
     game.barrelMastery.masteryTokens = new Decimal(0);
+
     game.cogwheels.amount = new Decimal(0);
     for (u in game.cogwheels.upgrades) {
         game.cogwheels.upgrades[u].level = 0;
     }
+
     game.supernova.stars = new Decimal(0);
     game.supernova.starDust = new Decimal(0);
     game.supernova.alienDust = new Decimal(0);
@@ -805,7 +810,6 @@ function hardReset() {
     for (u in game.shrine) {
         game.shrine[u].level = 0;
     }
-    game.supernova.reset("norew");
 
     game.barrelMastery.masteryTokens = new Decimal(0);
     game.mergeQuests.scrapyard = 0;
@@ -816,6 +820,9 @@ function hardReset() {
 
     game.selfMerges = 0;
     game.totalMerges = 0;
+    game.glitchesCollected = 0;
+
+    game.settings.hyperBuy = false;
 
     game.ms = [];
 

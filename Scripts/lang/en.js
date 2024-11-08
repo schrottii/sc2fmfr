@@ -93,7 +93,8 @@ const trans_en = {
     "myserver": "My Games Discord Server",
     "fmserver": "Scrap Fanmade Server",
     "scrapserver": "Scrap Server",
-    "myyt": "My Youtube Channel",
+    "mydc": "Discord",
+    "myyt": "Youtube",
     "myw": "My Other Games",
 
     // SAVE CODE
@@ -217,6 +218,7 @@ const trans_en = {
     skilltree: "Skill Tree",
     locked: "Locked",
     unlocked: "Unlocked",
+    unlockedat: "Unlocked at",
     screws: "Screws",
     plasticbags: "Plastic Bags",
     costs: "Costs",
@@ -233,7 +235,7 @@ const trans_en = {
     sendgiftmergetoken: "Send Gift (Merge Tokens)",
     sendgiftmasterytoken: "Send Gift (Mastery Tokens)",
     sendgiftwrench: "Send Gift (Wrenches)",
-    gifttext1: "Share it with someone so they can send you a gift!\n(If they like you, but they don't)",
+    gifttext1: "Share it with someone\nso they can send you a gift!",
     gifttext2: "(based on your current amount)",
     gifttext3: "Message? (Max. 80 characters)",
     gifttext4: "What is the friend code of the player you want to send it to?",
@@ -248,7 +250,7 @@ const trans_en = {
     giftcopied: "The gift has been copied to your clipboard. Share it with the friend!",
     friendlist: "Friend List",
 
-    sendtext: "How to send gifts:\n\n1. Make sure you have enough stamps\n2. Select the currency to send (gift content)\n3. Enter the friend code of\nthe person you want to send the gift to (not yours!)\n4. Click the gift and send the code to the friend",
+    sendtext: "How to send gifts:\n\n1. Make sure you have enough stamps\n2. Select the currency to send (gift content)\n3. Enter the friend code of\nthe person you want to send\nthe gift to (not yours!)\n4. Click the gift and\nsend the code to the friend",
     opentext: "How to open gifts:\n1. Make sure you have enough scissors\n2. Click the gift\n3. Enter the gift code\nyour friend gave you",
 
     // TIME MODE
@@ -536,7 +538,7 @@ const trans_en = {
     tree40: "Unlock\nTime Mode",
     tree41: "Star barrels count\nfor daily quests",
     tree42: "Faster Crafting",
-    tree43: "Funny Glitch Beams\n(& x2 worth)",
+    tree43: "Funny Glitch Beams\n(& x3 worth)",
     tree44: "Higher max. for\n2nd Dark Scrap upg.",
     tree45: "Unlock Supernova",
 

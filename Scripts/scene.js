@@ -4,9 +4,6 @@ var comparePage = 0;
 var C = "default";
 var calcTime = "";
 var calcTime2 = "";
-var timeDisplay = "";
-var futureTimeDisplay = "";
-var year = month = "";
 var timeOutID = "none";
 
 var barrelsDisplayMode = 0;
@@ -295,7 +292,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["table2"];
                 ctx.fillRect(0, h * 0.1, w, h);
 
-                ctx.drawImage(images.appIcon, w * 0.3, h * 0.25, w * 0.4, w * 0.4);
+                ctx.drawImage(images.appIcon, w * 0.5 - (Math.min(w * 0.4, h * 0.4) / 2), h * 0.25, Math.min(w * 0.4, h * 0.4), Math.min(w * 0.4, h * 0.4));
 
                 ctx.fillStyle = colors[C]["text"];
                 ctx.textAlign = "center";
@@ -310,19 +307,19 @@ var scenes =
                 if (loadDots > 3999) {
                     loadDots = 0;
                 }
-                else if (loadDots > 2999) ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.6, w * 0.9);
-                else if (loadDots > 1999) ctx.fillText(tt("Loading") + "..", w * 0.5, h * 0.6, w * 0.9);
-                else if (loadDots > 999) ctx.fillText(tt("Loading") + ".", w * 0.5, h * 0.6, w * 0.9);
-                else ctx.fillText(tt("Loading"), w * 0.5, h * 0.6, w * 0.9);
+                else if (loadDots > 2999) ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.7, w * 0.9);
+                else if (loadDots > 1999) ctx.fillText(tt("Loading") + "..", w * 0.5, h * 0.7, w * 0.9);
+                else if (loadDots > 999) ctx.fillText(tt("Loading") + ".", w * 0.5, h * 0.7, w * 0.9);
+                else ctx.fillText(tt("Loading"), w * 0.5, h * 0.7, w * 0.9);
 
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
+                ctx.fillText(gameVersionText, w * 0.99, h * 0.975);
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("Fanmade+++", w * 0.49, h - w * 0.2);
+                ctx.fillText("Fanmade+++", w * 0.5, h * 0.925);
 
             }),
         new Scene("Barrels",
@@ -492,7 +489,7 @@ var scenes =
                     if (game.dimension == 0) return "+" + formatNumber(Barrel.getGlobalIncome()) + "/s"
                     else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
                 }, 0.3, 0.02, 0.03, "white", { bold: true }),
-                new UIText(() => { if (game.settings.beamTimer == true) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
+                new UIText(() => { if (game.settings.beamTimer == true && game.beams.isUnlocked()) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return tt("Next Storm Chance in: ") + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
             ],
             function (delta) {
@@ -1126,7 +1123,10 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
-                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.gifts, () => Scene.loadScene("Gifts"), {
+                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.gifts, () => {
+                    updateTimeStuff();
+                    Scene.loadScene("Gifts");
+                }, {
                     quadratic: true,
                     isVisible: () => game.gifts.isUnlocked()
                 }),
@@ -1135,7 +1135,7 @@ var scenes =
                     isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_JUPITER
                 }),
 
-                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(0) }),
+                new UIButton(0.25, 0.6, 0.1, 0.1, images.solarSystem.destroyer, () => Scene.loadScene("Supernova"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gt(0) }),
 
                 new UIPlanet(0.5, 0.5, () => tt("planet1"), game.solarSystem.upgrades.sun, "$images.magnet$", images.solarSystem.sun, 0.13),
                 new UIPlanet(0.6, 0.7, () => tt("planet2"), game.solarSystem.upgrades.mercury, "$images.magnet$", images.solarSystem.mercury, 0.035),
@@ -1731,7 +1731,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<taps>", applyUpgrade(game.glitchbeams.upgrades.minimumValue)).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<taps>", "\n" + formatNumber(getGlitchBeamMinValue())).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1925,38 +1925,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                if (calcTime == "" || futureTimeDisplay == "" || calcTime >= game.mergeQuests.nextDaily) {
-
-                    let currentTime = new Date();
-                    year = currentTime.getUTCFullYear();
-                    month = currentTime.getUTCMonth();
-                    puremonth = month;
-                    month += 1;
-                    if (month < 10) month = "0" + month;
-                    day = currentTime.getUTCDate();
-                    tomorrow = day + 1;
-                    if (day < 10) day = "0" + day;
-                    if (tomorrow < 10) tomorrow = "0" + tomorrow;
-                    hour = currentTime.getUTCHours();
-                    if (hour.length == 1) hour = "0" + month;
-                    calcTime2 = parseInt(year + "" + (month) + tomorrow);
-                    if (calcTime == "") {
-                        calcTime = parseInt(year + "" + (month) + day);
-                    }
-
-                    if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
-                    if (calcTime >= game.mergeQuests.nextDaily) {
-                        let dq = game.mergeQuests.dailyQuest;
-                        dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
-                        dq.currentMerges = 0;
-                        game.cogwheels.timeModeAttempts = 3;
-                        game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
-                        game.gifts.sendLimit = CONST_SENDLIMIT;
-                        game.gifts.openedToday = [];
-                        game.mergeQuests.nextDaily = calcTime2;
-                    }
-                }
-
                 monthsL = tto({
                     default: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                     de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
@@ -1971,7 +1939,7 @@ var scenes =
             }),
         new Scene("Gifts",
             [
-                new UIText(() => tt("gifts"), 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("gifts"), 0.5, 0.033, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1983,10 +1951,12 @@ var scenes =
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
                 }),
 
-                new UIButton(0.9, 0.395, 0.07, 0.07, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.info, () => Scene.loadScene("GiftsExplanation"), { quadratic: true }),
 
-                new UIText(() => tt("friendcode") + ": " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
-                new UIText(() => tt("gifttext1"), 0.5, 0.15, 0.03),
+                // Top text
+                new UIText(() => tt("friendcode") + ": ", 0.5, 0.075, 0.03, "black"),
+                new UIText(() => game.code, 0.5, 0.1, 0.08, "black"),
+                new UIText(() => tt("gifttext1"), 0.5, 0.15, 0.03, "black"),
 
                 new UIText(() => tt("scissors") + game.gifts.openLimit, 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("stamps") + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
@@ -1996,7 +1966,16 @@ var scenes =
                 new UIText(() => (giftType == "magnets" ? tt("upto") : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
                 new UIText(() => tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 
-                new UIButton(0.1, 0.525, 0.05, 0.05, images.setmessage, () => {
+                // Who to send it to
+                new UIText(() => tt("to") + sendTo, 0.5, 0.525, 0.05, "white", { align: "middle" }),
+
+                new UIButton(0.95, 0.5 + 0.075 / 2, 0.05, 0.05, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
+                new UIButton(0.05, 0.5 + 0.075 / 2, 0.05, 0.05, images.setcode, () => {
+                    sendTo = prompt(tt("gifttext4")).substr(0, 6);
+                }, { quadratic: true }),
+
+                // Message stuff
+                new UIButton(0.05, 0.725 + 0.075 / 2, 0.05, 0.05, images.setmessage, () => {
                     giftMsg = prompt(tt("gifttext3")).substr(0, 80);
 
                     for (f in filthyWords) {
@@ -2009,14 +1988,10 @@ var scenes =
 
                     basicAchievementUnlock(232);
                 }, { quadratic: true }),
-                new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
-                    sendTo = prompt(tt("gifttext4")).substr(0, 6);
-                }, { quadratic: true }),
-                new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
-                new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
+                new UIText(() => giftMsg.substr(0, 40), 0.525, 0.725, 0.025),
+                new UIText(() => giftMsg.substr(40, 40), 0.525, 0.75, 0.025),
 
-                new UIText(() => tt("to") + sendTo, 0.8, 0.45, 0.05),
-
+                // The big Gift button
                 new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
                     if (giftType != "none") {
                         if (game.gifts.sendLimit > 0) {
@@ -2029,7 +2004,7 @@ var scenes =
                                 alert("You can not send a gift to yourself!");
                                 return false;
                             }
-                            if (sendTo != "" && sendTo != false && giftAmount > 0) {
+                            if (sendTo != "" && sendTo != false && new Decimal(giftAmount).gt(0)) {
                                 game.gifts.sendLimit -= 1;
 
                                 giftContent = {
@@ -2037,7 +2012,8 @@ var scenes =
                                     to: sendTo,
                                     content: giftType,
                                     amount: giftAmount,
-                                    date: year + "" + month + day,
+                                    date: (year + month + day).toString(),
+                                    tom: (year + month + tomorrow).toString(),
                                     message: giftMsg != "" ? giftMsg : "No Message Provided"
                                 }
 
@@ -2049,6 +2025,9 @@ var scenes =
 
                                 basicAchievementUnlock(230);
                             }
+                            else {
+                                alert("Something went wrong! Did you select a friend code and gift content?");
+                            }
                         }
                         else {
                             alert("Limit reached!");
@@ -2057,8 +2036,9 @@ var scenes =
                     else {
                         alert("You have to set gift content first!")
                     }
-                }, { quadratic: true, isVisible: () => giftType != "none" }),
+                }, { quadratic: true, isVisible: () => giftType != "none" && sendTo != "" }),
 
+                // Gift content
                 new UIText(() => tt("giftcontent"), 0.5, 0.595, 0.04),
                 new UIButton(0.2, 0.65, 0.075, 0.075, images.magnet, () => {
                     giftType = "magnets"
@@ -2078,9 +2058,9 @@ var scenes =
                 }, { quadratic: true }),
 
                 // Open Gift
-                new UIText(() => tt("opengift"), 0.5, 0.725, 0.07),
+                new UIText(() => tt("opengift"), 0.5, 0.85, 0.07),
 
-                new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
+                new UIButton(0.5, 0.925, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
                         let giftCode = prompt(tt("entercode"));
 
@@ -2097,7 +2077,7 @@ var scenes =
                             giftContent.message = giftContent.message + String.fromCharCode(parseInt(tmp[i]));
                         }
 
-                        if (giftContent.date == year + "" + month + day) {
+                        if (giftContent.date == year + "" + month + day || giftContent.tom == year + "" + month + day) {
                             if (giftContent.to == game.code && !game.gifts.openedToday.includes(giftContent.from)) {
                                 game.gifts.openLimit -= 1;
                                 giftMsg = giftContent.message;
@@ -2139,51 +2119,44 @@ var scenes =
                         alert("Limit reached!");
                     }
                 }, { quadratic: true }),
-
-                new UIText(() => tt("sendtext"), 0.01, 0.85, 0.03, "white", { halign: "left" }),
-
-                new UIText(() => tt("opentext"), 0.99, 0.85, 0.03, "white", { halign: "right" }),
             ],
             function () {
-                currentTime = new Date();
-                day = currentTime.getUTCDate();
-
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.1); // should be 0.12 (0.06 * 2) but somehow 0.1 looks much better
 
+                ctx.fillRect(w * 0.1, h * 0.5, w * 0.8, h * 0.075); // bg for the friend code selection
+                ctx.fillRect(w * 0.1, h * 0.6, w * 0.8, h * 0.1); // bg for the currency selection
+                ctx.fillRect(w * 0.1, h * 0.725, w * 0.8, h * 0.075); // bg for the gift text
+
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0.315 * h, w, 0.005 * h);
-                ctx.fillRect(0, 0.7 * h, w, 0.005 * h);
+                ctx.fillRect(0, 0.825 * h, w, 0.005 * h);
+            }),
+        new Scene("GiftsExplanation",
+            [
+                new UIText(() => tt("gifts"), 0.5, 0.033, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
 
-                year = currentTime.getUTCFullYear();
-                month = currentTime.getUTCMonth();
-                puremonth = month;
-                month += 1;
-                if (month < 10) month = "0" + month;
-                tomorrow = day + 1;
-                if (day < 10) day = "0" + day;
-                if (tomorrow < 10) tomorrow = "0" + tomorrow;
-                hour = currentTime.getUTCHours();
-                if (hour.length == 1) hour = "0" + month;
-                calcTime2 = parseInt(year + "" + (month) + tomorrow);
-                if (calcTime == "") {
-                    calcTime = parseInt(year + "" + (month) + day);
-                }
 
-                if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
-                if (calcTime >= game.mergeQuests.nextDaily) {
-                    let dq = game.mergeQuests.dailyQuest;
-                    dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
-                    dq.currentMerges = 0;
-                    game.cogwheels.timeModeAttempts = 3;
-                    game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
-                    game.gifts.sendLimit = CONST_SENDLIMIT;
-                    game.gifts.openedToday = [];
-                    game.mergeQuests.nextDaily = calcTime2;
-                }
+
+                new UIText(() => tt("sendtext"), 0.025, 0.2, 0.042, "white", { halign: "left" }),
+
+                new UIText(() => tt("opentext"), 0.025, 0.6, 0.042, "white", { halign: "left" }),
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(0, h * 0.188, w, h * 0.324);
+                ctx.fillRect(0, h * 0.588, w, h * 0.324);
             }),
         new Scene("FriendList",
             [
@@ -2485,13 +2458,13 @@ var scenes =
                     // Open Beams
                     new UIOption(tabYs[0] + 0.7, images.scenes.beamselection, () => {
                         game.settings.beamRed = (game.settings.beamRed + 1) % 3;
-                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table"),
+                    }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table", () => game.beams.isUnlocked()),
 
                     // Hyper Buy 2.0
-                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2"),
+                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2", () => game.supernova.cosmicUpgrades.hyperBuy.level >= 1),
 
                     // Better Barrels auto buyer
-                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table"),
+                    new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table", () => game.supernova.cosmicUpgrades.autoBuyerMax.level >= 1),
 
                     // Lock Upgrades
                     new UIToggleOption(tabYs[0] + 1.0, "game.settings.lockUpgrades", () => tt("lockUpgrades"), "table2"),
@@ -2529,7 +2502,7 @@ var scenes =
                     new UIOption(tabYs[1] + 0.5, images.dimeffects, () => {
                         game.settings.dimEffects++;
                         if (game.settings.dimEffects > 3) game.settings.dimEffects = 0;
-                    }, () => tt("dimEffects") + ": " + tt("dimEffects" + game.settings.dimEffects), "table"),
+                    }, () => tt("dimEffects") + ": " + tt("dimEffects" + game.settings.dimEffects), "table", () => game.darkscrap.isUnlocked()),
 
                     // FPS
                     new UIOption(tabYs[1] + 0.6, images.options.barrelQuality, () => {
@@ -2600,28 +2573,6 @@ var scenes =
                         playMusic();
                     }, () => tt("Volume") + ": " + game.settings.musicVolume + "%", "table"),
 
-                    /*new UIOption(1.35, images.scenes.options, () => {
-                        if (confirm("Warning! You are about to reset your Dark Scrap (Upgrades), Dark Fragment (Upgrades) and related achievements. Press cancel if you want to keep them.")) {
-                            game.darkscrap.amount = new Decimal(0);
-                            Object.keys(game.darkscrap.upgrades).forEach(k => {
-                                game.darkscrap.upgrades[k].level = 0;
-                            })
-
-                            game.darkfragment.amount = new Decimal(0);
-                            Object.keys(game.darkfragment.upgrades).forEach(k => {
-                                game.darkfragment.upgrades[k].level = 0;
-                            })
-
-                            const removethose = [70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84];
-                            for (i = 0; i < removethose.length; i++) {
-                                const index = game.ms.indexOf(removethose[i]);
-                                if (index > -1) {
-                                    game.ms.splice(index, 1);
-                                }
-                            }
-                        }
-                    }, "Reset Second Dimension Progress", "bg"),*/
-
 
                     new UIText(() => tt("Credits"), 0.5, tabYs[3], 0.075, "white", {
                         bold: 600,
@@ -2661,25 +2612,25 @@ var scenes =
 
 
                 ], 0, 0.2, 1, 0.5, () => true, { ymin: 0, ymax: tabYs[3] + 1.2 }),
-                /*new UIButton(0.25, 0.65, 0.075, 0.075, images.arrows.left, () => game.settings.changeOptionsPage(-1),
-                    {
-                        quadratic: true,
-                        isVisible: () => game.settings.optionsPage > 0
-                    }),
-                new UIButton(0.75, 0.65, 0.075, 0.075, images.arrows.right, () => game.settings.changeOptionsPage(1),
-                    {
-                        quadratic: true,
-                        isVisible: () => game.settings.optionsPage < 2
-                    }),*/
-                new UIButton(0.8, 0.925, 0.1, 0.1, images.logos.schrottii, () => {
+
+                // My logo
+                new UIButton(0.85, 0.925, 0.15, 0.15, images.logos.schrottii, () => {
                     location.href = "https://schrottii.github.io/";
                     GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
                     basicAchievementUnlock(206);
                 }, { quadratic: true }),
-                new UIButton(0.1, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
-                new UIText(() => tt("myserver"), 0.18, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
-                new UIButton(0.1, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
-                new UIText(() => tt("myyt"), 0.18, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+
+                new UIButton(0.5, 0.925, 0.2, 0.1, images.logos.donate, () => {
+                    location.href = "https://ko-fi.com/schrottii";
+                }, { quadratic: true }),
+
+                // DC & YT
+                new UIButton(0.05, 0.89, 0.05, 0.05, images.logos.discord, () => location.href = "https://discord.gg/CbBeJXKUrk", { quadratic: true }),
+                new UIText(() => tt("mydc"), 0.13, 0.89, 0.045, "black", { halign: "left", valign: "middle" }),
+                new UIButton(0.05, 0.96, 0.05, 0.05, images.logos.youtube, () => location.href = "https://www.youtube.com/channel/UC7qnN9M1_PUqmrgOHQipC2Q", { quadratic: true }),
+                new UIText(() => tt("myyt"), 0.13, 0.96, 0.045, "black", { halign: "left", valign: "middle" }),
+
+                // Export, import, OG link
                 new UIText(() => tt("Export and Import"), 0.3, 0.825, 0.035, "black"),
                 new UIButton(0.3, 0.775, 0.09, 0.09, images.exportImport, () => { importType = 0; document.querySelector("div.absolute").style.display = "block" }, { quadratic: true }),
                 new UIText(() => tt("ogsc2"), 0.7, 0.825, 0.035, "black"),
@@ -2704,7 +2655,10 @@ var scenes =
                     isVisible: () => game.skillTree.upgrades.unlockScrapyard.isUnlocked(),
                     quadratic: true,
                 }),
-                new UIButton(0.9, 0.05, 0.07, 0.07, images.scenes.daily, () => Scene.loadScene("Daily"), {
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.scenes.daily, () => {
+                    updateTimeStuff();
+                    Scene.loadScene("Daily");
+                }, {
                     quadratic: true,
                     isVisible: () => game.highestBarrelReached >= 1000
                 }),
@@ -2865,6 +2819,8 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
+                new UIText(() => "+" + (2 * Math.min(game.ms.length, game.milestones.achievements.length)) + "% GS", 0.975, 0.025, 0.06, "black", { halign: "right" }),
+
                 new UIText(() => game.ms.length + " / " + game.milestones.achievements.length, 0.5, 0.15, 0.06, "white", {
                     bold: 900,
                     borderSize: 0.003,
@@ -2979,38 +2935,24 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
+
+                new UIButton(0.85, 0.9, 0.1, 0.1, images.scenes.unlocks, () => {
+                    showAllUnlocks = !showAllUnlocks;
+                }, { quadratic: true }),
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                var unlocks = tto({
-                    default: ["Golden Scrap", "Solar System", "Merge Quests", "Barrel Fragments", "Merge Mastery", "Beams", "Bricks", "Skill Tree", "Tires", "Wrenches", "Aerobeams", "Angel Beams", "Reinforced Beams", "Second Dimension", "Glitch Beams", "Golden Beams", "Scrap Factory", "Generator", "Auto Buyers", "Barrel Mastery", "Plastic Bags", "Gifts", "Auto Collectors", "Screws", "Cogweels", "Supernova", "Cosmic Pins"],
-                    de: ["Goldener Schrott", "Sonnensystem", "Merge Quests", "Fragmente", "Merge Mastery", "Stahlträger", "Ziegelsteine", "Baum", "Reifen", "Schraubenschlüssel", "Aerostahl", "Engelstahl", "Stahlstahl", "Zweite Dimension", "Glitchstahl", "Goldener Stahl", "Fabrik", "Generator", "Autokäufer", "Barrel Mastery", "Platiktüten", "Geschenke", "Autosammler", "Schrauben", "Zahnräder", "Supernova", "Kosmische Pins"],
-                    ru: ["Золотой Мусор", "Солнечная Система ", "Квесты Слияний", "Фрагменты Бочек", "Мастерство Слияний", "Балки", "Кирпичи", "Дерево Навыков", "Покрышки", "Гаечные Ключи", "Аэробалки", "Ангельские Балки", "Усиленные Балки", "Второе Измерение", "Глючные Балки", "Золотые Балки", "Фабрика Мусора", "Генератор", "Автопокупщики", "Мастерство Бочек", "Пластиковые Пакеты", "Подарки", "Автосборщики", "Винты", "Шестерёнки", "Суперновая", "Космический Значок"],
-                });
-                // var unlocksUnlocks
-                var unlocksText = tto({
-                    default: ["1e15 Scrap", "Scrap Boost (GS) Level 8", "1e93 Scrap", "Barrel 100", "1e153 Scrap", "Barrel 300", "1e213 Scrap", "Earth (5e24 GS)", "Barrel 500", "12,000 Manual Merges",
-                        "Skill Tree", "Earth (1e27 GS)", "Merge Mastery Level 300", "Earth (1e40 GS)", "1e12 Dark Scrap", "A Glitch Beam Upgrade",
-                        "Earth (1e100 GS)", "Mystic Shrine", "Mystic Shrine", "Skill Tree", "Skill Tree", "Earth (1e150 GS)", "Skill Tree", "Skill Tree", "Skill Tree", "Earth (1e500 GS)", "50 Stars"
-                    ],
-                    de: ["1e15 Schrott", "Schrott-Boost (GS) Level 8", "1e93 Schrott", "Tonne 100", "1e153 Schrott", "Tonne 300", "1e213 Schrott", "Erde (5e24 GS)", "Tonne 500", "12,000 eigene Verbindungen",
-                        "Baum", "Erde (1e27 GS)", "Merge Mastery Level 300", "Erde (1e40 GS)", "1e12 Schattenschrott", "Glitchstahl-Upgrade",
-                        "Erde (1e100 GS)", "Mythischer Schrein", "Mythischer Schrein", "Baum", "Baum", "Erde (1e150 GS)", "Baum", "Baum", "Baum", "Erde (1e500 GS)", "50 Sterne"
-                    ],
-                    ru: ["1e15 Мусора", "Буст Мусора (ЗМ) Уровень 8", "1e93 Мусора", "Бочка 100", "1e153 Мусора", "Бочка 300", "1e213 Мусора", "Земля (5e24 ЗМ)", "Бочка 500", "12,000 Самослияний",
-                        "Дерево Навыков", "Земля (1e27 ЗМ)", "Мастерство Слияний Уровень 300", "Земля (1e40 ЗМ)", "1e12 Тёмного Мусора", "Улучшение Глючных Балок",
-                        "Земля (1e100 ЗМ)", "Мифическое Святилище", "Мифическое Святилище", "Дерево Навыков", "Дерево Навыков", "Земля (1e150 ЗМ)", "Дерево Навыков", "Дерево Навыков", "Дерево Навыков", "Земля (1e500 ЗМ)", "50 Звëзд"]
-                });
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.1, w * 0.9, h * 0.7);
 
-                //  shit quality sleep
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.font = (h * 0.015) + "px " + fonts.default;
-                for (i = 0; i < unlocksUnlocks.length; i++) {
-                    ctx.fillStyle = unlocksUnlocks[i]() ? colors[C]["text"] : "red";
-                    ctx.fillText((unlocksUnlocks[i]() ? unlocks[i] + " (" + unlocksText[i] + ")" : tt("locked") + " - " + unlocksText[i]), w * 0.5, h * (0.125 + (0.025 * i)));
+                for (i = 0; i < unlocks.length; i++) {
+                    ctx.fillStyle = unlocks[i].unlock() ? colors[C]["text"] : "orange";
+                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("unlockedat") + ": " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)));
                 }
             }),
         new Scene("ScrapFactory",
@@ -3382,7 +3324,7 @@ var scenes =
 
                 new UIText(() => tt("supernovatext"), 0.5, 0.175, 0.03, "black", { isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
 
-                new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
+                new UIButton(0.5, 0.4, 0.15, 0.15, images.solarSystem.destroyer, () => Scene.loadScene("Supernova2"), { quadratic: true, isVisible: () => game.skillTree.upgrades.unlockSupernova.level > 0 || game.supernova.stars.gt(0) }),
 
                 new UIText(() => tt("stars") + ": " + formatNumber(game.supernova.stars) + "\nx" + formatNumber(new Decimal(1000).pow(game.supernova.stars)) + " " + tt("goldenscrap"), 0.5, 0.6, 0.04, "black"),
 
@@ -3395,19 +3337,15 @@ var scenes =
 
                 new UIButton(0.075, 0.97, 0.15, 0.06, images.scenes.stardustupgrades, () => Scene.loadScene("StarDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(0.25 + 0.075, 0.97, 0.15, 0.06, images.scenes.cosmicupgrades, () => Scene.loadScene("EmblemUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(0.6 + 0.075, 0.97, 0.15, 0.06, images.scenes.aliendustupgrades, () => Scene.loadScene("AlienDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
                 new UIButton(1 - 0.075, 0.97, 0.15, 0.06, images.scenes.fairydustupgrades, () => Scene.loadScene("FairyDustUpgrades"), {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gte(1)
                 }),
             ],
 
@@ -3431,6 +3369,7 @@ var scenes =
                 new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1) }),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
+                    " (" + formatNumber(game.highestBarrelReached) + "/" + formatNumber(game.highestBarrelReached < 20000 ? 20000 : Math.ceil((1 + game.highestBarrelReached) / 20000) * 20000) + ")" + 
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +
@@ -3444,7 +3383,7 @@ var scenes =
                     if (confirm(tt("doyoureally"))) {
                         supernovaAlpha = 0.001;
                     }
-                }, { quadratic: true, isVisible: () => supernovaAlpha == 0 }),
+                }, { quadratic: true, isVisible: () => supernovaAlpha == 0 && game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA }),
             ],
 
             function (delta) {
@@ -3700,3 +3639,14 @@ var scenes =
                 ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
     ];
+
+/*
+new Scene("SceneName",
+            [
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+            }),
+*/

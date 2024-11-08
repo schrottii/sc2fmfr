@@ -1,0 +1,116 @@
+@font-face {
+    font-family: "Work Sans";
+    src: url("Fonts/WorkSans-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Work Sans";
+    src: url("Fonts/WorkSans-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Work Sans";
+    src: url("Fonts/WorkSans-Black.ttf");
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: "Semibold";
+    src: url("Fonts/OpenSans-Semibold.ttf");
+    font-weight: 600;
+}
+
+*, html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    text-align: center;
+}
+
+body {
+    touch-action: none;
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: black;
+    background-image: url("Images/app-icon-blur.png");
+    background-size: 100%;
+}
+
+canvas#gameCanvas {
+    width: auto;
+    height: 100%;
+}
+
+canvas.cache {
+    width: 0;
+    height: 0;
+}
+
+div.absolute {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+    div.absolute > * {
+        transform: translate(-50%, -50%);
+    }
+
+    div.absolute textarea {
+        position: absolute;
+        left: 50vw;
+        top: 25vh;
+        width: 75vw;
+        height: 30vh;
+        text-align: left;
+        background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+        overflow-y: scroll;
+        box-shadow: 1px 1px 0px black;
+        border: none;
+    }
+
+    div.absolute > button {
+        height: 1.5em;
+        position: absolute;
+        font-size: 2.5vh;
+        background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+        border: none;
+        box-shadow: 1px 1px 0px black;
+        padding: 0.5vh;
+    }
+
+div.copyGift {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+    div.copyGift > * {
+        transform: translate(-50%, -50%);
+    }
+
+    div.copyGift > button {
+        height: 1.5em;
+        position: absolute;
+        font-size: 3vh;
+        background: linear-gradient(rgb(122, 180, 255) 0%, rgb(122, 180, 255) 49%, rgb(102, 160, 255) 51%, rgb(102, 160, 255) 100%);
+        border: none;
+        box-shadow: 1px 1px 0px black;
+        padding: 0.5vh;
+    }

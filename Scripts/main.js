@@ -543,7 +543,7 @@ function update() {
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
                                     if (getGlitchBeamValue().gt(1e200)) stormQueue.push([300 * i, "glitchbeam", getGlitchBeamValue()]);
-                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
+                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue()))]);
                                 }
                             }
                         }
@@ -553,7 +553,7 @@ function update() {
                             }
                             else {
                                 if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
-                                else movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                                else movingItemFactory.fallingGlitchBeam(Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue())));
                             }
                             renewableEnergy();
                         }
@@ -676,6 +676,15 @@ function getGlitchBeamValue() {
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
 }
 
+function getGlitchBeamMinValue() {
+    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.minimumValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
+}
+
 function getReinforcedTapsNeeded() {
     return Math.max(2, 3 + game.reinforcedbeams.upgrades.reinforce.level - applyUpgrade(game.reinforcedbeams.upgrades.strength));
 }
@@ -753,6 +762,8 @@ function dustReset(upgradeType, dustType, dustStat) {
         }
     }
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
+
+    if (dustType == "alienDust") updateBetterBarrels();
 }
 
 function basicAchievementUnlock(index, req = true) {
@@ -766,6 +777,9 @@ function hardReset() {
     for (i in game.stats) {
         game.stats[i] = new Decimal(0);
     }
+
+    game.supernova.reset("norew");
+
     game.wrenches.amount = new Decimal(0);
     for (u in game.wrenches.upgrades) {
         game.wrenches.upgrades[u].level = 0;
@@ -777,12 +791,14 @@ function hardReset() {
     }
     game.barrelMastery.b = Array(1000).fill(0);
     game.barrelMastery.bl = Array(1000).fill(0);
-
+    game.barrelMastery.levels = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
     game.barrelMastery.masteryTokens = new Decimal(0);
+
     game.cogwheels.amount = new Decimal(0);
     for (u in game.cogwheels.upgrades) {
         game.cogwheels.upgrades[u].level = 0;
     }
+
     game.supernova.stars = new Decimal(0);
     game.supernova.starDust = new Decimal(0);
     game.supernova.alienDust = new Decimal(0);
@@ -803,7 +819,6 @@ function hardReset() {
     for (u in game.shrine) {
         game.shrine[u].level = 0;
     }
-    game.supernova.reset("norew");
 
     game.barrelMastery.masteryTokens = new Decimal(0);
     game.mergeQuests.scrapyard = 0;
@@ -814,6 +829,9 @@ function hardReset() {
 
     game.selfMerges = 0;
     game.totalMerges = 0;
+    game.glitchesCollected = 0;
+
+    game.settings.hyperBuy = false;
 
     game.ms = [];
 
@@ -919,10 +937,12 @@ function openFile() {
     reader.onload = function (e) {
         let textArea = document.getElementById("text-area");
         textArea.value = e.target.result;
+
+        document.querySelector("div.absolute textarea").value = e.target.result;
+        loadGame(e.target.result, true);
     };
     if (file != undefined) {
         reader.readAsText(file);
-        loadGame(document.querySelector("div.absolute textarea").value, true);
     }
 }
 
@@ -1482,6 +1502,7 @@ function loadGame(saveCode, isFromFile = false) {
             }
             return;
         }
+
 
 
         game.scrap = loadVal(new Decimal(loadObj.scrap), new Decimal(0));
@@ -2219,6 +2240,37 @@ setup();
 let deferredPrompt;
 btnInstall.style.display = "none";
 
+function updateTimeStuff() {
+    currentTime = new Date();
+
+    day = currentTime.getUTCDate();
+    year = currentTime.getUTCFullYear();
+    month = currentTime.getUTCMonth();
+    puremonth = month;
+    month += 1;
+    if (month < 10) month = "0" + month;
+    tomorrow = day + 1;
+    if (day < 10) day = "0" + day;
+    if (tomorrow < 10) tomorrow = "0" + tomorrow;
+    hour = currentTime.getUTCHours();
+    if (hour.length == 1) hour = "0" + month;
+    calcTime2 = parseInt(year + "" + (month) + tomorrow);
+    if (calcTime == "") {
+        calcTime = parseInt(year + "" + (month) + day);
+    }
+
+    if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
+    if (calcTime >= game.mergeQuests.nextDaily) {
+        let dq = game.mergeQuests.dailyQuest;
+        dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
+        dq.currentMerges = 0;
+        game.cogwheels.timeModeAttempts = 3;
+        game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
+        game.gifts.sendLimit = CONST_SENDLIMIT;
+        game.gifts.openedToday = [];
+        game.mergeQuests.nextDaily = calcTime2;
+    }
+}
 
 function updateBetterBarrels() {
     if (game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));

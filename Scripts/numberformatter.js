@@ -17,6 +17,10 @@ function formatNumber(x, type, cfg) {
         return "NaN";
     }
 
+    if (x.gte(new Decimal("1e300e300"))) {
+        return "a lot";
+    }
+
     if (x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6) && type != 9) {
         let prec = cfg && cfg.precision ? cfg.precision : 0;
         return formatThousands(x, prec);

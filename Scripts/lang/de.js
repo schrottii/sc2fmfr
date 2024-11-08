@@ -93,7 +93,8 @@ const trans_de = {
     "myserver": "Mein Spiele Discord Server",
     "fmserver": "Scrap Fanmade Server",
     "scrapserver": "Scrap Server",
-    "myyt": "Mein Youtube Kanal",
+    "mydc": "Discord",
+    "myyt": "Youtube",
 
     // SAVE CODE
     "export": "Export",
@@ -216,6 +217,7 @@ const trans_de = {
     skilltree: "Baum",
     locked: "Gesperrt",
     unlocked: "Freigeschaltet",
+    unlockedat: "Freigeschaltet bei",
     screws: "Schrauben",
     plasticbags: "Plastiktüten",
     costs: "Kosten",
@@ -232,7 +234,7 @@ const trans_de = {
     sendgiftmergetoken: "Geschenk senden (Merge Tokens)",
     sendgiftmasterytoken: "Geschenk senden (Mastery Tokens)",
     sendgiftwrench: "Geschenk senden (Schraubenschlüssel)",
-    gifttext1: "Teile den Freundescode mit jemanden,\ndamit sie dir was schicken können!\n(Wenn sie dich mögen, tun sie aber nicht)",
+    gifttext1: "Teile den Freundescode mit jemanden,\ndamit sie dir was schicken können!",
     gifttext2: "(basierend auf Vorräten)",
     gifttext3: "Nachricht? (Max. 80 Zeichen)",
     gifttext4: "Was ist der Freundescode von dem Freund, zu dem du es schicken möchtest?",
@@ -247,7 +249,7 @@ const trans_de = {
     giftcopied: "Das Geschenk wurde in die Zwischenablage kopiert. Teile es mit dem Freund!",
     friendlist: "Freundesliste",
 
-    sendtext: "Geschenke senden:\n\n1. Besitze mindestens 1 Stempel\n2. Wähle die Währung aus\n3. Gebe den Freundescode von\ndem Freund ein (nicht deinen code!)\n4. Klicke das Geschenk und schicke dem Freund den Code",
+    sendtext: "Geschenke senden:\n\n1. Besitze mindestens 1 Stempel\n2. Wähle die Währung aus\n3. Gebe den Freundescode von\ndem Freund ein (nicht deinen code!)\n4. Klicke das Geschenk und\nschicke dem Freund den Code",
     opentext: "Geschenke öffnen:\n1. Besitze mindestens 1 Schere\n2. Klicke das Geschenk (unten)\n3. Gebe den Geschenkcode ein\nden dir dein Freund gegeben hat",
 
     // TIME MODE
@@ -536,7 +538,7 @@ const trans_de = {
     tree40: "Zeitmodus",
     tree41: "Sterntonnen zählen\nfür täglich",
     tree42: "Schnelleres\nherstellen",
-    tree43: "Lustiger\nGlitchstahl\n(und x2 wert)",
+    tree43: "Lustiger\nGlitchstahl\n(und x3 Wert)",
     tree44: "Höheres max.\nfür das 2.\nSchattenschrottupg.",
     tree45: "Supernova",
 

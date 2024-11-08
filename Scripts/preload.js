@@ -102,6 +102,7 @@ var images =
     hyperbuyLevel: loadImage("Images/Buttons/hyperbuy_level.png"),
     hyperbuyPercent: loadImage("Images/Buttons/hyperbuy_percent.png"),
     masterytoggle: loadImage("Images/Buttons/masterytoggle.png"),
+    info: loadImage("Images/Buttons/button_info.png"),
     pins: loadImage("Images/pins.png"),
     alienPin: loadImage("Images/alienpin.png"),
     fairyPin: loadImage("Images/fairypin.png"),
@@ -112,7 +113,8 @@ var images =
         scrap2: loadImage("Images/scrap2logo.png"),
         discord: loadImage("Images/discord.png"),
         youtube: loadImage("Images/youtube.png"),
-        schrottii: loadImage("Images/schrottii.png")
+        schrottii: loadImage("Images/schrottii.png"),
+        donate: loadImage("Images/donate.png")
     },
     options:
     {

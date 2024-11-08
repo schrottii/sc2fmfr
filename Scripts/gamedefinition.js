@@ -1,11 +1,19 @@
-﻿let currentTime = new Date();
-let currentMonth = currentTime.getUTCMonth();
+﻿const BARRELS = 1000;
+const HARDLEVELCAP = 1e300;
 
-const BARRELS = 1000;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.4 (v4.1)";
+const gameVersionText = "v3.5 (v4.2)";
+
+var currentTime = new Date();
+var currentMonth = currentTime.getUTCMonth();
+var timeDisplay = "";
+var futureTimeDisplay = "";
+var year = "";
+var puremonth = "";
+var month = "";
+var day = "";
 
 var game =
 {
@@ -78,7 +86,8 @@ var game =
                 .mul(applyUpgrade(game.barrelMastery.upgrades.goldenScrapBoost).pow(getTotalLevels(2)))
                 .mul((applyUpgrade(game.darkscrap.upgrades.darkScrapGoldenScrap).mul(game.darkscrap.amount)).add(1))
                 .mul(new Decimal(1000).pow(game.supernova.stars))
-                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara));
+                .mul(applyUpgrade(game.supernova.starDustUpgrades.ara))
+                .mul(1 + (0.02 * Math.min(game.ms.length, game.milestones.achievements.length)));
             if (game.dimension == 0 || game.goldenScrap.amount.gte(base)) return base;
             else return game.goldenScrap.amount.div(100)
         },
@@ -252,7 +261,7 @@ var game =
     magnetUpgrades:
     {
         scrapBoost: new MagnetUpgrade(
-            level => Utils.roundBase(new Decimal(10 + 5 * level).mul(Decimal.pow(1.1, Math.max(0, level - 10))), 1)
+            level => Utils.roundBase(new Decimal(4 + 2 * level).mul(Decimal.pow(1.1, Math.max(0, level - 10))), 1)
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
             level => new Decimal(1 + 0.2 * level).mul(Decimal.pow(1.2, Math.max(0, level - 10))),
             {
@@ -270,7 +279,7 @@ var game =
         magnetMergeChance: new MagnetUpgrade(
             level => new Decimal(10 + level * level).mul(Decimal.pow(2, Math.max(0, level - 20)))
                 .mul(applyUpgrade(game.solarSystem.upgrades.jupiter)),
-            level => new Decimal(0.01 + 0.001 * level),
+            level => new Decimal(0.02 + 0.002 * level),
             {
                 getEffectDisplay: effectDisplayTemplates.percentStandard(1),
                 maxLevel: () => 20 + (game.solarSystem.upgrades.earth.level >= EarthLevels.MAGNET_3_LEVELS ? 20 : 0)
@@ -397,7 +406,7 @@ var game =
                         if (game.supernova.cosmicUpgrades.mythusMultiBuy.level > 0) game.solarSystem.upgrades.mythus.level += 9;
                     },
                     afterBuy: () => {
-                        if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009) {
+                        if (game.solarSystem.upgrades.mythus.level == 0 && game.highestBarrelReached < 3009 && !game.settings.hyperBuy) {
                             alert("You have to reach barrel 3010 to upgrade this planet!");
                         }
                         else {
@@ -916,14 +925,14 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             beamStormChance: new BeamUpgrade(
-                level => new Decimal(10 + level),
+                level => new Decimal(5 + level),
                 level => 0.1 * level,
                 {
                     maxLevel: () => (100 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 50 : 0)),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%")
                 }),
             beamStormValue: new BeamUpgrade(
-                level => new Decimal(500 + (100 * level)),
+                level => new Decimal(200 + (100 * level)),
                 level => level,
                 {
                     maxLevel: 5,
@@ -967,14 +976,14 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                 }),
             slowerFallingMagnets: new AeroBeamUpgrade(
-                level => new Decimal(5 * (Math.round(level / 3) + 1)),
+                level => new Decimal(2 * (Math.round(level / 3) + 1)),
                 level => 0.005 * level,
                 {
                     maxLevel: 50,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "-")
                 }),
             betterFallingMagnets: new AeroBeamUpgrade(
-                level => new Decimal(25 * (Math.round(level / 3) + 1)),
+                level => new Decimal(20 * (Math.round(level / 3) + 1)),
                 level => 1 + (0.1 * level),
                 {
                     maxLevel: 50,
@@ -988,7 +997,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
                 }),
             unlockGoldenScrapStorms: new AeroBeamUpgrade(
-                level => new Decimal(1200),
+                level => new Decimal(200),
                 level => level,
                 {
                     maxLevel: 1,
@@ -1011,21 +1020,21 @@ var game =
         upgrades:
         {
             beamValue: new AngelBeamUpgrade(
-                level => new Decimal(10 * (level + 1)),
+                level => new Decimal(3 * (level + 1)),
                 level => 1 + level,
                 {
                     maxLevel: 99,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             fasterBeams: new AngelBeamUpgrade(
-                level => new Decimal(40 * (level + 1)),
+                level => new Decimal(40 * (Math.round(level / 4) + 1)),
                 level => 0.1 * level,
                 {
                     maxLevel: 50,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "s")
                 }),
             moreMasteryGS: new AngelBeamUpgrade(
-                level => new Decimal(70 * (Math.max(1, level - 14) + level)),
+                level => new Decimal(60 * (Math.max(1, level - 14) + level)),
                 level => 1 + (0.2 * level),
                 {
                     maxLevel: 25,
@@ -1054,14 +1063,14 @@ var game =
         upgrades:
         {
             reinforce: new ReinforcedBeamUpgrade(
-                level => new Decimal(5 * (level + 1) * Math.pow(1, Math.max(1, level - 11))),
+                level => new Decimal(2 * (level + 1) * Math.pow(1, Math.max(1, level - 11))),
                 level => 1 + level,
                 {
                     maxLevel: () => { return 99 + applyUpgrade(game.screws.upgrades.higherMoreReinforced) },
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             strength: new ReinforcedBeamUpgrade(
-                level => new Decimal(20 * (level + 1) * Math.pow(1, Math.max(1, (level * 2) - 18))),
+                level => new Decimal(10 * (level + 1) * Math.pow(1, Math.max(1, (level * 2) - 18))),
                 level => 2 * level,
                 {
                     maxLevel: () => { return 50 + applyUpgrade(game.plasticBags.upgrades.higherEasierReinforced) },
@@ -1111,14 +1120,14 @@ var game =
         upgrades:
         {
             beamValue: new GlitchBeamUpgrade(
-                level => new Decimal(5 * level + 20),
+                level => new Decimal(3 * level + 7),
                 level => 1 + level,
                 {
                     maxLevel: 24,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             repeat: new GlitchBeamUpgrade(
-                level => new Decimal(Math.round(5 * (level / 3)) + 20),
+                level => new Decimal(Math.round(5 * (level / 11)) + 10),
                 level => 0.5 * level,
                 {
                     maxLevel: 100,
@@ -1139,7 +1148,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(50 * level + 25),
+                level => new Decimal(5 * level + 2),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,
@@ -1894,7 +1903,8 @@ var game =
         },
 
         getEmblems: function () {
-            return new Decimal(Math.ceil(game.highestBarrelReached / 50000));
+            // 1 is guaranteed. 2nd is at 10k. 3rd at 20k, 4th at 40k, 5th at 60k, 6th at 80k, etc.
+            return new Decimal(Math.ceil((game.highestBarrelReached + 1) / 20000)).add(game.highestBarrelReached >= 10000 ? 1 : 0);
         },
         getAlienDust: function () {
             let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));
@@ -2720,6 +2730,61 @@ var game =
     }
 }
 
-var unlocksUnlocks = [() => game.highestScrapReached.gte(1e15), () => game.goldenScrap.upgrades.scrapBoost.level >= 8, () => game.mergeQuests.isUnlocked(), () => game.fragment.isUnlocked(), () => game.mergeMastery.isUnlocked(), () => game.beams.isUnlocked(), () => game.bricks.isUnlocked(), () => game.skillTree.isUnlocked(), () => game.tires.isUnlocked(), () => game.wrenches.isUnlocked(),
-() => game.aerobeams.isUnlocked(), () => game.barrelMastery.isUnlocked(), () => game.angelbeams.isUnlocked(), () => game.reinforcedbeams.isUnlocked(), () => game.darkscrap.isUnlocked(), () => game.glitchbeams.isUnlocked(), () => game.glitchbeams.upgrades.goldenbeam.level > 0,
-() => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, () => applyUpgrade(game.shrine.generatorUnlock), () => applyUpgrade(game.shrine.autosUnlock), () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), () => game.gifts.isUnlocked(), () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), () => game.screws.isUnlocked(), () => game.cogwheels.isUnlocked(), () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), () => game.supernova.stars.gte(50)];
+
+
+class Unlock {
+    constructor(enName, enDesc, unlock, trans) {
+        this.enName = enName;
+        this.enDesc = enDesc;
+        this.unlock = unlock;
+        this.trans = trans;
+    }
+
+    getName() {
+        return tto({
+            default: this.enName,
+            de: this.trans.deName,
+            ru: this.trans.ruName
+        });
+    }
+
+    getDesc() {
+        return tto({
+            default: this.enDesc,
+            de: this.trans.deDesc,
+            ru: this.trans.ruDesc
+        });
+    }
+}
+
+var showAllUnlocks = false;
+
+const unlocks = [
+    new Unlock("Golden Scrap", "1e15 Scrap", () => game.highestScrapReached.gte(1e15), { deName: "Goldener Schrott", deDesc: "1e15 Schrott", ruName: "Золотой Мусор", ruDesc: "1e15 Мусора" }),
+    new Unlock("Solar System", "Scrap Boost (GS) Level 8", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, { deName: "Sonnensystem", deDesc: "Schrott-Boost (GS) Level 8", ruName: "Солнечная Система", ruDesc: "Буст Мусора (ЗМ) Уровень 8" }),
+    new Unlock("Merge Quests", "1e93 Scrap", () => game.mergeQuests.isUnlocked(), { deName: "Merge Quests", deDesc: "1e93 Schrott", ruName: "Квесты Слияний", ruDesc: "1e93 Мусора" }),
+    new Unlock("Barrel Fragments", "Barrel 100", () => game.fragment.isUnlocked(), { deName: "Fragmente", deDesc: "Tonne 100", ruName: "Фрагменты Бочек", ruDesc: "Бочка 100" }),
+    new Unlock("Merge Mastery", "1e153 Scrap", () => game.mergeMastery.isUnlocked(), { deName: "Merge Mastery", deDesc: "1e153 Schrott", ruName: "Мастерство Слияний", ruDesc: "1e153 Мусора" }),
+    new Unlock("Beams", "Barrel 300", () => game.beams.isUnlocked(), { deName: "Stahlträger", deDesc: "Tonne 300", ruName: "Балки", ruDesc: "Бочка 300" }),
+    new Unlock("Bricks", "1e213 Scrap", () => game.bricks.isUnlocked(), { deName: "Ziegelsteine", deDesc: "1e213 Schrott", ruName: "Кирпичи", ruDesc: "1e213 Мусора" }),
+    new Unlock("Skill Tree", "Earth (5e24 GS)", () => game.skillTree.isUnlocked(), { deName: "Baum", deDesc: "Erde (5e24 GS)", ruName: "Дерево Навыков", ruDesc: "Земля (5e24 ЗМ)" }),
+    new Unlock("Tires", "Barrel 500", () => game.tires.isUnlocked(), { deName: "Reifen", deDesc: "Tonne 500", ruName: "Покрышки", ruDesc: "Бочка 500" }),
+    new Unlock("Wrenches", "12,000 Manual Merges", () => game.wrenches.isUnlocked(), { deName: "Schraubenschlüssel", deDesc: "12,000 eigene Verbindungen", ruName: "Гаечные Ключи", ruDesc: "12,000 Самослияний" }),
+    new Unlock("Aerobeams", "Skill Tree", () => game.aerobeams.isUnlocked(), { deName: "Aerostahl", deDesc: "Baum", ruName: "Аэробалки", ruDesc: "Дерево Навыков" }),
+    new Unlock("Angel Beams", "Earth (1e27 GS)", () => game.angelbeams.isUnlocked(), { deName: "Engelstahl", deDesc: "Erde (1e27 GS)", ruName: "Ангельские Балки", ruDesc: "Земля (1e27 ЗМ)" }),
+    new Unlock("Reinforced Beams", "Merge Mastery Level 300", () => game.reinforcedbeams.isUnlocked(), { deName: "Stahlstahl", deDesc: "Merge Mastery Level 300", ruName: "Усиленные Балки", ruDesc: "Мастерство Слияний Уровень 300" }),
+    new Unlock("Second Dimension", "Earth (1e40 GS)", () => game.darkscrap.isUnlocked(), { deName: "Zweite Dimension", deDesc: "Erde (1e40 GS)", ruName: "Второе Измерение", ruDesc: "Земля (1e40 ЗМ)" }),
+    new Unlock("Glitch Beams", "1e12 Dark Scrap + Select Aerobeams", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: "1e12 Schattenschrott + Aerostahl auswählen", ruName: "Глючные Балки", ruDesc: "1e12 Тёмного Мусора + Аэробалки" }),
+    new Unlock("Golden Beams", "A Glitch Beam Upgrade", () => game.glitchbeams.upgrades.goldenbeam.level > 0, { deName: "Goldener Stahl", deDesc: "Glitchstahl-Upgrade", ruName: "Золотые Балки", ruDesc: "Улучшение Глючных Балок" }),
+    new Unlock("Scrap Factory", "Earth (1e100 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: "Erde (1e100 GS)", ruName: "Фабрика Мусора", ruDesc: "Земля (1e100 ЗМ)" }),
+    new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock), { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Auto Buyers", "Mystic Shrine", () => applyUpgrade(game.shrine.autosUnlock), { deName: "Autokäufer", deDesc: "Mythischer Schrein", ruName: "Автопокупщики", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Barrel Mastery", "Skill Tree", () => game.barrelMastery.isUnlocked(), { deName: "Barrel Mastery", deDesc: "Baum", ruName: "Мастерство Бочек", ruDesc: "Дерево Навыков" }),
+    new Unlock("Plastic Bags", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), { deName: "Platiktüten", deDesc: "Baum", ruName: "Пластиковые Пакеты", ruDesc: "Дерево Навыков" }),
+    new Unlock("Gifts", "Earth (1e150 GS)", () => game.gifts.isUnlocked(), { deName: "Geschenke", deDesc: "Erde (1e150 GS)", ruName: "Подарки", ruDesc: "Земля (1e150 ЗМ)" }),
+    new Unlock("Auto Collectors", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), { deName: "Autosammler", deDesc: "Baum", ruName: "Автосборщики", ruDesc: "Дерево Навыков" }),
+    new Unlock("Screws", "Skill Tree", () => game.screws.isUnlocked(), { deName: "Schrauben", deDesc: "Baum", ruName: "Винты", ruDesc: "Дерево Навыков" }),
+    new Unlock("Cogwheels", "Skill Tree", () => game.cogwheels.isUnlocked(), { deName: "Zahnräder", deDesc: "Baum", ruName: "Шестерёнки", ruDesc: "Дерево Навыков" }),
+    new Unlock("Supernova", "Earth (1e500 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), { deName: "Supernova", deDesc: "Erde (1e500 GS)", ruName: "Суперновая", ruDesc: "Земля (1e500 ЗМ)" }),
+    new Unlock("Cosmic Pins", "50 Stars", () => game.supernova.stars.gte(50), { deName: "Kosmische Pins", deDesc: "50 Sterne", ruName: "Космический Значок", ruDesc: "50 Звëзд" }),
+];

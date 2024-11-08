@@ -543,7 +543,7 @@ function update() {
                             else {
                                 for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
                                     if (getGlitchBeamValue().gt(1e200)) stormQueue.push([300 * i, "glitchbeam", getGlitchBeamValue()]);
-                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue()))]);
+                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue()))]);
                                 }
                             }
                         }
@@ -553,7 +553,7 @@ function update() {
                             }
                             else {
                                 if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
-                                else movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                                else movingItemFactory.fallingGlitchBeam(Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue())));
                             }
                             renewableEnergy();
                         }
@@ -669,6 +669,15 @@ function getReinforcedBeamValue() {
 
 function getGlitchBeamValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
+        .mul(applyUpgrade(game.tires.upgrades[3][1]))
+        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
+        .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
+        .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
+}
+
+function getGlitchBeamMinValue() {
+    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.minimumValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
@@ -928,10 +937,12 @@ function openFile() {
     reader.onload = function (e) {
         let textArea = document.getElementById("text-area");
         textArea.value = e.target.result;
+
+        document.querySelector("div.absolute textarea").value = e.target.result;
+        loadGame(e.target.result, true);
     };
     if (file != undefined) {
         reader.readAsText(file);
-        loadGame(document.querySelector("div.absolute textarea").value, true);
     }
 }
 
@@ -1491,6 +1502,7 @@ function loadGame(saveCode, isFromFile = false) {
             }
             return;
         }
+
 
 
         game.scrap = loadVal(new Decimal(loadObj.scrap), new Decimal(0));

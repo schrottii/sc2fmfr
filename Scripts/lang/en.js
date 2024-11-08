@@ -538,7 +538,7 @@ const trans_en = {
     tree40: "Unlock\nTime Mode",
     tree41: "Star barrels count\nfor daily quests",
     tree42: "Faster Crafting",
-    tree43: "Funny Glitch Beams\n(& x2 worth)",
+    tree43: "Funny Glitch Beams\n(& x3 worth)",
     tree44: "Higher max. for\n2nd Dark Scrap upg.",
     tree45: "Unlock Supernova",
 

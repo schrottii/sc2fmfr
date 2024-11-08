@@ -292,7 +292,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["table2"];
                 ctx.fillRect(0, h * 0.1, w, h);
 
-                ctx.drawImage(images.appIcon, w * 0.3, h * 0.25, w * 0.4, w * 0.4);
+                ctx.drawImage(images.appIcon, w * 0.5 - (Math.min(w * 0.4, h * 0.4) / 2), h * 0.25, Math.min(w * 0.4, h * 0.4), Math.min(w * 0.4, h * 0.4));
 
                 ctx.fillStyle = colors[C]["text"];
                 ctx.textAlign = "center";
@@ -307,19 +307,19 @@ var scenes =
                 if (loadDots > 3999) {
                     loadDots = 0;
                 }
-                else if (loadDots > 2999) ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.6, w * 0.9);
-                else if (loadDots > 1999) ctx.fillText(tt("Loading") + "..", w * 0.5, h * 0.6, w * 0.9);
-                else if (loadDots > 999) ctx.fillText(tt("Loading") + ".", w * 0.5, h * 0.6, w * 0.9);
-                else ctx.fillText(tt("Loading"), w * 0.5, h * 0.6, w * 0.9);
+                else if (loadDots > 2999) ctx.fillText(tt("Loading") + "...", w * 0.5, h * 0.7, w * 0.9);
+                else if (loadDots > 1999) ctx.fillText(tt("Loading") + "..", w * 0.5, h * 0.7, w * 0.9);
+                else if (loadDots > 999) ctx.fillText(tt("Loading") + ".", w * 0.5, h * 0.7, w * 0.9);
+                else ctx.fillText(tt("Loading"), w * 0.5, h * 0.7, w * 0.9);
 
                 ctx.font = "300 " + (h * 0.03) + "px " + fonts.default;
                 ctx.textAlign = "right";
                 ctx.textBaseline = "bottom";
-                ctx.fillText(gameVersionText, w * 0.99, h - w * 0.01);
+                ctx.fillText(gameVersionText, w * 0.99, h * 0.975);
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("Fanmade+++", w * 0.49, h - w * 0.2);
+                ctx.fillText("Fanmade+++", w * 0.5, h * 0.925);
 
             }),
         new Scene("Barrels",
@@ -1731,7 +1731,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<taps>", applyUpgrade(game.glitchbeams.upgrades.minimumValue)).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<taps>", "\n" + formatNumber(getGlitchBeamMinValue())).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -2016,7 +2016,7 @@ var scenes =
                                     tom: (year + month + tomorrow).toString(),
                                     message: giftMsg != "" ? giftMsg : "No Message Provided"
                                 }
-                                console.log(giftContent)
+
                                 document.querySelector("div.copyGift").style.display = "block";
                                 document.querySelector("div.copyGift button#close").style.display = "none";
                                 document.querySelector("div.copyGift button#cancelg").style.display = "block";

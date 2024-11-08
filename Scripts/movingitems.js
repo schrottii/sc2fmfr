@@ -94,7 +94,7 @@ class MovingItem {
                 }
                 if (Math.random() > 0.9995) {
                     if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
-                    else movingItemFactory.fallingGlitchBeam(Math.max(applyUpgrade(game.glitchbeams.upgrades.minimumValue), Math.ceil(Math.random() * getGlitchBeamValue())));
+                    else movingItemFactory.fallingGlitchBeam(Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue())));
                 }
                 if (Math.random() > 0.9999) {
                     this.img = images.movingItems.goldenBeam;
@@ -275,7 +275,7 @@ var movingItemFactory =
             }))
     },
     fallingBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.beam, "beams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.75 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.beam, "beams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15, h * 0.15, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
             function (isAuto = false) {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -291,7 +291,7 @@ var movingItemFactory =
             }))
     },
     fallingAeroBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -35, h * 0.125, h * 0.125, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, w * 0.65,
+        movingItems.push(new FallingItem(images.movingItems.aerobeam, "aerobeams", w * 0.5 + Math.random() * w * 0.2, -35, h * 0.125, h * 0.125, h * (0.3 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.2, w * 0.65,
             function (isAuto = false) {
                 this.collected = true;
                 if (game.settings.lowPerformance) {
@@ -323,7 +323,7 @@ var movingItemFactory =
             }))
     },
     fallingReinforcedBeam: (value) => {
-        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.2, h * 0.2, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.25, 0,
+        movingItems.push(new FallingItem(images.movingItems.reinforcedbeam, "reinforcedbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.2, h * 0.2, h * (0.4 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function (isAuto = false) {
                 if (this.cooldown < 0.15) return false;
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100 || isAuto) {

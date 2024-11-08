@@ -925,14 +925,14 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             beamStormChance: new BeamUpgrade(
-                level => new Decimal(10 + level),
+                level => new Decimal(5 + level),
                 level => 0.1 * level,
                 {
                     maxLevel: () => (100 + (applyUpgrade(game.skillTree.upgrades.fourthMaxLevel) ? 50 : 0)),
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "+", "%")
                 }),
             beamStormValue: new BeamUpgrade(
-                level => new Decimal(500 + (100 * level)),
+                level => new Decimal(200 + (100 * level)),
                 level => level,
                 {
                     maxLevel: 5,
@@ -976,14 +976,14 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "-", "s")
                 }),
             slowerFallingMagnets: new AeroBeamUpgrade(
-                level => new Decimal(5 * (Math.round(level / 3) + 1)),
+                level => new Decimal(2 * (Math.round(level / 3) + 1)),
                 level => 0.005 * level,
                 {
                     maxLevel: 50,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(3, "-")
                 }),
             betterFallingMagnets: new AeroBeamUpgrade(
-                level => new Decimal(25 * (Math.round(level / 3) + 1)),
+                level => new Decimal(20 * (Math.round(level / 3) + 1)),
                 level => 1 + (0.1 * level),
                 {
                     maxLevel: 50,
@@ -997,7 +997,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "", "%")
                 }),
             unlockGoldenScrapStorms: new AeroBeamUpgrade(
-                level => new Decimal(1200),
+                level => new Decimal(200),
                 level => level,
                 {
                     maxLevel: 1,
@@ -1020,21 +1020,21 @@ var game =
         upgrades:
         {
             beamValue: new AngelBeamUpgrade(
-                level => new Decimal(10 * (level + 1)),
+                level => new Decimal(3 * (level + 1)),
                 level => 1 + level,
                 {
                     maxLevel: 99,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             fasterBeams: new AngelBeamUpgrade(
-                level => new Decimal(40 * (level + 1)),
+                level => new Decimal(40 * (Math.round(level / 4) + 1)),
                 level => 0.1 * level,
                 {
                     maxLevel: 50,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "-", "s")
                 }),
             moreMasteryGS: new AngelBeamUpgrade(
-                level => new Decimal(70 * (Math.max(1, level - 14) + level)),
+                level => new Decimal(60 * (Math.max(1, level - 14) + level)),
                 level => 1 + (0.2 * level),
                 {
                     maxLevel: 25,
@@ -1063,14 +1063,14 @@ var game =
         upgrades:
         {
             reinforce: new ReinforcedBeamUpgrade(
-                level => new Decimal(5 * (level + 1) * Math.pow(1, Math.max(1, level - 11))),
+                level => new Decimal(2 * (level + 1) * Math.pow(1, Math.max(1, level - 11))),
                 level => 1 + level,
                 {
                     maxLevel: () => { return 99 + applyUpgrade(game.screws.upgrades.higherMoreReinforced) },
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             strength: new ReinforcedBeamUpgrade(
-                level => new Decimal(20 * (level + 1) * Math.pow(1, Math.max(1, (level * 2) - 18))),
+                level => new Decimal(10 * (level + 1) * Math.pow(1, Math.max(1, (level * 2) - 18))),
                 level => 2 * level,
                 {
                     maxLevel: () => { return 50 + applyUpgrade(game.plasticBags.upgrades.higherEasierReinforced) },
@@ -1120,14 +1120,14 @@ var game =
         upgrades:
         {
             beamValue: new GlitchBeamUpgrade(
-                level => new Decimal(5 * level + 20),
+                level => new Decimal(3 * level + 7),
                 level => 1 + level,
                 {
                     maxLevel: 24,
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "+", "/collect")
                 }),
             repeat: new GlitchBeamUpgrade(
-                level => new Decimal(Math.round(5 * (level / 3)) + 20),
+                level => new Decimal(Math.round(5 * (level / 11)) + 10),
                 level => 0.5 * level,
                 {
                     maxLevel: 100,
@@ -1148,7 +1148,7 @@ var game =
                     getEffectDisplay: effectDisplayTemplates.numberStandard(1, "", "%")
                 }),
             minimumValue: new GlitchBeamUpgrade(
-                level => new Decimal(50 * level + 25),
+                level => new Decimal(5 * level + 2),
                 level => 1 + 1 * level,
                 {
                     maxLevel: 14,

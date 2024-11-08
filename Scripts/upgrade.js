@@ -399,7 +399,6 @@ class ScrapUpgrade {
         if (level > this.getMaxLevel()) level = this.getMaxLevel();
 
         if (this.level > 1e15 || this.getMaxLevel() - this.level == 0 /*|| isNaN(this.getPrice(level))*/) {
-            console.log(level)
             //this.level = this.getMaxLevel();        ummmm what???
             return false;
         }

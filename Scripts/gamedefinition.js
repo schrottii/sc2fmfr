@@ -1,12 +1,19 @@
-﻿let currentTime = new Date();
-let currentMonth = currentTime.getUTCMonth();
-
-const BARRELS = 1000;
+﻿const BARRELS = 1000;
 const HARDLEVELCAP = 1e300;
+
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
 const gameVersionText = "v3.5 (v4.2)";
+
+var currentTime = new Date();
+var currentMonth = currentTime.getUTCMonth();
+var timeDisplay = "";
+var futureTimeDisplay = "";
+var year = "";
+var puremonth = "";
+var month = "";
+var day = "";
 
 var game =
 {

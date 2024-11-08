@@ -245,9 +245,15 @@ var movingItemFactory =
                     this.destroy();
                 }
                 let v = value ? value : Decimal.round(game.tires.value);
-                game.tires.amount = game.tires.amount.add(v);
-                game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
-                game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
+
+                if (new Decimal(v).lt(new Decimal("1e300e300"))) {
+                    game.tires.amount = game.tires.amount.add(v);
+                    game.tires.value = game.tires.value.mul(applyUpgrade(game.tires.upgrades[1][0]));
+                    game.stats.totaltirescollected = game.stats.totaltirescollected.add(1);
+                }
+                else {
+                    v = new Decimal("1e300e300");
+                }
 
                 if (game.screws.isUnlocked()) {
                     game.screws.amount = game.screws.amount.add(getScrews());

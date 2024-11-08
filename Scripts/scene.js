@@ -4,9 +4,6 @@ var comparePage = 0;
 var C = "default";
 var calcTime = "";
 var calcTime2 = "";
-var timeDisplay = "";
-var futureTimeDisplay = "";
-var year = month = "";
 var timeOutID = "none";
 
 var barrelsDisplayMode = 0;
@@ -1126,7 +1123,10 @@ var scenes =
                     quadratic: true,
                     isVisible: () => game.screws.isUnlocked()
                 }),
-                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.gifts, () => Scene.loadScene("Gifts"), {
+                new UIButton(0.9, 0.8, 0.07, 0.07, images.scenes.gifts, () => {
+                    updateTimeStuff();
+                    Scene.loadScene("Gifts");
+                }, {
                     quadratic: true,
                     isVisible: () => game.gifts.isUnlocked()
                 }),
@@ -1925,38 +1925,6 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
-                if (calcTime == "" || futureTimeDisplay == "" || calcTime >= game.mergeQuests.nextDaily) {
-
-                    let currentTime = new Date();
-                    year = currentTime.getUTCFullYear();
-                    month = currentTime.getUTCMonth();
-                    puremonth = month;
-                    month += 1;
-                    if (month < 10) month = "0" + month;
-                    day = currentTime.getUTCDate();
-                    tomorrow = day + 1;
-                    if (day < 10) day = "0" + day;
-                    if (tomorrow < 10) tomorrow = "0" + tomorrow;
-                    hour = currentTime.getUTCHours();
-                    if (hour.length == 1) hour = "0" + month;
-                    calcTime2 = parseInt(year + "" + (month) + tomorrow);
-                    if (calcTime == "") {
-                        calcTime = parseInt(year + "" + (month) + day);
-                    }
-
-                    if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
-                    if (calcTime >= game.mergeQuests.nextDaily) {
-                        let dq = game.mergeQuests.dailyQuest;
-                        dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
-                        dq.currentMerges = 0;
-                        game.cogwheels.timeModeAttempts = 3;
-                        game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
-                        game.gifts.sendLimit = CONST_SENDLIMIT;
-                        game.gifts.openedToday = [];
-                        game.mergeQuests.nextDaily = calcTime2;
-                    }
-                }
-
                 monthsL = tto({
                     default: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                     de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
@@ -2153,9 +2121,6 @@ var scenes =
                 }, { quadratic: true }),
             ],
             function () {
-                currentTime = new Date();
-                day = currentTime.getUTCDate();
-
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
@@ -2169,33 +2134,6 @@ var scenes =
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0.315 * h, w, 0.005 * h);
                 ctx.fillRect(0, 0.825 * h, w, 0.005 * h);
-
-                year = currentTime.getUTCFullYear();
-                month = currentTime.getUTCMonth();
-                puremonth = month;
-                month += 1;
-                if (month < 10) month = "0" + month;
-                tomorrow = day + 1;
-                if (day < 10) day = "0" + day;
-                if (tomorrow < 10) tomorrow = "0" + tomorrow;
-                hour = currentTime.getUTCHours();
-                if (hour.length == 1) hour = "0" + month;
-                calcTime2 = parseInt(year + "" + (month) + tomorrow);
-                if (calcTime == "") {
-                    calcTime = parseInt(year + "" + (month) + day);
-                }
-
-                if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
-                if (calcTime >= game.mergeQuests.nextDaily) {
-                    let dq = game.mergeQuests.dailyQuest;
-                    dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
-                    dq.currentMerges = 0;
-                    game.cogwheels.timeModeAttempts = 3;
-                    game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
-                    game.gifts.sendLimit = CONST_SENDLIMIT;
-                    game.gifts.openedToday = [];
-                    game.mergeQuests.nextDaily = calcTime2;
-                }
             }),
         new Scene("GiftsExplanation",
             [
@@ -2717,7 +2655,10 @@ var scenes =
                     isVisible: () => game.skillTree.upgrades.unlockScrapyard.isUnlocked(),
                     quadratic: true,
                 }),
-                new UIButton(0.9, 0.05, 0.07, 0.07, images.scenes.daily, () => Scene.loadScene("Daily"), {
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.scenes.daily, () => {
+                    updateTimeStuff();
+                    Scene.loadScene("Daily");
+                }, {
                     quadratic: true,
                     isVisible: () => game.highestBarrelReached >= 1000
                 }),

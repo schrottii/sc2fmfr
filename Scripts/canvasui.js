@@ -495,6 +495,7 @@ class UIFriend extends UIGroup {
                 new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => {
                     if (game.gifts.friends[id] != undefined) {
                         sendTo = game.gifts.friends[id].code;
+                        updateTimeStuff();
                         Scene.loadScene("Gifts");
                     }
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),

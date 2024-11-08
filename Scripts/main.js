@@ -2228,6 +2228,37 @@ setup();
 let deferredPrompt;
 btnInstall.style.display = "none";
 
+function updateTimeStuff() {
+    currentTime = new Date();
+
+    day = currentTime.getUTCDate();
+    year = currentTime.getUTCFullYear();
+    month = currentTime.getUTCMonth();
+    puremonth = month;
+    month += 1;
+    if (month < 10) month = "0" + month;
+    tomorrow = day + 1;
+    if (day < 10) day = "0" + day;
+    if (tomorrow < 10) tomorrow = "0" + tomorrow;
+    hour = currentTime.getUTCHours();
+    if (hour.length == 1) hour = "0" + month;
+    calcTime2 = parseInt(year + "" + (month) + tomorrow);
+    if (calcTime == "") {
+        calcTime = parseInt(year + "" + (month) + day);
+    }
+
+    if (game.mergeQuests.nextDaily == "") game.mergeQuests.nextDaily = 20220721;
+    if (calcTime >= game.mergeQuests.nextDaily) {
+        let dq = game.mergeQuests.dailyQuest;
+        dq.generateQuest(dq.possibleTiers[Math.floor(dq.possibleTiers.length * Math.random())]);
+        dq.currentMerges = 0;
+        game.cogwheels.timeModeAttempts = 3;
+        game.gifts.openLimit = game.gifts.openLimit = CONST_OPENLIMIT;
+        game.gifts.sendLimit = CONST_SENDLIMIT;
+        game.gifts.openedToday = [];
+        game.mergeQuests.nextDaily = calcTime2;
+    }
+}
 
 function updateBetterBarrels() {
     if (game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));

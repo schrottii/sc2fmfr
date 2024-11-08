@@ -486,12 +486,23 @@ class UIFriend extends UIGroup {
         super(
             [
                 new UIRect(0.5, y, 1, 0.0975, col ? col : "table"),
+                new UIRect(0.5, y - 0.05, 1, 0.003, "text"),
+
+                new UIRect(0.8, y - 0.04, 0.4, 0.003, "table2"),
+                new UIRect(0.8, y, 0.4, 0.003, "table2"),
+                new UIRect(0.8, y + 0.04, 0.4, 0.003, "table2"),
+
                 new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => {
                     if (game.gifts.friends[id] != undefined) {
                         sendTo = game.gifts.friends[id].code;
                         Scene.loadScene("Gifts");
                     }
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+
+                new UIButton(0.4, y, 0.07, 0.07, images.checkbox.on, () => {
+                    alert("You have already opened a Gift from this friend today!");
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined && game.gifts.openedToday.includes(game.gifts.friends[id].code) }),
+
                 new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
                     let friendCode = prompt("Friend code?");
                     let friendName = prompt("Friend name?");
@@ -507,8 +518,8 @@ class UIFriend extends UIGroup {
                     if (newFr != null && newFr != false) game.gifts.friends[id].code = newFr;
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
 
-                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].name : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
-                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].code : "", 0.975, y, 0.04, "#000000", { halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].name : "", 0.975, y - 0.03, 0.04, "#000000", { valign: "top", halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
+                new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].code : "", 0.975, y + 0.01, 0.04, "#000000", { valign: "top", halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),
             ], isVisible);
     }
 }

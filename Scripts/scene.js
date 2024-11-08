@@ -1971,7 +1971,7 @@ var scenes =
             }),
         new Scene("Gifts",
             [
-                new UIText(() => tt("gifts"), 0.5, 0.05, 0.08, "white", {
+                new UIText(() => tt("gifts"), 0.5, 0.033, 0.08, "white", {
                     bold: 900,
                     borderSize: 0.005,
                     font: fonts.title
@@ -1983,10 +1983,12 @@ var scenes =
                     isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockTimeMode)
                 }),
 
-                new UIButton(0.9, 0.395, 0.07, 0.07, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.info, () => Scene.loadScene("GiftsExplanation"), { quadratic: true }),
 
-                new UIText(() => tt("friendcode") + ": " + game.code, 0.5, 0.1, 0.08, "lightgreen"),
-                new UIText(() => tt("gifttext1"), 0.5, 0.15, 0.03),
+                // Top text
+                new UIText(() => tt("friendcode") + ": ", 0.5, 0.075, 0.03, "black"),
+                new UIText(() => game.code, 0.5, 0.1, 0.08, "black"),
+                new UIText(() => tt("gifttext1"), 0.5, 0.15, 0.03, "black"),
 
                 new UIText(() => tt("scissors") + game.gifts.openLimit, 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("stamps") + game.gifts.sendLimit, 0.5, 0.25, 0.06, "yellow"),
@@ -1996,7 +1998,16 @@ var scenes =
                 new UIText(() => (giftType == "magnets" ? tt("upto") : "") + formatNumber(giftAmount), 0.5, 0.37, 0.04, "white", { isVisible: () => giftType != "none" }),
                 new UIText(() => tt("gifttext2"), 0.5, 0.39, 0.03, "white", { isVisible: () => giftType != "none" }),
 
-                new UIButton(0.1, 0.525, 0.05, 0.05, images.setmessage, () => {
+                // Who to send it to
+                new UIText(() => tt("to") + sendTo, 0.5, 0.525, 0.05, "white", { align: "middle" }),
+
+                new UIButton(0.95, 0.5 + 0.075 / 2, 0.05, 0.05, images.importGame, () => Scene.loadScene("FriendList"), { quadratic: true }),
+                new UIButton(0.05, 0.5 + 0.075 / 2, 0.05, 0.05, images.setcode, () => {
+                    sendTo = prompt(tt("gifttext4")).substr(0, 6);
+                }, { quadratic: true }),
+
+                // Message stuff
+                new UIButton(0.05, 0.725 + 0.075 / 2, 0.05, 0.05, images.setmessage, () => {
                     giftMsg = prompt(tt("gifttext3")).substr(0, 80);
 
                     for (f in filthyWords) {
@@ -2009,14 +2020,10 @@ var scenes =
 
                     basicAchievementUnlock(232);
                 }, { quadratic: true }),
-                new UIButton(0.9, 0.525, 0.05, 0.05, images.setcode, () => {
-                    sendTo = prompt(tt("gifttext4")).substr(0, 6);
-                }, { quadratic: true }),
-                new UIText(() => giftMsg.substr(0, 40), 0.5, 0.525, 0.02),
-                new UIText(() => giftMsg.substr(40, 40), 0.5, 0.55, 0.02),
+                new UIText(() => giftMsg.substr(0, 40), 0.525, 0.725, 0.025),
+                new UIText(() => giftMsg.substr(40, 40), 0.525, 0.75, 0.025),
 
-                new UIText(() => tt("to") + sendTo, 0.8, 0.45, 0.05),
-
+                // The big Gift button
                 new UIButton(0.5, 0.45, 0.1, 0.1, images.gift, () => {
                     if (giftType != "none") {
                         if (game.gifts.sendLimit > 0) {
@@ -2029,7 +2036,7 @@ var scenes =
                                 alert("You can not send a gift to yourself!");
                                 return false;
                             }
-                            if (sendTo != "" && sendTo != false && giftAmount > 0) {
+                            if (sendTo != "" && sendTo != false && new Decimal(giftAmount).gt(0)) {
                                 game.gifts.sendLimit -= 1;
 
                                 giftContent = {
@@ -2037,10 +2044,11 @@ var scenes =
                                     to: sendTo,
                                     content: giftType,
                                     amount: giftAmount,
-                                    date: year + "" + month + day,
+                                    date: (year + month + day).toString(),
+                                    tom: (year + month + tomorrow).toString(),
                                     message: giftMsg != "" ? giftMsg : "No Message Provided"
                                 }
-
+                                console.log(giftContent)
                                 document.querySelector("div.copyGift").style.display = "block";
                                 document.querySelector("div.copyGift button#close").style.display = "none";
                                 document.querySelector("div.copyGift button#cancelg").style.display = "block";
@@ -2048,6 +2056,9 @@ var scenes =
                                 game.stats.giftsSent = game.stats.giftsSent.add(1);
 
                                 basicAchievementUnlock(230);
+                            }
+                            else {
+                                alert("Something went wrong! Did you select a friend code and gift content?");
                             }
                         }
                         else {
@@ -2057,8 +2068,9 @@ var scenes =
                     else {
                         alert("You have to set gift content first!")
                     }
-                }, { quadratic: true, isVisible: () => giftType != "none" }),
+                }, { quadratic: true, isVisible: () => giftType != "none" && sendTo != "" }),
 
+                // Gift content
                 new UIText(() => tt("giftcontent"), 0.5, 0.595, 0.04),
                 new UIButton(0.2, 0.65, 0.075, 0.075, images.magnet, () => {
                     giftType = "magnets"
@@ -2078,9 +2090,9 @@ var scenes =
                 }, { quadratic: true }),
 
                 // Open Gift
-                new UIText(() => tt("opengift"), 0.5, 0.725, 0.07),
+                new UIText(() => tt("opengift"), 0.5, 0.85, 0.07),
 
-                new UIButton(0.5, 0.825, 0.1, 0.1, images.gift, () => {
+                new UIButton(0.5, 0.925, 0.1, 0.1, images.gift, () => {
                     if (game.gifts.openLimit > 0) {
                         let giftCode = prompt(tt("entercode"));
 
@@ -2097,7 +2109,7 @@ var scenes =
                             giftContent.message = giftContent.message + String.fromCharCode(parseInt(tmp[i]));
                         }
 
-                        if (giftContent.date == year + "" + month + day) {
+                        if (giftContent.date == year + "" + month + day || giftContent.tom == year + "" + month + day) {
                             if (giftContent.to == game.code && !game.gifts.openedToday.includes(giftContent.from)) {
                                 game.gifts.openLimit -= 1;
                                 giftMsg = giftContent.message;
@@ -2139,10 +2151,6 @@ var scenes =
                         alert("Limit reached!");
                     }
                 }, { quadratic: true }),
-
-                new UIText(() => tt("sendtext"), 0.01, 0.85, 0.03, "white", { halign: "left" }),
-
-                new UIText(() => tt("opentext"), 0.99, 0.85, 0.03, "white", { halign: "right" }),
             ],
             function () {
                 currentTime = new Date();
@@ -2154,9 +2162,13 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.1); // should be 0.12 (0.06 * 2) but somehow 0.1 looks much better
 
+                ctx.fillRect(w * 0.1, h * 0.5, w * 0.8, h * 0.075); // bg for the friend code selection
+                ctx.fillRect(w * 0.1, h * 0.6, w * 0.8, h * 0.1); // bg for the currency selection
+                ctx.fillRect(w * 0.1, h * 0.725, w * 0.8, h * 0.075); // bg for the gift text
+
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0.315 * h, w, 0.005 * h);
-                ctx.fillRect(0, 0.7 * h, w, 0.005 * h);
+                ctx.fillRect(0, 0.825 * h, w, 0.005 * h);
 
                 year = currentTime.getUTCFullYear();
                 month = currentTime.getUTCMonth();
@@ -2184,6 +2196,29 @@ var scenes =
                     game.gifts.openedToday = [];
                     game.mergeQuests.nextDaily = calcTime2;
                 }
+            }),
+        new Scene("GiftsExplanation",
+            [
+                new UIText(() => tt("gifts"), 0.5, 0.033, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Gifts"), { quadratic: true }),
+
+
+
+                new UIText(() => tt("sendtext"), 0.025, 0.2, 0.042, "white", { halign: "left" }),
+
+                new UIText(() => tt("opentext"), 0.025, 0.6, 0.042, "white", { halign: "left" }),
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(0, h * 0.188, w, h * 0.324);
+                ctx.fillRect(0, h * 0.588, w, h * 0.324);
             }),
         new Scene("FriendList",
             [
@@ -3663,3 +3698,14 @@ var scenes =
                 ctx.fillRect(w * 0.05, h * 0.95, w * 0.9, h * 0.06);
             }),
     ];
+
+/*
+new Scene("SceneName",
+            [
+
+            ],
+            function () {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+            }),
+*/

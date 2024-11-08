@@ -6,7 +6,7 @@ const HARDLEVELCAP = 1e300;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.4.1 (v4.1.1)";
+const gameVersionText = "v3.5 (v4.2)";
 
 var game =
 {

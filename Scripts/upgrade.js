@@ -1,3 +1,4 @@
+// list of all resources and their IDs
 let RESOURCE_SCRAP = 0,
     RESOURCE_MAGNET = 1,
     RESOURCE_GS = 2,
@@ -28,10 +29,12 @@ let RESOURCE_SCRAP = 0,
     RESOURCE_ALIENDUST = 27,
     RESOURCE_FAIRYDUST = 28;
 
+// applyUpgrade my beloved
 function applyUpgrade(upg) {
     return upg.getEffect(upg.level);
 }
 
+// gets the amount
 function getUpgradeResource(res) {
     switch (res) {
         case RESOURCE_SCRAP:
@@ -97,6 +100,7 @@ function getUpgradeResource(res) {
     }
 }
 
+// sets the resource to an amount
 function assignResourceAfterUpgrade(resType, res) {
     switch (resType) {
         case RESOURCE_SCRAP:
@@ -188,6 +192,7 @@ function assignResourceAfterUpgrade(resType, res) {
     }
 }
 
+// gets the resource image
 function getResourceImage(res) {
     switch (res) {
         case RESOURCE_SCRAP:
@@ -253,6 +258,7 @@ function getResourceImage(res) {
     }
 }
 
+// Various upgrade classes are here
 class ScrapUpgrade {
     constructor(getPrice, getEffect, cfg) {
         this.level = 0;
@@ -857,6 +863,7 @@ class FairyDustUpgrade extends ScrapUpgrade {
     }
 }
 
+// planet earth upgrade levels (solar system)
 var EarthLevels =
 {
     UNLOCK_MARS: 2,

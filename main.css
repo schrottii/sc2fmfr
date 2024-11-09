@@ -41,6 +41,7 @@ body {
 canvas#gameCanvas {
     width: auto;
     height: 100%;
+    touch-action: manipulation;
 }
 
 canvas.cache {

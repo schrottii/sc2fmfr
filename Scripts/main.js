@@ -1178,14 +1178,17 @@ function handleRelease(e) {
 
 if (isMobile()) {
     canvas.ontouchstart = function (e) {
+        e.preventDefault();
         handlePress(e);
     };
 
     canvas.ontouchend = function (e) {
+        e.preventDefault();
         handleRelease(e);
     };
 
     canvas.ontouchmove = function (e) {
+        e.preventDefault();
         updateMouse(e);
     };
 }
@@ -1215,7 +1218,7 @@ function spawnBarrel() {
 
     if (idx !== -1 && (game.settings.barrelSpawn == true || timeMode)) {
         barrels[idx] = new Barrel(applyUpgrade(game.scrapUpgrades.betterBarrels).toNumber());
-        freeSpots -= 1; // freeSpots
+        freeSpots -= 1;
     }
 }
 

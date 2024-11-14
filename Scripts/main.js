@@ -1182,14 +1182,14 @@ if (isMobile()) {
         handlePress(e);
     };
 
-    canvas.ontouchend = function (e) {
-        e.preventDefault();
-        handleRelease(e);
-    };
-
     canvas.ontouchmove = function (e) {
         e.preventDefault();
         updateMouse(e);
+    };
+
+    canvas.ontouchend = function (e) {
+        e.preventDefault();
+        handleRelease(e);
     };
 }
 else {

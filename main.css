@@ -31,7 +31,7 @@
 }
 
 body {
-    touch-action: none;
+    touch-action: manipulation;
     font-family: Helvetica, Arial, sans-serif;
     background-color: black;
     background-image: url("Images/app-icon-blur.png");

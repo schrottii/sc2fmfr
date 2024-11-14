@@ -1177,20 +1177,20 @@ function handleRelease(e) {
 
 
 if (isMobile()) {
-    canvas.ontouchstart = function (e) {
+    canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
         handlePress(e);
-    };
+    }, { passive: false });
 
-    canvas.ontouchmove = function (e) {
+    canvas.addEventListener('touchmove', function (e) {
         e.preventDefault();
         updateMouse(e);
-    };
+    }, { passive: false });
 
-    canvas.ontouchend = function (e) {
+    canvas.addEventListener('touchend', function (e) {
         e.preventDefault();
         handleRelease(e);
-    };
+    }, { passive: false });
 }
 else {
     canvas.onmousedown = function (e) {

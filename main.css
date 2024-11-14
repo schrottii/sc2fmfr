@@ -31,7 +31,7 @@
 }
 
 body {
-    touch-action: manipulation;
+    touch-action: none;
     font-family: Helvetica, Arial, sans-serif;
     background-color: black;
     background-image: url("Images/app-icon-blur.png");
@@ -41,7 +41,6 @@ body {
 canvas#gameCanvas {
     width: auto;
     height: 100%;
-    touch-action: none;
 }
 
 canvas.cache {

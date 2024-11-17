@@ -2012,8 +2012,8 @@ var scenes =
                                     to: sendTo,
                                     content: giftType,
                                     amount: giftAmount,
-                                    date: (year + month + day).toString(),
-                                    tom: (year + month + tomorrow).toString(),
+                                    date: (year + "" + month + day).toString(),
+                                    tom: (year + "" + month + tomorrow).toString(),
                                     message: giftMsg != "" ? giftMsg : "No Message Provided"
                                 }
 

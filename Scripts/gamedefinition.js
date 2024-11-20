@@ -1907,6 +1907,8 @@ var game =
             return new Decimal(Math.ceil((game.highestBarrelReached + 1) / 20000)).add(game.highestBarrelReached >= 10000 ? 1 : 0);
         },
         getAlienDust: function () {
+            if (isNaN(game.supernova.alienDust)) dustReset("alienDustUpgrades", "alienDust", "totalaliendust");
+
             let amount = new Decimal(game.factory.legendaryScrap.add(25).log(25));
             amount = amount.add(game.factory.steelMagnets.add(125).log(125));
             amount = amount.add(game.factory.blueBricks.add(100).log(100));
@@ -1932,6 +1934,11 @@ var game =
             return amount.ceil().div(6).mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust)).mul(applyUpgrade(game.glitchbeams.upgrades.alienDustBoost));
         },
         getFairyDust: function () {
+            if (isNaN(game.supernova.fairyDust)) {
+                adjustHBV();
+                dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
+            }
+
             let amount = new Decimal(game.stats.beamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.aebeamstp.div(1e4).sqrt().max(1));
             amount = amount.mul(game.stats.abeamstp.div(1e4).sqrt().max(1));
@@ -1948,6 +1955,8 @@ var game =
             return amount.mul(applyUpgrade(game.supernova.cosmicUpgrades.moreDust));
         },
         getStarDust: function () {
+            if (isNaN(game.supernova.starDust)) dustReset("starDustUpgrades", "starDust", "totalstardust");
+
             let amount = new Decimal(game.goldenScrap.amount.add(1e50).min("1e3050").log(1e50));
             amount = amount.mul(game.magnets.add(1e200).min("1e30050").log(1e200));
             amount = amount.mul(game.fragment.amount.add(1e50).log(1e50));

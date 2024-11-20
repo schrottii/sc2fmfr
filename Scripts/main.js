@@ -756,7 +756,7 @@ function dustReset(upgradeType, dustType, dustStat) {
     for (u in game.supernova[upgradeType]) {
         if (game.supernova[upgradeType][u].lock != true) game.supernova[upgradeType][u].level = 0;
         else {
-            for (i = 0; i < game.supernova[upgradeType][u].level; i++) {
+            for (i = Math.max(0, game.supernova[upgradeType][u].level - 100); i < game.supernova[upgradeType][u].level; i++) {
                 remDust = remDust.add(game.supernova[upgradeType][u].getPrice(i));
             }
         }

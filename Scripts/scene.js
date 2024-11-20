@@ -175,6 +175,20 @@ function drawCurrencyBar(val, img, offY, width) {
     ctx.drawImage(img, w * 0.25 - h * 0.03 - xOff, h * 0.19 + oy, h * 0.08, h * 0.08);
 }
 
+function adjustHBV() {
+    if (game.beams.hbv == undefined) game.beams.hbv = new Decimal(0);
+    if (game.beams.haebv == undefined) game.beams.haebv = new Decimal(0);
+    if (game.beams.habv == undefined) game.beams.habv = new Decimal(0);
+    if (game.beams.hrbv == undefined) game.beams.hrbv = new Decimal(0);
+    if (game.beams.hgbv == undefined) game.beams.hgbv = new Decimal(0);
+
+    game.beams.hbv = game.beams.hbv.max(getBeamBaseValue());
+    game.beams.haebv = game.beams.haebv.max(getAeroBeamValue());
+    game.beams.habv = game.beams.habv.max(getAngelBeamValue());
+    game.beams.hrbv = game.beams.hrbv.max(getReinforcedBeamValue());
+    game.beams.hgbv = game.beams.hgbv.max(getGlitchBeamValue());
+}
+
 function getBeamTime() {
     if (timeMode) {
         return tt("time") + formatTime(timeModeTime);
@@ -3603,17 +3617,7 @@ var scenes =
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Supernova"), { quadratic: true }),
                 new UIButton(0.1, 0.15, 0.07, 0.07, images.buttonBack, () => {
                     if (confirm(tt("resetfairy"))) {
-                        if (game.beams.hbv == undefined) game.beams.hbv = new Decimal(0);
-                        if (game.beams.haebv == undefined) game.beams.haebv = new Decimal(0);
-                        if (game.beams.habv == undefined) game.beams.habv = new Decimal(0);
-                        if (game.beams.hrbv == undefined) game.beams.hrbv = new Decimal(0);
-                        if (game.beams.hgbv == undefined) game.beams.hgbv = new Decimal(0);
-
-                        game.beams.hbv = game.beams.hbv.max(getBeamBaseValue());
-                        game.beams.haebv = game.beams.haebv.max(getAeroBeamValue());
-                        game.beams.habv = game.beams.habv.max(getAngelBeamValue());
-                        game.beams.hrbv = game.beams.hrbv.max(getReinforcedBeamValue());
-                        game.beams.hgbv = game.beams.hgbv.max(getGlitchBeamValue());
+                        adjustHBV();
                         dustReset("fairyDustUpgrades", "fairyDust", "totalfairydust");
                     }
                 }, { quadratic: true }),

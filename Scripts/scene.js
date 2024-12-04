@@ -409,7 +409,7 @@ var scenes =
 
                 // Hyper Buy 1 2 3
                 new UICheckbox(0.575, 0.825, 0.05, 0.05, "game.settings.hyperBuy", {
-                    isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0,
+                    isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 0,
                     quadratic: true,
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
@@ -426,7 +426,7 @@ var scenes =
                     else {
                         alert(tt("Too low!"));
                     }
-                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 1 }),
                 new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
                     let newCap = prompt(tt("hyperBuyPerText"));
@@ -440,7 +440,7 @@ var scenes =
                     else {
                         alert(tt("Too low!"));
                     }
-                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 2 }),
 
                 // Scrap Upgrades
                 // Better Barrels
@@ -1508,7 +1508,7 @@ var scenes =
                 new UIText(() => tt("beamselecttext"), 0.5, 0.15, 0.03, "black"),
 
                 new UIText(() => "$images.beam$ " + tt("beams") + ": " + formatNumber(game.beams.amount), 0.5, 0.2, 0.06, "yellow"),
-                new UIText(() => "$images.aerobeam$ " + tt("aerobeams") + ": " + formatNumber(game.aerobeams.amount), 0.5, 0.24, 0.06, "yellow"),
+                new UIText(() => "$images.aerobeam$ " + tt("aerobeams") + ": " + formatNumber(game.aerobeams.amount), 0.5, 0.24, 0.06, "yellow", { isVisible: () => game.aerobeams.isUnlocked() }),
                 new UIText(() => "$images.angelbeam$ " + tt("angelbeams") + ": " + formatNumber(game.angelbeams.amount), 0.5, 0.28, 0.06, "yellow", { isVisible: () => game.angelbeams.isUnlocked() }),
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.32, 0.06, "yellow", { isVisible: () => game.reinforcedbeams.isUnlocked() }),
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.36, 0.06, "yellow", { isVisible: () => game.glitchbeams.isUnlocked() }),
@@ -2475,7 +2475,7 @@ var scenes =
                     }, () => tt("beamsredirect") + " (" + tt("br" + (game.settings.beamRed + 1)) + ")", "table", () => game.beams.isUnlocked()),
 
                     // Hyper Buy 2.0
-                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2", () => game.supernova.cosmicUpgrades.hyperBuy.level >= 1),
+                    new UIToggleOption(tabYs[0] + 0.8, "game.settings.hyperBuy2", () => tt("hyperBuy2"), "table2", () => game.supernova.cosmicUpgrades.hyperBuy.level >= 1 || game.skillTree.upgrades.hyperbuy.level > 0),
 
                     // Better Barrels auto buyer
                     new UIToggleOption(tabYs[0] + 0.9, "game.settings.bbauto", () => tt("bbauto"), "table", () => game.supernova.cosmicUpgrades.autoBuyerMax.level >= 1),
@@ -2570,12 +2570,7 @@ var scenes =
 
                     // Select song
                     new UIOption(tabYs[2] + 0.2, images.music, () => {
-                        if (game.ms.length > [-1, 9, 24, 49][game.settings.musicSelect]) {
-                            game.settings.musicSelect = game.settings.musicSelect + 1;
-                        }
-                        else {
-                            game.settings.musicSelect = 0;
-                        }
+                        game.settings.musicSelect = game.settings.musicSelect + 1;
                         if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
                         playMusic();
                     }, () => tt("Current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
@@ -2966,7 +2961,7 @@ var scenes =
                 ctx.font = (h * 0.015) + "px " + fonts.default;
                 for (i = 0; i < unlocks.length; i++) {
                     ctx.fillStyle = unlocks[i].unlock() ? colors[C]["text"] : "orange";
-                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("unlockedat") + ": " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)));
+                    ctx.fillText((unlocks[i].unlock() || showAllUnlocks ? (showAllUnlocks && !unlocks[i].unlock() ? tt("locked") + " - " : "") + unlocks[i].getName() + " (" + unlocks[i].getDesc() + ")" : tt("unlockedat") + ": " + unlocks[i].getDesc()), w * 0.5, h * (0.125 + (0.025 * i)), w * 0.9);
                 }
             }),
         new Scene("ScrapFactory",
@@ -3181,9 +3176,34 @@ var scenes =
                     new UIRect(0.5, 6.7, 1, 0.3, "table2"),
                     new UIRect(0.5, 7.0, 1, 0.3, "table"),
 
+                    new UIText("Row 1", 0.9625, 0.25, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 2", 0.9625, 0.25 + 0.3 * 1, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 3", 0.9625, 0.25 + 0.3 * 2, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 4", 0.9625, 0.25 + 0.3 * 3, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 5", 0.9625, 0.25 + 0.3 * 4, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 6", 0.9625, 0.25 + 0.3 * 5, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 7", 0.9625, 0.25 + 0.3 * 6, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 8", 0.9625, 0.25 + 0.3 * 7, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 9", 0.9625, 0.25 + 0.3 * 8, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 10", 0.9625, 0.25 + 0.3 * 9, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 11", 0.9625, 0.25 + 0.3 * 10, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 12", 0.9625, 0.25 + 0.3 * 11, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 13", 0.9625, 0.25 + 0.3 * 12, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 14", 0.9625, 0.25 + 0.3 * 13, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 15", 0.9625, 0.25 + 0.3 * 14, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 16", 0.9625, 0.25 + 0.3 * 15, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 17", 0.9625, 0.25 + 0.3 * 16, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 18", 0.9625, 0.25 + 0.3 * 17, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 19", 0.9625, 0.25 + 0.3 * 18, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 20", 0.9625, 0.25 + 0.3 * 19, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 21", 0.9625, 0.25 + 0.3 * 20, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 22", 0.9625, 0.25 + 0.3 * 21, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 23", 0.9625, 0.25 + 0.3 * 22, 0.03, "#0019A8", { halign: "right" }),
+
                     new UISkillTreePath(0.5, 0.4, 0.5, 0.65, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 
                     new UISkillTreePath(0.5, 0.7, 0.5, 0.85, 0.01, "skillTreePath", game.skillTree.upgrades.xplustwo),
+                    new UISkillTreePath(0.5, 0.4, 0.15, 0.7, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 
                     new UISkillTreePath(0.5, 0.95, 0.2, 1.2, 0.01, "skillTreePath", game.skillTree.upgrades.unlockbeamtypes),
                     new UISkillTreePath(0.5, 0.95, 0.8, 1.2, 0.01, "skillTreePath", game.skillTree.upgrades.unlockbeamtypes),
@@ -3256,6 +3276,7 @@ var scenes =
                     new UISkillTreeUpgrade(game.skillTree.upgrades.scrapBoost, images.upgrades.moreScrap, "tree1", 0.5, 0.35),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.xplustwo, images.upgrades.xplustwo, "beam2", 0.5, 0.65, "table2"),
+                    new UISkillTreeUpgrade(game.skillTree.upgrades.hyperbuy, images.checkbox.hyperbuy.on, "hyperbuy", 0.15, 0.65, "table2"),
 
                     new UISkillTreeUpgrade(game.skillTree.upgrades.unlockbeamtypes, images.upgrades.unlockbeamtypes, "tree3", 0.5, 0.95),
 

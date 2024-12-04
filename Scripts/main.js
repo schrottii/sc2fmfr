@@ -1509,8 +1509,12 @@ function loadGame(saveCode, isFromFile = false) {
 
 
         game.scrap = loadVal(new Decimal(loadObj.scrap), new Decimal(0));
+        if (game.scrap.mul(1e50).eq(game.scrap)) game.scrap = new Decimal(0);
         game.scrapThisPrestige = loadVal(new Decimal(loadObj.scrapThisPrestige), new Decimal(0));
+        if (game.scrapThisPrestige.mul(1e50).eq(game.scrapThisPrestige)) game.scrapThisPrestige = new Decimal(0);
         game.highestScrapReached = loadVal(new Decimal(loadObj.highestScrapReached), new Decimal(0));
+        if (game.highestScrapReached.mul(1e50).eq(game.highestScrapReached)) game.highestScrapReached = new Decimal(0);
+
         game.magnets = loadVal(new Decimal(loadObj.magnets), new Decimal(0));
         game.highestBarrelReached = loadVal(loadObj.highestBarrelReached, 0);
         game.highestMasteryLevel = loadVal(loadObj.highestMasteryLevel, 0);

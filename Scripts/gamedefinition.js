@@ -4,7 +4,7 @@ const HARDLEVELCAP = 1e300;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.5 (v4.2)";
+const gameVersionText = "v3.5.1 (v4.2.1)";
 
 var currentTime = new Date();
 var currentMonth = currentTime.getUTCMonth();
@@ -1115,7 +1115,7 @@ var game =
     },
     glitchbeams:
     {
-        isUnlocked: () => game.glitchesCollected > 9,
+        isUnlocked: () => game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.glitchesCollected > 9,
         amount: new Decimal(0),
         upgrades:
         {
@@ -1286,6 +1286,14 @@ var game =
             ], [false, 2], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("+")
             }, ["scrapBoost"]),
+            hyperbuy: new SkillTreeUpgradeFixed([
+                [[new Decimal("1e42"), RESOURCE_MAGNET]],
+                [[new Decimal("1e84"), RESOURCE_MAGNET]],
+                [[new Decimal("1e125"), RESOURCE_MAGNET]]
+            ],
+                [0, 1, 2, 3], {
+                getEffectDisplay: effectDisplayTemplates.unlock()
+            }, ["scrapBoost"]),
             unlockbeamtypes: new SkillTreeUpgradeFixed([
                 [[new Decimal(200), RESOURCE_BEAM]],
             ], [false, true], {
@@ -1303,10 +1311,10 @@ var game =
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1)
             }, ["unlockbeamtypes"]),
             tireBoost: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e2001"), RESOURCE_TIRE], [new Decimal("1e903"), RESOURCE_BRICK]],
-                [[new Decimal("1e4002"), RESOURCE_TIRE], [new Decimal("1e1503"), RESOURCE_BRICK]],
-                [[new Decimal("1e6003"), RESOURCE_TIRE], [new Decimal("1e2103"), RESOURCE_BRICK]],
-                [[new Decimal("1e10002"), RESOURCE_TIRE], [new Decimal("1e4002"), RESOURCE_BRICK]]
+                [[new Decimal("1e2001"), RESOURCE_TIRE], [new Decimal("1e309"), RESOURCE_BRICK]],
+                [[new Decimal("1e4002"), RESOURCE_TIRE], [new Decimal("1e903"), RESOURCE_BRICK]],
+                [[new Decimal("1e6003"), RESOURCE_TIRE], [new Decimal("1e1503"), RESOURCE_BRICK]],
+                [[new Decimal("1e10002"), RESOURCE_TIRE], [new Decimal("1e2103"), RESOURCE_BRICK]]
             ],
                 [new Decimal(1), new Decimal(1.1), new Decimal(1.2), new Decimal(1.3), new Decimal(1.5)], {
                 getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x^")
@@ -1342,13 +1350,13 @@ var game =
                 }, ["mergeQuestUpgFallingMagnet"]),
 
             fasterAutoMerge: new SkillTreeUpgradeFixed([
-                [[new Decimal(100), RESOURCE_MERGE_TOKEN]],
+                [[new Decimal(50), RESOURCE_MERGE_TOKEN]],
             ], [false, 50], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("-", "%")
             }, ["moreFragments"]),
 
             tireValue: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e2103"), RESOURCE_BRICK]],
+                [[new Decimal("1e666"), RESOURCE_BRICK]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["fasterAutoMerge"]),
@@ -1407,13 +1415,13 @@ var game =
             }, ["speedBoostsFragments"]),
 
             efficientEnergy: new SkillTreeUpgradeFixed([
-                [[new Decimal(2000), RESOURCE_REINFORCEDBEAM], [new Decimal(10000), RESOURCE_MERGE_TOKEN]],
+                [[new Decimal(600), RESOURCE_REINFORCEDBEAM], [new Decimal(1000), RESOURCE_MERGE_TOKEN]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockMastery", "speedBoostsFragments"]),
 
             renewableEnergy: new SkillTreeUpgradeFixed([
-                [[new Decimal(2000), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
+                [[new Decimal(800), RESOURCE_AEROBEAM], [new Decimal(1e75), RESOURCE_MAGNET]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["efficientEnergy"]),
@@ -1431,7 +1439,7 @@ var game =
             }, ["fourthMaxLevel"]),
 
             unlockPlasticBags: new SkillTreeUpgradeFixed([
-                [[new Decimal(500), RESOURCE_AEROBEAM], [new Decimal("1e2000"), RESOURCE_SCRAP], [new Decimal(1e15), RESOURCE_FRAGMENT]],
+                [[new Decimal(500), RESOURCE_AEROBEAM], [new Decimal("1e2000"), RESOURCE_SCRAP], [new Decimal(1e20), RESOURCE_FRAGMENT]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock(),
                 oneDep: true
@@ -1471,7 +1479,7 @@ var game =
             }, ["unlockPlasticBags"]),
 
             higherNeptuneMax: new SkillTreeUpgrade(
-                level => new Decimal("1e200000").pow(level + 1), RESOURCE_BRICK,
+                level => new Decimal("1e100000").pow(level + 1), RESOURCE_BRICK,
 
                 level => level * 5,
                 {
@@ -1503,7 +1511,7 @@ var game =
             }, ["tireBoost2"]),
 
             cheaperMythus: new SkillTreeUpgradeFixed([
-                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(15353), RESOURCE_GLITCHBEAM], [new Decimal(5000), RESOURCE_BARREL]],
+                [[new Decimal(40), RESOURCE_PLASTICBAG], [new Decimal(15353), RESOURCE_GLITCHBEAM], [new Decimal(4000), RESOURCE_BARREL]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["doublePlasticBags"]),
@@ -1526,13 +1534,13 @@ var game =
                 }, ["unlockScrews"]),
 
             newTireUpgrades: new SkillTreeUpgradeFixed([
-                [[new Decimal(10000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_FISHINGNET], [new Decimal("1e1000000"), RESOURCE_TIRE]],
+                [[new Decimal(2000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_FISHINGNET], [new Decimal("1e1000000"), RESOURCE_TIRE]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockScrews"]),
 
             posusAffectsDark: new SkillTreeUpgradeFixed([
-                [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e6), RESOURCE_DARKFRAGMENT], [new Decimal(1000), RESOURCE_BEAM]],
+                [[new Decimal(20000), RESOURCE_SCREW], [new Decimal(1e12), RESOURCE_DARKFRAGMENT], [new Decimal(1000), RESOURCE_BEAM]],
             ], [false, 0.5], {
                 getEffectDisplay: effectDisplayTemplates.unlockEffect("^")
             }, ["unlockScrews"]),
@@ -1545,7 +1553,7 @@ var game =
             }, ["magnetBoost"]),
 
             unlockTimeMode: new SkillTreeUpgradeFixed([
-                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(30000), RESOURCE_MERGE_TOKEN], [new Decimal(4321), RESOURCE_GLITCHBEAM]],
+                [[new Decimal("1e250"), RESOURCE_GS], [new Decimal(3000), RESOURCE_MERGE_TOKEN], [new Decimal(300), RESOURCE_GLITCHBEAM]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["newTireUpgrades"]),
@@ -1567,7 +1575,7 @@ var game =
             }, ["fallingMagnetValue"]),
 
             funnyGlitchBeams: new SkillTreeUpgradeFixed([
-                [[new Decimal(1000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_BUCKET], [new Decimal(25), RESOURCE_BLUEBRICK]],
+                [[new Decimal(1000), RESOURCE_REINFORCEDBEAM], [new Decimal(10), RESOURCE_BUCKET], [new Decimal(10), RESOURCE_BLUEBRICK]],
             ], [false, true], {
                 getEffectDisplay: effectDisplayTemplates.unlock()
             }, ["unlockTimeMode"]),
@@ -1985,6 +1993,7 @@ var game =
 
             // REMOVE YOUR STUFF
             game.dimension = 0;
+            if (game.supernova.cosmicUpgrades.hyperBuy < 1) game.settings.hyperBuy = false;
 
             setBarrelQuality(game.settings.barrelQuality);
             for (let i = 0; i < barrels.length; i++) {
@@ -2302,7 +2311,7 @@ var game =
                 level => new Decimal(1).add(0.5 * level),
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x"),
-                    integral: level => new Decimal(4).mul(new Decimal(level).pow(3)).div(3).sub(new Decimal(level).pow(2).mul(48)).add(13 * level),
+                    integral: level => new Decimal(level).pow(2).mul(3).div(2).add(37 * level),
                 }
             ),
             volans2: new AlienDustUpgrade(
@@ -2750,50 +2759,54 @@ class Unlock {
     }
 
     getName() {
-        return tto({
+        let myName = tto({
             default: this.enName,
             de: this.trans.deName,
             ru: this.trans.ruName
         });
+        return "#" + (unlocks.indexOf(this) + 1) + "  " + myName;
     }
 
     getDesc() {
-        return tto({
+        let myDesc = tto({
             default: this.enDesc,
             de: this.trans.deDesc,
             ru: this.trans.ruDesc
         });
+
+        if (typeof (myDesc) == "function") return myDesc();
+        else return myDesc;
     }
 }
 
 var showAllUnlocks = false;
 
 const unlocks = [
-    new Unlock("Golden Scrap", "1e15 Scrap", () => game.highestScrapReached.gte(1e15), { deName: "Goldener Schrott", deDesc: "1e15 Schrott", ruName: "Золотой Мусор", ruDesc: "1e15 Мусора" }),
+    new Unlock("Golden Scrap", () => formatNumber(1e15) + " Scrap", () => game.highestScrapReached.gte(1e15), { deName: "Goldener Schrott", deDesc: () => formatNumber(1e15) + " Schrott", ruName: "Золотой Мусор", ruDesc: () => formatNumber(1e15) + " Мусора" }),
     new Unlock("Solar System", "Scrap Boost (GS) Level 8", () => game.goldenScrap.upgrades.scrapBoost.level >= 8, { deName: "Sonnensystem", deDesc: "Schrott-Boost (GS) Level 8", ruName: "Солнечная Система", ruDesc: "Буст Мусора (ЗМ) Уровень 8" }),
-    new Unlock("Merge Quests", "1e93 Scrap", () => game.mergeQuests.isUnlocked(), { deName: "Merge Quests", deDesc: "1e93 Schrott", ruName: "Квесты Слияний", ruDesc: "1e93 Мусора" }),
     new Unlock("Barrel Fragments", "Barrel 100", () => game.fragment.isUnlocked(), { deName: "Fragmente", deDesc: "Tonne 100", ruName: "Фрагменты Бочек", ruDesc: "Бочка 100" }),
-    new Unlock("Merge Mastery", "1e153 Scrap", () => game.mergeMastery.isUnlocked(), { deName: "Merge Mastery", deDesc: "1e153 Schrott", ruName: "Мастерство Слияний", ruDesc: "1e153 Мусора" }),
+    new Unlock("Merge Quests", () => formatNumber(1e93) + " Scrap", () => game.mergeQuests.isUnlocked(), { deName: "Merge Quests", deDesc: () => formatNumber(1e93) + " Schrott", ruName: "Квесты Слияний", ruDesc: () => formatNumber(1e93) + " Мусора" }),
+    new Unlock("Merge Mastery", () => formatNumber(1e153) + " Scrap", () => game.mergeMastery.isUnlocked(), { deName: "Merge Mastery", deDesc: () => formatNumber(1e153) + " Schrott", ruName: "Мастерство Слияний", ruDesc: () => formatNumber(1e153) + " Мусора" }),
     new Unlock("Beams", "Barrel 300", () => game.beams.isUnlocked(), { deName: "Stahlträger", deDesc: "Tonne 300", ruName: "Балки", ruDesc: "Бочка 300" }),
-    new Unlock("Bricks", "1e213 Scrap", () => game.bricks.isUnlocked(), { deName: "Ziegelsteine", deDesc: "1e213 Schrott", ruName: "Кирпичи", ruDesc: "1e213 Мусора" }),
-    new Unlock("Skill Tree", "Earth (5e24 GS)", () => game.skillTree.isUnlocked(), { deName: "Baum", deDesc: "Erde (5e24 GS)", ruName: "Дерево Навыков", ruDesc: "Земля (5e24 ЗМ)" }),
+    new Unlock("Bricks", () => formatNumber(1e213) + " Scrap", () => game.bricks.isUnlocked(), { deName: "Ziegelsteine", deDesc: () => formatNumber(1e213) + " Schrott", ruName: "Кирпичи", ruDesc: () => formatNumber(1e213) + " Мусора" }),
+    new Unlock("Skill Tree", () => "Earth (" + formatNumber(5e24) + "GS)", () => game.skillTree.isUnlocked(), { deName: "Baum", deDesc: () => "Erde (" + formatNumber(5e24) + " GS)", ruName: "Дерево Навыков", ruDesc: () => "Земля (" + formatNumber(5e24) + " ЗМ)" }),
     new Unlock("Tires", "Barrel 500", () => game.tires.isUnlocked(), { deName: "Reifen", deDesc: "Tonne 500", ruName: "Покрышки", ruDesc: "Бочка 500" }),
     new Unlock("Wrenches", "12,000 Manual Merges", () => game.wrenches.isUnlocked(), { deName: "Schraubenschlüssel", deDesc: "12,000 eigene Verbindungen", ruName: "Гаечные Ключи", ruDesc: "12,000 Самослияний" }),
-    new Unlock("Aerobeams", "Skill Tree", () => game.aerobeams.isUnlocked(), { deName: "Aerostahl", deDesc: "Baum", ruName: "Аэробалки", ruDesc: "Дерево Навыков" }),
-    new Unlock("Angel Beams", "Earth (1e27 GS)", () => game.angelbeams.isUnlocked(), { deName: "Engelstahl", deDesc: "Erde (1e27 GS)", ruName: "Ангельские Балки", ruDesc: "Земля (1e27 ЗМ)" }),
-    new Unlock("Reinforced Beams", "Merge Mastery Level 300", () => game.reinforcedbeams.isUnlocked(), { deName: "Stahlstahl", deDesc: "Merge Mastery Level 300", ruName: "Усиленные Балки", ruDesc: "Мастерство Слияний Уровень 300" }),
-    new Unlock("Second Dimension", "Earth (1e40 GS)", () => game.darkscrap.isUnlocked(), { deName: "Zweite Dimension", deDesc: "Erde (1e40 GS)", ruName: "Второе Измерение", ruDesc: "Земля (1e40 ЗМ)" }),
-    new Unlock("Glitch Beams", "1e12 Dark Scrap + Select Aerobeams", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: "1e12 Schattenschrott + Aerostahl auswählen", ruName: "Глючные Балки", ruDesc: "1e12 Тёмного Мусора + Аэробалки" }),
+    new Unlock("Aerobeams", "Skill Tree (Row 3)", () => game.aerobeams.isUnlocked(), { deName: "Aerostahl", deDesc: "Baum (Reihe 3)", ruName: "Аэробалки", ruDesc: "Дерево Навыков (Ряд 3)" }),
+    new Unlock("Angel Beams", () => "Skill Tree (Row 3) + Earth (" + formatNumber(1e27) + " GS)", () => game.angelbeams.isUnlocked(), { deName: "Engelstahl", deDesc: () => "Baum (Reihe 3) + Erde (" + formatNumber(1e27) + " GS)", ruName: "Ангельские Балки", ruDesc: () => "Дерево Навыков (Ряд 3) + Земля (" + formatNumber(1e27) + " ЗМ)" }),
+    new Unlock("Reinforced Beams", "Skill Tree (Row 3) + Merge Mastery Level 300", () => game.reinforcedbeams.isUnlocked(), { deName: "Stahlstahl", deDesc: "Baum (Reihe 3) + Merge Mastery Level 300", ruName: "Усиленные Балки", ruDesc: "Дерево Навыков (Ряд 3) + Мастерство Слияний Уровень 300" }),
+    new Unlock("Second Dimension", () => "Earth (" + formatNumber(1e40) + " GS)", () => game.darkscrap.isUnlocked(), { deName: "Zweite Dimension", deDesc: () => "Erde (" + formatNumber(1e40) + " GS)", ruName: "Второе Измерение", ruDesc: () => "Земля (" + formatNumber(1e27) + " ЗМ)" }),
+    new Unlock("Glitch Beams", () => "Skill Tree (Row 3) + " + formatNumber(1e12) + " Dark Scrap + Select Aerobeams", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: () => "Baum (Reihe 3) + " + formatNumber(1e12) + " Schattenschrott + Aerostahl auswählen", ruName: "Глючные Балки", ruDesc: () => "Дерево Навыков (Ряд 3) + " + formatNumber(1e12) + " Тёмного Мусора + Аэробалки" }),
     new Unlock("Golden Beams", "A Glitch Beam Upgrade", () => game.glitchbeams.upgrades.goldenbeam.level > 0, { deName: "Goldener Stahl", deDesc: "Glitchstahl-Upgrade", ruName: "Золотые Балки", ruDesc: "Улучшение Глючных Балок" }),
-    new Unlock("Scrap Factory", "Earth (1e100 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: "Erde (1e100 GS)", ruName: "Фабрика Мусора", ruDesc: "Земля (1e100 ЗМ)" }),
+    new Unlock("Scrap Factory", () => "Earth (" + formatNumber(1e100) + " GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: () => "Erde (" + formatNumber(1e100) + " GS)", ruName: "Фабрика Мусора", ruDesc: () => "Земля (" + formatNumber(1e100) + " ЗМ)" }),
     new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock), { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),
     new Unlock("Auto Buyers", "Mystic Shrine", () => applyUpgrade(game.shrine.autosUnlock), { deName: "Autokäufer", deDesc: "Mythischer Schrein", ruName: "Автопокупщики", ruDesc: "Мифическое Святилище" }),
-    new Unlock("Barrel Mastery", "Skill Tree", () => game.barrelMastery.isUnlocked(), { deName: "Barrel Mastery", deDesc: "Baum", ruName: "Мастерство Бочек", ruDesc: "Дерево Навыков" }),
-    new Unlock("Plastic Bags", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), { deName: "Platiktüten", deDesc: "Baum", ruName: "Пластиковые Пакеты", ruDesc: "Дерево Навыков" }),
-    new Unlock("Gifts", "Earth (1e150 GS)", () => game.gifts.isUnlocked(), { deName: "Geschenke", deDesc: "Erde (1e150 GS)", ruName: "Подарки", ruDesc: "Земля (1e150 ЗМ)" }),
-    new Unlock("Auto Collectors", "Skill Tree", () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), { deName: "Autosammler", deDesc: "Baum", ruName: "Автосборщики", ruDesc: "Дерево Навыков" }),
-    new Unlock("Screws", "Skill Tree", () => game.screws.isUnlocked(), { deName: "Schrauben", deDesc: "Baum", ruName: "Винты", ruDesc: "Дерево Навыков" }),
-    new Unlock("Cogwheels", "Skill Tree", () => game.cogwheels.isUnlocked(), { deName: "Zahnräder", deDesc: "Baum", ruName: "Шестерёнки", ruDesc: "Дерево Навыков" }),
-    new Unlock("Supernova", "Earth (1e500 GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), { deName: "Supernova", deDesc: "Erde (1e500 GS)", ruName: "Суперновая", ruDesc: "Земля (1e500 ЗМ)" }),
+    new Unlock("Barrel Mastery", "Skill Tree (Row 12)", () => game.barrelMastery.isUnlocked(), { deName: "Barrel Mastery", deDesc: "Baum (Reihe 12)", ruName: "Мастерство Бочек", ruDesc: "Дерево Навыков (Ряд 12)" }),
+    new Unlock("Plastic Bags", "Skill Tree (Row 15)", () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), { deName: "Platiktüten", deDesc: "Baum (Reihe 15)", ruName: "Пластиковые Пакеты", ruDesc: "Дерево Навыков (Ряд 15)" }),
+    new Unlock("Gifts", () => "Earth (" + formatNumber(1e150) + " GS)", () => game.gifts.isUnlocked(), { deName: "Geschenke", deDesc: () => "Erde (" + formatNumber(1e150) + " GS)", ruName: "Подарки", ruDesc: () => "Земля (" + formatNumber(1e150) + " ЗМ)" }),
+    new Unlock("Auto Collectors", "Skill Tree (Row 18)", () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors), { deName: "Autosammler", deDesc: "Baum (Reihe 18)", ruName: "Автосборщики", ruDesc: "Дерево Навыков (Ряд 18)" }),
+    new Unlock("Screws", "Skill Tree (Row 19)", () => game.screws.isUnlocked(), { deName: "Schrauben", deDesc: "Baum (Reihe 19)", ruName: "Винты", ruDesc: "Дерево Навыков (Ряд 19)" }),
+    new Unlock("Cogwheels", "Skill Tree (Row 21)", () => game.cogwheels.isUnlocked(), { deName: "Zahnräder", deDesc: "Baum (Reihe 21)", ruName: "Шестерёнки", ruDesc: "Дерево Навыков (Ряд 21)" }),
+    new Unlock("Supernova", () => "Earth (" + formatNumber("1e500") + " GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_NOVA || game.supernova.stars.gte(1), { deName: "Supernova", deDesc: () => "Erde (" + formatNumber("1e500") + " GS)", ruName: "Суперновая", ruDesc: () => "Земля (" + formatNumber("1e500") + " ЗМ)" }),
     new Unlock("Cosmic Pins", "50 Stars", () => game.supernova.stars.gte(50), { deName: "Kosmische Pins", deDesc: "50 Sterne", ruName: "Космический Значок", ruDesc: "50 Звëзд" }),
 ];

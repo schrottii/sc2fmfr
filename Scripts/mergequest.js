@@ -47,8 +47,8 @@ class MergeQuest {
                 game.stats.totaldailyquests = game.stats.totaldailyquests.add(1);
 
                 if (game.barrelMastery.isUnlocked()) {
-                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(25);
-                    game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(25);
+                    game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(50);
+                    game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(50);
                 }
             }
 
@@ -103,13 +103,13 @@ class MergeQuest {
             ctx.drawImage(images.mergeToken, x + h * 0.13 + ctx.measureText(rewardText).width, y + h * 0.01, h * 0.05, h * 0.05);
 
             if (this.getNeededMerges() > 8000 && game.barrelMastery.isUnlocked()) {
-                ctx.fillText(25, x + h * 0.12, y + h * 0.09);
-                ctx.drawImage(images.masteryToken, x + h * 0.13 + ctx.measureText(25).width, y + h * 0.06, h * 0.05, h * 0.05);
+                ctx.fillText(50, x + h * 0.12, y + h * 0.09);
+                ctx.drawImage(images.masteryToken, x + h * 0.13 + ctx.measureText(50).width, y + h * 0.06, h * 0.05, h * 0.05);
             }
 
             ctx.font = (h * 0.025) + "px " + fonts.default;
             ctx.fillStyle = colors[C]["text"];
-            ctx.fillText("#" + this.barrelLvl, x + h * 0.035, y + h * 0.05);
+            ctx.fillText("#" + (this.barrelLvl + 1), x + h * 0.035, y + h * 0.05);
         }
         else {
             ctx.fillStyle = colors[C]["text"];

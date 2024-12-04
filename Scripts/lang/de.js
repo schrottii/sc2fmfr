@@ -22,6 +22,8 @@ const trans_de = {
     "You have found me": "Du hast mich gefunden",
     "unlocks": "Freigeschaltet",
     "notenoughgs": "Nicht genug GS!",
+    "optionNotAvailable": "Diese Option ist noch nicht verfügbar!",
+    "hyperbuy": "Hyper Buy",
 
     // OPTIONS
     "Options": "Einstellungen",
@@ -557,7 +559,7 @@ const trans_de = {
     em11: "Stärkere Auto-\nsammler",
     em12: "Autoverbinden\nschneller",
     em13: "Schnellere 2. Dim",
-    em14: "Hyper Buy",
+    em14: "Hyper Buy behalten",
     em15: "10 Mythus Level\npro Level",
     em16: "20% mehr Staub",
     em17: "Autosammler\nbehalten",

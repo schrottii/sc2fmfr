@@ -22,6 +22,8 @@ const trans_en = {
     "You have found me": "You have found me",
     "unlocks": "Unlocks",
     "notenoughgs": "Not enough GS!",
+    "optionNotAvailable": "This option is not available yet!",
+    "hyperbuy": "Hyper Buy",
 
     // OPTIONS
     "Options": "Options",
@@ -557,7 +559,7 @@ const trans_en = {
     em11: "Stronger\nAuto Collectors",
     em12: "Faster Auto Merge",
     em13: "Faster\n2nd Dim",
-    em14: "Hyper Buy",
+    em14: "Keep Hyper Buy",
     em15: "Get 10 Mythus\nLevels at once",
     em16: "Earn 20%\nmore Dust",
     em17: "Keep Auto Collectors\nafter Supernova",

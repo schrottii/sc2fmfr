@@ -724,6 +724,15 @@ class UIToggleOption extends UIGroup {
                 valign: "middle",
                 isVisible: isVisible
             }),
+            new UIText(() => tt("optionNotAvailable"), 0.2, y, 0.04, "black", {
+                halign: "left",
+                valign: "middle",
+                isVisible: () => {
+                    if (typeof (isVisible) != "function") return false;
+                    let ugh = isVisible;
+                    return !ugh();
+                }
+            }),
         ]);
     }
 }
@@ -737,7 +746,16 @@ class UIOption extends UIGroup {
                 halign: "left",
                 valign: "middle",
                 isVisible: isVisible
-            })
+            }),
+            new UIText(() => tt("optionNotAvailable"), 0.2, y, 0.04, "black", {
+                halign: "left",
+                valign: "middle",
+                isVisible: () => {
+                    if (typeof (isVisible) != "function") return false;
+                    let ugh = isVisible;
+                    return !ugh();
+                }
+            }),
         ])
     }
 }

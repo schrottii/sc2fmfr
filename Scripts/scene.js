@@ -1516,7 +1516,10 @@ var scenes =
 
 
                 new UIButton(0.3, 0.55, 0.15, 0.15, images.beam, () => game.beams.selected = 0, { quadratic: true }),
-                new UIButton(0.7, 0.55, 0.15, 0.15, images.aerobeam, () => game.beams.selected = 1, { quadratic: true }),
+                new UIButton(0.7, 0.55, 0.15, 0.15, images.aerobeam, () => game.beams.selected = 1, {
+                    quadratic: true,
+                    isVisible: () => { return game.aerobeams.isUnlocked() }
+                }),
                 new UIButton(0.3, 0.7, 0.15, 0.15, images.angelbeam, () => game.beams.selected = 2, {
                     quadratic: true,
                     isVisible: () => { return game.angelbeams.isUnlocked() }

@@ -436,7 +436,7 @@ const trans_en = {
     re1: "Reinforced Beams are worth more,\nbut are harder to collect",
     re2: "Reinforced Beams are easier\nto collect (Min. 2)",
     re3: "Chance to collect Reinforced\nBeams 3x faster",
-    re4: "x2 Bricks, but 75% more merges",
+    re4: "Reinforced Bricks: x2 Bricks (exp.)\nbut +75% merges (add.)",
     re5: "Get More Fragments",
     re6: "Get More Dark Fragments",
 

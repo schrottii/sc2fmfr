@@ -436,7 +436,7 @@ const trans_de = {
     re1: "Stahlstahl ist mehr wert,\naber schwerer zu sammeln",
     re2: "Stahlstahl ist einfacher\nzu sammeln (Min. 2)",
     re3: "Chance auf 3x einfacher Stahlstahl\nsammeln",
-    re4: "x2 Ziegelsteine, aber\n+75% Verbindungen",
+    re4: "x2 Ziegelsteine (mul.)\n+75% Verbindungen (add.)",
     re5: "Mehr Fragmente",
     re6: "Mehr Schattenfragmente",
 

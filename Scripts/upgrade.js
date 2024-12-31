@@ -359,7 +359,6 @@ class ScrapUpgrade {
             level = 10000;
 
             if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
-                //console.log("integral mode");
                 // Keep doubling as long as possible
                 while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level *= 2;
@@ -370,7 +369,6 @@ class ScrapUpgrade {
                 while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level = Math.floor(level * 1.02);
                 }
-                //console.log(level);
 
                 // Set level, remove currency
                 level = Math.min(this.maxLevel - this.level, level);
@@ -379,7 +377,7 @@ class ScrapUpgrade {
 
                 resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
-                if (isNaN(resource) && !resource.gte(10)) //is resource negative
+                if (isNaN(resource) && !resource.gte(1)) //is resource negative
                 {
                     resource = new Decimal(0);
                 }
@@ -396,7 +394,7 @@ class ScrapUpgrade {
             }
         }
         else {
-            if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100);
+            if (originHyper) resource = getUpgradeResource(this.resource).mul(Math.min(100, game.settings.hyperBuyPer) / 100).round();
             else resource = getUpgradeResource(this.resource);
         }
 
@@ -410,7 +408,7 @@ class ScrapUpgrade {
         }
 
         let maxAttempts = 10000;
-        while (this.currentPrice().lt(resource) && this.level < level && this.level < this.getMaxLevel() && maxAttempts > 0 && this.level < HARDLEVELCAP) {
+        while (this.currentPrice().lte(resource) && this.level < level && this.level < this.getMaxLevel() && maxAttempts > 0 && this.level < HARDLEVELCAP) {
             this.buy(round);
             maxAttempts -= 1;
             if (!originHyper) resource = getUpgradeResource(this.resource);

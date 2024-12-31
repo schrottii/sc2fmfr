@@ -465,7 +465,7 @@ function update() {
                             }
                             else {
                                 movingItemFactory.fallingAeroBeam(getAeroBeamValue());
-                                if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && game.darkscrap.amount.gte(new Decimal(1e12)) && game.glitchesCollected < 10) {
+                                if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && (game.darkscrap.amount.gte(new Decimal(1e12)) || game.glitchesCollected > 0) && game.glitchesCollected < 10) {
                                     movingItemFactory.glitchItem(1);
                                 }
                             }
@@ -677,7 +677,7 @@ function getGlitchBeamValue() {
 }
 
 function getGlitchBeamMinValue() {
-    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.minimumValue))
+    return new Decimal(applyUpgrade(game.glitchbeams.upgrades.minimumValue)).min(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
         .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))

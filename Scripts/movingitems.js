@@ -364,19 +364,17 @@ var movingItemFactory =
         movingItems.push(new FallingItem(images.movingItems.glitchbeam, "glitchbeams", w * 0.15 + Math.random() * w * 0.7, -100, h * 0.15 * rndm, h * 0.15 * rndm, h * (0.6 - applyUpgrade(game.beams.upgrades.slowerBeams)), h * 0.1, 0,
             function (isAuto = false) {
                 if (this.cooldown < 0.05) return false;
+
                 if (Math.random() < applyUpgrade(game.reinforcedbeams.upgrades.powerpunch) / 100 || isAuto) {
                     this.progress += 3;
                     basicAchievementUnlock(131, !isAuto);
-                    this.x = w * Math.random();
-                    this.y = h * Math.min(Math.random(), 0.6);
                 }
                 else {
                     this.progress += 1;
-                    this.x = w * Math.random();
-                    this.y = h * Math.min(Math.random(), 0.6);
                 }
-                this.cooldown = 0;
+
                 if (this.progress >= 3) {
+                    // is done collecting
                     this.collected = true;
                     if (game.settings.lowPerformance) {
                         this.destroy();
@@ -392,10 +390,16 @@ var movingItemFactory =
                         game.stats.gbeamstp = game.stats.gbeamstp.add(value);
                         game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
                     }
-                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }));
                 }
                 else {
-                    currentScene.popupTexts.push(new PopUpText(((this.progress / 3) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                    // not done collecting yet
+                    currentScene.popupTexts.push(new PopUpText(((this.progress / 3) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }));
+
+                    // teleport
+                    this.x = w * Math.random();
+                    this.y = h * Math.min(Math.random(), 0.6);
+                    this.cooldown = 0;
                 }
             }, 0))
     },

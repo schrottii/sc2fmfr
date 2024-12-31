@@ -730,6 +730,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.goldenScrap, () => {
+                    if (game.dimension == 1 && !confirm("Note: This is a normal prestige, you get GS, not Dark Scrap")) return false;
                     if (game.goldenScrap.getResetAmount().gt(0)) {
                         if (!game.settings.resetConfirmation || confirm(tt("gsreset").replace("<amount>", formatNumber(game.goldenScrap.getResetAmount())))) {
                             game.goldenScrap.reset();
@@ -1724,10 +1725,16 @@ var scenes =
                         game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(Decimal.floor(game.reinforcedbeams.upgrades.reinforce.getPrice(game.reinforcedbeams.upgrades.reinforce.level).div(2)))
                         game.reinforcedbeams.upgrades.reinforce.level -= 1;
                     }
-                }, { quadratic: true }),
+                }, { quadratic: true, isVisible: () => game.reinforcedbeams.upgrades.reinforce.level > 0 }),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.strength, images.upgrades.reinforcedBeamPower, 0.55, "re2", "table2"),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.powerpunch, images.upgrades.reinforcedBeamCrit, 0.65, "re3"),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.reinforcedbricks, images.upgrades.reinforcedBricks, 0.75, "re4", "table2"),
+                new UIButton(0.775, 0.775, 0.05, 0.05, images.buttonReset, () => {
+                    if (confirm("Do you really want to reduce this upgrade by 1 level and get 50% back?") && game.reinforcedbeams.upgrades.reinforcedbricks.level > 0) {
+                        game.reinforcedbeams.amount = game.reinforcedbeams.amount.add(Decimal.floor(game.reinforcedbeams.upgrades.reinforcedbricks.getPrice(game.reinforcedbeams.upgrades.reinforcedbricks.level).div(2)))
+                        game.reinforcedbeams.upgrades.reinforcedbricks.level -= 1;
+                    }
+                }, { quadratic: true, isVisible: () => game.reinforcedbeams.upgrades.reinforcedbricks.level > 0 }),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.fragmentBoost, images.upgrades.moreFragments, 0.85, "re5", "table", () => { return game.angelbeams.upgrades.gsBoost.level > 9 }),
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.darkFragmentBoost, images.upgrades.moreFragments, 0.95, "re6", "table2", () => { return game.reinforcedbeams.upgrades.fragmentBoost.level > 9 }),
 
@@ -3068,7 +3075,7 @@ var scenes =
                     fillTank();
                 }, { quadratic: true }),
                 new UIButton(0.8, 0.5, 0.07, 0.07, images.fillthetank, () => {
-                    while (game.glitchbeams.amount.gte(5) && game.factory.tank.lt(getTankSize())) {
+                    while (game.glitchbeams.amount.round().gte(5) && game.factory.tank.lt(getTankSize())) {
                         fillTank();
                     }
                 }, {

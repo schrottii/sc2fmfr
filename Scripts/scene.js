@@ -333,7 +333,7 @@ var scenes =
 
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
-                ctx.fillText("Fanmade+++", w * 0.5, h * 0.925);
+                ctx.fillText("Scrap Clicker 5", w * 0.5, h * 0.925);
 
             }),
         new Scene("Barrels",
@@ -2862,22 +2862,25 @@ var scenes =
 
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.2, w, w);
+
+                let achX = 0, achY = 0, iid = 0, iX = 0, iY = 0;
+
                 for (let i = perPage * game.milestones.page; i < Math.min(perPage * game.milestones.page + perPage, maxTrophies); i++) {
                     // position the achievement
-                    let x = (tSize / 5) * (i % perRow);
-                    let y = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
+                    achX = (tSize / 5) * (i % perRow);
+                    achY = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
 
                     // grab the right image
-                    let iid = game.milestones.achievements[i].imageId;
-                    let iX = 256 * (iid % 10);
-                    let iY = 256 * Math.floor(iid / 10);
+                    iid = game.milestones.achievements[i].imageId;
+                    iX = 256 * (iid % 10);
+                    iY = 256 * Math.floor(iid / 10);
 
-                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, x, y, tSize / 5, tSize / 5);
-                    if (game.milestones.achievements[i].id == game.milestones.highlighted) {
-                        ctx.drawImage(images.highlightedSlot, x, y, tSize / 5, tSize / 5);
+                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, achX, achY, tSize / 5, tSize / 5);
+                    if (game.milestones.achievements[i].id == game.milestones.highlighted) { // the milestone you selected
+                        ctx.drawImage(images.highlightedSlot, achX, achY, tSize / 5, tSize / 5);
                     }
-                    if (game.milestones.achievements[i].id == game.milestones.next) {
-                        ctx.drawImage(images.nextSlot, x, y, tSize / 5, tSize / 5);
+                    if (game.milestones.achievements[i].id == game.milestones.next) { // the milestone you should go for next
+                        ctx.drawImage(images.nextSlot, achX, achY, tSize / 5, tSize / 5);
                     }
 
                     ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";

@@ -576,7 +576,7 @@ var game =
         amount: new Decimal(0),
         productionLevel: new Decimal(0),
         currentMergeProgress: 0,
-        mergesPerLevel: () => Math.max(8, Math.round((250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() * (1 - game.skillTree.upgrades.fasterBricks.level / 100) / (1 + applyUpgrade(game.screws.upgrades.fasterBricks) / 100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level) + 1))),
+        mergesPerLevel: () => Math.max(8, Math.round((250 * applyUpgrade(game.tires.upgrades[0][1]).toNumber() * applyUpgrade(game.magnetUpgrades.brickSpeed).toNumber() / (1 + game.skillTree.upgrades.fasterBricks.level / 100) / (1 + applyUpgrade(game.screws.upgrades.fasterBricks) / 100)) * ((0.75 * game.reinforcedbeams.upgrades.reinforcedbricks.level) + 1))),
         isUnlocked: () => game.highestScrapReached.gte(1e213),
         getProduction: level => {
             if (level === 0) {
@@ -1291,8 +1291,8 @@ var game =
                 [[new Decimal("1e84"), RESOURCE_MAGNET]],
                 [[new Decimal("1e125"), RESOURCE_MAGNET]]
             ],
-                [0, 1, 2, 3], {
-                getEffectDisplay: effectDisplayTemplates.unlock()
+                ["Get Hyperbuy", "Level option", "% option", "MAXED!"], {
+                getEffectDisplay: effectDisplayTemplates.unlockEffect()
             }, ["scrapBoost"]),
             unlockbeamtypes: new SkillTreeUpgradeFixed([
                 [[new Decimal(200), RESOURCE_BEAM]],
@@ -1609,7 +1609,7 @@ var game =
                 level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),
                 level => new Decimal(1 + (0.05 * level)),
                 {
-                    getEffectDisplay: effectDisplayTemplates.numberStandard(1, "x", "^L1")
+                    getEffectDisplay: effectDisplayTemplates.numberStandard(2, "x", "^L1")
                 }),
             goldenScrapBoost: new MasteryTokenUpgrade(
                 level => new Decimal(Math.round(2 * Math.max(1, (level / 2) - 5))),

@@ -1045,10 +1045,10 @@ var scenes =
                 drawCurrencyBar(game.barrelMastery.masteryTokens, images.masteryToken);
 
                 for (i = 0; i < 5; i++) {
-                    ctx.fillStyle = "black";
+                    ctx.fillStyle = colors[C]["text"];
                     ctx.font = (h * 0.04) + "px " + fonts.default;
                     ctx.textAlign = "center";
-                    ctx.fillText("Unlocked at 10 mastery level " + (i + 1) + " barrels!", w * 0.5, h * (0.4 + (0.125 * i)), w * 0.5);
+                    ctx.fillText("Unlocked at 10 mastery level " + (i + 1) + " barrels!", w * 0.5, h * (0.4 + (0.125 * i)), w * 0.75);
 
                     ctx.fillStyle = "rgb(66, 66, 66)";
                     ctx.fillRect(0, h * (0.445 + (0.125 * i)), w, h * 0.025);
@@ -1061,7 +1061,7 @@ var scenes =
                     ctx.textAlign = "left";
                     ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(
                         game.barrelMastery.upgrades[["scrapBoost", "goldenScrapBoost", "brickBoost", "fragmentBoost", "magnetBoost"][i]]
-                    )).pow(getTotalLevels(i + 1))), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
+                    )).pow(getTotalLevels(i + 1)), undefined, { precision: 3 }), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
                 }
             }),
         new Scene("Mastery2",
@@ -1087,7 +1087,7 @@ var scenes =
                 drawCurrencyBar(game.barrelMastery.masteryTokens, images.masteryToken);
 
                 for (i = 0; i < 5; i++) {
-                    ctx.fillStyle = "black";
+                    ctx.fillStyle = colors[C]["text"];
                     ctx.font = (h * 0.04) + "px " + fonts.default;
                     ctx.textAlign = "center";
                     ctx.fillText("Unlocked at 20 mastery level " + (i + 6) + " barrels!", w * 0.5, h * (0.4 + (0.125 * i)), w * 0.5);
@@ -1103,7 +1103,7 @@ var scenes =
                     ctx.textAlign = "left";
                     ctx.fillText("x" + formatNumber(new Decimal(applyUpgrade(
                         game.barrelMastery.upgrades[["beamBoost", "darkFragmentBoost", "tireBoost", "screwBoost", "darkScrapBoost"][i]]
-                    )).pow(getTotalLevels(i + 6))), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
+                    )).pow(getTotalLevels(i + 6)), undefined, { precision: 3 }), w * 0.025, h * (0.4475 + (0.125 * i)), w * 0.15);
                 }
             }),
         new Scene("SolarSystem",
@@ -3189,29 +3189,29 @@ var scenes =
                     new UIRect(0.5, 6.7, 1, 0.3, "table2"),
                     new UIRect(0.5, 7.0, 1, 0.3, "table"),
 
-                    new UIText("Row 1", 0.9625, 0.25, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 2", 0.9625, 0.25 + 0.3 * 1, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 3", 0.9625, 0.25 + 0.3 * 2, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 4", 0.9625, 0.25 + 0.3 * 3, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 5", 0.9625, 0.25 + 0.3 * 4, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 6", 0.9625, 0.25 + 0.3 * 5, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 7", 0.9625, 0.25 + 0.3 * 6, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 8", 0.9625, 0.25 + 0.3 * 7, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 9", 0.9625, 0.25 + 0.3 * 8, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 10", 0.9625, 0.25 + 0.3 * 9, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 11", 0.9625, 0.25 + 0.3 * 10, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 12", 0.9625, 0.25 + 0.3 * 11, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 13", 0.9625, 0.25 + 0.3 * 12, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 14", 0.9625, 0.25 + 0.3 * 13, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 15", 0.9625, 0.25 + 0.3 * 14, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 16", 0.9625, 0.25 + 0.3 * 15, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 17", 0.9625, 0.25 + 0.3 * 16, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 18", 0.9625, 0.25 + 0.3 * 17, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 19", 0.9625, 0.25 + 0.3 * 18, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 20", 0.9625, 0.25 + 0.3 * 19, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 21", 0.9625, 0.25 + 0.3 * 20, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 22", 0.9625, 0.25 + 0.3 * 21, 0.03, "#0019A8", { halign: "right" }),
-                    new UIText("Row 23", 0.9625, 0.25 + 0.3 * 22, 0.03, "#0019A8", { halign: "right" }),
+                    new UIText("Row 1", 0.9625, 0.25, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 2", 0.9625, 0.25 + 0.3 * 1, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 3", 0.9625, 0.25 + 0.3 * 2, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 4", 0.9625, 0.25 + 0.3 * 3, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 5", 0.9625, 0.25 + 0.3 * 4, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 6", 0.9625, 0.25 + 0.3 * 5, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 7", 0.9625, 0.25 + 0.3 * 6, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 8", 0.9625, 0.25 + 0.3 * 7, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 9", 0.9625, 0.25 + 0.3 * 8, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 10", 0.9625, 0.25 + 0.3 * 9, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 11", 0.9625, 0.25 + 0.3 * 10, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 12", 0.9625, 0.25 + 0.3 * 11, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 13", 0.9625, 0.25 + 0.3 * 12, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 14", 0.9625, 0.25 + 0.3 * 13, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 15", 0.9625, 0.25 + 0.3 * 14, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 16", 0.9625, 0.25 + 0.3 * 15, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 17", 0.9625, 0.25 + 0.3 * 16, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 18", 0.9625, 0.25 + 0.3 * 17, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 19", 0.9625, 0.25 + 0.3 * 18, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 20", 0.9625, 0.25 + 0.3 * 19, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 21", 0.9625, 0.25 + 0.3 * 20, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 22", 0.9625, 0.25 + 0.3 * 21, 0.03, "black", { halign: "right" }),
+                    new UIText("Row 23", 0.9625, 0.25 + 0.3 * 22, 0.03, "black", { halign: "right" }),
 
                     new UISkillTreePath(0.5, 0.4, 0.5, 0.65, 0.01, "skillTreePath", game.skillTree.upgrades.scrapBoost),
 

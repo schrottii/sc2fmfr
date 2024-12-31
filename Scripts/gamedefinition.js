@@ -323,9 +323,9 @@ var game =
             ),
             venus: new ScrapUpgrade(
                 level => Decimal.pow(10, 50 + level * (5 + Math.max(1, level - 19))),
-                level => new Decimal((1 - Math.pow(0.8, Math.max(0, level - 1))) * 0.3 + (level > 0 ? 0.2 : 0)),
+                level => level == 20 ? new Decimal(0.5) : new Decimal((1 - Math.pow(0.8, Math.max(0, level - 1))) * 0.3 + (level > 0 ? 0.2 : 0)),
                 {
-                    maxLevel: 30,
+                    maxLevel: 20,
                     getEffectDisplay: effectDisplayTemplates.percentStandard(1)
                 }
             ),
@@ -1715,10 +1715,10 @@ var game =
                 level => 1,
                 {
                     getEffectDisplay: () => tt("factory1e"),
-                    onBuy: () => {
-                        if (!game.settings.hyperBuy) game.factory.time = 5 * craftingMulti();
-                        game.factory.legendaryScrap = game.factory.legendaryScrap.add(1);
-                        game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(1);
+                    onBuy: (multi = 1) => {
+                        game.factory.time = 5 * craftingMulti() * multi;
+                        game.factory.legendaryScrap = game.factory.legendaryScrap.add(multi);
+                        game.stats.totallegendaryscrap = game.stats.totallegendaryscrap.add(multi);
                     }
                 }, level => [[new Decimal(1e25).pow(1 + level).mul(new Decimal(1e25).pow(Math.max(1, level - 49))).mul(new Decimal(1e25).pow(Math.max(1, level - 199))), RESOURCE_SCRAP], [new Decimal(1.3).pow(level).mul(1e6), RESOURCE_DARKSCRAP]]),
             steelMagnets: new FactoryUpgrade(
@@ -1726,10 +1726,10 @@ var game =
                 level => 1,
                 {
                     getEffectDisplay: () => tt("factory2e"),
-                    onBuy: () => {
-                        if (!game.settings.hyperBuy) game.factory.time = 10 * craftingMulti();
-                        game.factory.steelMagnets = game.factory.steelMagnets.add(1);
-                        game.stats.totalsteelmagnets = game.stats.totalsteelmagnets.add(1);
+                    onBuy: (multi = 1) => {
+                        game.factory.time = 10 * craftingMulti() * multi;
+                        game.factory.steelMagnets = game.factory.steelMagnets.add(multi);
+                        game.stats.totalsteelmagnets = game.stats.totalsteelmagnets.add(multi);
                     }
                 }, level => [[new Decimal(1000000).mul(new Decimal(100).pow(level)), RESOURCE_MAGNET], [new Decimal(100), RESOURCE_BEAM]]),
             blueBricks: new FactoryUpgrade(
@@ -1737,10 +1737,10 @@ var game =
                 level => 1,
                 {
                     getEffectDisplay: () => tt("factory3e"),
-                    onBuy: () => {
-                        if (!game.settings.hyperBuy) game.factory.time = 45 * craftingMulti();
-                        game.factory.blueBricks = game.factory.blueBricks.add(1);
-                        game.stats.totalbluebricks = game.stats.totalbluebricks.add(1);
+                    onBuy: (multi = 1) => {
+                        game.factory.time = 45 * craftingMulti() * multi;
+                        game.factory.blueBricks = game.factory.blueBricks.add(multi);
+                        game.stats.totalbluebricks = game.stats.totalbluebricks.add(multi);
                     }
                 }, level => [[new Decimal("1e10000").mul(new Decimal("1e1000").pow(level * Math.min(10 + Math.max(0, (level / 5) - 10), Math.max(1, level - 14)))), RESOURCE_BRICK], [new Decimal(75), RESOURCE_AEROBEAM]]),
             buckets: new FactoryUpgrade(
@@ -1748,10 +1748,10 @@ var game =
                 level => 1,
                 {
                     getEffectDisplay: () => tt("factory4e"),
-                    onBuy: () => {
-                        if (!game.settings.hyperBuy) game.factory.time = 30 * craftingMulti();
-                        game.factory.buckets = game.factory.buckets.add(1);
-                        game.stats.totalbuckets = game.stats.totalbuckets.add(1);
+                    onBuy: (multi = 1) => {
+                        game.factory.time = 30 * craftingMulti() * multi;
+                        game.factory.buckets = game.factory.buckets.add(multi);
+                        game.stats.totalbuckets = game.stats.totalbuckets.add(multi);
                     }
                 }, level => [[new Decimal(1e90).mul(new Decimal(25).pow(level)), RESOURCE_GS], [new Decimal(500), RESOURCE_ANGELBEAM]]),
             fishingNets: new FactoryUpgrade(
@@ -1759,10 +1759,10 @@ var game =
                 level => 1,
                 {
                     getEffectDisplay: () => tt("factory5e"),
-                    onBuy: () => {
-                        if (!game.settings.hyperBuy) game.factory.time = 60 * craftingMulti();
-                        game.factory.fishingNets = game.factory.fishingNets.add(1);
-                        game.stats.totalfishingnets = game.stats.totalfishingnets.add(1);
+                    onBuy: (multi = 1) => {
+                        game.factory.time = 60 * craftingMulti() * multi;
+                        game.factory.fishingNets = game.factory.fishingNets.add(multi);
+                        game.stats.totalfishingnets = game.stats.totalfishingnets.add(multi);
                     }
                 }, level => [[new Decimal(1 + Math.floor(level / 100)), RESOURCE_PLASTICBAG], [new Decimal(300), RESOURCE_REINFORCEDBEAM]]),
         },
@@ -2707,7 +2707,7 @@ var game =
     },
     barrelGallery:
     {
-        getMaxPage: () => Math.round(Math.round(Barrel.getMaxLevelBarrel()) / 20)
+        getMaxPage: () => Math.floor(Math.round(Barrel.getMaxLevelBarrel()) / 20)
     },
     settings:
     {
@@ -2797,7 +2797,8 @@ const unlocks = [
     new Unlock("Angel Beams", () => "Skill Tree (Row 3) + Earth (" + formatNumber(1e27) + " GS)", () => game.angelbeams.isUnlocked(), { deName: "Engelstahl", deDesc: () => "Baum (Reihe 3) + Erde (" + formatNumber(1e27) + " GS)", ruName: "Ангельские Балки", ruDesc: () => "Дерево Навыков (Ряд 3) + Земля (" + formatNumber(1e27) + " ЗМ)" }),
     new Unlock("Reinforced Beams", "Skill Tree (Row 3) + Merge Mastery Level 300", () => game.reinforcedbeams.isUnlocked(), { deName: "Stahlstahl", deDesc: "Baum (Reihe 3) + Merge Mastery Level 300", ruName: "Усиленные Балки", ruDesc: "Дерево Навыков (Ряд 3) + Мастерство Слияний Уровень 300" }),
     new Unlock("Second Dimension", () => "Earth (" + formatNumber(1e40) + " GS)", () => game.darkscrap.isUnlocked(), { deName: "Zweite Dimension", deDesc: () => "Erde (" + formatNumber(1e40) + " GS)", ruName: "Второе Измерение", ruDesc: () => "Земля (" + formatNumber(1e27) + " ЗМ)" }),
-    new Unlock("Glitch Beams", () => "Skill Tree (Row 3) + " + formatNumber(1e12) + " Dark Scrap + Select Aerobeams", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: () => "Baum (Reihe 3) + " + formatNumber(1e12) + " Schattenschrott + Aerostahl auswählen", ruName: "Глючные Балки", ruDesc: () => "Дерево Навыков (Ряд 3) + " + formatNumber(1e12) + " Тёмного Мусора + Аэробалки" }),
+    new Unlock("Glitches", () => "Skill Tree (Row 3) + " + formatNumber(1e12) + " Dark Scrap + Select Aerobeams", () => game.glitchesCollected > 0, { deName: "Glitche", deDesc: () => "Baum (Reihe 3) + " + formatNumber(1e12) + " Schattenschrott + Aerostahl auswählen", ruName: "Глючные", ruDesc: () => "Дерево Навыков (Ряд 3) + " + formatNumber(1e12) + " Тёмного Мусора + Аэробалки" }),
+    new Unlock("Glitch Beams", () => "10 Glitches", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: () => "10 Glitche", ruName: "Глючные Балки", ruDesc: () => "10 Глючные" }),
     new Unlock("Golden Beams", "A Glitch Beam Upgrade", () => game.glitchbeams.upgrades.goldenbeam.level > 0, { deName: "Goldener Stahl", deDesc: "Glitchstahl-Upgrade", ruName: "Золотые Балки", ruDesc: "Улучшение Глючных Балок" }),
     new Unlock("Scrap Factory", () => "Earth (" + formatNumber(1e100) + " GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: () => "Erde (" + formatNumber(1e100) + " GS)", ruName: "Фабрика Мусора", ruDesc: () => "Земля (" + formatNumber(1e100) + " ЗМ)" }),
     new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock), { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),

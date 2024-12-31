@@ -26,6 +26,11 @@ class Barrel {
         if (draggedBarrel !== undefined) {
             income = income.add(draggedBarrel.getIncome());
         }
+
+        // anti infinity measures
+        if (income == "Infinity" || new Decimal("1e1e305").lt(income)) income = new Decimal(0);
+        if (game.scrap == "Infinity" || isNaN(game.scrap)) game.scrap = new Decimal(0);
+
         return income;
     }
 

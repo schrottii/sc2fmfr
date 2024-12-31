@@ -379,7 +379,11 @@ function update() {
             ctx.textAlign = "left";
             ctx.textBaseline = "top";
             ctx.fillStyle = "white";
-            ctx.fillText(fpsDisplay + " fps", w * 0.01, h * 0.005, w);
+            ctx.fillText(fpsDisplay + " fps", w * 0.015, h * 0.005, w);
+        }
+        if (game.settings.hyperBuy) {
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(0, 0, w * 0.01, h * 0.025);
         }
 
         if (gameNotifications.length > 0) {

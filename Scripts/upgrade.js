@@ -343,7 +343,7 @@ class ScrapUpgrade {
         else if (this.resource == 7 && game.settings.hyperBuy2) {
             // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
-            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.min(HARDLEVELCAP, Math.max(0, Math.floor(((resource - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20)));
+            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.min(HARDLEVELCAP, Math.max(0, Math.floor(((Math.floor(resource) - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20)));
             else game.skillTree.upgrades.higherDarkScrapTokenMax.level = Math.min(14, Math.floor(resource / 1200));
             this.onBuy();
             this.afterBuy();
@@ -767,7 +767,7 @@ class FactoryUpgrade extends ScrapUpgrade {
         }
         return str;
     }
-    buy(round) {
+    buy(round, hyperbuy = false) {
         if (game.factory.time > 0) return false;
         if (game.factory.tank.round().lt(this.getPrice(0))) return false;
         let resource = getUpgradeResource(this.resource);
@@ -782,7 +782,7 @@ class FactoryUpgrade extends ScrapUpgrade {
 
         let canAfford = round ? (this.currentPrice().round().lte(resource.round())) : this.currentPrice().lte(resource);
         if (this.level < this.getMaxLevel() && canAfford) {
-            this.onBuy();
+            if (!hyperbuy) this.onBuy();
 
             for (let p of this.getCurrentPrices()) {
                 let resource = getUpgradeResource(p[1]);
@@ -812,9 +812,11 @@ class FactoryUpgrade extends ScrapUpgrade {
         else {
             let resource = getUpgradeResource(this.resource);
             let canAfford = true;
+            let levelsBefore = this.level;
             while (this.level < this.getMaxLevel() && canAfford && level > this.level) {
-                canAfford = this.buy(round);
+                canAfford = this.buy(round, true);
             }
+            this.onBuy(this.level - levelsBefore);
         }
     }
 }

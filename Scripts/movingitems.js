@@ -219,7 +219,7 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.magnets = game.magnets.add(value);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingGold: (value) => {
@@ -230,7 +230,7 @@ var movingItemFactory =
                     this.destroy();
                 }
                 game.goldenScrap.amount = game.goldenScrap.amount.add(value);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     jumpingTire: value => {
@@ -262,10 +262,10 @@ var movingItemFactory =
 
                 if (Math.random() < applyUpgrade(game.aerobeams.upgrades.tireCloneChance) / 100) {
                     movingItemFactory.jumpingTire();
-                    currentScene.popupTexts.push(new PopUpText(tt("spawned"), this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
+                    currentScene.popupTexts.push(new PopUpText(tt("spawned"), this.x, this.y + 50, { color: "#bbbbbb", bold: true, size: 0.06, border: h * 0.005 }))
                     basicAchievementUnlock(112);
                 }
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(v), this.x, this.y, { color: "#bbbbbb", bold: true, size: 0.06, border: h * 0.005 }))
             }))
     },
     fallingTireBG: (value) => {
@@ -287,7 +287,7 @@ var movingItemFactory =
                 game.stats.totalbeams = game.stats.totalbeams.add(value);
                 game.stats.beamstp = game.stats.beamstp.add(value);
                 game.stats.totalbeamscollected = game.stats.totalbeamscollected.add(1);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingAeroBeam: (value) => {
@@ -303,7 +303,7 @@ var movingItemFactory =
                 game.stats.totalaerobeams = game.stats.totalaerobeams.add(value);
                 game.stats.aebeamstp = game.stats.aebeamstp.add(value);
                 game.stats.totalaerobeamscollected = game.stats.totalaerobeamscollected.add(1);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingAngelBeam: (value) => {
@@ -319,7 +319,7 @@ var movingItemFactory =
                 game.stats.totalangelbeams = game.stats.totalangelbeams.add(value);
                 game.stats.abeamstp = game.stats.abeamstp.add(value);
                 game.stats.totalangelbeamscollected = game.stats.totalangelbeamscollected.add(1);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingReinforcedBeam: (value) => {
@@ -351,10 +351,10 @@ var movingItemFactory =
                     game.stats.totalreinforcedbeams = game.stats.totalreinforcedbeams.add(value);
                     game.stats.rbeamstp = game.stats.rbeamstp.add(value);
                     game.stats.totalreinforcedbeamscollected = game.stats.totalreinforcedbeamscollected.add(1);
-                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
                 }
                 else {
-                    currentScene.popupTexts.push(new PopUpText(((this.progress / getReinforcedTapsNeeded()) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                    currentScene.popupTexts.push(new PopUpText(((this.progress / getReinforcedTapsNeeded()) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
                 }
             }, 0))
     },
@@ -390,11 +390,11 @@ var movingItemFactory =
                         game.stats.gbeamstp = game.stats.gbeamstp.add(value);
                         game.stats.totalglitchbeamscollected = game.stats.totalglitchbeamscollected.add(1);
                     }
-                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }));
+                    currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }));
                 }
                 else {
                     // not done collecting yet
-                    currentScene.popupTexts.push(new PopUpText(((this.progress / 3) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }));
+                    currentScene.popupTexts.push(new PopUpText(((this.progress / 3) * 100).toFixed(0) + "%", this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }));
 
                     // teleport
                     this.x = w * Math.random();
@@ -411,7 +411,7 @@ var movingItemFactory =
                 if (game.glitchesCollected == 10) {
                     GameNotification.create(new TextNotification(tt("not_glitch"), tt("not_glitch2")));
                 }
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingGoldenBeam: (value) => {
@@ -425,7 +425,7 @@ var movingItemFactory =
 
                 awardGoldenBeam(value);
 
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
     fallingScrew: (value) => {
@@ -439,7 +439,7 @@ var movingItemFactory =
                 game.screws.amount = game.screws.amount.add(value);
                 game.stats.totalscrews = game.stats.totalscrews.add(value);
                 game.stats.totalscrewscollected = game.stats.totalscrewscollected.add(1);
-                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.1, border: h * 0.01 }))
+                currentScene.popupTexts.push(new PopUpText("+" + formatNumber(value), this.x, this.y, { color: "#ffffff", bold: true, size: 0.06, border: h * 0.01 }))
             }))
     },
 };

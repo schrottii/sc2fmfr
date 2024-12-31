@@ -414,7 +414,7 @@ var scenes =
                     off: images.checkbox.hyperbuy.off,
                     on: images.checkbox.hyperbuy.on,
                 }),
-                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : tt("Unlimited"), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => game.settings.hyperBuyCap != 0 ? formatNumber(game.settings.hyperBuyCap) : tt("Unlimited"), 0.725, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 1 }),
                 new UIButton(0.725, 0.825, 0.05, 0.05, images.hyperbuyLevel, () => {
                     let newCap = prompt(tt("hyperBuyCapText"));
                     if (newCap == null || newCap == "" || newCap == null) {
@@ -427,7 +427,7 @@ var scenes =
                         alert(tt("Too low!"));
                     }
                 }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 1 }),
-                new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 }),
+                new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 2 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
                     let newCap = prompt(tt("hyperBuyPerText"));
                     if (newCap == null || newCap == "" || newCap == null) {
@@ -591,6 +591,7 @@ var scenes =
                         if (barrels[i] !== undefined) {
                             barrels[i].render(ctx);
                         }
+                        // the little barrel mastery display
                         if (game.barrelMastery.isUnlocked()) {
                             Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
 
@@ -600,7 +601,7 @@ var scenes =
                             if (upgradingType == "mas") {
                                 ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
                             }
-                            else if (upgradingType == "day") {
+                            else if (upgradingType == "day" && game.mergeQuests.dailyQuest.active) {
                                 ctx.fillText(game.mergeQuests.dailyQuest.currentMerges + "/" + game.mergeQuests.dailyQuest.getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
                             else {
@@ -797,7 +798,7 @@ var scenes =
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.5, 0.5, 0.15, 0.15, images.scenes.dimension, () => {
-                    if (game.dimension == 0) { //Enter Dimension
+                    if (game.dimension == 0) { // Enter Dimension
                         if (game.goldenScrap.amount * 2 < new Decimal(1e20) * 2) {
                             alert(tt("enter2nddim").replace("<amount>", formatNumber(new Decimal(1e20))));
                         }
@@ -822,7 +823,7 @@ var scenes =
                             Scene.loadScene("Barrels");
                         }
                     }
-                    else if (game.dimension == 1) { //Leave Dimension
+                    else if (game.dimension == 1) { // Leave Dimension
                         game.dimension = 0;
                         game.mergesThisPrestige = 0;
                         updateBetterBarrels();
@@ -843,6 +844,8 @@ var scenes =
                         game.scrap = new Decimal(0);
                         game.goldenScrap.amount = new Decimal(0);
                         game.scrapThisPrestige = new Decimal(0);
+
+                        game.settings.barrelGalleryPage = 0;
                     }
                 }, { quadratic: true }),
                 new UIText(() => tt("Second Dimension"), 0.5, 0.1, 0.1, "white", {
@@ -887,6 +890,11 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
 
+                new UICheckbox(0.9, 0.05, 0.07, 0.07, "game.settings.destroyBarrels", {
+                    quadratic: true,
+                    off: images.checkbox.autoConvert.off,
+                    on: images.checkbox.autoConvert.on,
+                }),
 
                 new UIText(() => {
                     if (game.dimension == 0) {
@@ -953,6 +961,8 @@ var scenes =
                     if (GoTo > -1) {
                         GoTo = Math.floor(GoTo);
                         if (GoTo < 1) GoTo = 1;
+                        GoTo = Math.min(GoTo, game.highestBarrelReached);
+
                         if (GoTo == game.scrapUpgrades.betterBarrels.level + 1) {
                             basicAchievementUnlock(120);
                         }
@@ -1013,11 +1023,11 @@ var scenes =
                     if (!drawPreview) {
                         // barrel tier OR mastery level
                         if (barrelsDisplayMode == 0) ctx.fillText("#" + (i + 1), x, y - h * 0.065, w * 0.15);
-                        else ctx.fillText(game.barrelMastery.b[i % BARRELS], x, y - h * 0.065, w * 0.15);
+                        else ctx.fillText("L" + calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y - h * 0.065, w * 0.15);
 
                         // production OR mastery merges
                         if (barrelsDisplayMode == 0) ctx.fillText(formatNumber(Barrel.getIncomeForLevel(i)), x, y + h * 0.06, w * 0.15);
-                        else ctx.fillText("L" + calculateMasteryLevel(game.barrelMastery.b[i % BARRELS]), x, y + h * 0.06, w * 0.15);
+                        else ctx.fillText(game.barrelMastery.b[i % BARRELS], x, y + h * 0.06, w * 0.15);
                     }
                 }
                 if (game.dimension == 1) ctx.filter = "";
@@ -2967,7 +2977,7 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(w * 0.05, h * 0.1, w * 0.9, h * 0.7);
+                ctx.fillRect(w * 0.05, h * 0.1, w * 0.9, h * 0.725);
 
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
@@ -3080,7 +3090,7 @@ var scenes =
                     }
                 }, {
                     quadratic: true,
-                    isVisible: () => game.supernova.stars.gt(0)
+                    isVisible: () => game.supernova.stars.gt(0) || game.settings.hyperBuy == true
                 }),
                 new UIText(() => "MAX", 0.82, 0.51, 0.04, "white", { isVisible: () => game.supernova.stars.gt(0) }),
 

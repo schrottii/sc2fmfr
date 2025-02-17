@@ -122,11 +122,11 @@ class Barrel {
             let barrelRows = Math.floor(images["barrels" + section].height / BARREL_SPRITE_SIZE); //rows in spritesheet
 
             let lvl = Math.round(level);
-            let lvlToDraw = lvl % BARRELS;
+            let lvlToDraw = lvl % BARRELS; // 0 to 999
             let spriteX = BARREL_SPRITE_SIZE * (lvlToDraw % 10); // don't change these 2
             let spriteY = BARREL_SPRITE_SIZE * Math.floor((lvlToDraw / 10) % barrelRows);
 
-            let order = Math.floor(lvl / BARRELS);
+            let order = Math.floor(lvl / BARRELS); // star nr
 
             let finalX = x - size / 2;
             let finalY = y - size / 2;
@@ -174,26 +174,35 @@ class Barrel {
 
             if (game.settings.barrelShadows || preview) Utils.removeCanvasShadow();
 
-            if (!preview) {
+            // star drawing, ignore if barrel 1000 or below
+            if (!preview && order != 0) {
                 let starSize;
                 if (order <= 3) {
+                    // barrels 1001 - 2000: 1 star
+                    // barrels 2001 - 3000: 2 stars
+                    // barrels 3001 - 4000: 3 stars
                     for (let i = 0; i < order; i++) {
                         starSize = size / 3.0;
                         let offsetX = starSize / 2 * (i - order / 2 + 0.5);
                         let offsetY = -starSize / 5;
+
                         ctx.drawImage(images.starSmall, x - starSize / 2 + offsetX, y - starSize / 2 + size / 3 - offsetY, starSize, starSize);
                     }
                 }
                 else {
+                    // barrels 4001+: one star with the number inside of it
                     starSize = size / 1.8;
-                    let starX = x - starSize / 2;
-                    let starY = y - starSize / 2 + size / 3;
-                    ctx.drawImage(images.starSmall, starX, starY, starSize, starSize);
-                    ctx.font = "bold " + (starSize / 2.75) + "px Helvetica";
-                    ctx.fillStyle = "black";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(formatThousands(order), x, y + size * 0.37, starSize * 0.5);
+
+                    ctx.drawImage(images.starSmall, x - starSize / 2, y - starSize / 2 + size / 3, starSize, starSize);
+
+                    if (ctx.font != "bold " + (starSize / 2.75) + "px Helvetica") {
+                        ctx.font = "bold " + (starSize / 2.75) + "px Helvetica";
+                        ctx.fillStyle = "black";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                    }
+
+                    ctx.fillText(formatNumber(order), x, y + size * 0.37, starSize * 0.75);
                 }
             }
         }

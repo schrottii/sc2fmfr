@@ -129,7 +129,7 @@ class TextNotification extends GameNotification {
         super.renderBackground(ctx);
 
         super.setDefaultFont(ctx);
-        ctx.fillText(this.text, w / 2, this.y - h * 0.09, w * 0.45);
+        ctx.fillText(this.title, w / 2, this.y - h * 0.09, w * 0.45);
         ctx.font = (h * 0.025) + "px " + fonts.default;
 
         if (this.img != "none") {
@@ -137,11 +137,31 @@ class TextNotification extends GameNotification {
             if (this.img != "barrel" && this.img != "barrelm") ctx.drawImage(images[this.img], w / 2 - w * 0.2, this.y - h * 0.064, h * 0.05, h * 0.05);
             else Barrel.renderBarrel(ctx, this.b - 1, w / 2 - w * 0.2, this.y - h * 0.032, h * 0.04);
             if (this.img == "barrelm") ctx.drawImage(images.masteryToken, w / 2 + w * 0.15, this.y - h * 0.06, h * 0.05, h * 0.05);
-            ctx.fillText(this.title, w * 0.375, this.y - h * 0.03, w * 0.35);
+            ctx.fillText(this.text, w * 0.375, this.y - h * 0.03, w * 0.35);
         }
         else {
             ctx.textAlign = "center";
-            ctx.fillText(this.title, w / 2, this.y - h * 0.03, w * 0.35);
+            ctx.fillText(this.text, w / 2, this.y - h * 0.03, w * 0.35);
         }
     } // :)
+}
+
+class MythusNotification extends GameNotification {
+    constructor(title, text) {
+        super(title);
+        this.title = title;
+        this.text = text;
+    }
+
+    render(ctx) {
+        super.renderBackground(ctx);
+
+        super.setDefaultFont(ctx);
+        ctx.fillText(this.title, w / 2, this.y - h * 0.09, w * 0.45);
+        ctx.font = (h * 0.025) + "px " + fonts.default;
+
+        ctx.textAlign = "left";
+        ctx.drawImage(images.solarSystem.mythus, w / 2 - w * 0.225, this.y - h * 0.064, h * 0.05, h * 0.05);
+        ctx.fillText(this.text, w * 0.375, this.y - h * 0.03, w * 0.3);
+    }
 }

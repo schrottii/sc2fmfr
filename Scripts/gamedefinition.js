@@ -4,8 +4,6 @@ const HARDLEVELCAP = 1e300;
 const CONST_SENDLIMIT = (currentMonth == 11 ? 6 : 3); // more gifts in December
 const CONST_OPENLIMIT = (currentMonth == 11 ? 8 : 4);
 
-const gameVersionText = "v3.6 (v4.3)";
-
 var currentTime = new Date();
 var currentMonth = currentTime.getUTCMonth();
 var timeDisplay = "";
@@ -147,7 +145,7 @@ var game =
                     if (game.ms.includes(85) == false) {
                         if (barrels[0] != undefined && barrels[1] != undefined && barrels[2] != undefined && barrels[3] != undefined && barrels[4] != undefined && barrels[5] != undefined && barrels[6] != undefined && barrels[7] != undefined && barrels[8] != undefined && barrels[9] != undefined) {
                             if (barrels[0].level.toFixed(0) == 0 && barrels[1].level.toFixed(0) == 1 && barrels[2].level.toFixed(0) == 2 && barrels[3].level.toFixed(0) == 3 && barrels[4].level.toFixed(0) == 4 && barrels[5].level.toFixed(0) == 5 && barrels[6].level.toFixed(0) == 6 && barrels[7].level.toFixed(0) == 7 && barrels[8].level.toFixed(0) == 8 && barrels[9].level.toFixed(0) == 9) {
-                                game.ms.push(85);
+                                basicAchievementUnlock(85);
                                 GameNotification.create(new MilestoneNotification(86));
                             }
                         }
@@ -168,7 +166,7 @@ var game =
                                     && barrels[12].level.toFixed(0) == barrels[15].level.toFixed(0)
                                     && barrels[15].level.toFixed(0) == barrels[16].level.toFixed(0) && barrels[16].level.toFixed(0) == barrels[17].level.toFixed(0) && barrels[17].level.toFixed(0) == barrels[18].level.toFixed(0) && barrels[18].level.toFixed(0) == barrels[19].level.toFixed(0)) {
                                     trophyProgress = 87001;
-                                    GameNotification.create(new TextNotification("?", "6"));
+                                    GameNotification.create(new TextNotification("6", "?"));
                                 }
                             }
                         }
@@ -185,7 +183,7 @@ var game =
                                     && barrels[11].level.toFixed(0) != barrels[12].level.toFixed(0) && barrels[14].level.toFixed(0) != barrels[15].level.toFixed(0)
                                     && barrels[11].level.toFixed(0) == barrels[15].level.toFixed(0)
                                     && barrels[15].level.toFixed(0) == barrels[19].level.toFixed(0)) {
-                                    game.ms.push(87);
+                                    basicAchievementUnlock(87);
                                     GameNotification.create(new MilestoneNotification(88));
                                     trophyProgress = 0;
                                 }
@@ -200,7 +198,7 @@ var game =
                                 ((barrels[0].level.toFixed(0) == 343 || barrels[0].level.toFixed(0) == 344) && barrels[3].level.toFixed(0) == 353)
                                 || ((barrels[3].level.toFixed(0) == 343 || barrels[3].level.toFixed(0) == 344) && barrels[0].level.toFixed(0) == 353)
                             ) {
-                                game.ms.push(88);
+                                basicAchievementUnlock(88);
                                 GameNotification.create(new MilestoneNotification(89));
                             }
                         }
@@ -398,8 +396,8 @@ var game =
             ),
 
             mythus: new BarrelUpgrade(
-                level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
-                level => 20 * level,
+                level => new Decimal(3010 + (50 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                level => 50 * level,
                 {
                     getEffectDisplay: effectDisplayTemplates.numberStandard(0, "+"),
                     onBuy: () => {
@@ -418,7 +416,7 @@ var game =
                             }
                         }
                     },
-                    integral: level => new Decimal(3010 + (20 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
+                    integral: level => new Decimal(3010 + (50 * level)).sub(game.skillTree.upgrades.cheaperMythus.level * 2).add(applyUpgrade(game.supernova.alienDustUpgrades.aquila)),
                 }
             ),
 
@@ -483,7 +481,7 @@ var game =
     mergeQuests:
     {
         isUnlocked: () => game.highestScrapReached.gte(1e93),
-        quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(3, [2, 3, 4])],
+        quests: [new MergeQuest(300, [0, 1, 2]), new MergeQuest(450, [0, 1, 2, 3]), new MergeQuest(600, [2, 3, 4])],
         dailyQuest: new MergeQuest(12000, [5]),
         mergeTokens: new Decimal(0),
         scrapyard: 1,
@@ -1668,6 +1666,15 @@ var game =
         }
     },
     shrine: {
+        generatorUnlock: new SkillTreeUpgradeFixed([
+            [[new Decimal("1e50"), RESOURCE_MAGNET]],
+            [[new Decimal("1e12"), RESOURCE_DARKSCRAP]],
+            [[new Decimal("2000"), RESOURCE_GLITCHBEAM]],
+        ],
+            ["0/3", "1/3", "2/3", true], {
+            getEffectDisplay: effectDisplayTemplates.unlockEffect()
+        }, ["unlockbeamtypes"]),
+
         factoryUnlock: new SkillTreeUpgradeFixed([
             [[new Decimal("2000"), RESOURCE_BEAM]],
             [[new Decimal("2000"), RESOURCE_AEROBEAM]],
@@ -1675,17 +1682,8 @@ var game =
             [[new Decimal("2000"), RESOURCE_REINFORCEDBEAM]],
             [[new Decimal("2000"), RESOURCE_GLITCHBEAM]],
         ],
-            [false, false, false, false, false, true], {
-            getEffectDisplay: effectDisplayTemplates.unlock()
-        }, ["unlockbeamtypes"]),
-
-        generatorUnlock: new SkillTreeUpgradeFixed([
-            [[new Decimal("1e50"), RESOURCE_MAGNET]],
-            [[new Decimal("1e12"), RESOURCE_DARKSCRAP]],
-            [[new Decimal("2000"), RESOURCE_GLITCHBEAM]],
-        ],
-            [false, false, false, true], {
-            getEffectDisplay: effectDisplayTemplates.unlock()
+            ["0/5", "1/5", "2/5", "3/5", "4/5", true], {
+            getEffectDisplay: effectDisplayTemplates.unlockEffect()
         }, ["unlockbeamtypes"]),
 
         autosUnlock: new SkillTreeUpgradeFixed([
@@ -1693,8 +1691,8 @@ var game =
             [[new Decimal("1e60"), RESOURCE_MAGNET]],
             [[new Decimal("2000"), RESOURCE_REINFORCEDBEAM]],
         ],
-            [false, false, false, true], {
-            getEffectDisplay: effectDisplayTemplates.unlock()
+            ["0/3", "1/3", "2/3", true], {
+            getEffectDisplay: effectDisplayTemplates.unlockEffect()
         }, ["unlockbeamtypes"]),
     },
     factory: {
@@ -2532,12 +2530,12 @@ var game =
                 new Milestone(137, "Broken game", 79, "Collect 6 glitches", () => game.glitchesCollected > 5),
                 new Milestone(138, "Where did he go?", 80, "Collect a Glitch Beam (Unlocked by collecting enough glitches)", () => game.glitchbeams.amount.gte(1)),
                 //new Milestone(x, "", 83, "Unlock the Mystic Shrine", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY),
-                new Milestone(139, "What the...?", 83, "Unlock the Scrap Factory", () => applyUpgrade(game.shrine.factoryUnlock)),
-                new Milestone(140, "Pay the bills?", 84, "Unlock the Generator", () => applyUpgrade(game.shrine.generatorUnlock)),
-                new Milestone(141, "ScrapCraft", 83, "Unlock the Factory itself", () => applyUpgrade(game.shrine.factoryUnlock)),
+                new Milestone(139, "What the...?", 83, "Unlock the Scrap Factory", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY),
+                new Milestone(140, "Pay the bills?", 84, "Unlock the Generator", () => applyUpgrade(game.shrine.generatorUnlock) == true),
+                new Milestone(141, "ScrapCraft", 83, "Unlock the Factory itself", () => applyUpgrade(game.shrine.factoryUnlock) == true),
                 new Milestone(142, "Legendary Scrap!", 90, "Craft Legendary Scrap", () => game.factory.legendaryScrap.gte(1)),
                 new Milestone(143, "Fail... Repeat!", 89, "Repeat a beam", () => game.dimension == 508050),
-                new Milestone(144, "Age of Automation", 85, "Unlock the Auto buyer building", () => applyUpgrade(game.shrine.autosUnlock)),
+                new Milestone(144, "Age of Automation", 85, "Unlock the Auto buyer building", () => applyUpgrade(game.shrine.autosUnlock) == true),
                 new Milestone(145, "A new Era", 86, "Buy the first auto buyer", () => game.autos.autoBetterBarrels.level > 0),
                 new Milestone(146, "A new magnet type?", 91, "Craft a Steel Magnet", () => game.factory.steelMagnets.gte(1)),
                 new Milestone(148, "Exploit man 3D", 81, "Collect some Glitch Beams", () => game.glitchbeams.amount.gte(1000)),
@@ -2610,7 +2608,7 @@ var game =
                 new Milestone(197, "Crab Saver VI", 96, "Buy 5000 Plastic Bags (in total)", () => game.stats.totalplasticbags.gte(5000)),
                 new Milestone(181, "Anti-Boring", 103, "Max. the first Auto Collector", () => game.collectors.beams.level > 24),
                 new Milestone(216, "...wheels", 113, () => "Earn 1000 cogwheels in a single run", () => game.dimension == 508050),
-                new Milestone(217, "More Tokens yay", 14, "Because it has been 9000 for so long.", () => game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
+                new Milestone(217, "More Tokens yay", 14, "Because it has been 9000 for so long.\n(Buy the Higher max. for 2nd Dark Scrap upg. Tree Upgrade)", () => game.skillTree.upgrades.higherDarkScrapTokenMax.level > 0),
                 new Milestone(182, "Anti-Rage", 103, "Max. the second Auto Collector", () => game.collectors.aerobeams.level > 24),
                 new Milestone(218, "F.U.N.", 114, "Make Glitch Beams funnier", () => game.skillTree.upgrades.funnyGlitchBeams.level > 0),
                 new Milestone(219, "H.O.M.L.", 87, "Level the first Auto buyer\nto at least half of its max. level", () => game.autos.autoBetterBarrels.level >= game.autos.autoBetterBarrels.maxLevel / 2),
@@ -2681,7 +2679,9 @@ var game =
         changePage: d => {
             game.milestones.page += d;
             game.milestones.page = Utils.clamp(game.milestones.page, 0, game.milestones.maxPage());
+
             game.milestones.tooltip = null;
+            renderMilestones();
         },
         unlocked: [],
         getHighestUnlocked: function () {
@@ -2801,8 +2801,8 @@ const unlocks = [
     new Unlock("Glitch Beams", () => "10 Glitches", () => game.glitchbeams.isUnlocked(), { deName: "Glitchstahl", deDesc: () => "10 Glitche", ruName: "Глючные Балки", ruDesc: () => "10 Глючные" }),
     new Unlock("Golden Beams", "A Glitch Beam Upgrade", () => game.glitchbeams.upgrades.goldenbeam.level > 0, { deName: "Goldener Stahl", deDesc: "Glitchstahl-Upgrade", ruName: "Золотые Балки", ruDesc: "Улучшение Глючных Балок" }),
     new Unlock("Scrap Factory", () => "Earth (" + formatNumber(1e100) + " GS)", () => game.solarSystem.upgrades.earth.level >= EarthLevels.SCRAP_FACTORY, { deName: "Fabrik", deDesc: () => "Erde (" + formatNumber(1e100) + " GS)", ruName: "Фабрика Мусора", ruDesc: () => "Земля (" + formatNumber(1e100) + " ЗМ)" }),
-    new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock), { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),
-    new Unlock("Auto Buyers", "Mystic Shrine", () => applyUpgrade(game.shrine.autosUnlock), { deName: "Autokäufer", deDesc: "Mythischer Schrein", ruName: "Автопокупщики", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Generator", "Mystic Shrine", () => applyUpgrade(game.shrine.generatorUnlock) == true, { deName: "Generator", deDesc: "Mythischer Schrein", ruName: "Генератор", ruDesc: "Мифическое Святилище" }),
+    new Unlock("Auto Buyers", "Mystic Shrine", () => applyUpgrade(game.shrine.autosUnlock) == true, { deName: "Autokäufer", deDesc: "Mythischer Schrein", ruName: "Автопокупщики", ruDesc: "Мифическое Святилище" }),
     new Unlock("Barrel Mastery", "Skill Tree (Row 12)", () => game.barrelMastery.isUnlocked(), { deName: "Barrel Mastery", deDesc: "Baum (Reihe 12)", ruName: "Мастерство Бочек", ruDesc: "Дерево Навыков (Ряд 12)" }),
     new Unlock("Plastic Bags", "Skill Tree (Row 15)", () => applyUpgrade(game.skillTree.upgrades.unlockPlasticBags), { deName: "Platiktüten", deDesc: "Baum (Reihe 15)", ruName: "Пластиковые Пакеты", ruDesc: "Дерево Навыков (Ряд 15)" }),
     new Unlock("Gifts", () => "Earth (" + formatNumber(1e150) + " GS)", () => game.gifts.isUnlocked(), { deName: "Geschenke", deDesc: () => "Erde (" + formatNumber(1e150) + " GS)", ruName: "Подарки", ruDesc: () => "Земля (" + formatNumber(1e150) + " ЗМ)" }),

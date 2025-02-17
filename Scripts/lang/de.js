@@ -13,7 +13,7 @@ const trans_de = {
     "bbdesc": "Tonnen erscheinen 1 Stufe höher",
     "fbdesc": "Tonnen erscheinen schneller",
     "Next Beam in: ": "Nächster Stahlträger in: ",
-    "Next Storm Chance in: ": "Nächste Sturmchance in: ",
+    "Next Storm chance in: ": "Nächste Sturmchance in: ",
     "madeby": "Mod gemacht von Schrottii",
     "language": "Sprache",
     "achievements": "Erfolge",
@@ -113,7 +113,6 @@ const trans_de = {
     "parseerror": "Der save code konnte nicht geladen werden.",
     "copied": "Kopiere den code, den du importieren möchtest, zu der Zwischenablage. Er wird automatich importiert werden.",
     "imported": "Die Datei wurde erfolgreich importiert!",
-    "resethbr": "Die höchste Tonne wurde erfolgreich zurückgesetzt!",
 
     // EZ POP UP
     "barrelgoto": "Zu welcher Tonne möchtest du?",

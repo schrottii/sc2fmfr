@@ -13,7 +13,7 @@ const trans_en = {
     "bbdesc": "Barrels spawn 1 Tier higher",
     "fbdesc": "Barrels spawn faster",
     "Next Beam in: ": "Next Beam in: ",
-    "Next Storm Chance in: ": "Next Storm Chance in: ",
+    "Next Storm chance in: ": "Next Storm chance in: ",
     "madeby": "mod made by Schrottii",
     "language": "Language",
     "achievements": "Achievements",
@@ -114,7 +114,6 @@ const trans_en = {
     "parseerror": "An error occured while parsing the save code",
     "copied": "Copy the save code you want to import to your clipboard. It will be inserted into the game automatically.",
     "imported": "The file has been imported successfully!",
-    "resethbr": "Reset your highest barrel reached successfully!",
 
     // EZ POP UP
     "barrelgoto": "Which barrel do you want to go to?",

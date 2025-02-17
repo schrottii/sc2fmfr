@@ -21,6 +21,7 @@ var importType = 0; // what do you import
 var FPS = 9999;
 var trophyProgress = 0;
 var hyperBuy = false;
+var emergencyTaps = -1;
 
 var currentScene = scenes[0];
 
@@ -200,14 +201,16 @@ function currentSceneNotLoading() {
 var fpsDisplay = "?";
 
 function update() {
+    // this bit handles the delta/tick and the FPS limiter
     deltaTimeNew = Date.now();
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
-    if (delta < (1000 / FPS / 1000)) {
-        requestAnimationFrame(update);
+    if (FPS != 9999 && delta < (1000 / (FPS * 1.05) / 1000)) {
+        setTimeout("update()", (1000 / (FPS * 1.05) / 1000) - delta);
         return false;
     };
     deltaTimeOld = Date.now();
 
+    // update
     game.stats.playtime = game.stats.playtime.add(delta);
 
     if (!document.hidden) {
@@ -237,7 +240,7 @@ function update() {
 
 
             game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
-            GameNotification.create(new TextNotification(tt("not_timeover2").replace("<amount>", cogReward), tt("not_timeover")));
+            GameNotification.create(new TextNotification(tt("not_timeover"), tt("not_timeover2").replace("<amount>", cogReward)));
 
             game.goldenScrap.reset();
             timeModeTime = 0;
@@ -284,9 +287,22 @@ function update() {
 
         saveTime.time += delta;
         secondTime += delta;
-        game.factory.time -= delta;
+
+        if (game.factory.time > 0) {
+            game.factory.time -= delta;
+
+            if (game.factory.time < 0) {
+                game.factory.time = -1;
+                GameNotification.create(new TextNotification("Crafting cooldown is over!", "You can craft again!"));
+            }
+        }
 
         if (saveTime.time >= saveTime.cd) {
+            if (emergencyTaps > 0) {
+                game.settings.sizeLimit = 0;
+                resizeCanvas();
+                emergencyTaps = -1;
+            }
             saveTime.time = 0;
             saveGame();
         }
@@ -410,7 +426,7 @@ function update() {
                     }
                 }
                 else {
-                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm2"), tt("not_storm")));
+                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(tt("not_storm"), new TextNotification(tt("not_storm2")));
                 }
             }
         }
@@ -757,14 +773,25 @@ function fillTank() {
 
 function dustReset(upgradeType, dustType, dustStat) {
     let remDust = new Decimal(0);
+    let resettedUpgrades = 0;
+
     for (u in game.supernova[upgradeType]) {
-        if (game.supernova[upgradeType][u].lock != true) game.supernova[upgradeType][u].level = 0;
+        if (game.supernova[upgradeType][u].lock != true) {
+            game.supernova[upgradeType][u].level = 0;
+            resettedUpgrades++;
+        }
         else {
             for (i = Math.max(0, game.supernova[upgradeType][u].level - 100); i < game.supernova[upgradeType][u].level; i++) {
                 remDust = remDust.add(game.supernova[upgradeType][u].getPrice(i));
             }
         }
     }
+
+    if (resettedUpgrades == 0) {
+        // they are ALL locked...
+        return false;
+    }
+
     game.supernova[dustType] = new Decimal(game.stats[dustStat]).sub(remDust);
 
     if (dustType == "alienDust") updateBetterBarrels();
@@ -774,6 +801,8 @@ function basicAchievementUnlock(index, req = true) {
     if (game.ms.includes(index) == false && req) {
         game.ms.push(index);
         GameNotification.create(new MilestoneNotification(index + 1));
+
+        if (currentScene.name == "Milestones") renderMilestones();
     }
 }
 
@@ -974,7 +1003,10 @@ function onBarrelMerge(isAuto, lvl, bx, by) {
 
             game.barrelMastery.masteryTokens = game.barrelMastery.masteryTokens.add(game.barrelMastery.bl[lvl % BARRELS]);
             game.stats.totalmasterytokens = game.stats.totalmasterytokens.add(game.barrelMastery.bl[lvl % BARRELS]);
-            GameNotification.create(new TextNotification(tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]), tt("not_masteryup"), "barrelm", ((lvl % BARRELS) + 1)));
+            GameNotification.create(new TextNotification(tt("not_masteryup"),
+                tt("not_masteryup2").replace("<n>", game.barrelMastery.bl[lvl % BARRELS]).replace("<amount>", game.barrelMastery.bl[lvl % BARRELS]),
+                "barrelm",
+                ((lvl % BARRELS) + 1)));
         }
     }
     if (isAuto == false) {
@@ -1020,10 +1052,16 @@ function onBarrelMerge(isAuto, lvl, bx, by) {
 
     updateUpgradingBarrelFromBB();
 
+    // highest barrel reached
+    if (lvl + 1 > game.highestBarrelReached && game.solarSystem.upgrades.mythus.currentPrice().lte(lvl + 1)) {
+        GameNotification.create(new MythusNotification(
+            "Mythus is ready!",
+            tt("Barrels") + " " + formatNumber(lvl + 1) + "/" + formatNumber(game.solarSystem.upgrades.mythus.currentPrice() * 1)));
+    }
     game.highestBarrelReached = Math.floor(Math.max(lvl + 1, game.highestBarrelReached));
 
     if (Math.random() < applyUpgrade(game.magnetUpgrades.magnetMergeChance).toNumber()) {
-        //add the round amount of magnets, and save the remaining (not whole) magnets to add up later
+        // add the round amount of magnets, and save the remaining (not whole) magnets to add up later
         let amount = getMagnetBaseValue();
         game.remainderMagnets += amount.remainder(1).toNumber();
         let roundAmount = amount.floor();
@@ -1101,7 +1139,6 @@ function autoMergeBarrel() {
 
 function autoConvertBarrel() {
     if (barrels[19] !== undefined) {
-        let Amount = new Decimal(0.1 + barrels[19].level / 10).mul(getFragmentBaseValue());
         if (game.dimension == 0) {
             let Amount = new Decimal(0.1 + barrels[19].level / 10).mul(getFragmentBaseValue());
             game.fragment.amount = game.fragment.amount.add(Amount);
@@ -1120,6 +1157,7 @@ function autoConvertBarrel() {
 function setBarrelQuality(idx, fromScene) {
     barrelsLoaded = false;
     Scene.loadScene("Loading");
+
     // Change this when you add new BARRELS files
     for (i = 1; i < 11; i++) { // Change these two every time you add new BARRELS files
         images["barrels" + i] = loadImage("Images/Barrels/" + ["barrels" + i + ".png", "barrels" + i + "_lq.png",
@@ -1131,7 +1169,7 @@ function setBarrelQuality(idx, fromScene) {
 
     BARREL_SPRITE_SIZE = [256, 128, 64][idx];
 
-    //clear barrel cache
+    // clear barrel cache
     images.shadowBarrels = [];
     images.previewBarrels = [];
     images.cachedBarrels = [];
@@ -1163,6 +1201,8 @@ function resizeCanvas() {
     h = canvas.height;
 
     TEXTSCALING = 1 / (Math.pow((isMobile() ? w / 2 : w), 0.9) / 244);
+
+    if (currentScene.name == "Milestones") renderMilestones();
 }
 
 function handlePress(e) {
@@ -1184,6 +1224,7 @@ if (isMobile()) {
     canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
         handlePress(e);
+        if (emergencyTaps != -1) emergencyTaps++;
     }, { passive: false });
 
     canvas.addEventListener('touchmove', function (e) {
@@ -1447,6 +1488,11 @@ function loadGame(saveCode, isFromFile = false) {
                 game.mergeQuests.quests[i].active = false;
                 game.mergeQuests.quests[i].currentCooldown = 0;
             }
+            return false;
+        }
+        else if (saveCode == "yes") {
+            game.settings.numberFormatType = 12;
+            return false;
         }
         else if (saveCode == "resetnova") {
             game.stats.totalstardust = new Decimal(100);
@@ -1479,6 +1525,7 @@ function loadGame(saveCode, isFromFile = false) {
             for (u in game.supernova.cosmicUpgrades) {
                 game.supernova.cosmicUpgrades[u].level = 0;
             }
+            return false;
         }
         else {
             try {
@@ -1499,14 +1546,8 @@ function loadGame(saveCode, isFromFile = false) {
             loadObj = JSON.parse(loadObj);
         }
         catch (e) {
-            if (saveCode == "Mymergequestsbarrelsaretoohighohno") {
-                document.querySelector("div.absolute textarea").value = "";
-                alert(tt("resethbr"));
-            }
-            else {
-                console.log(e);
-                alert(tt("parseerror"));
-            }
+            console.log(e);
+            alert(tt("parseerror"));
             return;
         }
 
@@ -1570,6 +1611,10 @@ function loadGame(saveCode, isFromFile = false) {
         game.settings.dimEffects = loadVal(loadObj.settings.dimEffects, 0);
         game.settings.bbauto = loadVal(loadObj.settings.bbauto, true);
 
+        if (isMobile() && game.settings.sizeLimit != 0) {
+            emergencyTaps = 0;
+        }
+
         musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
         musicPlayer.volume = game.settings.musicVolume / 100;
 
@@ -1586,6 +1631,7 @@ function loadGame(saveCode, isFromFile = false) {
             if (loadObj.gifts.friends !== undefined) {
                 game.gifts.friends = loadVal(loadObj.gifts.friends, []);
                 for (f in game.gifts.friends) {
+                    if (game.gifts.friends[f] == undefined) game.gifts.friends[f] = { code: "", name: "" };
                     if (game.gifts.friends[f].code == null) game.gifts.friends[f].code = "";
                     if (game.gifts.friends[f].name == null) game.gifts.friends[f].name = "";
                 }
@@ -1675,7 +1721,7 @@ function loadGame(saveCode, isFromFile = false) {
                     game.mergeQuests.quests[i].barrelLvl = q.barrelLvl;
                     game.mergeQuests.quests[i].active = q.active;
                     game.mergeQuests.quests[i].reward = q.reward;
-                    game.mergeQuests.quests[i].cooldown = q.cooldown;
+                    game.mergeQuests.quests[i].cooldown = game.mergeQuests.quests[i].cooldown;
                     game.mergeQuests.quests[i].currentCooldown = q.currentCooldown;
                     game.mergeQuests.quests[i].currentMerges = q.currentMerges;
                     game.mergeQuests.quests[i].neededMerges = q.neededMerges;
@@ -1919,7 +1965,7 @@ function loadGame(saveCode, isFromFile = false) {
 
 
         if (loadObj.factory !== undefined) {
-            game.factory.time = loadVal(loadObj.factory.time, 0);
+            game.factory.time = loadVal(loadObj.factory.time, -1);
             game.factory.tank = loadVal(new Decimal(loadObj.factory.tank), new Decimal(0));
 
             if (!game.factory.tank.gte(new Decimal(0))) game.factory.tank = new Decimal(10);
@@ -1937,7 +1983,7 @@ function loadGame(saveCode, isFromFile = false) {
             }
         }
         else {
-            game.factory.time = 0;
+            game.factory.time = -1;
             game.factory.tank = new Decimal(0);
             game.factory.legendaryScrap = new Decimal(0);
             game.factory.steelMagnets = new Decimal(0);
@@ -2284,8 +2330,8 @@ function updateTimeStuff() {
 }
 
 function updateBetterBarrels() {
-    if (game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
-    if (game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 20 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila)), game.highestBarrelReached - 25));
+    if (game.dimension == 0) game.scrapUpgrades.betterBarrels.maxLevel = 3000 + game.solarSystem.upgrades.mythus.level * 50 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila));
+    if (game.dimension == 1) game.scrapUpgrades.betterBarrels.maxLevel = Math.max(100, Math.min(2975 + game.solarSystem.upgrades.mythus.level * 50 + Math.floor(applyUpgrade(game.supernova.alienDustUpgrades.aquila)), game.highestBarrelReached - 25));
 }
 
 function calculateCurrentHighest() {

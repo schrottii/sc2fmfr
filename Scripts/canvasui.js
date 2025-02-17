@@ -485,6 +485,7 @@ class UIFriend extends UIGroup {
     constructor(y, id, col, isVisible) {
         super(
             [
+                // background / lines
                 new UIRect(0.5, y, 1, 0.0975, col ? col : "table"),
                 new UIRect(0.5, y - 0.05, 1, 0.003, "text"),
 
@@ -492,6 +493,7 @@ class UIFriend extends UIGroup {
                 new UIRect(0.8, y, 0.4, 0.003, "table2"),
                 new UIRect(0.8, y + 0.04, 0.4, 0.003, "table2"),
 
+                // big button on the left (load this one)
                 new UIButton(0.1, y, 0.07, 0.07, images.importGame, () => {
                     if (game.gifts.friends[id] != undefined) {
                         sendTo = game.gifts.friends[id].code;
@@ -500,16 +502,18 @@ class UIFriend extends UIGroup {
                     }
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
 
-                new UIButton(0.4, y, 0.07, 0.07, images.checkbox.on, () => {
+                new UIButton(0.25, y, 0.07, 0.07, images.checkbox.on, () => {
                     alert("You have already opened a Gift from this friend today!");
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined && game.gifts.openedToday.includes(game.gifts.friends[id].code) }),
 
+                // create new
                 new UIButton(0.1, y, 0.07, 0.07, images.addfriend, () => {
                     let friendCode = prompt("Friend code?");
                     let friendName = prompt("Friend name?");
                     if (friendCode != "" && friendCode != null && friendName != "" && friendName != null) game.gifts.friends.push({ code: friendCode, name: friendName });
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] == undefined && (game.gifts.friends[id - 1] != undefined || id == 0) }),
 
+                // name and code buttons
                 new UIButton(0.6, y - 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend name? (Not code)");
                     if (newFr != null && newFr != false) game.gifts.friends[id].name = newFr;
@@ -517,6 +521,17 @@ class UIFriend extends UIGroup {
                 new UIButton(0.6, y + 0.02, 0.04, 0.04, images.setcode, () => {
                     let newFr = prompt("Friend code?").substr(0, 5);
                     if (newFr != null && newFr != false) game.gifts.friends[id].code = newFr;
+                }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
+
+                // remove button
+                new UIButton(0.5, y, 0.04, 0.04, images.checkbox.off, () => {
+                    if (confirm("Do you really want to remove this friend?")) {
+                        delete game.gifts.friends[id];
+                        for (let idgo = id; idgo < game.gifts.friends.length; idgo++) {
+                            if (game.gifts.friends[idgo + 1] != undefined) game.gifts.friends[idgo] = game.gifts.friends[idgo + 1];
+                            else game.gifts.friends[idgo] = undefined;
+                        }
+                    }
                 }, { quadratic: true, isVisible: () => game.gifts.friends[id] != undefined }),
 
                 new UIText(() => game.gifts.friends[id] != undefined ? game.gifts.friends[id].name : "", 0.975, y - 0.03, 0.04, "#000000", { valign: "top", halign: "right", isVisible: () => game.gifts.friends[id] != undefined }),

@@ -31,6 +31,8 @@ class Milestone {
                 }
                 game.ms.push(game.milestones.achievements[i].id - 1);
                 game.milestones.next = game.milestones.getNext();
+
+                if (currentScene.name == "Milestones") renderMilestones();
             }
         }
     }

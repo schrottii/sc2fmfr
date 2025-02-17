@@ -70,25 +70,25 @@ function getUpgradeResource(res) {
         case RESOURCE_GLITCHBEAM:
             return game.glitchbeams.amount;
         case RESOURCE_LEGENDARYSCRAP:
-            return game.factory.legendaryScrap;
+            return game.factory.legendaryScrap.round();
         case RESOURCE_STEELMAGNET:
-            return game.factory.steelMagnets;
+            return game.factory.steelMagnets.round();
         case RESOURCE_BLUEBRICK:
-            return game.factory.blueBricks;
+            return game.factory.blueBricks.round();
         case RESOURCE_MASTERYTOKEN:
             return game.barrelMastery.masteryTokens;
         case RESOURCE_PLASTICBAG:
             return game.plasticBags.amount;
         case RESOURCE_BUCKET:
-            return game.factory.buckets;
+            return game.factory.buckets.round();
         case RESOURCE_FISHINGNET:
-            return game.factory.fishingNets;
+            return game.factory.fishingNets.round();
         case RESOURCE_SCREW:
             return game.screws.amount;
         case RESOURCE_COGWHEEL:
             return game.cogwheels.amount;
         case RESOURCE_COSMICEMBLEMS:
-            return game.supernova.cosmicEmblems;
+            return game.supernova.cosmicEmblems.round();
         case RESOURCE_STARDUST:
             return game.supernova.starDust;
         case RESOURCE_ALIENDUST:
@@ -803,6 +803,9 @@ class FactoryUpgrade extends ScrapUpgrade {
     }
 
     buyToTarget(level, round) {
+        if (game.factory.time > 0) return false;
+        if (game.factory.tank.round().lt(this.getPrice(0))) return false;
+
         if (level <= this.level) {
             if (level < this.level) {
                 this.onLevelDown(level);
@@ -918,7 +921,9 @@ var effectDisplayTemplates =
         let p = prefix !== undefined ? prefix : "";
         let s = suffix !== undefined ? suffix : "";
         return function () {
-            return this.getEffect(this.level) ? (p + this.getEffect(this.level) + s) : tt("locked");
+            if (this.getEffect(this.level) == true) return tt("unlocked");
+            else if (this.getEffect(this.level) == false) return tt("locked");
+            else return (p + this.getEffect(this.level) + s);
         }
     }
 };

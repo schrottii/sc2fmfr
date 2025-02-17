@@ -18,6 +18,8 @@ var giftAmount = 0;
 
 var worth1, worth2;
 var multiConvert = 1;
+var sizeLimitConfirmer = 0;
+var milestoneRender = [];
 
 var timeMode = false;
 var timeModeTime = 0;
@@ -293,6 +295,30 @@ function convertButtonConvert(type, amount, type2, amount2) {
     }
 }
 
+function renderMilestones() {
+    let tSize = Math.min(w, (h / 1.5)); // size of each achievement
+    let perRow = Math.floor(w / tSize * 5); // achievements per row
+    let perPage = perRow * 5;
+
+    milestoneRender = [];
+
+    for (let i = perPage * game.milestones.page; i < Math.min(perPage * game.milestones.page + perPage, game.milestones.achievements.length); i++) {
+        milestoneRender[i] = { id: game.milestones.achievements[i].id - 1 };
+
+        // position the achievement
+        milestoneRender[i].x = (tSize / 5) * (i % perRow);
+        milestoneRender[i].y = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
+
+        // grab the right image
+        milestoneRender[i].source = game.ms.includes(milestoneRender[i].id) ? images.achievements.unlocked : images.achievements.locked;
+        milestoneRender[i].imageID = game.milestones.achievements[i].imageId;
+        milestoneRender[i].snipX = 256 * (milestoneRender[i].imageID % 10);
+        milestoneRender[i].snipY = 256 * Math.floor(milestoneRender[i].imageID / 10);
+
+        // crop w and crop h are always 256, size (w and h) is calculated via tSize
+    }
+}
+
 let loadDots = 0;
 
 var scenes =
@@ -387,7 +413,7 @@ var scenes =
                 // MIDDLE row
                 // magnets, settings, achievements, fragments, auto merge, auto convert
                 new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
-                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.milestones, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.milestones, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
                 new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
                 new UIButton(0.575, 0.9, 0.05, 0.05, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
@@ -426,7 +452,7 @@ var scenes =
                     else {
                         alert(tt("Too low!"));
                     }
-                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 1 }),
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 1 || game.settings.hyperBuyCap != 0 }),
                 new UIText(() => formatNumber(game.settings.hyperBuyPer) + "%", 0.875, 0.785, 0.025, "black", { bold: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 2 }),
                 new UIButton(0.875, 0.825, 0.05, 0.05, images.hyperbuyPercent, () => {
                     let newCap = prompt(tt("hyperBuyPerText"));
@@ -440,7 +466,7 @@ var scenes =
                     else {
                         alert(tt("Too low!"));
                     }
-                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 2 }),
+                }, { quadratic: true, isVisible: () => game.supernova.cosmicUpgrades.hyperBuy.level > 0 || game.skillTree.upgrades.hyperbuy.level > 2 || game.settings.hyperBuyPer != 100 }),
 
                 // Scrap Upgrades
                 // Better Barrels
@@ -504,7 +530,7 @@ var scenes =
                     else return "+" + formatNumber((Barrel.getGlobalIncome().min((new Decimal(game.highestScrapReached.floor().sub(game.scrap.floor()))))).max(0)) + "/s"
                 }, 0.3, 0.02, 0.03, "white", { bold: true }),
                 new UIText(() => { if (game.settings.beamTimer == true && game.beams.isUnlocked()) { return getBeamTime() } else { return " " } }, 0.725, 0.02, 0.03, "white", { bold: true }),
-                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return tt("Next Storm Chance in: ") + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
+                new UIText(() => { if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0 && timeMode == false) { return tt("Next Storm chance in: ") + (60 - gsStormTime.toFixed(0)) + "s" } else { return " " } }, 0.725, 0.085, 0.025, "white", { bold: true }),
             ],
             function (delta) {
                 for (let i = 0, l = barrels.length; i < l; i++) {
@@ -738,7 +764,7 @@ var scenes =
                         }
                     }
                     else {
-                        GameNotification.create(new TextNotification("+0", tt("notenoughgs")))
+                        GameNotification.create(new TextNotification(tt("notenoughgs"), "+0"));
                     }
                 }, { quadratic: true }),
                 new UIText(() => tt("goldenscrap"), 0.5, 0.1, 0.1, "white", {
@@ -917,9 +943,9 @@ var scenes =
                         return "";
                     }
                 }, 0.5, 0.65, 0.04, "yellow"),
-                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.75, "darkfrag1", 0,
+                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.scrapBoost, images.upgrades.moreScrap, 0.8, "darkfrag1", 0,
                     () => { return game.darkfragment.isUnlocked() }),
-                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.moreFragments, images.upgrades.moreFragments, 0.85, "darkfrag2", "table2",
+                new UIDarkFragmentUpgrade(game.darkfragment.upgrades.moreFragments, images.upgrades.moreFragments, 0.9, "darkfrag2", "table2",
                     () => { return game.darkfragment.isUnlocked() }),
             ],
             function () {
@@ -2134,8 +2160,10 @@ var scenes =
                                         break;
                                 }
 
-                                GameNotification.create(new TextNotification("+" + formatNumber(giftContent.amount) + " " + tt("sendgift" + giftContent.content), "Gift opened successfully!"));
-                                GameNotification.create(new TextNotification(giftContent.message, tt("importantmessage")));
+                                GameNotification.create(new TextNotification("Gift opened successfully!",
+                                    "+" + formatNumber(giftContent.amount) + " " + tt("sendgift" + giftContent.content)
+                                ));
+                                GameNotification.create(new TextNotification(tt("importantmessage"), giftContent.message));
 
                                 game.stats.giftsReceived = game.stats.giftsReceived.add(1);
 
@@ -2334,7 +2362,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
 
 
                 new UIButton(0.2, 0.95, 0.3, 0.07, images.buttonEmpty, () => {
@@ -2440,6 +2468,8 @@ var scenes =
                     font: fonts.title
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
+                new UIButton(0.9, 0.05, 0.07, 0.07, images.buttonEmpty, () => Scene.loadScene("PatchNotes"), { quadratic: true }),
+                new UIText(gameVersionText.split(" ")[0], 0.9, 0.05, 0.05, "white", { halign: "center", valign: "middle" }),
 
                 new UIScrollContainerY([
                     new UIText(() => tt("General Options"), 0.5, tabYs[0], 0.075, "white", {
@@ -2505,11 +2535,18 @@ var scenes =
 
                     // Size Limit
                     new UIOption(tabYs[0] + 1.1, images.options.numberFormat, () => {
-                        if (!isMobile() || confirm("It seems like you play on a phone. Are you sure you want to enable this?")) {
-                            game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
-                            resizeCanvas();
+                        // confirm mechanism for the size limit, to prevent softlock on phone
+                        if (sizeLimitConfirmer == 0) {
+                            sizeLimitConfirmer = 10;
+                            if (!isMobile() || confirm("It seems like you play on a phone. Are you sure you want to enable this?")) {
+                                game.settings.sizeLimit = (game.settings.sizeLimit + 1) % 4;
+                                resizeCanvas();
+                            }
                         }
-                    }, () => tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table"),
+                        else {
+                            sizeLimitConfirmer = 0;
+                        }
+                    }, () => sizeLimitConfirmer > 0 ? tt("confirm") + " (" + sizeLimitConfirmer.toFixed(1) + "s)" : tt("sizelimit") + ": " + ["Unlimited", 480, 640, 960][game.settings.sizeLimit], "table"),
 
                     new UIText(() => tt("Performance"), 0.5, tabYs[1], 0.075, "white", {
                         bold: 600,
@@ -2645,7 +2682,7 @@ var scenes =
                 // My logo
                 new UIButton(0.85, 0.925, 0.15, 0.15, images.logos.schrottii, () => {
                     location.href = "https://schrottii.github.io/";
-                    GameNotification.create(new TextNotification(tt("You have found me"), "Schrottii"));
+                    GameNotification.create(new TextNotification("Schrottii", tt("You have found me")));
                     basicAchievementUnlock(206);
                 }, { quadratic: true }),
 
@@ -2665,11 +2702,58 @@ var scenes =
                 new UIText(() => tt("ogsc2"), 0.7, 0.825, 0.035, "black"),
                 new UIButton(0.7, 0.775, 0.09, 0.09, images.logos.scrap2, () => location.href = "https://play.google.com/store/apps/details?id=com.scrap.clicker.android&hl=gsw", { quadratic: true }),
             ],
-            function () {
+            function (delta) {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.85, w, h * 0.15);
+
+                // confirm mechanism for the size limit, to prevent softlock on phone
+                if (sizeLimitConfirmer != 0) {
+                    sizeLimitConfirmer -= delta;
+
+                    if (sizeLimitConfirmer < 0) {
+                        // reset it if the user didn't confirm
+                        sizeLimitConfirmer = 0;
+                        game.settings.sizeLimit = 0;
+                        resizeCanvas();
+                    }
+                }
+            }),
+        new Scene("PatchNotes",
+            [
+                new UIText(() => "Patch Notes" + "\n" + gameVersionText, 0.5, 0.033, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.zoomIn, () => Scene.loadScene("Options"), { quadratic: true }),
+
+                new UIButton(0.25, 0.95, 0.1, 0.1, images.arrows.left, () => patchNotesPage--,
+                    {
+                        quadratic: true,
+                        isVisible: () => patchNotesPage > 0
+                    }),
+                new UIButton(0.75, 0.95, 0.1, 0.1, images.arrows.right, () => patchNotesPage++,
+                    {
+                        quadratic: true,
+                        isVisible: () => patchNotesPage < Math.floor((currentPatchNotes.length - 2) / 30)
+                    }),
+            ],
+            function () {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.1, w * 0.9, h * 0.8);
+
+                ctx.fillStyle = colors[C]["text"];
+                ctx.textAlign = "left";
+                ctx.font = (h * 0.015) + "px " + fonts.default;
+                for (let pn = 0; pn < Math.min(30, currentPatchNotes.length - (patchNotesPage * 30)); pn++) {
+                    ctx.fillText(currentPatchNotes[pn + (patchNotesPage * 30)], w * 0.06, h * (0.125 + (0.025 * pn)), w * 0.88);
+                }
             }),
         new Scene("MergeQuests",
             [
@@ -2869,10 +2953,7 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 let tSize = Math.min(w, (h / 1.5)); // size of each achievement
-
                 let perRow = Math.floor(w / tSize * 5); // achievements per row
-                let perPage = perRow * 5;
-                let maxTrophies = game.milestones.achievements.length;
 
                 ctx.font = "bold " + (h * 0.06) + "px " + fonts.default;
                 ctx.fillStyle = "black";
@@ -2880,35 +2961,25 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(0, h * 0.2, w, w);
 
-                let achX = 0, achY = 0, iid = 0, iX = 0, iY = 0;
-
-                for (let i = perPage * game.milestones.page; i < Math.min(perPage * game.milestones.page + perPage, maxTrophies); i++) {
-                    // position the achievement
-                    achX = (tSize / 5) * (i % perRow);
-                    achY = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
-
-                    // grab the right image
-                    iid = game.milestones.achievements[i].imageId;
-                    iX = 256 * (iid % 10);
-                    iY = 256 * Math.floor(iid / 10);
-
-                    ctx.drawImage(game.ms.includes(game.milestones.achievements[i].id - 1) ? images.achievements.unlocked : images.achievements.locked, iX, iY, 256, 256, achX, achY, tSize / 5, tSize / 5);
+                for (let i in milestoneRender) {
+                    ctx.drawImage(milestoneRender[i].source, milestoneRender[i].snipX, milestoneRender[i].snipY, 256, 256, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
                     if (game.milestones.achievements[i].id == game.milestones.highlighted) { // the milestone you selected
-                        ctx.drawImage(images.highlightedSlot, achX, achY, tSize / 5, tSize / 5);
+                        ctx.drawImage(images.highlightedSlot, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
                     }
                     if (game.milestones.achievements[i].id == game.milestones.next) { // the milestone you should go for next
-                        ctx.drawImage(images.nextSlot, achX, achY, tSize / 5, tSize / 5);
+                        ctx.drawImage(images.nextSlot, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
                     }
 
-                    ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
-                    ctx.lineWidth = 0;
                 }
+
+                //ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
+                //ctx.lineWidth = 0;
 
                 // DRAW DESCRIPTION / TOOLTIP
 
                 if (game.milestones.tooltip !== null) {
                     let cx = ((tSize / 5) * (game.milestones.tooltip % perRow) + 0.05);
-                    let y = h * 0.2 + (tSize / 5) * Math.floor((game.milestones.tooltip - perPage * game.milestones.page) / perRow) + 0.18 + (tSize / 5);
+                    let y = h * 0.2 + (tSize / 5) * Math.floor((game.milestones.tooltip - (perRow * 5) * game.milestones.page) / perRow) + 0.18 + (tSize / 5);
                     y = Math.min(0.75 * h, y);
                     let arrowX = cx + w / perRow / 4;
 
@@ -2933,7 +3004,7 @@ var scenes =
                     Utils.drawEscapedText(ctx, game.settings.lang == "en" ? game.milestones.achievements[game.milestones.tooltip].title : tta(0, ("" + game.milestones.highlighted).padStart(3, "0")), cx, y + w * (TEXTSCALING * 0.02), (TEXTSCALING * 0.04), TEXTSCALING * w * 0.6);
 
                     ctx.fillStyle = "white";
-                    Utils.drawEscapedText(ctx, game.milestones.achievements[game.milestones.tooltip].getDescriptionDisplay(), cx, y + w * (TEXTSCALING * 0.065), (TEXTSCALING * 0.02), TEXTSCALING * w * 0.4);
+                    Utils.drawEscapedText(ctx, game.milestones.achievements[game.milestones.tooltip].getDescriptionDisplay(), cx, y + w * (TEXTSCALING * 0.065), (TEXTSCALING * 0.02), TEXTSCALING * w * 0.6);
                 }
             },
             function () {
@@ -2966,7 +3037,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Milestones"), { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
 
                 new UIButton(0.85, 0.9, 0.1, 0.1, images.scenes.unlocks, () => {
                     showAllUnlocks = !showAllUnlocks;
@@ -2991,10 +3062,10 @@ var scenes =
             [
                 new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.8, 0.2, 0.15, 0.15, images.buildings.shrine, () => Scene.loadScene("Shrine"), { quadratic: true }),
-                new UIButton(0.25, 0.5, 0.25, 0.25, images.buildings.generator, () => Scene.loadScene("Generator"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.generatorUnlock) }),
-                new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factory, () => Scene.loadScene("Factory"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.factoryUnlock) }),
-                new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factorylocked, () => Scene.loadScene("ScrapFactory"), { quadratic: true, isVisible: () => !applyUpgrade(game.shrine.factoryUnlock) }),
-                new UIButton(0.225, 0.8, 0.25, 0.25, images.buildings.bluestacks, () => Scene.loadScene("Autobuyers"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.autosUnlock) }),
+                new UIButton(0.25, 0.5, 0.25, 0.25, images.buildings.generator, () => Scene.loadScene("Generator"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.generatorUnlock) == true }),
+                new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factory, () => Scene.loadScene("Factory"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.factoryUnlock) == true }),
+                new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factorylocked, () => Scene.loadScene("ScrapFactory"), { quadratic: true, isVisible: () => !(applyUpgrade(game.shrine.factoryUnlock) == true) }),
+                new UIButton(0.225, 0.8, 0.25, 0.25, images.buildings.bluestacks, () => Scene.loadScene("Autobuyers"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.autosUnlock) == true }),
                 new UIButton(0.75, 0.9, 0.25, 0.25, images.buildings.collectors, () => Scene.loadScene("Autocollectors"), { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors) }),
             ],
             function (delta) {
@@ -3412,7 +3483,7 @@ var scenes =
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.fillStyle = colors[C]["table"];
-                ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.15);
+                ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.2);
             }),
         new Scene("Supernova2",
             [
@@ -3427,7 +3498,7 @@ var scenes =
                 new UIText(() => tt("firstsupernova"), 0.5, 0.225, 0.03, "black", { isVisible: () => game.supernova.stars.lt(1) }),
 
                 new UIText(() => tt("youwillearn") + "\n+" + formatNumber(game.supernova.getEmblems()) + " " + tt("emblems") +
-                    " (" + formatNumber(game.highestBarrelReached) + "/" + formatNumber(game.highestBarrelReached < 20000 ? 20000 : Math.ceil((1 + game.highestBarrelReached) / 20000) * 20000) + ")" + 
+                    " (" + formatNumber(game.highestBarrelReached) + "/" + formatNumber(game.highestBarrelReached < 20000 ? 20000 : Math.ceil((1 + game.highestBarrelReached) / 20000) * 20000) + ")" +
                     "\n+" + formatNumber(game.supernova.getStarDust()) + " " + tt("stardust") +
                     "\n+" + formatNumber(game.supernova.getAlienDust()) + " " + tt("aliendust") +
                     "\n+" + formatNumber(game.supernova.getFairyDust()) + " " + tt("fairydust") +

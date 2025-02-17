@@ -426,7 +426,7 @@ function update() {
                     }
                 }
                 else {
-                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(tt("not_storm"), new TextNotification(tt("not_storm2")));
+                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm"), tt("not_storm2")));
                 }
             }
         }

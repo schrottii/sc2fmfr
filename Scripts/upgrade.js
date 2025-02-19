@@ -358,7 +358,11 @@ class ScrapUpgrade {
             // is hyperbuy, level = "hyperbuy"
             level = 10000;
 
-            if (this.level + level < this.getMaxLevel() && game.settings.hyperBuy2 && (this.integral != undefined && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource))) {
+            if (this.level + level < this.getMaxLevel() // manually buy 10k without integral calc if it's near max. level
+                && game.settings.hyperBuy2 // or if integral is disabled in settings
+                && this.integral != undefined // or integral doesn't exist
+                && !isNaN(this.integral(this.level)) // or cost is NaN (like Cetus)
+                && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) { // and whatever this is, yeah yeah!
                 // Keep doubling as long as possible
                 while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level *= 2;
@@ -377,7 +381,7 @@ class ScrapUpgrade {
 
                 resource = getUpgradeResource(this.resource);
                 resource = resource.sub(this.integral(this.level + level).sub(this.integral(this.level)));
-                if (isNaN(resource) && !resource.gte(1)) //is resource negative
+                if (isNaN(resource) && !resource.gte(1)) // is resource negative
                 {
                     resource = new Decimal(0);
                 }

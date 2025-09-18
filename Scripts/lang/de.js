@@ -539,7 +539,7 @@ const trans_de = {
     tree40: "Zeitmodus",
     tree41: "Sterntonnen zählen\nfür täglich",
     tree42: "Schnelleres\nherstellen",
-    tree43: "Lustiger\nGlitchstahl\n(und x3 Wert)",
+    tree43: "Lustiger\nGlitchstahl\n(und ^1.5 Wert)",
     tree44: "Höheres max.\nfür das 2.\nSchattenschrottupg.",
     tree45: "Supernova",
 

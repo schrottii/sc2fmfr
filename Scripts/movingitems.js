@@ -334,6 +334,14 @@ var movingItemFactory =
                     this.progress += 1;
                 }
                 this.cooldown = 0;
+
+                if (this.progress / getReinforcedTapsNeeded() >= 0.66) {
+                    this.img = images.movingItems.reinforcedbeam3;
+                }
+                else if (this.progress / getReinforcedTapsNeeded() >= 0.33) {
+                    this.img = images.movingItems.reinforcedbeam2;
+                }
+
                 if (this.progress >= getReinforcedTapsNeeded()) {
                     this.collected = true;
                     if (game.settings.lowPerformance) {

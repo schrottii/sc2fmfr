@@ -87,7 +87,7 @@ const trans_en = {
     "cp3": "Mod SC2FMFR created by Schrottii ©2021",
     "cp4": "Unauthorized mods of this mod are prohibited!",
     "credit": "Credit to all barrel makers, idea givers, bug finders,\nbeta testers and whoever made the coconut image",
-    "thanks": "Special thanks to elmenda452, DaGame,\nЛюбитель Майнкрафта, DoorHandleSalesMan\nand MCGamer3005",
+    "thanks": "Special thanks to elmenda452, DaGame,\nBarduzzi, thunderstorm, deleteduser0,\nЛюбитель Майнкрафта, DoorHandleSalesMan\nand MCGamer3005",
     "Libraries used": "Libraries used",
 
     "Export and Import": "Export and Import",
@@ -162,14 +162,14 @@ const trans_en = {
     "darkscrap": "Dark Scrap",
     "Second Dimension": "Second Dimension",
     "2nddimtext": "Sacrifice your Golden Scrap and enter the Second Dimension\nyou will keep it until you return\nClick the Button below to enter the Second Dimension.",
-    "2nddimtext2": "Progress to get Dark Scrap and destroy to get Dark Fragments.\nMerging increases your scrap production. Merge to reach higher barrels.\nClick the Button below to leave the Second Dimension.",
+    "2nddimtext2": "Progress to get Dark Scrap and destroy to get Dark Fragments.\nMerging increases your scrap production.\nx1.05 per merge, triple for manual merges\nClick the Button below to leave the Second Dimension.",
     "earn": "Earn",
     "dsgsboost": "You get <amount>% more Golden Scrap\nfor every Dark Scrap you have.\nYou get a total boost of x<multiplier>!",
     "enter2nddim": "You need at least <amount> Golden Scrap to enter!",
 
     // MERGE MASTERY
     "Merge Mastery": "Merge Mastery",
-    level: "level",
+    level: "Level",
     scrapincome: "Scrap income",
     magnetsonlvlup: "Magnets on Level Up",
     screwsonlvlup: "Screws on Level Up",
@@ -539,7 +539,7 @@ const trans_en = {
     tree40: "Unlock\nTime Mode",
     tree41: "Star barrels count\nfor daily quests",
     tree42: "Faster Crafting",
-    tree43: "Funny Glitch Beams\n(& x3 worth)",
+    tree43: "Funny Glitch Beams\n(& ^1.5 worth)",
     tree44: "Higher max. for\n2nd Dark Scrap upg.",
     tree45: "Unlock Supernova",
 

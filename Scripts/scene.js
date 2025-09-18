@@ -29,26 +29,38 @@ var upgradingType = "mas";
 var scrapyardBuyProcess = false;
 
 var characters = [[0.4, 0.6, 1, 0, () => applyUpgrade(game.shrine.factoryUnlock)], [0.6, 0.75, 1, 0.5, () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors)]];
-const tabYs = [0.2, 1.4, 2.4, 2.8];
+const tabYs = [0.2, 1.4, 2.4, 2.9];
 
 var musicPlayer = document.getElementById("audioPlayer");
 musicPlayer.src = songs["newerWave"];
 musicPlayer.loop = true;
 musicPlayer.preload = true;
+var currentSong = "";
 
-function getTotalLevels(x) {
-    return 0;
+musicPlayer.onended = () => {
+    if (game.settings.musicAuto && !musicPlayer.paused) {
+        let nr = currentSong + 1;
+        if (nr >= Object.keys(songs).length) nr = 0;
+        currentSong = nr;
+        playMusic(true);
+    }
 }
 
-function playMusic() {
+function playMusic(auto = false) {
+    if (!auto) currentSong = game.settings.musicSelect;
+
     if (game.settings.musicOnOff) {
-        musicPlayer.src = songs[Object.keys(songs)[game.settings.musicSelect]];
+        musicPlayer.src = songs[Object.keys(songs)[currentSong]];
         musicPlayer.volume = game.settings.musicVolume / 100;
         musicPlayer.play();
     }
     else {
         musicPlayer.pause();
     }
+}
+
+function getTotalLevels(x) {
+    return 0;
 }
 
 class Scene {
@@ -100,7 +112,7 @@ class Scene {
         this.render(delta);
 
         for (let element of this.ui) {
-            element.update();
+            element.update(delta);
             element.render(ctx);
         }
 
@@ -109,9 +121,7 @@ class Scene {
             p.render(ctx);
         }
 
-        this.popupTexts = this.popupTexts.filter(text => text.lifeTime < 1);
-
-
+        if (this.popupTexts.length > 0) this.popupTexts = this.popupTexts.filter(text => text.lifeTime < 1);
     }
 
     handleElementAction(element, type) {
@@ -306,8 +316,8 @@ function renderMilestones() {
         milestoneRender[i] = { id: game.milestones.achievements[i].id - 1 };
 
         // position the achievement
-        milestoneRender[i].x = (tSize / 5) * (i % perRow);
-        milestoneRender[i].y = h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow);
+        milestoneRender[i].x = Math.floor((tSize / 5) * (i % perRow));
+        milestoneRender[i].y = Math.floor(h * 0.2 + (tSize / 5) * Math.floor((i - perPage * game.milestones.page) / perRow));
 
         // grab the right image
         milestoneRender[i].source = game.ms.includes(milestoneRender[i].id) ? images.achievements.unlocked : images.achievements.locked;
@@ -357,10 +367,11 @@ var scenes =
                 ctx.textBaseline = "bottom";
                 ctx.fillText(gameVersionText, w * 0.99, h * 0.975);
 
+                /*
                 ctx.textAlign = "center";
                 ctx.font = "200 " + (h * 0.03) + "px " + fonts.default;
                 ctx.fillText("Scrap Clicker 5", w * 0.5, h * 0.925);
-
+                */
             }),
         new Scene("Barrels",
             [
@@ -413,7 +424,7 @@ var scenes =
                 // MIDDLE row
                 // magnets, settings, achievements, fragments, auto merge, auto convert
                 new UIButton(0.125, 0.9, 0.05, 0.05, images.scenes.options, () => Scene.loadScene("Options"), { quadratic: true }),
-                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.milestones, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
+                new UIButton(0.275, 0.9, 0.05, 0.05, images.scenes.milestones, () => { renderMilestones(); Scene.loadScene("Achievements") }, { quadratic: true }),
                 new UIButton(0.425, 0.9, 0.05, 0.05, images.scenes.magnet, () => Scene.loadScene("MagnetUpgrades"), { quadratic: true }),
                 new UIButton(0.575, 0.9, 0.05, 0.05, images.scenes.fragment, () => Scene.loadScene("Fragment"),
                     {
@@ -427,7 +438,7 @@ var scenes =
                     on: images.checkbox.autoMerge.on,
                 }),
                 new UICheckbox(0.875, 0.9, 0.05, 0.05, "game.settings.autoConvert", {
-                    isVisible: () => game.highestBarrelReached >= 300 && !timeMode,
+                    isVisible: () => game.highestBarrelReached >= 299 && !timeMode,
                     quadratic: true,
                     off: images.checkbox.autoConvert.off,
                     on: images.checkbox.autoConvert.on,
@@ -1426,11 +1437,13 @@ var scenes =
                         new UIImage(images.locked, 0.5, 0.58, 0.125, 0.125, { quadratic: true }),
                         new UIText(() => "$images.tire$" + formatNumber(game.tires.milestones[1]), 0.5, 0.67, 0.09, "black", { bold: true, valign: "middle" }),
                     ], () => game.tires.amount.lt(game.tires.milestones[1])),
+
                     new UIGroup([
                         new UIRect(0.5, 0.8, 1, 0.2, "table"),
                         new UIImage(images.locked, 0.5, 0.78, 0.125, 0.125, { quadratic: true }),
                         new UIText(() => "$images.tire$" + formatNumber(game.tires.milestones[2]), 0.5, 0.87, 0.09, "black", { bold: true, valign: "middle" }),
                     ], () => game.tires.amount.lt(game.tires.milestones[2])),
+
                     new UIGroup([
                         new UITireUpgrade(game.tires.upgrades[0][0], images.upgrades.fasterBarrels, "tire11", 0.5 / 3, 0.4),
                         new UITireUpgrade(game.tires.upgrades[0][1], images.upgrades.brickSpeed, "tire12", 1.5 / 3, 0.4),
@@ -1439,31 +1452,34 @@ var scenes =
                             game.tires.upgrades[0][0].buyToTarget(game.tires.upgrades[0][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[0][1].level == game.tires.upgrades[0][1].maxLevel && game.tires.upgrades[0][2].level == game.tires.upgrades[0][2].maxLevel }),
                     ]),
+
                     new UIGroup([
-                        new UITireUpgrade(game.tires.upgrades[1][0], images.upgrades.tireBoost, "tire21", 0.5 / 3, 0.6, "table2"),
-                        new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "tire22", 1.5 / 3, 0.6, "table2"),
-                        new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "tire23", 2.5 / 3, 0.6, "table2"),
-                        new UIButton(0.5 / 3 + 0.11, 0.6, 0.05, 0.05, images.buttonMaxAll, () => {
+                        new UITireUpgrade(game.tires.upgrades[1][0], images.upgrades.tireBoost, "tire21", 0.5 / 3, 0.625, "table2"),
+                        new UITireUpgrade(game.tires.upgrades[1][1], images.upgrades.tireChance, "tire22", 1.5 / 3, 0.625, "table2"),
+                        new UITireUpgrade(game.tires.upgrades[1][2], images.upgrades.questSpeed, "tire23", 2.5 / 3, 0.625, "table2"),
+                        new UIButton(0.5 / 3 + 0.11, 0.625, 0.05, 0.05, images.buttonMaxAll, () => {
                             game.tires.upgrades[1][0].buyToTarget(game.tires.upgrades[1][0].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[1][1].level == game.tires.upgrades[1][1].maxLevel && game.tires.upgrades[1][2].level == game.tires.upgrades[1][2].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[1])),
+
                     new UIGroup([
-                        new UITireUpgrade(game.tires.upgrades[2][0], images.upgrades.fasterFallingMagnets, "tire31", 0.5 / 3, 0.8),
-                        new UITireUpgrade(game.tires.upgrades[2][1], images.upgrades.fasterAutoMerge, "tire32", 1.5 / 3, 0.8),
-                        new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "tire33", 2.5 / 3, 0.8),
-                        new UIButton(2.5 / 3 + 0.11, 0.8, 0.05, 0.05, images.buttonMaxAll, () => {
+                        new UITireUpgrade(game.tires.upgrades[2][0], images.upgrades.fasterFallingMagnets, "tire31", 0.5 / 3, 0.85),
+                        new UITireUpgrade(game.tires.upgrades[2][1], images.upgrades.fasterAutoMerge, "tire32", 1.5 / 3, 0.85),
+                        new UITireUpgrade(game.tires.upgrades[2][2], images.upgrades.goldenScrapBoost, "tire33", 2.5 / 3, 0.85),
+                        new UIButton(2.5 / 3 + 0.11, 0.85, 0.05, 0.05, images.buttonMaxAll, () => {
                             game.tires.upgrades[2][2].buyToTarget(game.tires.upgrades[2][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[2][0].level == game.tires.upgrades[2][0].maxLevel && game.tires.upgrades[2][1].level == game.tires.upgrades[2][1].maxLevel }),
                     ], () => game.tires.amount.gt(game.tires.milestones[2])),
+
                     new UIGroup([
-                        new UITireUpgrade(game.tires.upgrades[3][0], images.upgrades.higherNeptuneMax, "tire41", 0.5 / 3, 1.0, "table2"),
-                        new UITireUpgrade(game.tires.upgrades[3][1], images.upgrades.beamValue, "tire42", 1.5 / 3, 1.0, "table2"),
-                        new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "tire43", 2.5 / 3, 1.0, "table2"),
-                        new UIButton(2.5 / 3 + 0.11, 1.0, 0.05, 0.05, images.buttonMaxAll, () => {
+                        new UITireUpgrade(game.tires.upgrades[3][0], images.upgrades.higherNeptuneMax, "tire41", 0.5 / 3, 1.075, "table2"),
+                        new UITireUpgrade(game.tires.upgrades[3][1], images.upgrades.beamValue, "tire42", 1.5 / 3, 1.075, "table2"),
+                        new UITireUpgrade(game.tires.upgrades[3][2], images.upgrades.doublePlasticBags, "tire43", 2.5 / 3, 1.075, "table2"),
+                        new UIButton(2.5 / 3 + 0.11, 1.075, 0.05, 0.05, images.buttonMaxAll, () => {
                             game.tires.upgrades[3][2].buyToTarget(game.tires.upgrades[3][2].level + 15000);
                         }, { quadratic: true, isVisible: () => game.tires.upgrades[3][0].level == game.tires.upgrades[3][0].maxLevel && game.tires.upgrades[3][1].level == game.tires.upgrades[3][1].maxLevel }),
                     ], () => game.tires.milestones[3]())
-                ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.1 })
+                ], 0, 0.3, 1, 0.7, () => game.tires.milestones[3](), { ymin: 0, ymax: 1.2 })
             ],
             function () {
                 ctx.fillStyle = colors[C]["bg"];
@@ -1508,7 +1524,7 @@ var scenes =
                 }),
 
 
-                new UIText(() => tt("beamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<value>", formatNumber(getBeamBaseValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("beamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(1)).replace("<value>", formatNumber(getBeamBaseValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue)).toFixed(0)), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.beam$" + tt("beams") + ": " + formatNumber(game.beams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1593,7 +1609,6 @@ var scenes =
             function () {
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
-
 
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.24);
@@ -1694,7 +1709,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("aerobeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams))).replace("<value>", formatNumber(getAeroBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("aerobeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)).toFixed(1)).replace("<value>", formatNumber(getAeroBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue)).toFixed(0)), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.aerobeam$ " + tt("aerobeams") + ": " + formatNumber(game.aerobeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1723,7 +1738,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("angelbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams))).replace("<value>", formatNumber(getAngelBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("angelbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)).toFixed(1)).replace("<value>", formatNumber(getAngelBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue)).toFixed(0)), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.angelbeam$ " + tt("angelbeams") + ": " + formatNumber(game.angelbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1751,7 +1766,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("reinforcedbeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<value>", formatNumber(getReinforcedBeamValue())).replace("<taps>", getReinforcedTapsNeeded()).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("reinforcedbeamfalltext").replace("<interval>", (45 - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(1)).replace("<value>", formatNumber(getReinforcedBeamValue())).replace("<taps>", getReinforcedTapsNeeded().toFixed(0)).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue)).toFixed(0)), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1791,7 +1806,7 @@ var scenes =
                 }),
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Beams"), { quadratic: true }),
 
-                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams))).replace("<taps>", "\n" + formatNumber(getGlitchBeamMinValue())).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue))), 0.5, 0.2, 0.03, "black"),
+                new UIText(() => tt("glitchbeamfalltext").replace("<interval>", (30 - applyUpgrade(game.beams.upgrades.fasterBeams)).toFixed(1)).replace("<taps>", "\n" + formatNumber(getGlitchBeamMinValue())).replace("<value>", formatNumber(getGlitchBeamValue())).replace("<chance>", applyUpgrade(game.beams.upgrades.beamStormChance).toFixed(1)).replace("<amount2>", (5 + applyUpgrade(game.beams.upgrades.beamStormValue)).toFixed(0)), 0.5, 0.2, 0.03, "black"),
 
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.3, 0.06, "yellow"),
 
@@ -1821,7 +1836,7 @@ var scenes =
 
                 new UIText(() => tt("crabs"), 0.575, 0.3, 0.04, "yellow"),
                 new UIText(() => tt("costs") + ": " + getResourceImage(game.plasticBags.currentResource) + formatNumber(game.plasticBags.currentCosts), 0.5, 0.34, 0.06, "yellow"),
-                new UIText(() => tt("level") + " " + Math.floor(game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))).add(1)), 0.5, 0.25, 0.03, "yellow"),
+                new UIText(() => tt("level") + " " + formatNumber(game.plasticBags.total.sub(Math.min(game.plasticBags.total, applyUpgrade(game.tires.upgrades[3][2]))).add(1)), 0.5, 0.25, 0.03, "yellow"),
                 new UIButton(0.15, 0.325, 0.1, 0.1, images.plasticBag, () => {
                     if (getUpgradeResource(game.plasticBags.currentResource).gte(game.plasticBags.currentCosts)) {
                         let amount = 1 + game.skillTree.upgrades.doublePlasticBags.level + game.supernova.fairyDustUpgrades.cancer.level;
@@ -1897,7 +1912,7 @@ var scenes =
                     }
                 }, { quadratic: true }),
 
-                new UIText(() => "$images.plasticBag$ " + tt("plasticbags") + ": " + Math.round(game.plasticBags.amount), 0.5, 0.4, 0.06, "yellow"),
+                new UIText(() => "$images.plasticBag$ " + tt("plasticbags") + ": " + formatNumber(game.plasticBags.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.moreScrap, images.upgrades.moreScrap, 0.55, "plastic1"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.moreTires, images.upgrades.tireBoost, 0.65, "plastic2", "table2"),
                 new UIPlasticBagUpgrade(game.plasticBags.upgrades.higherEasierReinforced, images.upgrades.reinforcedBeamPower, 0.75, "plastic3"),
@@ -1926,7 +1941,7 @@ var scenes =
                 new UIText(() => tt("screwgain2") + ": +" + formatNumber(getScrews()), 0.5, 0.325, 0.04, "white"),
                 new UIText(() => tt("screwgain3") + ": +" + formatNumber(getScrews(true)), 0.5, 0.35, 0.04, "white"),
 
-                new UIText(() => "$images.screw$ " + tt("screws") + ": " + Math.round(game.screws.amount), 0.5, 0.4, 0.06, "yellow"),
+                new UIText(() => "$images.screw$ " + tt("screws") + ": " + formatNumber(game.screws.amount), 0.5, 0.4, 0.06, "yellow"),
                 new UIScrewUpgrade(game.screws.upgrades.fallingScrews, images.upgrades.unlockScrews, 0.55, "screw1"),
                 new UIScrewUpgrade(game.screws.upgrades.higherMoreReinforced, images.upgrades.reinforcedBeamValue, 0.65, "screw2", "table2"),
                 new UIScrewUpgrade(game.screws.upgrades.fasterBricks, images.upgrades.brickSpeed, 0.75, "screw3"),
@@ -1959,7 +1974,7 @@ var scenes =
 
                 new UIButton(0.84, 0.435, 0.05, 0.05, images.ezUpgrade, () => {
                     if (game.mergeQuests.dailyQuest.active) {
-                        if (applyUpgrade(game.skillTree.upgrades.starDaily) && game.highestBarrelReached > 100000) {
+                        if (applyUpgrade(game.skillTree.upgrades.starDaily) && game.highestBarrelReached > 100000 - 1) {
                             game.scrapUpgrades.betterBarrels.buyToTarget("hyperbuy");
                             game.scrapUpgrades.betterBarrels.level = Math.floor(game.scrapUpgrades.betterBarrels.level / BARRELS) * 1000 + game.mergeQuests.dailyQuest.barrelLvl;
                         }
@@ -2362,7 +2377,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Achievements") }, { quadratic: true }),
 
 
                 new UIButton(0.2, 0.95, 0.3, 0.07, images.buttonEmpty, () => {
@@ -2488,10 +2503,19 @@ var scenes =
                                 game.settings.lang = "ru";
                                 break;
                             case "ru":
+                                game.settings.lang = "it";
+                                break;
+                            case "it":
+                                game.settings.lang = "pt";
+                                break;
+                            case "pt":
+                                game.settings.lang = "ro";
+                                break;
+                            default:
                                 game.settings.lang = "en";
                                 break;
                         }
-                    }, () => tt("language") + ": " + ["English", "Deutsch", "Русский"][["en", "de", "ru"].indexOf(game.settings.lang)], "table"),
+                    }, () => tt("language") + ": " + ["English", "Deutsch", "Русский", "Italiano", "Português europeu", "Română"][["en", "de", "ru", "it", "pt", "ro"].indexOf(game.settings.lang)], "table"),
 
                     // Notation
                     new UIOption(tabYs[0] + 0.2, images.options.numberFormat, () => {
@@ -2628,16 +2652,19 @@ var scenes =
                     // Select song
                     new UIOption(tabYs[2] + 0.2, images.music, () => {
                         game.settings.musicSelect = game.settings.musicSelect + 1;
-                        if (game.settings.musicSelect == 4) game.settings.musicSelect = 0;
+                        if (game.settings.musicSelect == 5) game.settings.musicSelect = 0;
                         playMusic();
-                    }, () => tt("Current") + ": " + ["Newerwave\nKevin MacLeod", "Getting It Done\nKevin MacLeod", "Power Beams\nSchrottii", "Voltaic\nKevin MacLeod"][game.settings.musicSelect], "table2"),
+                    }, () => tt("Current") + ": " + ["Manua Merg\nSchrottii", "Voltaic\nKevin MacLeod", "Mobile Destroyery\nSchrottii", "Getting It Done\nKevin MacLeod", "Power Beams (Remix)\nSchrottii"][game.settings.musicSelect], "table2"),
 
                     // Volume
                     new UIOption(tabYs[2] + 0.3, images.options.numberFormat, () => {
                         game.settings.musicVolume += 10;
                         if (game.settings.musicVolume > 100) game.settings.musicVolume = 0;
-                        playMusic();
+                        musicPlayer.volume = game.settings.musicVolume / 100;
                     }, () => tt("Volume") + ": " + game.settings.musicVolume + "%", "table"),
+
+                    // automatically go to the next song
+                    new UIToggleOption(tabYs[2] + 0.4, "game.settings.musicAuto", () => "Auto play", "table2"),
 
 
                     new UIText(() => tt("Credits"), 0.5, tabYs[3], 0.075, "white", {
@@ -2773,7 +2800,7 @@ var scenes =
                     Scene.loadScene("Daily");
                 }, {
                     quadratic: true,
-                    isVisible: () => game.highestBarrelReached >= 1000
+                    isVisible: () => game.highestBarrelReached >= 999
                 }),
                 new UIButton(0.9, 0.125, 0.07, 0.07, images.buttonReset, () => {
                     if (confirm("Do you really want to reset all 3 quests?")) {
@@ -2848,7 +2875,7 @@ var scenes =
                     // Scrapyard
                     if (game.settings.hyperBuy && !scrapyardBuyProcess) {
                         scrapyardBuyProcess = true;
-                        level = 1;
+                        let level = 1;
                         while (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level * 2).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
                             level *= 2;
                         }
@@ -2858,6 +2885,10 @@ var scenes =
                         if (game.mergeQuests.mergeTokens.gte(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard)))) {
                             game.mergeQuests.scrapyard += level;
                             game.mergeQuests.mergeTokens = game.mergeQuests.mergeTokens.sub(calcScrapyard(game.mergeQuests.scrapyard + level).sub(calcScrapyard(game.mergeQuests.scrapyard))).max(0);
+                            currentScene.popupTexts.push(new PopUpText("+" + level + " levels", w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
+                        }
+                        else {
+                            currentScene.popupTexts.push(new PopUpText("Too expensive", w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
                         }
                         scrapyardBuyProcess = false;
                     }
@@ -2914,7 +2945,7 @@ var scenes =
                 }
                 if (Math.random() > 0.95) movingItemFactory.fallingTireBG(0);
             }),
-        new Scene("Milestones",
+        new Scene("Achievements",
             [
                 new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("Barrels"), { quadratic: true }),
                 new UIButton(0.1, 0.93, 0.1, 0.1, images.arrows.left, () => game.milestones.changePage(-1),
@@ -2948,7 +2979,6 @@ var scenes =
             ],
             function () {
                 // DRAW ACHIEVEMENTS
-
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
 
@@ -2964,16 +2994,12 @@ var scenes =
                 for (let i in milestoneRender) {
                     ctx.drawImage(milestoneRender[i].source, milestoneRender[i].snipX, milestoneRender[i].snipY, 256, 256, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
                     if (game.milestones.achievements[i].id == game.milestones.highlighted) { // the milestone you selected
-                        ctx.drawImage(images.highlightedSlot, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
+                        ctx.drawImage(images.highlightedSlot, milestoneRender[i].x, milestoneRender[i].y, Math.floor(tSize / 5), Math.floor(tSize / 5));
                     }
                     if (game.milestones.achievements[i].id == game.milestones.next) { // the milestone you should go for next
-                        ctx.drawImage(images.nextSlot, milestoneRender[i].x, milestoneRender[i].y, tSize / 5, tSize / 5);
+                        ctx.drawImage(images.nextSlot, milestoneRender[i].x, milestoneRender[i].y, Math.floor(tSize / 5), Math.floor(tSize / 5));
                     }
-
                 }
-
-                //ctx.fillStyle = game.ms.includes(game.milestones.achievements[i].id - 1) ? game.milestones.achievements[i].fontColor : "white";
-                //ctx.lineWidth = 0;
 
                 // DRAW DESCRIPTION / TOOLTIP
 
@@ -3009,7 +3035,6 @@ var scenes =
             },
             function () {
                 // ACTIVATE DESCRIPTION / TOOLTIP
-
                 let tSize = Math.min(w, (h / 1.5)); // size of each achievement
 
                 let perRow = Math.floor(w / tSize * 5); // achievements per row
@@ -3037,7 +3062,7 @@ var scenes =
                     borderSize: 0.005,
                     font: fonts.title
                 }),
-                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Milestones") }, { quadratic: true }),
+                new UIButton(0.1, 0.05, 0.07, 0.07, images.buttonBack, () => { renderMilestones(); Scene.loadScene("Achievements") }, { quadratic: true }),
 
                 new UIButton(0.85, 0.9, 0.1, 0.1, images.scenes.unlocks, () => {
                     showAllUnlocks = !showAllUnlocks;
@@ -3065,8 +3090,9 @@ var scenes =
                 new UIButton(0.25, 0.5, 0.25, 0.25, images.buildings.generator, () => Scene.loadScene("Generator"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.generatorUnlock) == true }),
                 new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factory, () => Scene.loadScene("Factory"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.factoryUnlock) == true }),
                 new UIButton(0.75, 0.5, 0.25, 0.25, images.buildings.factorylocked, () => Scene.loadScene("ScrapFactory"), { quadratic: true, isVisible: () => !(applyUpgrade(game.shrine.factoryUnlock) == true) }),
-                new UIButton(0.225, 0.8, 0.25, 0.25, images.buildings.bluestacks, () => Scene.loadScene("Autobuyers"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.autosUnlock) == true }),
-                new UIButton(0.75, 0.9, 0.25, 0.25, images.buildings.collectors, () => Scene.loadScene("Autocollectors"), { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors) }),
+                new UIButton(0.225, 0.8, 0.25, 0.25, images.buildings.bluestacks, () => Scene.loadScene("AutoBuyers"), { quadratic: true, isVisible: () => applyUpgrade(game.shrine.autosUnlock) == true }),
+                new UIButton(0.75, 0.9, 0.25, 0.25, images.buildings.collectors, () => Scene.loadScene("AutoCollectors"), { quadratic: true, isVisible: () => applyUpgrade(game.skillTree.upgrades.unlockAutoCollectors) }),
+                new UIButton(0.4, 0.25, 0.25, 0.25, images.buildings.beamfactory, () => Scene.loadScene("BeamFactory"), { quadratic: true }),
             ],
             function (delta) {
                 ctx.fillStyle = "lightgreen";
@@ -3091,6 +3117,43 @@ var scenes =
                         ctx.drawImage(images["factoryguy"], 64 * characters[c][2], 0, 64, 64, w * characters[c][0], h * characters[c][1], h * 0.08, h * 0.08);
                     }
                 }
+            }),
+        new Scene("BeamFactory",
+            [
+                new UIText("Beam Factory", 0.5, 0.1, 0.08, "white", {
+                    bold: 900,
+                    borderSize: 0.005,
+                    font: fonts.title
+                }),
+                new UIButton(0.1, 0.1, 0.07, 0.07, images.buttonBack, () => Scene.loadScene("ScrapFactory"), { quadratic: true }),
+
+                new UIText(() => "When enabled, no Beams fall,\nbut you get 10% of their worth for free\nCurrently " + (game.settings.beamFactory ? "ON" : "OFF"), 0.5, 0.2, 0.03, "black"),
+
+                new UIButton(0.3, 0.3, 0.15, 0.1, images.checkbox.on, () => {
+                    game.settings.beamFactory = true;
+                }, { isVisible: () => game.settings.beamFactory == false }),
+                new UIButton(0.7, 0.3, 0.15, 0.1, images.checkbox.off, () => {
+                    game.settings.beamFactory = false;
+                }, { isVisible: () => game.settings.beamFactory == true }),
+
+                new UIImage(images.movingItems.beam, 0.5, 0.3, 0.1, 0.1, { quadratic: true, isVisible: () => game.beams.selected == 0 }),
+                new UIImage(images.movingItems.aerobeam, 0.5, 0.3, 0.1, 0.1, { quadratic: true, isVisible: () => game.beams.selected == 1 }),
+                new UIImage(images.movingItems.angelbeam, 0.5, 0.3, 0.1, 0.1, { quadratic: true, isVisible: () => game.beams.selected == 2 }),
+                new UIImage(images.movingItems.reinforcedbeam, 0.5, 0.3, 0.1, 0.1, { quadratic: true, isVisible: () => game.beams.selected == 3 }),
+                new UIImage(images.movingItems.glitchbeam, 0.5, 0.3, 0.1, 0.1, { quadratic: true, isVisible: () => game.beams.selected == 4 }),
+
+                new UIText(() => "$images.beam$ " + tt("beams") + ": " + formatNumber(game.beams.amount), 0.5, 0.7, 0.06, "yellow"),
+                new UIText(() => "$images.aerobeam$ " + tt("aerobeams") + ": " + formatNumber(game.aerobeams.amount), 0.5, 0.74, 0.06, "yellow", { isVisible: () => game.aerobeams.isUnlocked() }),
+                new UIText(() => "$images.angelbeam$ " + tt("angelbeams") + ": " + formatNumber(game.angelbeams.amount), 0.5, 0.78, 0.06, "yellow", { isVisible: () => game.angelbeams.isUnlocked() }),
+                new UIText(() => "$images.reinforcedbeam$ " + tt("reinforcedbeams") + ": " + formatNumber(game.reinforcedbeams.amount), 0.5, 0.82, 0.06, "yellow", { isVisible: () => game.reinforcedbeams.isUnlocked() }),
+                new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.86, 0.06, "yellow", { isVisible: () => game.glitchbeams.isUnlocked() }),
+            ],
+            function (delta) {
+                ctx.fillStyle = colors[C]["bg"];
+                ctx.fillRect(0, 0, w, h);
+
+                ctx.fillStyle = colors[C]["table"];
+                ctx.fillRect(w * 0.05, h * 0.688, w * 0.9, h * 0.24);
             }),
         new Scene("Shrine",
             [
@@ -3167,7 +3230,7 @@ var scenes =
 
                 new UIText(() => "$images.glitchbeam$ " + tt("glitchbeams") + ": " + formatNumber(game.glitchbeams.amount), 0.5, 0.2, 0.06, "yellow"),
                 new UIText(() => tt("tanktext"), 0.6, 0.4, 0.04, "black"),
-                new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "orange"),
+                new UIText(() => Math.round(game.factory.tank) + "/" + Math.round(getTankSize()), 0.15, 0.5, 0.033, "#9e4900"),
 
                 new UIReinforcedBeamUpgrade(game.reinforcedbeams.upgrades.factoryTankSize, images.upgrades.reinforcedBricks, 0.8, "gen1"),
                 new UIBrickUpgrade(game.bricks.upgrades.fasterCrafting, images.upgrades.reinforcedBricks, 0.9, "gen2", "table2"),
@@ -3194,7 +3257,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["table"];
                 ctx.fillRect(w * 0.05, h * 0.188, w * 0.9, h * 0.06);
             }),
-        new Scene("Autobuyers",
+        new Scene("AutoBuyers",
             [
                 new UIText(() => tt("autobuyers"), 0.5, 0.1, 0.08, "white", {
                     bold: 900,
@@ -3215,7 +3278,7 @@ var scenes =
                 ctx.fillStyle = colors[C]["bg"];
                 ctx.fillRect(0, 0, w, h);
             }),
-        new Scene("Autocollectors",
+        new Scene("AutoCollectors",
             [
                 new UIText(() => tt("autocollectors"), 0.5, 0.1, 0.06, "white", {
                     bold: 900,

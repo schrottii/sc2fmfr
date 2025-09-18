@@ -10,17 +10,12 @@ class Milestone {
     }
 
     getDescriptionDisplay() {
-        if (game.settings.lang == "en") {
-            return typeof this.description === "function" ? this.description() : this.description
+        let desc = tta(1, ("" + game.milestones.highlighted).padStart(3, "0"));
+        if (this.langConfig == undefined) return desc;
+        for (let lc = 0; lc < this.langConfig.length; lc += 2) {
+            desc = desc.replace(this.langConfig[lc], eval(this.langConfig[lc + 1]));
         }
-        else {
-            let desc = tta(1, ("" + game.milestones.highlighted).padStart(3, "0"));
-            if (this.langConfig == undefined) return desc;
-            for (let lc = 0; lc < this.langConfig.length; lc += 2) {
-                desc = desc.replace(this.langConfig[lc], eval(this.langConfig[lc + 1]));
-            }
-            return desc;
-        }
+        return desc;
     }
 
     static check(createNotifs) {

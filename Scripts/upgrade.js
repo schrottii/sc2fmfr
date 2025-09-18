@@ -343,7 +343,7 @@ class ScrapUpgrade {
         else if (this.resource == 7 && game.settings.hyperBuy2) {
             // Super super fast Mythus calc - Added in 3.2.1
             let resource = getUpgradeResource(this.resource);
-            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.min(HARDLEVELCAP, Math.max(0, Math.floor(((Math.floor(resource) - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 20) / 20)));
+            if (this.maxLevel != 14) game.solarSystem.upgrades.mythus.level = Math.min(HARDLEVELCAP, Math.max(0, Math.floor(((Math.floor(resource) - 3008) - applyUpgrade(game.supernova.alienDustUpgrades.aquila) + 50) / 50)));
             else game.skillTree.upgrades.higherDarkScrapTokenMax.level = Math.min(14, Math.floor(resource / 1200));
             this.onBuy();
             this.afterBuy();
@@ -364,13 +364,13 @@ class ScrapUpgrade {
                 && !isNaN(this.integral(this.level)) // or cost is NaN (like Cetus)
                 && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) { // and whatever this is, yeah yeah!
                 // Keep doubling as long as possible
-                while (this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) {
+                while (level != Infinity && level > 0 && this.integral(this.level + level).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level *= 2;
                 }
                 level = level / 2;
 
                 // Half, now x1.03 as long as possible. Should be fairly accurate
-                while (this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource)) {
+                while (level != Infinity && level > 0 && this.integral(this.level + level * 1.02).sub(this.integral(this.level)).max(1).lt(resource)) {
                     level = Math.floor(level * 1.02);
                 }
 

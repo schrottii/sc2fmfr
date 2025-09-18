@@ -134,7 +134,7 @@ class UIScrollContainer2D extends UIGroup {
         }
     }
 
-    update() {
+    update(delta) {
         for (let ui of this.uiElements) {
             ui.update();
         }
@@ -144,8 +144,8 @@ class UIScrollContainer2D extends UIGroup {
             let mx = Math.abs(mouseMoveX) > 1 ? mouseMoveX : 0;
             let my = Math.abs(mouseMoveY) > 1 ? mouseMoveY : 0;
 
-            this.scrollX -= this.axis.x ? mx / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
-            this.scrollY -= this.axis.y ? my / (innerWidth * devicePixelRatio) * this.scrollSpeed : 0;
+            this.scrollX -= this.axis.x ? mx / (innerWidth * devicePixelRatio) * delta * 60 * this.scrollSpeed : 0;
+            this.scrollY -= this.axis.y ? my / (innerWidth * devicePixelRatio) * delta * 60 * this.scrollSpeed : 0;
             if (this.axis.x) {
                 this.scrollX = Utils.clamp(this.scrollX, this.scrollBounds.xmin, this.scrollBounds.xmax);
             }
@@ -431,7 +431,7 @@ class UIUpgrade extends UIGroup {
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
                 new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", true) : upg.buy(doround), { quadratic: true }),
-                new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
+                new UIText(() => displayLevel ? (formatNumber(upg.level) + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => tt(desc) + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" })
@@ -445,7 +445,7 @@ class UIUpgrade2 extends UIGroup {
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
                 new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget(upg.level + 150, false) : upg.buy(doround), { quadratic: true }),
-                new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
+                new UIText(() => displayLevel ? (formatNumber(upg.level) + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y + 0.025, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
                 new UIText(() => {
                     if (game.factory.time < 0) {
@@ -466,17 +466,30 @@ class UIUpgrade3 extends UIGroup {
             [
                 new UIRect(0.5, y, 1, 0.1, col ? col : "table"),
                 new UIButton(0.1, y, 0.07, 0.07, img, () => game.settings.hyperBuy ? upg.buyToTarget("hyperbuy", false) : upg.buy(doround), { quadratic: true }),
-                new UIText(() => displayLevel ? (upg.level + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
+                new UIText(() => displayLevel ? (formatNumber(upg.level) + "/" + (upg.getMaxLevel() === Infinity ? "∞" : upg.getMaxLevel().toLocaleString("en-us"))) : "", 0.975, y - 0.04, 0.04, "#000000", { halign: "right" }),
                 new UIText(() => upg.getPriceDisplay(priceSuffix, "", false), 0.975, y, priceSize, "#000000", { halign: "right", valign: "middle", bold: true }),
+
+                // effect display (collector) or time (buyer, LEFT)
                 new UIText(() => tt(desc) + "\n" +
                     upg.getEffectDisplay(), 0.2, y, 0.04, "#000000", { halign: "left", valign: "middle" }),
+                // time display (buyer, RIGHT)
                 new UIText(() => upg.time == false ? "OFF" : Math.round(upg.time) + "/" + Math.max(applyUpgrade(upg), ((upg.setTime != undefined) ? upg.setTime : 0)), 0.8, y + 0.04, 0.04, "#000000", { halign: "right", valign: "bottom", isVisible: () => upg.time != "b" }),
+
+                // toggle on/off button
                 new UIButton(0.88, y + 0.03, 0.04, 0.04, images.onoffbutton, () => autoToggle(upg), { quadratic: true, isVisible: () => upg.level > 0 && upg.time != "b" }),
+                // button to set time
                 new UIButton(0.5, y + 0.03, 0.04, 0.04, images.setTimeButton, () => {
                     let att = prompt(tt("buyertimetext"));
                     if (parseInt(att) > 0) upg.setTime = att;
                     basicAchievementUnlock(207);
                 }, { quadratic: true, isVisible: () => upg.level == upg.maxLevel && upg.time != "b" }),
+                // BB only: mastery button
+                new UIButton(0.4, y + 0.03, 0.04, 0.04, images.masterytoggle, () => {
+                    let att = prompt("What mastery level? (0 = none)");
+                    if (parseInt(att) > 0) upg.mas = att;
+                    else upg.mas = 0;
+                    upg.setTime = 0;
+                }, { quadratic: true, isVisible: () => upg.auto[1] == "betterBarrels" }),
             ], isVisible);
     }
 }

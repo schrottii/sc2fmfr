@@ -7,7 +7,7 @@ function formatThousands(n, prec) {
         });
 }
 
-var NUM_FORMAT_TYPES = 14;
+var NUM_FORMAT_TYPES = 15;
 function formatNumber(x, type, cfg) {
     x = new Decimal(x);
 
@@ -17,8 +17,8 @@ function formatNumber(x, type, cfg) {
         return "NaN";
     }
 
-    if (x.gte(new Decimal("1e300e300"))) {
-        return "a lot";
+    if (x.gte(new Decimal("1e300e300")) || x.logarithm == "Infinity") {
+        return "∞";
     }
 
     if (x.lt(cfg && cfg.namesAfter ? cfg.namesAfter : 1e6) && type != 9) {
@@ -161,6 +161,14 @@ function formatNumber(x, type, cfg) {
             pre.hundreds[Math.floor(newE / 300) % pre.hundreds.length] +
             pre.ones[Math.floor(newE / 3) % pre.ones.length] +
             pre.tens[Math.floor(newE / 30) % pre.tens.length];
+    }
+    if (type === 14) {
+        if (x.lt(new Decimal("1.78e308"))) {
+            return (x.e / 308).toFixed(2) + " ∞";
+        }
+        else {
+            return Math.floor(x.e / 308) + " ∞";
+        }
     }
 }
 

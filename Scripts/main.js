@@ -199,104 +199,125 @@ function currentSceneNotLoading() {
 }
 
 var fpsDisplay = "?";
+var FPSover = 0;
 
 function update() {
     // this bit handles the delta/tick and the FPS limiter
     deltaTimeNew = Date.now();
     let delta = Math.max(0, (deltaTimeNew - deltaTimeOld) / 1000);
-    if (FPS != 9999 && delta < (1000 / (FPS * 1.05) / 1000)) {
-        setTimeout("update()", (1000 / (FPS * 1.05) / 1000) - delta);
+
+    if (FPSover > 10) FPSover = 0;
+    if (document.hidden || (FPS < 999 && deltaTimeNew - deltaTimeOld + FPSover < 1000 / FPS)) {
+        requestAnimationFrame(update);
         return false;
-    };
+    }
+    else {
+        if (FPS < 999) FPSover = FPSover + Math.min(1000, (deltaTimeNew - deltaTimeOld) - (1000 / FPS));
+    }
     deltaTimeOld = Date.now();
 
     // update
     game.stats.playtime = game.stats.playtime.add(delta);
 
-    if (!document.hidden) {
+    // scrap prod
+    if (game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
+    else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
+    game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
+
+    game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
+
+    spawnTime.cooldown += delta;
+
+    // barrel spawning and some time mode stuff
+    let barrelsToSpawn = Math.min(freeSpots, Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
+    if (barrelsToSpawn > 0) {
+        spawnTime.cooldown = 0;
+        for (let i = 0; i < barrelsToSpawn; i++) {
+            spawnBarrel();
+            if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber()) {
+                if (freeSpots > 0 && !timeMode) spawnBarrel();
+            }
+        }
+    }
+    else if (timeMode && freeSpots == 0) {
+        timeMode = false;
+        let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
+
+        basicAchievementUnlock(215, cogReward > 999);
+
+        game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
+        GameNotification.create(new TextNotification(tt("not_timeover"), tt("not_timeover2").replace("<amount>", cogReward)));
+
+        game.goldenScrap.reset();
+        timeModeTime = 0;
+        let Ti = 0;
+        while (timeTires >= 0) {
+            stormQueue.push([100 * Ti, "tire", 1]);
+            timeTires -= 1;
+            Ti += 1;
+        }
+    }
+    if (timeMode) {
+        timeModeTime += delta;
+        game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 4);
+    }
+
+    // falling magnets
+    if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode) {
+        fallingMagnetTime += game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS ? delta : 0;
+
+        if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber()) {
+            fallingMagnetTime = 0;
+            movingItemFactory.fallingMagnet(fallingMagnetWorth());
+        }
+    }
+
+    // auto merge
+    if (game.ms.includes(7) && !timeMode) {
+        if (game.settings.autoMerge) {
+            autoMergeTime += delta;
+        }
+        tryAutoMerge();
+    }
+
+    // auto convert
+    if (game.highestBarrelReached >= 299 && !timeMode) {
+        if (game.settings.autoConvert) {
+            autoConvertTime += delta;
+        }
+        if (autoConvertTime >= 3 - applyUpgrade(game.solarSystem.upgrades.astro)) {
+            autoConvertBarrel();
+            autoConvertTime -= 3 - applyUpgrade(game.solarSystem.upgrades.astro);
+        }
+    }
+
+    // somet timers
+    timeSinceLastBarrelClick += delta;
+    saveTime.time += delta;
+    secondTime += delta;
+
+    // factory production cooldown
+    if (game.factory.time >= 0 && game.shrine.factoryUnlock.level > 0) {
+        game.factory.time -= delta;
+
+        if (game.factory.time < 0) {
+            game.factory.time = -1;
+            GameNotification.create(new TextNotification("Crafting cooldown is over!", "You can craft again"));
+        }
+    }
+
+
+    // this stuff is executed only once per second
+    if (secondTime >= 1) {
+        // note - use secondTime instead of delta for *most* things in here - so it takes the entire time that has passed (about 1 second) and not 20 miliseconds or whatever
+        fpsDisplay = (1 / delta).toFixed(0);
+
         if (game.scrap == 0) game.scrap = new Decimal(1);
-        if (game.dimension == 0) game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta));
-        else game.scrap = game.scrap.add(Barrel.getGlobalIncome().mul(delta)).min(new Decimal(game.highestScrapReached.floor()));
-        game.scrapThisPrestige = game.scrapThisPrestige.add(Barrel.getGlobalIncome().mul(delta));
-        game.bricks.amount = game.bricks.amount.add(game.bricks.getCurrentProduction().mul(delta));
+        game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
 
-        spawnTime.cooldown += delta;
+        Milestone.check(true);
 
-        let barrelsToSpawn = Math.min(freeSpots, Math.min(20, Math.floor(spawnTime.cooldown / applyUpgrade(game.scrapUpgrades.fasterBarrels).toNumber())));
-        if (barrelsToSpawn > 0) {
-            spawnTime.cooldown = 0;
-            for (let i = 0; i < barrelsToSpawn; i++) {
-                spawnBarrel();
-                if (Math.random() < applyUpgrade(game.solarSystem.upgrades.venus).toNumber()) {
-                    if (freeSpots > 0 && !timeMode) spawnBarrel();
-                }
-            }
-        }
-        else if (timeMode && freeSpots == 0) {
-            timeMode = false;
-            let cogReward = Math.floor(timeModeTime / 2) * calculateCurrentHighest();
-
-            basicAchievementUnlock(215, cogReward > 999);
-
-
-            game.cogwheels.amount = game.cogwheels.amount.add(cogReward);
-            GameNotification.create(new TextNotification(tt("not_timeover"), tt("not_timeover2").replace("<amount>", cogReward)));
-
-            game.goldenScrap.reset();
-            timeModeTime = 0;
-            let Ti = 0;
-            while (timeTires >= 0) {
-                stormQueue.push([100 * Ti, "tire", 1]);
-                timeTires -= 1;
-                Ti += 1;
-            }
-        }
-
-        if (timeMode) {
-            timeModeTime += delta;
-            game.scrapUpgrades.fasterBarrels.level = Math.floor(timeModeTime / 4);
-        }
-
-        if (game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS && !timeMode) {
-            fallingMagnetTime += game.solarSystem.upgrades.earth.level >= EarthLevels.UNLOCK_MARS ? delta : 0;
-
-            if (fallingMagnetTime >= applyUpgrade(game.solarSystem.upgrades.mars).toNumber()) {
-                fallingMagnetTime = 0;
-                movingItemFactory.fallingMagnet(fallingMagnetWorth());
-            }
-        }
-
-        if (game.ms.includes(7) && !timeMode) {
-            if (game.settings.autoMerge) {
-                autoMergeTime += delta;
-            }
-            tryAutoMerge();
-        }
-
-        if (game.highestBarrelReached > 299 && !timeMode) {
-            if (game.settings.autoConvert) {
-                autoConvertTime += delta;
-            }
-            if (autoConvertTime >= 3 - applyUpgrade(game.solarSystem.upgrades.astro)) {
-                autoConvertBarrel();
-                autoConvertTime -= 3 - applyUpgrade(game.solarSystem.upgrades.astro);
-            }
-        }
-
-        timeSinceLastBarrelClick += delta;
-
-        saveTime.time += delta;
-        secondTime += delta;
-
-        if (game.factory.time > 0) {
-            game.factory.time -= delta;
-
-            if (game.factory.time < 0) {
-                game.factory.time = -1;
-                GameNotification.create(new TextNotification("Crafting cooldown is over!", "You can craft again!"));
-            }
-        }
-
+        // auto save
         if (saveTime.time >= saveTime.cd) {
             if (emergencyTaps > 0) {
                 game.settings.sizeLimit = 0;
@@ -306,351 +327,310 @@ function update() {
             saveTime.time = 0;
             saveGame();
         }
+
+        // tires
         if (game.tires.amount.gte(new Decimal("1e1000000000")) || game.tires.time != 600) {
-            game.tires.time -= delta;
+            game.tires.time -= secondTime;
         }
 
-        // this stuff is executed only once per second
-        if (secondTime >= 1) {
-            // note - use secondTime instead of delta for *most* things in here - so it takes the entire time that has passed (about 1 second) and not 20 miliseconds or whatever
-
-            fpsDisplay = (1 / delta).toFixed(0);
-            game.magnets = game.magnets.add(applyUpgrade(game.solarSystem.upgrades.neptune).mul(delta));
-
-            Milestone.check(true);
-
-            if (game.mergeQuests.isUnlocked()) {
-                for (let q of game.mergeQuests.quests) {
-                    q.tick(secondTime);
-                }
+        // merge quests
+        if (game.mergeQuests.isUnlocked()) {
+            for (let q of game.mergeQuests.quests) {
+                q.tick(secondTime);
             }
-
-            if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
-
-            // remove the secondTime - this HAS to be last
-            secondTime = 0;
         }
 
-        // this does all the auto buyers... don't question it hahaha
-        if (applyUpgrade(game.shrine.autosUnlock)) {
-            for (i in game.autos) {
-                if (game.autos[i] != undefined && game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
-                    game.autos[i].time += delta;
-                    if (game.autos[i].time >= Math.max(applyUpgrade(game.autos[i]), ((game.autos[i].setTime != undefined) ? game.autos[i].setTime : 0))) {
-                        game.autos[i].time = 0.001;
-                        if (game.autos[i].auto[1] != "all") {
-                            if (game.autos[i].auto[2] == undefined) {
-                                let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
-                                if ((game.autos[i].auto[1] != "betterBarrels" || game.settings.bbauto) && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
-                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
-                                if (game.autos[i] != undefined && l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
-                                    if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
-                                    else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
-                                }
+        if (game.dimension == 0) game.highestScrapReached = Decimal.max(game.highestScrapReached, game.scrap);
+
+        // remove the secondTime - this HAS to be last
+        if (secondTime > 10) secondTime = 0;
+        else secondTime -= 1;
+    }
+
+    // this does all the auto buyers... don't question it hahaha
+    if (applyUpgrade(game.shrine.autosUnlock)) {
+        for (let i in game.autos) {
+            if (game.autos[i] != undefined && game.autos[i].level > 0 && game.autos[i].time != false && game.factory.tank.gte(new Decimal(2)) && (!timeMode || game.autos[i].auto[1] != "betterBarrels")) {
+                game.autos[i].time += delta;
+                if (game.autos[i].time >= Math.max(applyUpgrade(game.autos[i]), ((game.autos[i].setTime != undefined) ? game.autos[i].setTime : 0))) {
+                    // auto triggers, reset time
+                    game.autos[i].time = 0.001;
+                    if (game.autos[i].auto[1] != "all") {
+                        if (game.autos[i].auto[2] == undefined) {
+                            let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]].level;
+
+                            if ((game.autos[i].mas == undefined && (game.autos[i].auto[1] != "betterBarrels" || game.settings.bbauto)) && game.supernova.cosmicUpgrades.autoBuyerMax.level > 0)
+                            {
+                                // multi buy
+                                game[game.autos[i].auto[0]][game.autos[i].auto[1]].buyToTarget("hyperbuy", true);
                             }
                             else {
-                                let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
-                                if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget("hyperbuy", true);
-                                else game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
-                                if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
-                                    if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
-                                    else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
+                                // better barrels
+                                let dunce = 0;
+                                if (game.autos[i].mas != undefined && game.autos[i].mas > 0 && getTotalLevels(game.autos[i].mas) < BARRELS) {
+                                    // set to mastery level? if not all of these are at max, well, go!
+                                    while (game.barrelMastery.bl[game.scrapUpgrades.betterBarrels.level] >= game.autos[i].mas && dunce <= BARRELS) {
+                                        if (!game.scrapUpgrades.betterBarrels.buy() && game.scrapUpgrades.betterBarrels.level > BARRELS) game.scrapUpgrades.betterBarrels.level -= BARRELS;
+                                        dunce++;
+                                    }
                                 }
+                                else {
+                                    // single buy
+                                    game[game.autos[i].auto[0]][game.autos[i].auto[1]].buy();
+                                }
+                            }
+
+                            if (game.autos[i] != undefined && l < game[game.autos[i].auto[0]][game.autos[i].auto[1]].level) {
+                                if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
+                                else game.factory.tank = game.factory.tank.sub(2);
+                                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                             }
                         }
                         else {
-                            let ls = [];
-                            for (iee in game[game.autos[i].auto[0]].upgrades) {
-                                ls.push(game[game.autos[i].auto[0]].upgrades[iee].level);
-                            }
-                            game[game.autos[i].auto[0]].maxUpgrades();
+                            let l = game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level;
 
-                            let lsx = 0;
-                            for (iee in game[game.autos[i].auto[0]].upgrades) {
-                                lsx += 1;
-                                if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
-                                    if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
-                                    else game.factory.tank = game.factory.tank.sub(2);
-                                    if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
-                                    break;
-                                }
+                            if (game.supernova.cosmicUpgrades.autoBuyerMax.level > 0) game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buyToTarget("hyperbuy", true);
+                            else game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].buy();
+
+                            if (l < game[game.autos[i].auto[0]][game.autos[i].auto[1]][game.autos[i].auto[2]].level) {
+                                if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
+                                else game.factory.tank = game.factory.tank.sub(2);
+                                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        // IMPORTANT - this is where the scene itself is rendered
-        // to render anything above it, put it below this chunk
-        if (game.settings.dimEffects > 1 && game.dimension == 1) ctx.filter = "brightness(0.5)";
-        currentScene.update(delta);
-        if (ctx.filter != "") ctx.filter = "";
-
-        // FPS display
-        if (game.settings.displayFPS) {
-            ctx.font = (h * .02) + "px " + fonts.default;
-            ctx.textAlign = "left";
-            ctx.textBaseline = "top";
-            ctx.fillStyle = "white";
-            ctx.fillText(fpsDisplay + " fps", w * 0.015, h * 0.005, w);
-        }
-        if (game.settings.hyperBuy) {
-            ctx.fillStyle = "yellow";
-            ctx.fillRect(0, 0, w * 0.01, h * 0.025);
-        }
-
-        if (gameNotifications.length > 0) {
-            gameNotifications[0].render(ctx);
-            gameNotifications[0].tick(delta);
-        }
-
-        for (let item of movingItems) {
-            item.tick(delta);
-        }
-
-        if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) {
-            gsStormTime += delta;
-            if (gsStormTime >= 60 && !timeMode) {
-                gsStormTime = 0;
-                if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
-                    if (applyUpgrade(game.skillTree.upgrades.shortGSStorms)) {
-                        movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35).mul(20));
                     }
                     else {
-                        for (i = 0; i < 20; i++) {
-                            stormQueue.push([250 * i, "gs", game.goldenScrap.getResetAmount().div(35)]);
+                        // gather upgrades of this auto buyer
+                        let ls = [];
+                        for (iee in game[game.autos[i].auto[0]].upgrades) {
+                            ls.push(game[game.autos[i].auto[0]].upgrades[iee].level);
                         }
-                    }
-                }
-                else {
-                    if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm"), tt("not_storm2")));
-                }
-            }
-        }
+                        if (game[game.autos[i].auto[0]].maxUpgrades) game[game.autos[i].auto[0]].maxUpgrades();
 
-        // all the beams
-        if (game.beams.isUnlocked()) {
-            game.beams.time += delta;
-
-            if (!timeMode) {
-                // Normal Beams
-                if (game.beams.selected == 0) {
-                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 30 - 15
-                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
-                                }
-                            }
-                            else {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "beam", getBeamBaseValue()]);
-                                }
+                        // upgrade them
+                        let lsx = 0;
+                        for (iee in game[game.autos[i].auto[0]].upgrades) {
+                            lsx += 1;
+                            if (game[game.autos[i].auto[0]].upgrades[iee].level > ls[lsx]) {
+                                if (applyUpgrade(game.skillTree.upgrades.efficientEnergy)) game.factory.tank = game.factory.tank.sub(1);
+                                else game.factory.tank = game.factory.tank.sub(2);
+                                if (Math.random() * 100 <= applyUpgrade(game.screws.upgrades.fallingScrews)) movingItemFactory.fallingScrew(getScrews(true));
+                                break;
                             }
                         }
-                        else {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                            }
-                            else {
-                                movingItemFactory.fallingBeam(getBeamBaseValue());
-                            }
-                            renewableEnergy();
-                        }
-                        game.beams.time = 0;
-                    }
-                }
-
-                // Aerobeams
-                else if (game.beams.selected == 1) {
-                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams)) { // 45 - 15 - 15
-                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
-                                }
-                            }
-                            else {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "aerobeam", getAeroBeamValue()]);
-                                }
-                            }
-                        }
-                        else {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                            }
-                            else {
-                                movingItemFactory.fallingAeroBeam(getAeroBeamValue());
-                                if (game.skillTree.upgrades.unlockbeamtypes.level > 0 && (game.darkscrap.amount.gte(new Decimal(1e12)) || game.glitchesCollected > 0) && game.glitchesCollected < 10) {
-                                    movingItemFactory.glitchItem(1);
-                                }
-                            }
-                            renewableEnergy();
-                        }
-                        game.beams.time = 0;
-                    }
-                }
-
-                // Angel Beams
-                else if (game.beams.selected == 2) {
-                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams)) { // 30 - 15 - 5
-                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
-                                }
-                            }
-                            else {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "angelbeam", getAngelBeamValue()]);
-                                }
-                            }
-                        }
-                        else {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                            }
-                            else {
-                                movingItemFactory.fallingAngelBeam(getAngelBeamValue());
-                            }
-                            renewableEnergy();
-                        }
-                        game.beams.time = 0;
-                    }
-                }
-
-                // Reinforced Beams
-                else if (game.beams.selected == 3) {
-                    if (game.beams.time > 45 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
-                                }
-                            }
-                            else {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([750 * i, "reinforcedbeam", getReinforcedBeamValue()]);
-                                }
-                            }
-                        }
-                        else {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                            }
-                            else {
-                                movingItemFactory.fallingReinforcedBeam(getReinforcedBeamValue());
-                            }
-                            renewableEnergy();
-                        }
-                        game.beams.time = 0;
-                    }
-                }
-
-                // Glitch Beams
-                else if (game.beams.selected == 4) {
-                    if (game.beams.time > 30 - applyUpgrade(game.beams.upgrades.fasterBeams)) { // 45 - 15
-                        if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    stormQueue.push([500 * i, "goldenbeam", getBeamBaseValue()]);
-                                }
-                            }
-                            else {
-                                for (i = 0; i < (5 + applyUpgrade(game.beams.upgrades.beamStormValue)); i++) {
-                                    if (getGlitchBeamValue().gt(1e200)) stormQueue.push([300 * i, "glitchbeam", getGlitchBeamValue()]);
-                                    else stormQueue.push([300 * i, "glitchbeam", Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue()))]);
-                                }
-                            }
-                        }
-                        else {
-                            if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) {
-                                movingItemFactory.fallingGoldenBeam(getBeamBaseValue());
-                            }
-                            else {
-                                if (getGlitchBeamValue().gt(1e200)) movingItemFactory.fallingGlitchBeam(getGlitchBeamValue());
-                                else movingItemFactory.fallingGlitchBeam(Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue())));
-                            }
-                            renewableEnergy();
-                        }
-                        game.beams.time = 0;
-                    }
-                }
-
-                for (i in movingItems) movingItems[i].cooldown += delta;
-                if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
-                    if (cloudAlpha < 1) {
-                        cloudAlpha = Math.min(1, cloudAlpha + delta * 1.25)
-                        ctx.globalAlpha = cloudAlpha;
-                        ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
-                        ctx.globalAlpha = 1;
-                    }
-                    else {
-                        ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
-                    }
-
-                    for (q in stormQueue) {
-                        stormQueue[q][0] -= delta * 1000;
-
-                        if (stormQueue[q][0] < 1) {
-                            let val = stormQueue[q][2];
-
-                            switch (stormQueue[q][1]) {
-                                case "tire":
-                                    movingItemFactory.jumpingTire();
-                                    break;
-                                case "goldenbeam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingGoldenBeam(val);
-                                    break;
-                                case "beam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingBeam(val);
-                                    break;
-                                case "aerobeam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingAeroBeam(val);
-                                    break;
-                                case "angelbeam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingAngelBeam(val);
-                                    break;
-                                case "reinforcedbeam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingReinforcedBeam(val);
-                                    break;
-                                case "glitchbeam":
-                                    renewableEnergy();
-                                    movingItemFactory.fallingGlitchBeam(val);
-                                    break;
-                                case "gs":
-                                    movingItemFactory.fallingGold(val);
-                                    break;
-                            }
-
-                            stormQueue.splice(q, 1); // Remove from queue
-                        }
-                    }
-                }
-                else {
-                    if (cloudAlpha > 0) {
-                        cloudAlpha = Math.max(cloudAlpha - delta * 2, 0);
-                        ctx.globalAlpha = cloudAlpha;
-                        ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
-                        ctx.globalAlpha = 1;
                     }
                 }
             }
         }
     }
 
+    // IMPORTANT - this is where the scene itself is rendered
+    // to render anything above it, put it below this chunk
+    if (game.settings.dimEffects > 1 && game.dimension == 1) ctx.filter = "brightness(0.5)";
+    currentScene.update(delta);
+    if (ctx.filter != "") ctx.filter = "";
+
+    // FPS display
+    if (game.settings.displayFPS) {
+        ctx.font = (h * .02) + "px " + fonts.default;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "white";
+        ctx.fillText(fpsDisplay + " fps", w * 0.015, h * 0.005, w);
+    }
+    if (game.settings.hyperBuy) {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(0, 0, w * 0.01, h * 0.025);
+    }
+
+    // notifications
+    if (gameNotifications.length > 0) {
+        gameNotifications[0].render(ctx);
+        gameNotifications[0].tick(delta);
+    }
+
+    // moving items
+    doMovingItems(delta);
+
+    // gs storms
+    if (game.aerobeams.upgrades.unlockGoldenScrapStorms.level > 0) {
+        gsStormTime += delta;
+        if (gsStormTime >= 60 && !timeMode) {
+            gsStormTime = 0;
+            if (Math.random() < applyUpgrade(game.angelbeams.upgrades.goldenScrapStormChance) / 100) {
+                if (applyUpgrade(game.skillTree.upgrades.shortGSStorms)) {
+                    movingItemFactory.fallingGold(game.goldenScrap.getResetAmount().div(35).mul(20));
+                }
+                else {
+                    for (i = 0; i < 20; i++) {
+                        stormQueue.push([250 * i, "gs", game.goldenScrap.getResetAmount().div(35)]);
+                    }
+                }
+            }
+            else {
+                if (!applyUpgrade(game.skillTree.upgrades.shortGSStorms)) GameNotification.create(new TextNotification(tt("not_storm"), tt("not_storm2")));
+            }
+        }
+    }
+
+    // all the beams
+    if (game.beams.isUnlocked()) {
+        doSpawnBeams(delta);
+    }
+
     //ctx.fillText("mouseMove: [" + mouseMoveX + ", " + mouseMoveY + "]", w * 0.33, h * 0.005, w);
 
     requestAnimationFrame(update);
+}
+
+function doMovingItems(delta) {
+    if (movingItems.length > 0) {
+        for (let item of movingItems) {
+            item.tick(delta);
+            item.cooldown += delta;
+        }
+    }
+
+    if (stormQueue.length > 0 || movingItems.length > 4 && currentScene.name != "Tire Club" && currentSceneNotLoading()) {
+        if (cloudAlpha < 1) {
+            cloudAlpha = Math.min(1, cloudAlpha + delta * 1.25)
+            ctx.globalAlpha = cloudAlpha;
+            ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+            ctx.globalAlpha = 1;
+        }
+        else {
+            ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+        }
+
+        for (q in stormQueue) {
+            stormQueue[q][0] -= delta * 1000;
+
+            if (stormQueue[q][0] < 1) {
+                let val = stormQueue[q][2];
+
+                switch (stormQueue[q][1]) {
+                    case "tire":
+                        movingItemFactory.jumpingTire();
+                        break;
+                    case "goldenbeam":
+                        renewableEnergy();
+                        movingItemFactory.fallingGoldenBeam(val);
+                        break;
+                    case "beam":
+                        renewableEnergy();
+                        movingItemFactory.fallingBeam(val);
+                        break;
+                    case "aerobeam":
+                        renewableEnergy();
+                        movingItemFactory.fallingAeroBeam(val);
+                        break;
+                    case "angelbeam":
+                        renewableEnergy();
+                        movingItemFactory.fallingAngelBeam(val);
+                        break;
+                    case "reinforcedbeam":
+                        renewableEnergy();
+                        movingItemFactory.fallingReinforcedBeam(val);
+                        break;
+                    case "glitchbeam":
+                        renewableEnergy();
+                        movingItemFactory.fallingGlitchBeam(val);
+                        break;
+                    case "gs":
+                        movingItemFactory.fallingGold(val);
+                        break;
+                }
+
+                stormQueue.splice(q, 1); // Remove from queue
+            }
+        }
+    }
+    else {
+        if (cloudAlpha > 0) {
+            cloudAlpha = Math.max(cloudAlpha - delta * 2, 0);
+            ctx.globalAlpha = cloudAlpha;
+            ctx.drawImage(images["storm"], 0, 0, w, h * 0.1);
+            ctx.globalAlpha = 1;
+        }
+    }
+}
+
+// stored name, spawn time, falling item, storm queue name
+var beamSpawners = [
+    // normal beams
+    ["beams", () => 30 - applyUpgrade(game.beams.upgrades.fasterBeams),
+        (v) => movingItemFactory.fallingBeam(v), "beam"],
+    // aerobeams
+    ["aerobeams", () => 45 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.aerobeams.upgrades.fasterBeams),
+        (v) => movingItemFactory.fallingAeroBeam(v), "aerobeam"],
+    // angel beams
+    ["angelbeams", () => 30 - applyUpgrade(game.beams.upgrades.fasterBeams) - applyUpgrade(game.angelbeams.upgrades.fasterBeams),
+        (v) => movingItemFactory.fallingAngelBeam(v), "angelbeam"],
+    // re beams
+    ["reinforcedbeams", () => 45 - applyUpgrade(game.beams.upgrades.fasterBeams),
+        (v) => movingItemFactory.fallingReinforcedBeam(v), "reinforcedbeam"],
+    // glitch beams
+    ["glitchbeams", () => 30 - applyUpgrade(game.beams.upgrades.fasterBeams),
+        (v) => movingItemFactory.fallingGlitchBeam(v), "glitchbeam"],
+    // golden beams 5
+    ["beams", () => false,
+        (v) => movingItemFactory.fallingGoldenBeam(v), "goldenbeam"]
+];
+
+function doSpawnBeams(delta) {
+    game.beams.time += delta;
+    if (timeMode) return false; // no beams there uwuwie
+
+    let B = beamSpawners[game.beams.selected];
+
+    // only spawn beam if enough time has passed
+    if (game.beams.time > B[1]()) {
+        // chance to become golden beam
+        if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) B = beamSpawners[5];
+
+        // spawn single beam or storm
+        if (game.settings.beamFactory) {
+            let amount = getBeamValue(B[0]).div(10).floor();
+            game[B[0]].amount = game[B[0]].amount.add(amount);
+            game.stats["total" + B[0]] = game.stats["total" + B[0]].add(amount);
+        }
+        else if (Math.random() > 1 - applyUpgrade(game.beams.upgrades.beamStormChance) / 100) {
+            // storm
+            for (i = 0; i < 5 + applyUpgrade(game.beams.upgrades.beamStormValue); i++) {
+                stormQueue.push([500 * i, B[3], getBeamValue(B[0])]);
+            }
+        }
+        else {
+            // single
+            B[2](getBeamValue(B[0]));
+        }
+
+        // reset timer
+        game.beams.time = 0;
+
+        // glitches
+        if (game.glitchesCollected < 10 && (game.darkscrap.amount.gte(new Decimal(1e12)) || game.glitchesCollected > 0)) {
+            movingItemFactory.glitchItem(1);
+        }
+    }
+}
+
+function getBeamValue(beamType) {
+    switch (beamType) {
+        case "beams":
+            return getBeamBaseValue();
+        case "aerobeams":
+            return getAeroBeamValue();
+        case "angelbeams":
+            return getAngelBeamValue();
+        case "reinforcedbeams":
+            return getReinforcedBeamValue();
+        case "glitchbeams":
+            if (getGlitchBeamValue().gt(1e200)) return getGlitchBeamValue();
+            else return Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue()));
+        case "goldenbeams":
+            return getBeamBaseValue();
+    }
 }
 
 function getBeamBaseValue() {
@@ -690,7 +670,7 @@ function getReinforcedBeamValue() {
 function getGlitchBeamValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
-        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .pow(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 1.5 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
@@ -699,7 +679,7 @@ function getGlitchBeamValue() {
 function getGlitchBeamMinValue() {
     return new Decimal(applyUpgrade(game.glitchbeams.upgrades.minimumValue)).min(applyUpgrade(game.glitchbeams.upgrades.beamValue))
         .mul(applyUpgrade(game.tires.upgrades[3][1]))
-        .mul(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 2 : 1)
+        .pow(applyUpgrade(game.skillTree.upgrades.funnyGlitchBeams) ? 1.5 : 1)
         .mul(applyUpgrade(game.supernova.cosmicUpgrades.doubleBeams))
         .mul(applyUpgrade(game.supernova.fairyDustUpgrades.puppis))
         .mul(applyUpgrade(game.barrelMastery.upgrades.beamBoost).pow(getTotalLevels(6))).floor();
@@ -800,8 +780,8 @@ function dustReset(upgradeType, dustType, dustStat) {
 function basicAchievementUnlock(index, req = true) {
     if (game.ms.includes(index) == false && req) {
         game.ms.push(index);
-        GameNotification.create(new MilestoneNotification(index + 1));
 
+        GameNotification.create(new MilestoneNotification(index + 1));
         if (currentScene.name == "Milestones") renderMilestones();
     }
 }
@@ -1039,7 +1019,7 @@ function onBarrelMerge(isAuto, lvl, bx, by) {
     if (game.mergeMastery.isUnlocked()) {
         game.mergeMastery.currentMerges++;
         game.mergeMastery.check();
-        if (game.highestBarrelReached >= 1000) game.mergeQuests.dailyQuest.check(lvl);
+        if (game.highestBarrelReached >= 999) game.mergeQuests.dailyQuest.check(lvl);
     }
 
     if (game.bricks.isUnlocked()) {
@@ -1202,7 +1182,7 @@ function resizeCanvas() {
 
     TEXTSCALING = 1 / (Math.pow((isMobile() ? w / 2 : w), 0.9) / 244);
 
-    if (currentScene.name == "Milestones") renderMilestones();
+    if (currentScene.name == "Achievements") renderMilestones();
 }
 
 function handlePress(e) {
@@ -1610,6 +1590,8 @@ function loadGame(saveCode, isFromFile = false) {
         game.settings.lockUpgrades = loadVal(loadObj.settings.lockUpgrades, false);
         game.settings.dimEffects = loadVal(loadObj.settings.dimEffects, 0);
         game.settings.bbauto = loadVal(loadObj.settings.bbauto, true);
+        game.settings.beamFactory = loadVal(loadObj.settings.beamFactory, false);
+        game.settings.musicAuto = loadVal(loadObj.settings.musicAuto, false);
 
         if (isMobile() && game.settings.sizeLimit != 0) {
             emergencyTaps = 0;
@@ -2033,7 +2015,7 @@ function loadGame(saveCode, isFromFile = false) {
         }
 
         if (loadObj.ms !== undefined) {
-            if (loadObj.ms != undefined /*&& loadObj.milestones.achievements.length === game.milestones.achievements.length*/) {
+            if (loadObj.ms != undefined) {
                 game.ms = loadObj.ms;
             }
             else {
@@ -2371,7 +2353,9 @@ function upgradeScrapyard() {
             game.mergeQuests.scrapyard += 1;
         }
     }
-
+    else {
+        currentScene.popupTexts.push(new PopUpText("Too expensive", w / 2, h * 0.5, { color: "#bbbbbb", bold: true, size: 0.1, border: h * 0.005 }));
+    }
 }
 
 function calcScrapyard(x) {

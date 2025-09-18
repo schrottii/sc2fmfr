@@ -136,6 +136,7 @@ var images =
         generator: loadImage("Images/Buildings/generator.png"),
         bluestacks: loadImage("Images/Buildings/autos.png"),
         collectors: loadImage("Images/Buildings/collectors.png"),
+        beamfactory: loadImage("Images/Buildings/beamfactory.png"),
     },
     checkbox:
     {
@@ -311,6 +312,8 @@ var images =
         aerobeam: loadImage("Images/Currencies/aerobeam.png"),
         angelbeam: loadImage("Images/Currencies/angelbeam.png"),
         reinforcedbeam: loadImage("Images/Currencies/reinforcedbeam.png"),
+        reinforcedbeam2: loadImage("Images/Currencies/reinforcedbeam2.png"),
+        reinforcedbeam3: loadImage("Images/Currencies/reinforcedbeam3.png"),
         glitchbeam: loadImage("Images/Currencies/glitchbeam.png"),
         goldenBeam: loadImage("Images/Currencies/goldenbeam.png"),
     }
@@ -379,10 +382,11 @@ var fonts =
 
 var songs =
 {
-    newerWave: "Sounds/NewerWave.mp3",
-    gettingItDone: "Sounds/GettingitDone.mp3",
-    powerBeams: "Sounds/powerbeams.mp3",
+    manuaMerg: "Sounds/Manua_Merg.mp3",
     voltaic: "Sounds/Voltaic.mp3",
+    mobileDestroyery: "Sounds/Mobile_Destroyery.mp3",
+    gettingItDone: "Sounds/GettingItDone.mp3",
+    powerBeams: "Sounds/Power_Beams_(Remix).mp3",
 };
 
 var cacheCanvas = document.createElement("canvas");

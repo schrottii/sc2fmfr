@@ -14,12 +14,25 @@ class MergeQuest {
     generateQuest(tier) {
         let highestLvl = game ? Math.max(100, Math.min(game.highestBarrelReached - 10, game.scrapUpgrades.betterBarrels.maxLevel)) : 100;
         let minLvl = game ? Math.max(50, game.highestBarrelReached - 250) : 0;
-        if (tier != 5) this.barrelLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
-        else this.barrelLvl = (calcTime * (28643 * calcTime)) % BARRELS; //Amount of barrels
+
+        if (tier != 5) {
+            // not daily
+            this.barrelLvl = -1;
+            while (this.barrelLvl == -1) {
+                let potentialLvl = Math.floor(minLvl + Math.random() * (highestLvl - minLvl));
+                for (let q in game.mergeQuests.quests) {
+                    if (game.mergeQuests.quests[q].barrelLvl == potentialLvl) potentialLvl = -1;
+                }
+                if (potentialLvl != -1) this.barrelLvl = potentialLvl;
+            }
+        }
+        else this.barrelLvl = (calcTime * (28643 * calcTime)) % BARRELS; // Amount of barrels - daily can be any barrel
+
+        // merges/token:  100, 125, 125, 125, 100, 40
         this.neededMerges = [100, 250, 500, 1000, 2500, 10000][tier];
         if (this.neededMerges < 10000) this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)))).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).mul(applyUpgrade(game.screws.upgrades.moreMergeTokens)).round();
         else this.reward = new Decimal(Math.floor([1, 2, 4, 8, 25, 250][tier] * applyUpgrade(game.darkscrap.upgrades.mergeTokenBoost) * (1 + applyUpgrade(game.skillTree.upgrades.moreMergeTokens)) / applyUpgrade(game.bricks.upgrades.questSpeed).mul(applyUpgrade(game.tires.upgrades[1][2])).toNumber())).mul(applyUpgrade(game.supernova.alienDustUpgrades.triangulum)).mul(applyUpgrade(game.screws.upgrades.moreMergeTokens)).round();
-        // merges/token:  100, 125, 125, 125, 100, 40
+
         this.active = true;
         this.currentCooldown = 0;
     }

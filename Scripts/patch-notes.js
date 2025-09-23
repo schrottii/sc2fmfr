@@ -62,6 +62,7 @@ const fullPatchNotes = `
 - Changed Generator fill text color
 - Changed Beam rounding
 - Second Dimension text says how much merges give (x1.05 per merge, triple for manual)
+- Mastery/merges display (bottom left) now only shows Merge Quests and daily if within a range of 5 barrels
 
 -> Fixes:
 - Changed how the game handles eternity values (>1e1e300), to prevent crashes and issues

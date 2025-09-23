@@ -628,7 +628,8 @@ var scenes =
                         if (barrels[i] !== undefined) {
                             barrels[i].render(ctx);
                         }
-                        // the little barrel mastery display
+
+                        // the little barrel mastery display (bottom left)
                         if (game.barrelMastery.isUnlocked()) {
                             Barrel.renderBarrel(ctx, upgradingBarrel, 0.04 * w, 0.65 * h, barrelSize / 2);
 
@@ -636,12 +637,15 @@ var scenes =
                             ctx.textAlign = "left";
                             ctx.font = (h * 0.015) + "px " + fonts.default;
                             if (upgradingType == "mas") {
+                                // normal barrels (defaults to mastery)
                                 ctx.fillText(game.barrelMastery.b[upgradingBarrel % BARRELS], 0.01, 0.64 * h + barrelSize / 2);
                             }
                             else if (upgradingType == "day" && game.mergeQuests.dailyQuest.active) {
+                                // daily
                                 ctx.fillText(game.mergeQuests.dailyQuest.currentMerges + "/" + game.mergeQuests.dailyQuest.getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
                             else {
+                                // normal quests
                                 ctx.fillText(game.mergeQuests.quests[upgradingType].currentMerges + "/" + game.mergeQuests.quests[upgradingType].getNeededMerges(), 0.01, 0.64 * h + barrelSize / 2);
                             }
                         }

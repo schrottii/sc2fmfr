@@ -291,7 +291,7 @@ function update() {
         }
     }
 
-    // somet timers
+    // some timers
     timeSinceLastBarrelClick += delta;
     saveTime.time += delta;
     secondTime += delta;
@@ -588,8 +588,9 @@ function doSpawnBeams(delta) {
         // chance to become golden beam
         if (applyUpgrade(game.glitchbeams.upgrades.goldenbeam) / 100 > Math.random()) B = beamSpawners[5];
 
-        // spawn single beam or storm
+        // beam factory OR single beam OR storm
         if (game.settings.beamFactory) {
+            console.log(B[0], getBeamValue(B[0]))
             let amount = getBeamValue(B[0]).div(10).floor();
             game[B[0]].amount = game[B[0]].amount.add(amount);
             game.stats["total" + B[0]] = game.stats["total" + B[0]].add(amount);
@@ -627,7 +628,7 @@ function getBeamValue(beamType) {
             return getReinforcedBeamValue();
         case "glitchbeams":
             if (getGlitchBeamValue().gt(1e200)) return getGlitchBeamValue();
-            else return Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue()));
+            else return new Decimal(Math.max(getGlitchBeamMinValue(), Math.ceil(Math.random() * getGlitchBeamValue())));
         case "goldenbeams":
             return getBeamBaseValue();
     }
@@ -2329,12 +2330,12 @@ function updateUpgradingBarrelFromBB(plus = 0) {
     upgradingBarrel = 0;
     upgradingType = "mas";
     for (i in game.mergeQuests.quests) {
-        if (game.mergeQuests.quests[i].currentMerges > 0) {
+        if (game.mergeQuests.quests[i].currentMerges > 0 && game.mergeQuests.quests[i].barrelLvl < game.scrapUpgrades.betterBarrels.level + 5 && game.mergeQuests.quests[i].barrelLvl > game.scrapUpgrades.betterBarrels.level - 5) {
             upgradingBarrel = game.mergeQuests.quests[i].barrelLvl;
             upgradingType = i;
         }
     }
-    if (game.mergeQuests.dailyQuest.currentMerges > 0) {
+    if (game.mergeQuests.dailyQuest.currentMerges > 0 && game.mergeQuests.dailyQuest.barrelLvl < game.scrapUpgrades.betterBarrels.level % BARRELS + 5 && game.mergeQuests.dailyQuest.barrelLvl > game.scrapUpgrades.betterBarrels.level % BARRELS - 5) {
         upgradingBarrel = game.mergeQuests.dailyQuest.barrelLvl;
         upgradingType = "day";
     }

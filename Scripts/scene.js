@@ -2424,6 +2424,8 @@ var scenes =
                             default: ["Highest Merge Mastery Level", "Highest Barrel Reached", "Highest Scrap Reached", "Total Wrenches", "Total Beams", "Total Aerobeams", "Total Angel Beams", "Total Reinforced Beams", "Total Glitch Beams", "Total Beams Collected", "Total Aerobeams Collected", "Total Angel Beams Collected", "Total Reinforced Collected", "Total Glitch Beams Collected", "Total Quests Completed", "Total Merge Tokens", "Total Dark Scrap", "Total Fragments", "Total Dark Fragments", "Total Tires Collected", "Total GS Resets", "Play Time", "Total Daily Quests completed", "Total Mastery Tokens", "Total Plastic Bags", "Total Screws", "Total Screws Collected", "Gifts Sent", "Gifts Received", "Total Merges", "Manual Merges"],
                             de: ["Höchstes Merge Mastery Level", "Höchste Tonne", "Meister Schrott", "Schraubenschlüssel", "Stahlträger", "Aerostahl", "Engelstahl", "Stahlstahl", "Glitchstahl", "Stahlträger gefangen", "Aerostahl gefangen", "Engelstahl gefangen", "Stahlstahl gefangen", "Glitchstahl gefangen", "Quests", "Merge Tokens insgesamt", "Schattenschrott", "Fragmente", "Schattenfragmente", "Reifen eingesammelt", "GS Resets", "Spielzeit", "Quests", "Mastery Tokens", "Plastiktüten", "Schrauben", "Schrauben eingesammelt", "Geschenke gesendet", "Geschenke erhalten", "Verbindungen", "Eigene Verbindungen"],
                             ru: ["Наивысший уровень Мастерства Слияний", "Наивысшая Бочк", "Наибольший достигнутый Мусо", "Всего Гаечных Ключей", "Всего Балок", "Всего Аэробалок", "Всего Ангельских Балок", "Всего Усиленных Балок", "Всего Глючных Балок", "Всего Собрано Балок", "Всего Собрано Аэробалок", "Всего Собрано Ангельских Балок", "Всего Собрано Усиленных Балок", "Всего Собрано Глючных Балок", "Всего Квестов завершено", "Всего Токенов Слияний", "Всего Тёмного Мусора", "Всего Фрагментов", "Всего Тёмных Фрагментов", "Всего Собрано Покрышек", "Всего Сбросов ЗМ", "Время Игры", "Всего Ежедневных Квестов завершено", "Всего Токенов Мастерства", "Всего Пластиковых Пакетов", "Всего Винтов", "Всего Винтов Собрано", "Подарков Отправлено", "Подарков Получено", "Всего Слияний", "Самослияний"],
+                            es: ["Nivel de Maestría de Fusiones Más Alto", "Barril Más Alto Alcanzado", "Mayor Chatarra Alcanzada", "Llaves Inglesas Totales", "Pepitas Totales", "Aeropepitas Totales", "Pepitas de Ángel Totales", "Pepitas Reforzadas Totales", "Pepitas Defectuosas Totales", "Pepitas Recogidas Totales", "Aeropepitas Recogidas Totales", "Pepitas de Ángel Recogidas Totales", "Pepitas Reforzadas Recogidas Totales", "Pepitas Defectuosas Recogidas Totales", "Misiones Completadas Totales", "Fichas de Fusiones Totales", "Chatarra Oscura Total", "Fragmentos Totales", "Fragmentos Oscuros Totales", "Ruedas Totales", "Reinicios de CD Totales", "Tiempo Jugado", "Misiones Diarias Completadas Totales", "Fichas de Maestría Totales", "Total de Bolsas de Plástico", "Tornillos Totales", "Tornillos Recogidos Totales", "Regalos Enviados", "Regalos Recibidos", "Fusiones Totales", "Fusiones Manuales"],
+                            ro: ["Nivel de Masterat de Combinare", "Cel mai Mare Butoi Atins", "Cel mai Mare Resturi Atinse", "Chei în Total", "Grinzi în Total", "Aerogrinzi în Total", "Grinzi de Înger în total", "Grinzi Întărite în total", "Grinzile Defecte în Total", "Grinzi Colectate în Total", "Aerogrinzi Colectate în Total", "Grinzi de Înger Colectate în Total", "Grinzi Întărite Colectate în Total", "Grinzi Defecte Colectate în Total", "Misiuni Completate în Total", "Jetoane de Combinare în Total", "Resturi Întunecate în Total", "Fragmente în Total", "Fragmente Întunecate în Total", "Anvelope Colectate în Total ", "Resetări RA în Total", "Timpul Jucat", "Misiunile Zilnice Completate în Total", "Jetoane de Masterat în Total", "Pungi de Plastic în Total", "Șuruburi în Total", "Șuruburi Colectate în Total", "Cadouri Trimise", "Cadouri Primite", "Combinații în Total", "Combinații Manuale"],
                         });
                 }
                 else {
@@ -2436,6 +2438,8 @@ var scenes =
                             default: ["Total Legendary Scrap", "Total Steel Magnets", "Total Blue Bricks", "Total Fishing Nets", "Total Buckets", "Total Tank Fills", "Total Star Dust", "Total Alien Dust", "Total Fairy Dust", "Total Cosmic Emblems"],
                             de: ["Legendärer Schrott", "Stahlmagnete", "Blaue Ziegel", "Fischernetze", "Eimer", "Tankauffüllungen", "Sternenstaub", "Alienstaub", "Feenstaub", "Kosmische Embleme"],
                             ru: ["Всего Легендарного Мусора", "Всего Стальных Магнитов", "Всего Голубых Кирпичей", "Всего Рыболовных Сетей", "Всего Вёдер", "Всего Заполнений Бака", "Всего Звёздной Пыли", "Всего Инопланетной Пыли", "Всего Волшебной Пыли", "Космические Эмблемы"],
+                            es: ["Chatarra Legendaria Total", "Imanes de Acero Totales", "Ladrillos Azules Totales", "Redes de Pesca Totales", "Cubos Totales", "Llenados de Tanque Totales", "Polvo de Estrellas Total", "Polvo Alienígena Total", "Polvo de Hadas Total", "Emblemas Cósmicos Totales"],
+                            ro: ["Resturi Legendare în Total", "Magneți de Oțel în Total", "Cărămizi Albastre în Total", "Plase de Pescuit în Total", "Găleți în Total", "Umplerea Rezervorului în Total", "Praf de Stele în Total", "Praf de Extratereștri în Total", "Praf de Zâne în Total", "Embleme Cosmice în Total"],
                         });
                 }
 
@@ -2507,6 +2511,9 @@ var scenes =
                                 game.settings.lang = "ru";
                                 break;
                             case "ru":
+                                game.settings.lang = "es";
+                                break;
+                            case "es":
                                 game.settings.lang = "it";
                                 break;
                             case "it":
@@ -2519,7 +2526,7 @@ var scenes =
                                 game.settings.lang = "en";
                                 break;
                         }
-                    }, () => tt("language") + ": " + ["English", "Deutsch", "Русский", "Italiano", "Português europeu", "Română"][["en", "de", "ru", "it", "pt", "ro"].indexOf(game.settings.lang)], "table"),
+                    }, () => tt("language") + ": " + ["English", "Deutsch", "Русский", "Español", "Italiano", "Português europeu", "Română"][["en", "de", "ru", "es", "it", "pt", "ro"].indexOf(game.settings.lang)], "table"),
 
                     // Notation
                     new UIOption(tabYs[0] + 0.2, images.options.numberFormat, () => {

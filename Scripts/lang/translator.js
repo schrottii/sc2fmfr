@@ -79,6 +79,12 @@ function tto(offers = { default: "ERROR" }) {
         case "ru":
             return offers.ru != undefined ? offers.ru : offers.default;
             break;
+        case "es":
+            return offers.es != undefined ? offers.es : offers.default;
+            break;
+        case "ro":
+            return offers.ro != undefined ? offers.ro : offers.default;
+            break;
         default:
             return offers.default;
             break;
